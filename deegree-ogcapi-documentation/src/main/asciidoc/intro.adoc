@@ -1,7 +1,25 @@
 == Introduction
 
-deegree OGC API Implementation...
+The deegree OGC API Feature (OAF) implementation is compliant to the latest OGC Standard called
+http://docs.opengeospatial.org/DRAFTS/17-069r3.html[OGC API - Features].
 
-Currently: Features
+=== The OGC API family
 
-Spec: http://docs.opengeospatial.org/DRAFTS/17-069r3.html
+The OGC API family of standards are being developed to make it easy for anyone to provide geospatial data to the web. These standards build upon the legacy of the OGC Web Service standards (WMS, WFS, WCS, WPS, etc.), but define resource-centric APIs that take advantage of modern web development practices.
+
+Read more at http://www.ogcapi.org[www.ogcapi.org] about the new standards and their goals.
+
+== Features
+
+The scope of this implementation is to implement http://docs.opengeospatial.org/DRAFTS/17-069r3.html.
+
+The supported Conformance Classes are:
+
+* Core
+* HTML
+* GeoJSON
+* Geography Markup Language (GML), Simple Features Profile, Level 0
+* Geography Markup Language (GML), Simple Features Profile, Level 2
+* OpenAPI 3.0.
+
+== Quick Start

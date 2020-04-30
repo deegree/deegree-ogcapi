@@ -23,4 +23,10 @@ Aennchenstraße 19 53177 Bonn +
 
 include::intro.adoc[]
 
-include::ogcapifeatures.adoc[]
+include::installation.adoc[]
+
+include::configuration.adoc[]
+
+include::usage.adoc[]
+
+include::help.adoc[]

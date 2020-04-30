@@ -1,0 +1,13 @@
+== Usage
+
+How to use
+
+=== OpenAPI
+
+=== Making a request
+
+=== Accessing a response
+
+=== Using the HTML interface
+
+
