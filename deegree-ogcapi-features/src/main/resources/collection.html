@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../webjars/bootstrap/4.4.1/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="../css/main.css" >
+
+    <title>deegree - OGC API Features 1.0 - Collection</title>
+
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+      .map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <ul class="nav" id ="breadcrump">
+                <li class="breadcrumb-item">
+                    <a v-bind:href="landingPageLink">Landing Page</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="collectionsLink">Collections</a>
+                </li>
+                <li v-cloak class="breadcrumb-item active" aria-current="page" >{{ collectionId }}</li>
+            </ul>
+            <ul class="nav justify-content-end">
+              <li class="nav-item">
+                  <a class="nav-link" href="?f=json" target="_blank">JSON</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="?f=xml" target="_blank">XML</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link disabled" href="?f=html" tabindex="-1" aria-disabled="true" target="_blank">HTML</a>
+              </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="row" id="content">
+        <div class="col-lg-12" >
+            <h1 v-cloak class="mt-5">{{ title }}</h1>
+            <div v-cloak>{{ description }}</div>
+            <div class="row mt-2">
+                <div class="col-sm-3">Links</div>
+                <div class="col-md-9">
+                    <div v-for="link in links">
+                        <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href" >{{ link.title }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3">Spatial Extent</div>
+                <div class="col-md-9">
+                    <div id="map" class="map" />
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3">Temporal Extent</div>
+                <div v-if="extent.temporal" class="col-md-9">
+                    <div class="row">
+                        <div v-cloak class="col-md-12">Begin: {{ extent.temporal.interval[0] }}</div>
+                    </div>
+                    <div class="row">
+                        <div v-cloak class="col-md-12">End: {{ extent.temporal.interval[1] }}</div>
+                    </div>
+                </div>
+                <div v-else class="col-md-9">-</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="footer">
+    <div v-if="impressumUrl && impressumUrl.length > 0" >
+        <a v-cloak v-bind:href="impressumUrl"  target="_blank" class="impressum"> Impressum</a>
+    </div>
+    <div v-else >
+        <a href="https://deegree-enterprise.de"  target="_blank" class="impressum"> deegree Enterprise Edition</a>
+    </div>
+</footer>
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="../webjars/jquery/3.4.1/jquery.min.js" ></script>
+<script src="../webjars/popper.js/1.16.0/umd/popper.min.js" ></script>
+<script src="../webjars/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script src="../webjars/vue/2.6.11/vue.min.js" ></script>
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
+<script>
+removeTrailingSlash();
+
+var App = new Vue({
+  el: '#content',
+  data: {
+    title: [],
+    description: [],
+    links: [],
+    extent: []
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+
+    $.ajax({
+      dataType: "json",
+      //url: "http://localhost:8002/collections/strassenbaumkataster",
+      url: window.location.href,
+      success: function(data) {
+        self.title = data.title;
+        self.description = data.description;
+        self.links = data.links;
+        self.extent = data.extent;
+        fetchConfigAndSetExtent(self.extent.spatial.bbox);
+      }
+    });
+  }
+})
+
+var AppBreadcrump = new Vue({
+  el: '#breadcrump',
+  data: {
+    collectionId: [],
+    landingPageLink: [],
+    collectionsLink: []
+  },
+
+  created() {
+    var self = this;
+    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+    self.collectionsLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.landingPageLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
+
+    $.ajax({
+      dataType: "json",
+      //url: "http://localhost:8002/collections/strassenbaumkataster",
+      url: thisLink,
+      success: function(data) {
+        self.collectionId = data.title;
+      }
+    });
+  }
+})
+
+var footerApp = new Vue({
+  el: '#footer',
+  data: {
+    impressumUrl: ''
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+
+    $.ajax({
+      dataType: "json",
+      url: createImpressumUrl(),
+      success: function(data) {
+        self.impressumUrl = data.impressumUrl;
+      }
+    });
+  }
+})
+
+async function fetchConfigAndSetExtent(bbox) {
+  var configUrl = createMapConfigUrl();
+
+  const response = await fetch( configUrl, {headers: {'Accept': 'application/json' } } );
+  if( response.status == 200 ){
+    const json = await response.json();
+    setMapBackgroundAndExtent(json.wmsUrl, json.wmsLayers, json.crsCode, json.crsProj4Definition, bbox);
+  } else {
+    setMapBackgroundAndExtent('http://sg.geodatenzentrum.de/wms_dtk250', 'dtk250', null, null, bbox);
+  }
+}
+
+function setMapBackgroundAndExtent(wmsUrl, wmsLayers, crsCode, projDef, bbox){
+    var crsCodeRegistered = registerCrs(crsCode, projDef);
+    if( crsCodeRegistered ){
+        var userConfig = ol.proj.get(crsCode);
+        map.setView(
+            new ol.View({
+                projection: userConfig
+            })
+        );
+    }
+
+    var wmsLayer = new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: wmsUrl,
+        params: {'VERSION': '1.1.1', 'LAYERS': wmsLayers, 'TILED': true}
+      })
+    });
+    map.getLayers().insertAt(0, wmsLayer);
+    setExtent(bbox, crsCodeRegistered, crsCode);
+}
+
+function setExtent(bbox, crsCodeRegistered, crsCode){
+    var boundingExtent = ol.extent.boundingExtent([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+    if( crsCodeRegistered ) {
+        boundingExtent = ol.proj.transformExtent(boundingExtent, 'EPSG:4326', crsCode);
+    }
+
+    var extentFeature = new ol.Feature({
+        geometry: ol.geom.Polygon.fromExtent(boundingExtent),
+        name: 'Extent'
+    })
+    extentSource.addFeature(extentFeature);
+
+    var extentGeom = ol.geom.Polygon.fromExtent(boundingExtent)
+    extentGeom.scale(1.2);
+    map.getView().fit(extentGeom.getExtent(), {'maxZoom':14} );
+}
+
+var extentSource = new ol.source.Vector({
+  format: new ol.format.GeoJSON(),
+   strategy: ol.loadingstrategy.all
+});
+
+var extentLayer = new ol.layer.Vector({
+   source: extentSource,
+   style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'blue',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(0, 0, 255, 0.1)'
+    })
+  })
+});
+
+var map = new ol.Map({
+  target: 'map',
+  layers: [
+    extentLayer
+  ],
+  view: new ol.View({
+    projection: 'EPSG:4326',
+    center: [10.0143, 53.5537],
+    zoom: 14
+  })
+});
+
+function createImpressumUrl(){
+  return createConfigUrl("/config/impressum");
+}
+
+function createMapConfigUrl(){
+  return createConfigUrl("/config/map");
+}
+
+function createConfigUrl(path){
+  var baseUrl = window.location.href;
+  var indexIncludeDataset = (baseUrl.lastIndexOf("dataset") + 9)
+  var indexOfDatasetId = baseUrl.substring(indexIncludeDataset, baseUrl.length ).indexOf( "/" ) + indexIncludeDataset;
+  var configUrl = baseUrl.substring ( 0, indexOfDatasetId ) + path;
+  return configUrl;
+}
+
+function removeTrailingSlash(){
+  if( window.location.href.endsWith("/") ){
+    window.location.href = window.location.href.substring(0, window.location.href.length -1);
+  }
+}
+
+function registerCrs(crsCode, projDef){
+   if( crsCode != null &&  projDef != null ) {
+       proj4.defs('EPSG:25832', '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+       ol.proj.proj4.register(proj4);
+       return true;
+   }
+   return false;
+}
+</script>
+</body>
+</html>

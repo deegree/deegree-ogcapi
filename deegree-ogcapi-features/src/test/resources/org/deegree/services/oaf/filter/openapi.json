@@ -1,0 +1,369 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "deegree OGC API - Features (LGV HH)",
+    "description" : "OGC API - Features 1.0 implementation (HH LGV HH)",
+    "termsOfService" : "http://swagger.io/terms/",
+    "contact" : {
+      "name" : "Landesbetrieb Geoinformation und Vermessung",
+      "url" : "https://www.hamburg.de/bsw/landesbetrieb-geoinformation-und-vermessung/"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0"
+  },
+  "paths" : {
+    "/datasets/{datasetId}/conformance" : {
+      "get" : {
+        "operationId" : "conformance",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Conformance"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasets/{datasetId}/collections" : {
+      "get" : {
+        "operationId" : "collections",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Collections"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasets/{datasetId}/api" : {
+      "get" : {
+        "operationId" : "getOpenApiJson",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/vnd.oai.openapi+json;version=3.0" : { }
+            }
+          }
+        }
+      }
+    },
+    "/datasets/{datasetId}/collections/{collectionId}" : {
+      "get" : {
+        "operationId" : "featureCollection",
+        "parameters" : [ ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Collection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasets/{datasetId}/collections/{collectionId}/items" : {
+      "get" : {
+        "operationId" : "features",
+        "parameters" : [ {
+          "name" : "Accept",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Limits the number of items presented in the response document",
+          "style" : "form",
+          "schema" : {
+            "maximum" : 1000,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "The start index of the items presented in the response document",
+          "style" : "form",
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "bbox",
+          "in" : "query",
+          "description" : "The bounding boxes that describe the spatial extent of the dataset.",
+          "style" : "form",
+          "schema" : {
+            "maxItems" : 6,
+            "minItems" : 4,
+            "type" : "array",
+            "items" : {
+              "type" : "number",
+              "format" : "double"
+            }
+          }
+        }, {
+          "name" : "bbox-crs",
+          "in" : "query",
+          "description" : "The coordinate reference system of the value of the bbox parameter.",
+          "style" : "form",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "datetime",
+          "in" : "query",
+          "description" : "The datetime used as filter.",
+          "style" : "form",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "crs",
+          "in" : "query",
+          "description" : "The coordinate reference system of the response geometries.",
+          "style" : "form",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/geo+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FeatureResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasets/{datasetId}/collections/{collectionId}/items/{featureId}" : {
+      "get" : {
+        "operationId" : "feature",
+        "parameters" : [ {
+          "name" : "featureId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "crs",
+          "in" : "query",
+          "description" : "The coordinate reference system of the response geometries.",
+          "style" : "form",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/geo+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FeatureResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Conformance" : {
+        "type" : "object",
+        "properties" : {
+          "conformsTo" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "Collection" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "links" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          },
+          "extent" : {
+            "$ref" : "#/components/schemas/Extent"
+          },
+          "itemType" : {
+            "type" : "string"
+          },
+          "crs" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "Extent" : {
+        "type" : "object",
+        "properties" : {
+          "spatial" : {
+            "$ref" : "#/components/schemas/Spatial"
+          },
+          "temporal" : {
+            "$ref" : "#/components/schemas/Temporal"
+          }
+        }
+      },
+      "Link" : {
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          },
+          "rel" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "hreflang" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "length" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "Spatial" : {
+        "type" : "object",
+        "properties" : {
+          "bbox" : {
+            "type" : "array",
+            "items" : {
+              "type" : "number",
+              "format" : "double"
+            }
+          },
+          "crs" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Temporal" : {
+        "type" : "object",
+        "properties" : {
+          "interval" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "date-time"
+            }
+          },
+          "trs" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Collections" : {
+        "type" : "object",
+        "properties" : {
+          "links" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          },
+          "collections" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Collection"
+            }
+          }
+        }
+      },
+      "FeatureInputStream" : {
+        "type" : "object"
+      },
+      "FeatureResponse" : {
+        "type" : "object",
+        "properties" : {
+          "features" : {
+            "$ref" : "#/components/schemas/FeatureInputStream"
+          },
+          "numberOfFeaturesMatched" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "numberOfFeatures" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "startIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "links" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          },
+          "responseCrsName" : {
+            "type" : "string"
+          },
+          "maxFeaturesAndStartIndexApplicable" : {
+            "type" : "boolean"
+          }
+        }
+      }
+    }
+  }
+}

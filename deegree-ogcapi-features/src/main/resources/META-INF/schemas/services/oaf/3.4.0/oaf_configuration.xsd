@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.deegree.org/services/oaf"
+        xmlns:oaf="http://www.deegree.org/services/oaf"
+        elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+  <annotation>
+    <appinfo>
+      <jaxb:schemaBindings>
+        <jaxb:package name="org.deegree.services.jaxb.oaf"/>
+      </jaxb:schemaBindings>
+    </appinfo>
+  </annotation>
+
+  <element name="deegreeOAF">
+    <complexType>
+      <sequence>
+        <element name="FeatureStoreId" minOccurs="0" maxOccurs="unbounded" type="string"/>
+        <element name="QueryCRS" type="string" minOccurs="0" maxOccurs="unbounded" />
+        <element name="DateTimeProperties" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="DateTimeProperty" type="oaf:DateTimePropertyType" maxOccurs="unbounded"/>
+            </sequence>
+          </complexType>
+        </element>
+        <element name="ServiceMetadata" type="oaf:ServiceMetadataType" minOccurs="0"/>
+        <element name="HtmlView" type="oaf:HtmlViewType" minOccurs="0"/>
+      </sequence>
+      <attribute name="configVersion" use="required">
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="3.4.0"/>
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+
+  <complexType name="DateTimePropertyType">
+    <sequence>
+      <element name="FeatureTypeName" type="QName"/>
+      <element name="PropertyName" type="QName"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="ServiceMetadataType">
+    <sequence>
+      <element name="MetadataURL" minOccurs="1" maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension base="string">
+              <attribute name="format" type="string" />
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="HtmlViewType">
+    <sequence>
+      <element name="CssFile" minOccurs="0" type="string"/>
+      <element name="ImpressumUrl" minOccurs="0" type="anyURI"/>
+      <element name="Map" minOccurs="0">
+        <complexType>
+          <sequence>
+            <sequence minOccurs="0">
+              <element name="WMSUrl" minOccurs="1" type="string"/>
+              <element name="WMSLayers" minOccurs="1" type="string"/>
+            </sequence>
+            <element name="CrsProj4Definition" minOccurs="0">
+              <complexType>
+                <simpleContent>
+                  <extension base="string">
+                    <attribute name="code" type="string" use="required"/>
+                  </extension>
+                </simpleContent>
+              </complexType>
+            </element>
+          </sequence>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+
+</schema>

@@ -1,0 +1,132 @@
+package org.deegree.services.oaf.resource;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.deegree.services.oaf.RequestFormat;
+import org.deegree.services.oaf.domain.collections.Collection;
+import org.deegree.services.oaf.exceptions.InvalidParameterValue;
+import org.deegree.services.oaf.exceptions.UnknownCollectionId;
+import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.link.LinkBuilder;
+import org.deegree.services.oaf.workspace.DataAccess;
+import org.deegree.services.oaf.workspace.DataAccessFactory;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.List;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static org.deegree.services.oaf.RequestFormat.HTML;
+import static org.deegree.services.oaf.RequestFormat.JSON;
+import static org.deegree.services.oaf.RequestFormat.XML;
+import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
+
+/**
+ * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
+ */
+@Path("/datasets/{datasetId}/collections/{collectionId}")
+public class FeatureCollection {
+
+    private DataAccess collectionFactory = DataAccessFactory.getInstance();
+
+    @GET
+    @Produces({ APPLICATION_JSON })
+    @Operation(summary = "describes collection {collectionId}", description = "Describes the collection with the id {collectionId}")
+    @Tag(name = "Collections")
+    public Response collectionJson(
+                    @PathParam("datasetId")
+                                    String datasetId,
+                    @PathParam("collectionId")
+                                    String collectionId,
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @QueryParam("f")
+                                    String format,
+                    @Context
+                                    UriInfo uriInfo )
+                    throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
+        return collection( datasetId, collectionId, uriInfo, format, JSON );
+    }
+
+    @GET
+    @Produces({ APPLICATION_XML })
+    @Operation(summary = "describes collection {collectionId}", description = "Describes the collection with the id {collectionId}")
+    @Tag(name = "Collections")
+    public Response collectionXml(
+                    @PathParam("datasetId")
+                                    String datasetId,
+                    @PathParam("collectionId")
+                                    String collectionId,
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @QueryParam("f")
+                                    String format,
+                    @Context
+                                    UriInfo uriInfo )
+                    throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
+        return collection( datasetId, collectionId, uriInfo, format, XML );
+    }
+
+    @GET
+    @Produces({ TEXT_HTML })
+    @Operation(hidden = true)
+    public Response collectionHtml(
+                    @PathParam("datasetId")
+                                    String datasetId,
+                    @PathParam("collectionId")
+                                    String collectionId,
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @QueryParam("f")
+                                    String format,
+                    @Context
+                                    UriInfo uriInfo )
+                    throws UnknownCollectionId, InvalidParameterValue, UnknownDatasetId {
+        return collection( datasetId, collectionId, uriInfo, format, HTML );
+    }
+
+    @GET
+    @Operation(hidden = true)
+    public Response collectionOther(
+                    @PathParam("datasetId")
+                                    String datasetId,
+                    @PathParam("collectionId")
+                                    String collectionId,
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @QueryParam("f")
+                                    String format,
+                    @Context
+                                    UriInfo uriInfo )
+                    throws UnknownCollectionId, InvalidParameterValue, UnknownDatasetId {
+        return collection( datasetId, collectionId, uriInfo, format, JSON );
+    }
+
+    private Response collection( String datasetId, String collectionId, UriInfo uriInfo, String formatParamValue,
+                                 RequestFormat defaultFormat )
+                    throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
+
+        RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
+        if ( HTML.equals( requestFormat ) ) {
+            return Response.ok( getClass().getResourceAsStream( "/collection.html" ), TEXT_HTML ).build();
+        }
+        LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
+        if ( XML.equals( requestFormat ) ) {
+            List<Collection> collectionList = java.util.Collections.singletonList(
+                            collectionFactory.createCollection( datasetId, collectionId, linkBuilder ) );
+            GenericEntity<List<Collection>> entity = new GenericEntity<List<Collection>>( collectionList ) {
+            };
+            return Response.ok( entity, APPLICATION_XML ).build();
+        }
+        Collection collection = collectionFactory.createCollection( datasetId, collectionId, linkBuilder );
+        return Response.ok( collection, APPLICATION_JSON ).build();
+    }
+
+}

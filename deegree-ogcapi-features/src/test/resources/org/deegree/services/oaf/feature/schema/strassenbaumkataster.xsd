@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2"
+        targetNamespace="http://www.deegree.org/app" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+
+  <element name="strassenbaumkataster" substitutionGroup="gml:AbstractFeature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="gattung" minOccurs="0" type="string"/>
+            <element name="gattung_latein" minOccurs="0" type="string"/>
+            <element name="gattung_deutsch" minOccurs="0" type="string"/>
+            <element name="art" minOccurs="0" type="string"/>
+            <element name="art_latein" minOccurs="0" type="string"/>
+            <element name="art_deutsch" minOccurs="0" type="string"/>
+            <element name="sorte_latein" minOccurs="0" type="string"/>
+            <element name="sorte_deutsch" minOccurs="0" type="string"/>
+            <element name="pflanzjahr" minOccurs="0" type="date"/>
+            <element name="pflanzjahr_portal" minOccurs="0" type="integer"/>
+            <element name="krone_dm" minOccurs="0" type="integer"/>
+            <element name="krone_dm_z" minOccurs="0" type="string"/>
+            <element name="stammumfang" minOccurs="0" type="integer"/>
+            <element name="stammumfang_z" minOccurs="0" type="string"/>
+            <element name="strasse" minOccurs="0" type="string"/>
+            <element name="hausnr" minOccurs="0" type="string"/>
+            <element name="ortsteil_nr" minOccurs="0" type="string"/>
+            <element name="stadtteil" minOccurs="0" type="string"/>
+            <element name="bezirk" minOccurs="0" type="string"/>
+            <element name="stand_bearbeitung" minOccurs="0" type="date"/>
+            <element name="gid" minOccurs="0" type="integer"/>
+            <element name="geom" minOccurs="0" type="gml:PointPropertyType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+</schema>

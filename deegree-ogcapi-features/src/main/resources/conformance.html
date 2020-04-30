@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="webjars/bootstrap/4.4.1/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="css/main.css" >
+
+    <title>deegree - OGC API Features 1.0 - Conformance Classes</title>
+
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <ul class="nav" id ="breadcrump">
+                <li class="breadcrumb-item">
+                    <a v-bind:href="landingPageLink">Landing Page</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Conformance Classes</li>
+            </ul>
+            <ul class="nav justify-content-end">
+              <li class="nav-item">
+                  <a class="nav-link" href="?f=json" target="_blank">JSON</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="?f=xml" target="_blank">XML</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link disabled" href="?f=html" tabindex="-1" aria-disabled="true" target="_blank">HTML</a>
+              </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12" id="content">
+            <h1 class="mt-5">Conformance Classes</h1>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="list-group">
+                        <li v-cloak v-for="conformto in conformsto" class="list-group-item">
+                            {{ conformto }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="footer">
+    <div v-if="impressumUrl && impressumUrl.length > 0" >
+        <a v-cloak v-bind:href="impressumUrl"  target="_blank" class="impressum"> Impressum</a>
+    </div>
+    <div v-else >
+        <a href="https://deegree-enterprise.de"  target="_blank" class="impressum"> deegree Enterprise Edition</a>
+    </div>
+</footer>
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="webjars/jquery/3.4.1/jquery.min.js" ></script>
+<script src="webjars/popper.js/1.16.0/umd/popper.min.js" ></script>
+<script src="webjars/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script src="webjars/vue/2.6.11/vue.min.js" ></script>
+<script>
+removeTrailingSlash();
+
+var App = new Vue({
+  el: '#content',
+  data: {
+    conformsto: []
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+
+    $.ajax({
+      dataType: "json",
+      //url: "http://localhost:8002/conformance",
+      url: window.location,
+      success: function(data) {
+        self.conformsto = data.conformsTo;
+      }
+    });
+  }
+})
+
+var AppBreadcrump = new Vue({
+  el: '#breadcrump',
+  data: {
+    landingPageLink: []
+  },
+
+  created() {
+    var self = this;
+    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+    self.landingPageLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+  }
+})
+
+var footerApp = new Vue({
+  el: '#footer',
+  data: {
+    impressumUrl: ''
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+
+    $.ajax({
+      dataType: "json",
+      url: createImpressumUrl(),
+      success: function(data) {
+        self.impressumUrl = data.impressumUrl;
+      }
+    });
+  }
+})
+
+function createImpressumUrl(){
+  var baseUrl = window.location.href;
+  var indexIncludeDataset = (baseUrl.lastIndexOf("dataset") + 9)
+  var indexOfDatasetId = baseUrl.substring(indexIncludeDataset, baseUrl.length ).indexOf( "/" ) + indexIncludeDataset;
+  var configUrl = baseUrl.substring ( 0, indexOfDatasetId ) + "/config/impressum";
+  return configUrl;
+}
+
+function removeTrailingSlash(){
+  if( window.location.href.endsWith("/") ){
+    window.location.href = window.location.href.substring(0, window.location.href.length -1);
+  }
+}
+</script>
+</body>
+</html>
