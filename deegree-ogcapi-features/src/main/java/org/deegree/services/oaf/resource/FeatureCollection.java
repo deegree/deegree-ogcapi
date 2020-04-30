@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.RequestFormat;
 import org.deegree.services.oaf.domain.collections.Collection;
+import org.deegree.services.oaf.domain.collections.Collections;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
@@ -19,10 +20,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -118,14 +117,12 @@ public class FeatureCollection {
             return Response.ok( getClass().getResourceAsStream( "/collection.html" ), TEXT_HTML ).build();
         }
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        if ( XML.equals( requestFormat ) ) {
-            List<Collection> collectionList = java.util.Collections.singletonList(
-                            collectionFactory.createCollection( datasetId, collectionId, linkBuilder ) );
-            GenericEntity<List<Collection>> entity = new GenericEntity<List<Collection>>( collectionList ) {
-            };
-            return Response.ok( entity, APPLICATION_XML ).build();
-        }
         Collection collection = collectionFactory.createCollection( datasetId, collectionId, linkBuilder );
+        if ( XML.equals( requestFormat ) ) {
+            Collections collections = new Collections();
+            collections.addCollection( collection );
+            return Response.ok( collections, APPLICATION_XML ).build();
+        }
         return Response.ok( collection, APPLICATION_JSON ).build();
     }
 

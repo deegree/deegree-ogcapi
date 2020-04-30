@@ -6,6 +6,7 @@ import org.deegree.services.oaf.link.Link;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_ATOM_NS_URL;
@@ -47,5 +48,11 @@ public class Collections extends OafDomainResource {
 
     public void setCollections( List<Collection> collections ) {
         this.collections = collections;
+    }
+
+    public void addCollection( Collection collection ) {
+        if ( collections == null )
+            collections = new ArrayList<>();
+        collections.add( collection );
     }
 }
