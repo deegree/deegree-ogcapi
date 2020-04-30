@@ -17,7 +17,7 @@ public final class OgcApiFeaturesConstants {
 
     public static final String XML_SF_SCHEMA_URL = "http://schemas.opengis.net/ogcapi/features/part1/1.0/xml/core-sf.xsd";
 
-    public static final String HEADER_TIMESTAMP = "timeStamp";
+    public static final String HEADER_TIMESTAMP = "Date";
 
     public static final String HEADER_NUMBER_RETURNED = "OGC-NumberReturned";
 
