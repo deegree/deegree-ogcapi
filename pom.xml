@@ -1212,6 +1212,7 @@
 
   <modules>
     <module>deegree-ogcapi-features</module>
+    <module>deegree-ogcapi-documentation</module>
   </modules>
 
   <profiles>
