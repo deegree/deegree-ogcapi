@@ -144,10 +144,12 @@
         <div class="col-md">
             <div id="map" class="map">
                 <div id="info"></div>
+                <!--
                 <div id="popup" class="ol-popup">
                     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                     <div id="popup-content"></div>
                 </div>
+                -->
             </div>
         </div>
     </div>
@@ -388,7 +390,7 @@ map.on('pointermove', function(evt) {
   }
   displayTooltip(evt.pixel);
 });
-
+/*
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
@@ -431,7 +433,7 @@ select.on('select', function(e) {
   content.innerHTML = '<div><h6>' + feature.getId() + '</h6></div><div>' + html + '</div>';
   overlay.setPosition(clickCoordinate);
 });
-
+*/
 function createImpressumUrl(){
   return createConfigUrl("/config/impressum");
 }
