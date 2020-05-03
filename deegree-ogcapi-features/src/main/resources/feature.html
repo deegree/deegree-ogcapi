@@ -20,8 +20,8 @@
         line-height: 1;
       }
       .map {
-        height: 400px;
-        width: 100%;
+        height: 480px;
+        width: 540px;
       }
       #info {
         position: absolute;
@@ -119,8 +119,9 @@
             <h3 v-cloak class="mt-5">{{ featureId }}</h3>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-5">
+    <hr/>
+    <div class="row justify-content-between">
+        <div class="col-md">
             <div class="row mt-2">
                 <div class="col">
                     <table class="table table-striped">
@@ -140,7 +141,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md">
             <div id="map" class="map">
                 <div id="info"></div>
                 <div id="popup" class="ol-popup">
@@ -151,7 +152,6 @@
         </div>
     </div>
 
-    <hr/>
     <div class="row">
             <div class="col-sm-2">Links</div>
             <div class="col-md-10">
