@@ -703,7 +703,7 @@ function setFeatures(featuresJson){
 
   var extentGeom = ol.geom.Polygon.fromExtent(featureSource.getExtent())
   extentGeom.scale(1.2);
-  map.getView().fit(extentGeom.getExtent(), {'maxZoom':14} );
+  map.getView().fit(extentGeom.getExtent(), {'maxZoom':20} );
 }
 
 var featureSource = new ol.source.Vector({
