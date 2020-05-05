@@ -1,12 +1,9 @@
 package org.deegree.services.oaf.resource;
 
-import org.deegree.services.oaf.TestData;
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
-import org.deegree.services.oaf.domain.collections.Extent;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
-import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DataAccessFactory;
@@ -21,7 +18,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;

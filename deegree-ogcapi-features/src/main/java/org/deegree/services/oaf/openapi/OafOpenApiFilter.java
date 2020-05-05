@@ -39,6 +39,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     private static final String DATASETID = "datasetId";
 
+    public static final String CONFIG_PATH = "/config";
+
     private static final String DATASETS_PATH = "/datasets";
 
     public static final String DATASET_PATH = "/datasets/{datasetId}";
@@ -110,7 +112,6 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
             PathItem newFeaturePathItem = createNewPathItem( feature, key, metadata );
             paths.addPathItem( replaceCollectionId( FEATURE_PATH, key ), newFeaturePathItem );
 
-
         } );
 
         paths.remove( DATASETS_PATH );
@@ -118,12 +119,14 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         paths.remove( FEATURES_PATH );
         paths.remove( FEATURE_PATH );
 
-        Map<String, PathItem> pathItemsWithAdaptedPath = new HashMap<>(  );
+        Map<String, PathItem> pathItemsWithAdaptedPath = new HashMap<>();
         paths.entrySet().forEach( stringPathItemEntry -> {
-            String replacedPath = createNewPath( stringPathItemEntry );
-            PathItem value = addHtmlResource( stringPathItemEntry );
-            removeDatasetParam( value );
-            pathItemsWithAdaptedPath.put( replacedPath, value );
+            if ( !stringPathItemEntry.getKey().startsWith( CONFIG_PATH ) ) {
+                String replacedPath = createNewPath( stringPathItemEntry );
+                PathItem value = addHtmlResource( stringPathItemEntry );
+                removeDatasetParam( value );
+                pathItemsWithAdaptedPath.put( replacedPath, value );
+            }
         } );
         paths.clear();
         paths.putAll( pathItemsWithAdaptedPath );
@@ -131,7 +134,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     private PathItem addHtmlResource( Map.Entry<String, PathItem> stringPathItemEntry ) {
         PathItem value = stringPathItemEntry.getValue();
-        if ( LICENSE_PATH.equals( stringPathItemEntry.getKey() ) )
+        if ( LICENSE_PATH.equals( stringPathItemEntry.getKey() ) || stringPathItemEntry.getKey().startsWith(
+                        CONFIG_PATH ) )
             return value;
         Content content = value.getGet().getResponses().getDefault().getContent();
         MediaType mediaTypeHtml = new MediaType().schema( new Schema() );
