@@ -36,7 +36,7 @@ import static org.deegree.services.oaf.exceptions.ExceptionMediaTypeUtil.selectM
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 @Provider
-public class RequestParamFilter implements ContainerRequestFilter {
+public class UnknownParameterFilter implements ContainerRequestFilter {
 
     private static final String EXCEPTION_MSG = "Parameter with name '%s' is not specified.";
 
