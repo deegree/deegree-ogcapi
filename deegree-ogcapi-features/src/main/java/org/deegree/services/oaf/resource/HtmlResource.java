@@ -21,7 +21,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-@Path( "/datasets/{datasetId}" )
+@Path( "" )
 public class HtmlResource {
 
     @Context
@@ -44,6 +44,13 @@ public class HtmlResource {
     @Operation(hidden = true)
     @Path("/css/main.css")
     @GET
+    public InputStream getDefaultCssFile() {
+        return getClass().getResourceAsStream( "/css/main.css" );
+    }
+
+    @Operation(hidden = true)
+    @Path("/datasets/{datasetId}/css/main.css")
+    @GET
     public InputStream getCssFile( @PathParam("datasetId") String datasetId )
                     throws FileNotFoundException {
         HtmlViewConfiguration htmlViewConfiguration = DeegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
@@ -53,7 +60,7 @@ public class HtmlResource {
     }
 
     @Operation(hidden = true)
-    @Path("/config/map")
+    @Path("/datasets/{datasetId}/config/map")
     @GET
     @Produces(APPLICATION_JSON)
     public Response getMapConfig( @PathParam("datasetId") String datasetId ) {
@@ -69,7 +76,7 @@ public class HtmlResource {
 
 
     @Operation(hidden = true)
-    @Path("/config/impressum")
+    @Path("/datasets/{datasetId}/config/impressum")
     @GET
     @Produces(APPLICATION_JSON)
     public Response getImpresumUrl( @PathParam("datasetId") String datasetId ) {

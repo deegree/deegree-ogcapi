@@ -25,6 +25,7 @@ import static org.deegree.services.oaf.link.LinkRelation.LICENSE;
 import static org.deegree.services.oaf.link.LinkRelation.NEXT;
 import static org.deegree.services.oaf.link.LinkRelation.SELF;
 import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DESC;
+import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DOC;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -44,11 +45,9 @@ public class LinkBuilder {
         List<Link> links = new ArrayList<>();
         String selfUri = uriInfo.getRequestUri().toString();
         links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document" ) );
-        // TODO: HTML is currently not supported
-        //links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
+        links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
         return links;
     }
-
 
     /**
      * @param datasetId
@@ -58,11 +57,9 @@ public class LinkBuilder {
     public List<Link> createDatasetLinks( String datasetId ) {
         List<Link> links = new ArrayList<>();
         String datasetHref = createBaseUriBuilder( datasetId )
-                                       .toString();
-
-        links.add( new Link( datasetHref, SELF.getRel(), APPLICATION_JSON, "Landing Page" ) );
-        // TODO: HTML is currently not supported
-        //links.add( new Link( datasetHref, ALTERNATE.getRel(), TEXT_HTML, "Landing Page as HTML" ) );
+                        .toString();
+        links.add( new Link( datasetHref, SERVICE_DOC.getRel(), APPLICATION_JSON, "Landing Page" ) );
+        links.add( new Link( datasetHref, SERVICE_DOC.getRel(), TEXT_HTML, "Landing Page as HTML" ) );
         return links;
     }
 

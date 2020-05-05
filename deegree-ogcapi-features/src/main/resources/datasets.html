@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../../webjars/bootstrap/4.4.1/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="webjars/bootstrap/4.4.1/css/bootstrap.min.css" >
     <link rel="stylesheet" href="css/main.css" >
 
-    <title>deegree - OGC API Features 1.0 - Collections</title>
+    <title>deegree - OGC API Features 1.0 - Datasets</title>
 
     <style>
       [v-cloak] {
@@ -24,17 +24,11 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#"></a>
             <ul class="nav" id="breadcrump">
-                <li class="breadcrumb-item">
-                    <a v-bind:href="landingPageLink">Landing Page</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">Collections</li>
+                <li class="breadcrumb-item active" aria-current="page">Datasets</li>
             </ul>
             <ul class="nav justify-content-end">
                 <li class="nav-item">
                     <a class="nav-link" href="?f=json" target="_blank">JSON</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="?f=xml" target="_blank">XML</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" href="?f=html" tabindex="-1" aria-disabled="true"
@@ -52,30 +46,20 @@
             <div class="row">
                 <div class="col-md-12">
                     <ul class="list-group">
-                        <li v-for="collection in collections" class="list-group-item">
-                            <h5 v-cloak>{{ collection.title }}</h5>
-                            <div v-cloak>{{collection.description}}</div>
-
+                        <li v-for="dataset in datasets" class="list-group-item">
+                            <h5 v-cloak>{{dataset.name}}</h5>
                             <div class="row mt-2">
                                 <div class="col-sm-2">Links</div>
                                 <div class="col-md-10">
-                                  <div v-for="link in collection.links">
-                                      <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href">{{ link.title }}</a>
-                                  </div>
+                                    <div v-for="link in dataset.links">
+                                        <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href">{{ link.title }}</a>
+                                    </div>
                                 </div>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
-
-            <div class="row" v-if="licenseLink != null" >
-                <div class="col-sm-3">License</div>
-                <div class="col-md-9">
-                    <a v-cloak v-bind:href="licenseLink.href" >{{ licenseLink.title }}</a>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>
@@ -90,18 +74,17 @@
 </footer>
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="../../webjars/jquery/3.4.1/jquery.min.js" ></script>
-<script src="../../webjars/popper.js/1.16.0/umd/popper.min.js" ></script>
-<script src="../../webjars/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
-<script src="../../webjars/vue/2.6.11/vue.min.js" ></script>
+<script src="webjars/jquery/3.4.1/jquery.min.js" ></script>
+<script src="webjars/popper.js/1.16.0/umd/popper.min.js" ></script>
+<script src="webjars/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script src="webjars/vue/2.6.11/vue.min.js" ></script>
 <script>
 removeTrailingSlash();
 
 var App = new Vue({
   el: '#content',
   data: {
-    collections: [],
-    licenseLink: []
+    datasets: []
   },
 
   created() {
@@ -110,27 +93,11 @@ var App = new Vue({
 
     $.ajax({
       dataType: "json",
-      //url: "http://localhost:8002/datasets/oaf/collections",
       url: window.location.href,
       success: function(data) {
-        self.collections = data.collections;
-        self.licenseLink = parseLinks(data, 'license', 'text/plain');
+        self.datasets = data.datasets;
       }
     });
-  }
-})
-
-
-var AppBreadcrump = new Vue({
-  el: '#breadcrump',
-  data: {
-    landingPageLink: []
-  },
-
-  created() {
-    var self = this;
-    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
-    self.landingPageLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
   }
 })
 

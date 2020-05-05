@@ -7,10 +7,9 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import static org.deegree.services.oaf.domain.conformance.ConformanceClass.CORE;
-import static org.deegree.services.oaf.domain.conformance.ConformanceClass.OPENAPI30;
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class DatasetsTest extends JerseyTest {
@@ -18,14 +17,21 @@ public class DatasetsTest extends JerseyTest {
     @Override
     protected Application configure() {
         enable( TestProperties.LOG_TRAFFIC );
-        return new ResourceConfig( Conformance.class );
+        return new ResourceConfig( Datasets.class );
     }
 
     @Test
-    public void test_ConformanceDeclarationShouldBeAvailable() {
-        final String json = target( "/datasets/oaf/conformance" ).request( MediaType.APPLICATION_JSON_TYPE ).get( String.class );
-        assertThat( json, containsString( CORE.getConformanceClass() ) );
-        assertThat( json, containsString( OPENAPI30.getConformanceClass() ) );
+    public void test_DatatsetsDeclaration_JSON_ShouldBeAvailable() {
+        Response response = target( "/datasets" ).request( MediaType.APPLICATION_JSON_TYPE ).get();
+        String json = response.readEntity( String.class );
+        assertThat( response.getStatus(), is( 200 ) );
+    }
+
+    @Test
+    public void test_DatatsetsDeclaration_HTML_ShouldBeAvailable() {
+        Response response = target( "/datasets" ).request( MediaType.APPLICATION_JSON_TYPE ).get();
+        String json = response.readEntity( String.class );
+        assertThat( response.getStatus(), is( 200 ) );
     }
 
 }
