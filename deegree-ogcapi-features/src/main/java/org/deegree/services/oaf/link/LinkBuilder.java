@@ -128,17 +128,21 @@ public class LinkBuilder {
     public List<Link> createCollectionLinks( String datasetId, String collectionId, List<MetadataUrl> metadataUrls ) {
         ArrayList<Link> links = new ArrayList<>();
         String selfUri = uriInfo.getRequestUri().toString();
-        links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document as JSON" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), APPLICATION_XML, "this document as XML" ) );
-
-        String collectionHref = createBaseUriBuilder( datasetId )
-                                       .path( "collections" )
-                                       .path( collectionId )
-                                       .toString();
-        links.add( new Link( collectionHref, COLLECTION.getRel(), APPLICATION_JSON, "Collection as GeoJson" ) );
-        links.add( new Link( collectionHref, COLLECTION.getRel(), TEXT_HTML, "Collection as HTML" ) );
-        links.add( new Link( collectionHref, COLLECTION.getRel(), APPLICATION_XML, "Collection as XML" ) );
+        List<String> collectionsParams = uriInfo.getPathParameters().get( "collectionId" );
+        boolean collectionRequested = collectionsParams != null && !collectionsParams.isEmpty();
+        if ( collectionRequested ) {
+            links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document as JSON" ) );
+            links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
+            links.add( new Link( selfUri, ALTERNATE.getRel(), APPLICATION_XML, "this document as XML" ) );
+        } else {
+            String collectionHref = createBaseUriBuilder( datasetId )
+                            .path( "collections" )
+                            .path( collectionId )
+                            .toString();
+            links.add( new Link( collectionHref, COLLECTION.getRel(), APPLICATION_JSON, "Collection as GeoJson" ) );
+            links.add( new Link( collectionHref, COLLECTION.getRel(), TEXT_HTML, "Collection as HTML" ) );
+            links.add( new Link( collectionHref, COLLECTION.getRel(), APPLICATION_XML, "Collection as XML" ) );
+        }
 
         String itemsHref = createBaseUriBuilder( datasetId )
                                   .path( "collections" )
