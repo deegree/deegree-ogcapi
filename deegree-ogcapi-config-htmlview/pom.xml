@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>deegree-ogcapi-config-htmlview</artifactId>
   <name>deegree-ogcapi-config-htmlview</name>
-  <description>OGC API Features (OAF) implementation - Querying and modifying of geospatial data objects</description>
+  <description>OGC API Features (OAF) implementation - Configuration of the HTML View</description>
 
   <parent>
     <groupId>de.deegree-enterprise</groupId>

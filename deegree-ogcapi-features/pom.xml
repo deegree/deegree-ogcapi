@@ -227,6 +227,11 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>deegree-ogcapi-config</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>deegree-ogcapi-config-htmlview</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -252,11 +257,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>deegree-connectionprovider-datasource</artifactId>
-      <version>${deegree-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-services-config</artifactId>
       <version>${deegree-version}</version>
     </dependency>
     <!-- deegree dependencies -->

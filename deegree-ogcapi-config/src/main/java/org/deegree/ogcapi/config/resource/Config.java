@@ -1,4 +1,4 @@
-package org.deegree.services.oaf.resource;
+package org.deegree.ogcapi.config.resource;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.deegree.services.config.ApiKey;

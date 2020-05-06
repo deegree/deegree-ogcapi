@@ -47,6 +47,7 @@ public class OgcApiFeatures extends ResourceConfig {
         packages( "org.deegree.services.oaf.converter" );
         packages( "org.deegree.services.oaf.exceptions" );
         packages( "org.deegree.services.oaf.filter" );
+        packages( "org.deegree.ogcapi.config.resource" );
     }
 
     private void initOgcFrontCntroller( @Context ServletConfig servletConfig ) {
