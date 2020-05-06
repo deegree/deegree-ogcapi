@@ -4,7 +4,7 @@ import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.config.ResourceInitException;
 import org.deegree.services.oaf.OafResource;
 import org.deegree.services.oaf.OgcApiProvider;
-import org.deegree.services.oaf.workspace.configuration.HtmlViewConfiguration;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.deegree.workspace.Resource;

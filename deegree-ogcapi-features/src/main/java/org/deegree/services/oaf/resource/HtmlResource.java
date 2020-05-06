@@ -1,8 +1,8 @@
 package org.deegree.services.oaf.resource;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.HtmlViewConfiguration;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;

@@ -7,6 +7,8 @@ import org.deegree.feature.persistence.FeatureStoreProvider;
 import org.deegree.services.jaxb.oaf.DeegreeOAF;
 import org.deegree.services.metadata.OWSMetadataProvider;
 import org.deegree.services.metadata.OWSMetadataProviderManager;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfigManager;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceBuilder;
 import org.deegree.workspace.ResourceIdentifier;
@@ -54,6 +56,14 @@ public class OafMetadata extends AbstractResourceMetadata<Resource> {
             for ( ResourceMetadata<OWSMetadataProvider> md : mmgr.getResourceMetadata() ) {
                 ResourceIdentifier<OWSMetadataProvider> id = md.getIdentifier();
                 if ( id.getId().equals( getIdentifier().getId() + "_metadata" ) ) {
+                    softDependencies.add( id );
+                }
+            }
+
+            HtmlViewConfigManager hvmgr = workspace.getResourceManager( HtmlViewConfigManager.class );
+            for ( ResourceMetadata<HtmlViewConfigResource> hv : hvmgr.getResourceMetadata() ) {
+                ResourceIdentifier<HtmlViewConfigResource> id = hv.getIdentifier();
+                if ( id.getId().equals( getIdentifier().getId() + "_htmlview" ) ) {
                     softDependencies.add( id );
                 }
             }

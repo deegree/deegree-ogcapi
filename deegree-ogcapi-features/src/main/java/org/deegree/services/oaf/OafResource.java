@@ -20,16 +20,18 @@ import org.deegree.geometry.Envelope;
 import org.deegree.geometry.GeometryTransformer;
 import org.deegree.services.jaxb.oaf.DateTimePropertyType;
 import org.deegree.services.jaxb.oaf.DeegreeOAF;
-import org.deegree.services.jaxb.oaf.HtmlViewType;
 import org.deegree.services.metadata.OWSMetadataProvider;
 import org.deegree.services.metadata.provider.OWSMetadataProviderProvider;
+import org.deegree.services.oaf.config.htmlview.OgcApiConfigProvider;
 import org.deegree.services.oaf.domain.collections.Extent;
 import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfigProvider;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
-import org.deegree.services.oaf.workspace.configuration.HtmlViewConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.ServiceMetadata;
 import org.deegree.workspace.Resource;
@@ -40,7 +42,6 @@ import org.deegree.workspace.Workspace;
 import org.slf4j.Logger;
 
 import javax.xml.namespace.QName;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -92,8 +93,9 @@ public class OafResource implements Resource {
             ServiceMetadata metadata = new ServiceMetadata( owsMetadataProvider, config.getServiceMetadata() );
             List<String> supportedCrs = parseQueryCrs( config );
             Map<QName, FeatureStore> featureStores = parseFeatureStores( workspace, featureTypeMetadata );
-            this.oafConfiguration = new OafDatasetConfiguration( featureTypeMetadata, metadata, supportedCrs, featureStores );
-            this.htmlViewConfiguration = parseHtmlViewConfiguration();
+            this.oafConfiguration = new OafDatasetConfiguration( featureTypeMetadata, metadata, supportedCrs,
+                                                                 featureStores );
+            this.htmlViewConfiguration = getHtmlViewConfig( workspace );
         } catch ( InvalidConfigurationException e ) {
             throw new ResourceInitException( "OAF Configuration could not be parsed", e );
         }
@@ -124,6 +126,19 @@ public class OafResource implements Resource {
         if ( oafMetadata != null )
             return oafMetadata;
         return workspace.getResource( OWSMetadataProviderProvider.class, "metadata" );
+    }
+
+    private HtmlViewConfiguration getHtmlViewConfig( Workspace workspace ) {
+        HtmlViewConfigResource htmlViewConfigResource = workspace.getResource( OgcApiConfigProvider.class,
+                                                                               getMetadata().getIdentifier().getId()
+                                                                               + "_htmlview" );
+        if ( htmlViewConfigResource != null )
+            return htmlViewConfigResource.getHtmlViewConfiguration();
+        HtmlViewConfigResource globalHtmlViewConfigResource = workspace.getResource( OgcApiConfigProvider.class,
+                                                                                     "htmlview" );
+        if ( globalHtmlViewConfigResource != null )
+            return globalHtmlViewConfigResource.getHtmlViewConfiguration();
+        return null;
     }
 
     private Map<QName, FeatureStore> parseFeatureStores( Workspace workspace,
@@ -178,36 +193,6 @@ public class OafResource implements Resource {
             LOG.error( "Configuration could not be parsed: ", e );
             throw new InvalidConfigurationException( "Unknown CRS" );
         }
-    }
-
-    private HtmlViewConfiguration parseHtmlViewConfiguration() {
-        HtmlViewType htmlView = this.config.getHtmlView();
-        if ( htmlView == null )
-            return null;
-        File cssFile = null;
-        String configuredCssFile = htmlView.getCssFile();
-        if ( configuredCssFile != null ) {
-            cssFile = this.metadata.getLocation().resolveToFile( configuredCssFile );
-            if ( !cssFile.exists() || !cssFile.isFile() ) {
-                LOG.warn( "Configured cssFile does not exist or is not a valid file" );
-            }
-        }
-        String wmsUrl = null;
-        String wmsLayers = null;
-        String crsCode = null;
-        String crsProj4Definition = null;
-
-        HtmlViewType.Map map = htmlView.getMap();
-        if ( map != null ) {
-            wmsUrl = map.getWMSUrl();
-            wmsLayers = map.getWMSLayers();
-            if ( map.getCrsProj4Definition() != null ) {
-                crsCode = map.getCrsProj4Definition().getCode();
-                crsProj4Definition = map.getCrsProj4Definition().getValue();
-            }
-        }
-        return new HtmlViewConfiguration( cssFile, htmlView.getImpressumUrl(), wmsUrl, wmsLayers, crsCode,
-                                          crsProj4Definition );
     }
 
     private List<FeatureStore> retrieveFeatureStoreIds()

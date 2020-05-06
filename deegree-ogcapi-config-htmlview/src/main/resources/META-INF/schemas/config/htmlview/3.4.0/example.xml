@@ -1,0 +1,13 @@
+<HtmlView configVersion="3.4.0"
+          xmlns="http://www.deegree.org/services/oaf/htmlviewconfig"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.deegree.org/services/oaf/htmlviewconfig htmlviewconfig.xsd">
+
+  <Map>
+    <WMSUrl>htpp:/wmsurl.de</WMSUrl>
+    <WMSLayers>test</WMSLayers>
+    <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
+    </CrsProj4Definition>
+  </Map>
+
+</HtmlView>

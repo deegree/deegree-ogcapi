@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.deegree.org/services/oaf/htmlviewconfig"
+        elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+  <annotation>
+    <appinfo>
+      <jaxb:schemaBindings>
+        <jaxb:package name="org.deegree.services.jaxb.config.htmlview"/>
+      </jaxb:schemaBindings>
+    </appinfo>
+  </annotation>
+
+  <element name="HtmlView">
+    <complexType>
+      <sequence>
+        <element name="CssFile" minOccurs="0" type="string"/>
+        <element name="ImpressumUrl" minOccurs="0" type="anyURI"/>
+        <element name="Map" minOccurs="0">
+          <complexType>
+            <sequence>
+              <sequence minOccurs="0">
+                <element name="WMSUrl" minOccurs="1" type="string"/>
+                <element name="WMSLayers" minOccurs="1" type="string"/>
+              </sequence>
+              <element name="CrsProj4Definition" minOccurs="0">
+                <complexType>
+                  <simpleContent>
+                    <extension base="string">
+                      <attribute name="code" type="string" use="required"/>
+                    </extension>
+                  </simpleContent>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+      <attribute name="configVersion" use="required">
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="3.4.0"/>
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+
+</schema>

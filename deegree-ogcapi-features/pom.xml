@@ -225,6 +225,11 @@
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>deegree-ogcapi-config-htmlview</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- deegree dependencies to test with SQLFeatureStore and PostreSQL DB-->
     <dependency>
       <groupId>${project.groupId}</groupId>

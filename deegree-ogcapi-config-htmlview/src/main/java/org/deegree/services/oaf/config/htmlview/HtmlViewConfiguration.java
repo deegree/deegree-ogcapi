@@ -1,4 +1,4 @@
-package org.deegree.services.oaf.workspace.configuration;
+package org.deegree.services.oaf.config.htmlview;
 
 import java.io.File;
 
