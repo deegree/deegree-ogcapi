@@ -235,11 +235,10 @@
       <artifactId>deegree-ogcapi-config-htmlview</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- deegree dependencies to test with SQLFeatureStore and PostreSQL DB-->
+    <!-- deegree-core -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>deegree-featurestore-sql</artifactId>
-      <version>${deegree-version}</version>
       <!--
       <exclusions>
         <exclusion>
@@ -250,41 +249,48 @@
       -->
     </dependency>
     <dependency>
+      <groupId>de.deegree-enterprise</groupId>
+      <artifactId>deegree-services-commons</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>jersey-core</artifactId>
+          <groupId>com.sun.jersey</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jersey-server</artifactId>
+          <groupId>com.sun.jersey</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>deegree-sqldialect-postgis</artifactId>
-      <version>${deegree-version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>deegree-connectionprovider-datasource</artifactId>
-      <version>${deegree-version}</version>
     </dependency>
-    <!-- deegree dependencies -->
+    <!-- servlet -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-core</artifactId>
-      <version>${swagger-version}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-jaxrs2</artifactId>
-      <version>${swagger-version}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-jaxrs2-servlet-initializer</artifactId>
-      <version>${swagger-version}</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
-      <version>${jersey-version}</version>
       <exclusions>
         <exclusion>
           <groupId>jakarta.validation</groupId>
@@ -295,18 +301,16 @@
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
       <artifactId>jersey-container-servlet</artifactId>
-      <version>${jersey-version}</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.media</groupId>
       <artifactId>jersey-media-multipart</artifactId>
-      <version>${jersey-version}</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.inject</groupId>
       <artifactId>jersey-hk2</artifactId>
-      <version>${jersey-version}</version>
     </dependency>
+    <!-- logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -322,8 +326,8 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>1.7.28</version>
     </dependency>
+    <!-- test -->
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
@@ -333,13 +337,11 @@
     <dependency>
       <groupId>org.glassfish.jersey.test-framework</groupId>
       <artifactId>jersey-test-framework-core</artifactId>
-      <version>${jersey-version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.test-framework.providers</groupId>
       <artifactId>jersey-test-framework-provider-inmemory</artifactId>
-      <version>${jersey-version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -350,7 +352,6 @@
     <dependency>
       <groupId>org.glassfish.jersey.media</groupId>
       <artifactId>jersey-media-json-jackson</artifactId>
-      <version>${jersey-version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -361,7 +362,6 @@
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
-      <version>1.5.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -382,36 +382,13 @@
     <dependency>
       <groupId>org.xmlmatchers</groupId>
       <artifactId>xml-matchers</artifactId>
-      <version>1.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>io.swagger.parser.v3</groupId>
       <artifactId>swagger-parser</artifactId>
-      <version>2.0.18</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>de.deegree-enterprise</groupId>
-      <artifactId>deegree-services-commons</artifactId>
-      <version>${deegree-version}</version>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>jersey-core</artifactId>
-          <groupId>com.sun.jersey</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jersey-server</artifactId>
-          <groupId>com.sun.jersey</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
-  <properties>
-    <deegree-version>1.5-SNAPSHOT</deegree-version>
-    <jersey-version>2.29.1</jersey-version>
-    <swagger-version>2.1.0</swagger-version>
-    <swagger-ui-version>3.23.8</swagger-ui-version>
-  </properties>
+
 </project>
 

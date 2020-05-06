@@ -11,10 +11,6 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <properties>
-    <deegree-version>1.5-SNAPSHOT</deegree-version>
-  </properties>
-
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
@@ -29,12 +25,10 @@
     <dependency>
       <groupId>de.deegree-enterprise</groupId>
       <artifactId>deegree-core-base</artifactId>
-      <version>${deegree-version}</version>
     </dependency>
     <dependency>
       <groupId>de.deegree-enterprise</groupId>
       <artifactId>deegree-core-workspace</artifactId>
-      <version>${deegree-version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
