@@ -13,6 +13,7 @@ import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.feature.FeatureResponse;
+import org.deegree.services.oaf.feature.FeatureResponseCreator;
 import org.deegree.services.oaf.feature.FeaturesRequest;
 import org.deegree.services.oaf.feature.FeaturesRequestBuilder;
 import org.deegree.services.oaf.link.LinkBuilder;
@@ -24,12 +25,15 @@ import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.HashMap;
@@ -39,11 +43,13 @@ import java.util.Map;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
 import static org.deegree.services.oaf.RequestFormat.HTML;
 import static org.deegree.services.oaf.RequestFormat.JSON;
 import static org.deegree.services.oaf.RequestFormat.XML;
 import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
-import static org.deegree.services.oaf.feature.FeatureResponseUtil.createGmlResponseWithHeaders;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -52,6 +58,8 @@ import static org.deegree.services.oaf.feature.FeatureResponseUtil.createGmlResp
 public class Features {
 
     private final DataAccess dataAccess = DataAccessFactory.getInstance();
+
+    private final FeatureResponseCreator featureResponseCreator = new FeatureResponseCreator();
 
     @GET
     @Produces({ APPLICATION_GEOJSON })
@@ -90,12 +98,13 @@ public class Features {
     }
 
     @GET
-    @Produces({ APPLICATION_GML })
+    @Produces({ APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2 })
     @Operation(summary = "retrieves features of collection {collectionId}", description = "Retrieves the features of the collection with the id {collectionId}")
     @Tag(name = "Data")
     public Response featuresGml(
                     @Context
                                     UriInfo uriInfo,
+                    @HeaderParam("Accept") String acceptHeader,
                     @PathParam("datasetId")
                                     String datasetId,
                     @PathParam("collectionId")
@@ -122,7 +131,7 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format, XML );
+        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format, XML, acceptHeader );
     }
 
     @GET
@@ -195,8 +204,16 @@ public class Features {
     }
 
     private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-                               List<Double> bbox, String bboxCrs, String datetime, String crs, String formatParamValue,
+                               List<Double> bbox, String bboxCrs, String datetime, String crs, String format,
                                RequestFormat defaultFormat )
+                    throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
+        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format,
+                         defaultFormat, null );
+    }
+
+    private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
+                               List<Double> bbox, String bboxCrs, String datetime, String crs, String formatParamValue,
+                               RequestFormat defaultFormat, String acceptHeader )
                     throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
         if ( HTML.equals( requestFormat ) ) {
@@ -217,8 +234,8 @@ public class Features {
         FeatureResponse featureResponse = dataAccess.retrieveFeatures( datasetId, collectionId, featuresRequest,
                                                                        linkBuilder );
         if ( XML.equals( requestFormat ) ) {
-            return createGmlResponseWithHeaders( featureResponse );
-
+            return featureResponseCreator.createGmlResponseWithHeaders( featureResponse,
+                                                                        acceptHeader );
         }
         return Response.ok( featureResponse, APPLICATION_GEOJSON ).build();
     }

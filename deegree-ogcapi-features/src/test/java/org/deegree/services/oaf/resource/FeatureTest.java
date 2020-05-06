@@ -14,6 +14,7 @@ import org.deegree.services.oaf.workspace.configuration.ServiceMetadata;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -31,6 +32,13 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RET
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_TIMESTAMP;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32_TYPE;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0_TYPE;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2_TYPE;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_TYPE;
 import static org.deegree.services.oaf.TestData.createCollection;
 import static org.deegree.services.oaf.TestData.createCollections;
 import static org.deegree.services.oaf.TestData.feature;
@@ -56,21 +64,27 @@ public class FeatureTest extends JerseyTest {
         return new ResourceConfig( Feature.class, FeatureResponseGmlWriter.class );
     }
 
-    @Test
-    public void test_FeatureDeclarationJsonShouldBeAvailable()
+    @Before
+    public void mock()
                     throws Exception {
-        mock();
+        mockDataAccess();
+        mockWorkspace();
+    }
+
+    @Test
+    public void test_FeatureDeclaration_Json_ShouldBeAvailable()
+                    throws Exception {
         int statusCode = target( "/datasets/oaf/collections/test/items/42" ).request(
                         APPLICATION_GEOJSON ).get().getStatus();
         assertThat( statusCode, is( 200 ) );
     }
 
     @Test
-    public void test_FeatureDeclarationGmlShouldBeAvailable()
+    public void test_FeatureDeclaration_Gml_ShouldBeAvailable()
                     throws Exception {
-        mock();
         Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML ).get();
         assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getMediaType(), is( APPLICATION_GML_TYPE ) );
         MultivaluedMap<String, Object> headers = response.getHeaders();
         assertThat( headers.get( HEADER_TIMESTAMP ).get( 0 ), is( notNullValue() ) );
         assertThat( headers.get( HEADER_NUMBER_RETURNED ).get( 0 ), is( "1" ) );
@@ -78,10 +92,30 @@ public class FeatureTest extends JerseyTest {
         assertThat( headers.get( HEADER_Link ).size(), is( 1 ) );
     }
 
-    private void mock()
+    @Test
+    public void test_FeatureDeclaration_Gml32_ShouldBeAvailable()
                     throws Exception {
-        mockDataAccess();
-        mockWorkspace();
+        Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML_32 ).get();
+        assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getMediaType(), is( APPLICATION_GML_32_TYPE ) );
+    }
+
+    @Test
+    public void test_FeatureDeclaration_Gml32ProfileSF0_ShouldBeAvailable()
+                    throws Exception {
+        mock();
+        Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML_SF0 ).get();
+        assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getMediaType(), is( APPLICATION_GML_SF0_TYPE ) );
+    }
+
+    @Test
+    public void test_FeatureDeclaration_Gml32ProfileSF2_ShouldBeAvailable()
+                    throws Exception {
+        Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML_SF2 ).get();
+        assertThat( response.getStatus(), is( 200 ) );
+        MultivaluedMap<String, Object> headers = response.getHeaders();
+        assertThat( response.getMediaType(), is( APPLICATION_GML_SF2_TYPE ) );
     }
 
     private void mockWorkspace() {

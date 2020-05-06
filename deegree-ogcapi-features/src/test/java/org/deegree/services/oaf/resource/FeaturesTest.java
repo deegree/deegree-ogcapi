@@ -1,13 +1,9 @@
 package org.deegree.services.oaf.resource;
 
-import org.deegree.feature.stream.EmptyFeatureInputStream;
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
-import org.deegree.services.oaf.domain.collections.Extent;
-import org.deegree.services.oaf.feature.FeatureResponse;
 import org.deegree.services.oaf.feature.FeatureResponseGmlWriter;
 import org.deegree.services.oaf.feature.FeaturesRequest;
-import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DataAccessFactory;
@@ -18,6 +14,7 @@ import org.deegree.services.oaf.workspace.configuration.ServiceMetadata;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -28,7 +25,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_Link;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_MATCHED;
@@ -36,6 +32,17 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RET
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_TIMESTAMP;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32_TYPE;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0_TYPE;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2_TYPE;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_TYPE;
+import static org.deegree.services.oaf.TestData.createCollection;
+import static org.deegree.services.oaf.TestData.createCollections;
+import static org.deegree.services.oaf.TestData.feature;
+import static org.deegree.services.oaf.TestData.features;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -57,21 +64,27 @@ public class FeaturesTest extends JerseyTest {
         return new ResourceConfig( Features.class, FeatureResponseGmlWriter.class );
     }
 
-    @Test
-    public void test_FeaturesDeclarationJsonShouldBeAvailable()
+    @Before
+    public void mock()
                     throws Exception {
-        mock();
+        mockDataAccess();
+        mockWorkspace();
+    }
+
+    @Test
+    public void test_FeaturesDeclaration_Json_ShouldBeAvailable()
+                    throws Exception {
         int statusCode = target( "/datasets/oaf/collections/test/items" ).request(
                         APPLICATION_GEOJSON ).get().getStatus();
         assertThat( statusCode, is( 200 ) );
     }
 
     @Test
-    public void test_FeaturesDeclarationGmlShouldBeAvailable()
+    public void test_FeaturesDeclaration_Gml_ShouldBeAvailable()
                     throws Exception {
-        mock();
         Response response = target( "/datasets/oaf/collections/test/items" ).request( APPLICATION_GML ).get();
         assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getMediaType(), is( APPLICATION_GML_TYPE ) );
         MultivaluedMap<String, Object> headers = response.getHeaders();
         assertThat( headers.get( HEADER_TIMESTAMP ).get( 0 ), is( notNullValue() ) );
         assertThat( headers.get( HEADER_NUMBER_RETURNED ).get( 0 ), is( "10" ) );
@@ -79,10 +92,29 @@ public class FeaturesTest extends JerseyTest {
         assertThat( headers.get( HEADER_Link ).size(), is( 1 ) );
     }
 
-    private void mock()
+    @Test
+    public void test_FeaturesDeclaration_Gml32_ShouldBeAvailable()
                     throws Exception {
-        mockDataAccess();
-        mockWorkspace();
+        Response response = target( "/datasets/oaf/collections/test/items" ).request( APPLICATION_GML_32 ).get();
+        assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getMediaType(), is( APPLICATION_GML_32_TYPE ) );
+    }
+
+    @Test
+    public void test_FeaturesDeclaration_Gml32ProfileSF0_ShouldBeAvailable()
+                    throws Exception {
+        Response response = target( "/datasets/oaf/collections/test/items" ).request( APPLICATION_GML_SF0 ).get();
+        assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getMediaType(), is( APPLICATION_GML_SF0_TYPE ) );
+    }
+
+    @Test
+    public void test_FeaturesDeclaration_Gml32ProfileSF2_ShouldBeAvailable()
+                    throws Exception {
+        Response response = target( "/datasets/oaf/collections/test/items" ).request( APPLICATION_GML_SF2 ).get();
+        assertThat( response.getStatus(), is( 200 ) );
+        MultivaluedMap<String, Object> headers = response.getHeaders();
+        assertThat( response.getMediaType(), is( APPLICATION_GML_SF2_TYPE ) );
     }
 
     private void mockWorkspace() {
@@ -109,35 +141,6 @@ public class FeaturesTest extends JerseyTest {
         when( testFactory.retrieveFeature( eq( "oaf" ), eq( "test" ), eq( "42" ), isNull(),
                                            any( LinkBuilder.class ) ) ).thenReturn( feature() );
         when( DataAccessFactory.getInstance() ).thenReturn( testFactory );
-    }
-
-    private FeatureResponse features() {
-        List<Link> links = jsonLink( "http://self", "self", "title" );
-        EmptyFeatureInputStream features = new EmptyFeatureInputStream();
-        return new FeatureResponse( features, 10, 100, 0, links, false, null );
-    }
-
-    private FeatureResponse feature() {
-        List<Link> links = jsonLink( "http://self", "self", "title" );
-        EmptyFeatureInputStream features = new EmptyFeatureInputStream();
-        return new FeatureResponse( features, 1, 1, 0, links, false, null );
-    }
-
-    private Collections createCollections( Collection collection ) {
-        List<Link> links = jsonLink( "http://self", "self", "title" );
-        List<Collection> collectionList = java.util.Collections.singletonList( collection );
-        return new Collections( links, collectionList );
-    }
-
-    private Collection createCollection() {
-        Extent extent = null;
-        List<String> crs = java.util.Collections.singletonList( "EPSG:25832" );
-        return new Collection( "test", null, null,
-                               jsonLink( "http://self/collections/test/", "items", "collection test" ), extent, crs );
-    }
-
-    private List<Link> jsonLink( String href, String self, String title ) {
-        return java.util.Collections.singletonList( new Link( href, self, "application/json", title ) );
     }
 
 }
