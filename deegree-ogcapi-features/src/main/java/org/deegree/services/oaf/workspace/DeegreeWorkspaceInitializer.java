@@ -33,7 +33,7 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
 
     private static final Logger LOG = getLogger( DeegreeWorkspaceInitializer.class );
 
-    public static final String DEEGREE_WORKSPACE_NAME = "oaf-workspace";
+    public static final String DEEGREE_WORKSPACE_NAME = "ogcapi-workspace";
 
     private static OafDatasets oafConfiguration = new OafDatasets();
 
