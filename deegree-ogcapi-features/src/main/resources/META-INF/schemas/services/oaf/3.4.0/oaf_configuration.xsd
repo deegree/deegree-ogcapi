@@ -23,7 +23,6 @@
           </complexType>
         </element>
         <element name="ServiceMetadata" type="oaf:ServiceMetadataType" minOccurs="0"/>
-        <element name="HtmlView" type="oaf:HtmlViewType" minOccurs="0"/>
       </sequence>
       <attribute name="configVersion" use="required">
         <simpleType>
@@ -51,32 +50,6 @@
               <attribute name="format" type="string" />
             </extension>
           </simpleContent>
-        </complexType>
-      </element>
-    </sequence>
-  </complexType>
-
-  <complexType name="HtmlViewType">
-    <sequence>
-      <element name="CssFile" minOccurs="0" type="string"/>
-      <element name="ImpressumUrl" minOccurs="0" type="anyURI"/>
-      <element name="Map" minOccurs="0">
-        <complexType>
-          <sequence>
-            <sequence minOccurs="0">
-              <element name="WMSUrl" minOccurs="1" type="string"/>
-              <element name="WMSLayers" minOccurs="1" type="string"/>
-            </sequence>
-            <element name="CrsProj4Definition" minOccurs="0">
-              <complexType>
-                <simpleContent>
-                  <extension base="string">
-                    <attribute name="code" type="string" use="required"/>
-                  </extension>
-                </simpleContent>
-              </complexType>
-            </element>
-          </sequence>
         </complexType>
       </element>
     </sequence>

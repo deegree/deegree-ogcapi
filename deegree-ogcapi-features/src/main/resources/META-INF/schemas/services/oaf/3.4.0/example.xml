@@ -22,12 +22,4 @@
     <MetadataURL format="text/html">http://localhost:8080/linkZuHTml/89362</MetadataURL>
   </ServiceMetadata>
 
-  <HtmlView>
-    <Map>
-      <WMSUrl>htpp:/wmsurl.de</WMSUrl>
-      <WMSLayers>test</WMSLayers>
-      <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</CrsProj4Definition>
-    </Map>
-  </HtmlView>
-
 </deegreeOAF>
