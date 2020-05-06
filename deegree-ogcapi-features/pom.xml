@@ -2,7 +2,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>deegree-ogcapi-features</artifactId>
-  <packaging>war</packaging>
   <name>deegree-services-oaf</name>
   <description>OGC API Features (OAF) implementation - Querying and modifying of geospatial data objects</description>
   <parent>
@@ -10,33 +9,9 @@
     <artifactId>deegree-ogcapi</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.3</version>
-        <!-- Add Swagger UI resources to the war file. -->
-        <configuration>
-          <webResources combine.children="append">
-            <resource>
-              <directory>${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui-version}</directory>
-              <includes>
-                <include>**/*.*</include>
-              </includes>
-              <targetPath>swagger-ui</targetPath>
-            </resource>
-            <resource>
-              <directory>${project.build.directory}/webjars/META-INF/resources/webjars</directory>
-              <includes>
-                <include>**/*.*</include>
-              </includes>
-              <targetPath>webjars</targetPath>
-            </resource>
-          </webResources>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -54,176 +29,9 @@
         <groupId>org.jvnet.jaxb2.maven2</groupId>
         <artifactId>maven-jaxb2-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.21.v20190926</version>
-        <configuration>
-          <webApp>
-            <contextPath>/</contextPath>
-          </webApp>
-          <webAppSourceDirectory>target/${project.artifactId}-${project.version}</webAppSourceDirectory>
-          <stopPort>8079</stopPort>
-          <stopKey>stopit</stopKey>
-          <httpConnector>
-            <port>8002</port>
-            <idleTimeout>60000</idleTimeout>
-          </httpConnector>
-          <systemProperties>
-            <systemProperty>
-              <name>org.eclipse.jetty.util.log.class</name>
-              <value>org.eclipse.jetty.util.log.Slf4jLog</value>
-            </systemProperty>
-            <systemProperty>
-              <name>log4j.configurationFile</name>
-              <value>${project.basedir}/src/test/resources/log4j.properties</value>
-            </systemProperty>
-          </systemProperties>
-        </configuration>
-        <executions>
-          <execution>
-            <id>start-jetty</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-              <goal>start</goal>
-            </goals>
-            <configuration>
-              <scanIntervalSeconds>0</scanIntervalSeconds>
-            </configuration>
-          </execution>
-          <execution>
-            <id>stop-jetty</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-          </dependency>
-          <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.28</version>
-          </dependency>
-          <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.28</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <!-- Download Swagger UI webjar. -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <id>swagger-ui</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>swagger-ui</artifactId>
-                  <version>${swagger-ui-version}</version>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${project.build.directory}/swagger-ui</outputDirectory>
-              <excludes>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>webjars</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>jquery</artifactId>
-                  <version>3.4.1</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>popper.js</artifactId>
-                  <version>1.16.0</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>bootstrap</artifactId>
-                  <version>4.4.1</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.webjars</groupId>
-                  <artifactId>vue</artifactId>
-                  <version>2.6.11</version>
-                </artifactItem>
-              </artifactItems>
-              <includes>META-INF/resources/**</includes>
-              <outputDirectory>${project.build.directory}/webjars</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <!-- Replace the OpenAPI specification example URL with the local one. -->
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
-        <executions>
-          <execution>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <file>${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui-version}/index.html</file>
-          <replacements>
-            <replacement>
-              <token>url:</token>
-              <value>requestInterceptor: function (req) {if (req.href == window.location.href) { req.headers = {'Accept': 'application/vnd.oai.openapi+json;version=3.0'};}; return req;}, url:</value>
-            </replacement>
-            <replacement>
-              <token>"https://petstore.swagger.io/v2/swagger.json"</token>
-              <value>window.location.href</value>
-            </replacement>
-            <replacement>
-              <token>href="./</token>
-              <value>href="./api/</value>
-            </replacement>
-            <replacement>
-              <token>src="./</token>
-              <value>src="./api/</value>
-            </replacement>
-          </replacements>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -237,18 +45,6 @@
     </dependency>
     <!-- deegree-core -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-featurestore-sql</artifactId>
-      <!--
-      <exclusions>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
-      -->
-    </dependency>
-    <dependency>
       <groupId>de.deegree-enterprise</groupId>
       <artifactId>deegree-services-commons</artifactId>
       <exclusions>
@@ -261,10 +57,6 @@
           <groupId>com.sun.jersey</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-sqldialect-postgis</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
