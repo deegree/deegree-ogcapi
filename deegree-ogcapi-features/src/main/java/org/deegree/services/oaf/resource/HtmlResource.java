@@ -44,7 +44,11 @@ public class HtmlResource {
     @Operation(hidden = true)
     @Path("/css/main.css")
     @GET
-    public InputStream getDefaultCssFile() {
+    public InputStream getDefaultCssFile()
+                    throws FileNotFoundException {
+        HtmlViewConfiguration globalHtmlViewConfiguration = DeegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
+        if ( globalHtmlViewConfiguration != null && globalHtmlViewConfiguration.getCssFile() != null )
+            return new FileInputStream( globalHtmlViewConfiguration.getCssFile() );
         return getClass().getResourceAsStream( "/css/main.css" );
     }
 
@@ -79,7 +83,7 @@ public class HtmlResource {
     @Path("/datasets/{datasetId}/config/impressum")
     @GET
     @Produces(APPLICATION_JSON)
-    public Response getImpresumUrl( @PathParam("datasetId") String datasetId ) {
+    public Response getImpressumUrl( @PathParam("datasetId") String datasetId ) {
         HtmlViewConfiguration htmlViewConfiguration = DeegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
         if ( htmlViewConfiguration == null || htmlViewConfiguration.getImpressumUrl() == null )
             return Response.status( Response.Status.NOT_FOUND ).build();
@@ -87,6 +91,17 @@ public class HtmlResource {
                             APPLICATION_JSON ).build();
     }
 
+    @Operation(hidden = true)
+    @Path("/impressum")
+    @GET
+    @Produces(APPLICATION_JSON)
+    public Response getDefaultImpressumUrl() {
+        HtmlViewConfiguration globalHtmlViewConfiguration = DeegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
+        if ( globalHtmlViewConfiguration == null || globalHtmlViewConfiguration.getImpressumUrl() == null )
+            return Response.status( Response.Status.NOT_FOUND ).build();
+        return Response.ok( new ImpressumConfiguration( globalHtmlViewConfiguration.getImpressumUrl() ),
+                            APPLICATION_JSON ).build();
+    }
 
     public class MapConfiguration {
 

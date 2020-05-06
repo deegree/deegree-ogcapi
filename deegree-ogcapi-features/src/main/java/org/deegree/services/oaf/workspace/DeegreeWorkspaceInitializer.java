@@ -4,7 +4,9 @@ import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.config.ResourceInitException;
 import org.deegree.services.oaf.OafResource;
 import org.deegree.services.oaf.OgcApiProvider;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
+import org.deegree.services.oaf.config.htmlview.OgcApiConfigProvider;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.deegree.workspace.Resource;
@@ -37,6 +39,8 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
 
     private static Map<String, HtmlViewConfiguration> htmlViewConfigurations = new HashMap<>();
 
+    private static HtmlViewConfiguration globalHtmlViewConfiguration;
+
     @Override
     public void contextInitialized( ServletContextEvent event ) {
         DeegreeWorkspace workspace = DeegreeWorkspace.getInstance( DEEGREE_WORKSPACE_NAME );
@@ -56,6 +60,11 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
                     this.htmlViewConfigurations.put( id, htmlViewConfiguration );
             } );
 
+            HtmlViewConfigResource globalHtmlViewConfigResource = workspace.getNewWorkspace().getResource(
+                            OgcApiConfigProvider.class,
+                            "htmlview" );
+            if ( globalHtmlViewConfigResource != null )
+                this.globalHtmlViewConfiguration = globalHtmlViewConfigResource.getHtmlViewConfiguration();
         } catch ( ResourceInitException e ) {
             LOG.error( "Workspace could not be initialised", e );
             throw new WorkspaceInitException( e );
@@ -79,6 +88,13 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
         if ( htmlViewConfigurations.containsKey( datasetId ) )
             return htmlViewConfigurations.get( datasetId );
         return null;
+    }
+
+    /**
+     * @return the global {@link HtmlViewConfiguration}, <code>null</code> if not available
+     */
+    public static HtmlViewConfiguration getGlobalHtmlViewConfiguration() {
+        return globalHtmlViewConfiguration;
     }
 
 }

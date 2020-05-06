@@ -132,9 +132,8 @@ function parseLinks(data, rel, type){
 
 function createImpressumUrl(){
   var baseUrl = window.location.href;
-  var indexIncludeDataset = (baseUrl.lastIndexOf("dataset") + 9)
-  var indexOfDatasetId = baseUrl.substring(indexIncludeDataset, baseUrl.length ).indexOf( "/" ) + indexIncludeDataset;
-  var configUrl = baseUrl.substring ( 0, indexOfDatasetId ) + "/config/impressum";
+  var indexOfDataset = (baseUrl.lastIndexOf("dataset"))
+  var configUrl = baseUrl.substring ( 0, indexOfDataset ) + "impressum";
   return configUrl;
 }
 
