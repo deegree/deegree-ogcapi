@@ -1,7 +1,8 @@
 package org.deegree.services.oaf.link;
 
 import org.deegree.commons.ows.metadata.MetadataUrl;
-import org.deegree.services.oaf.workspace.configuration.ServiceMetadata;
+import org.deegree.services.oaf.domain.License;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -66,11 +67,11 @@ public class LinkBuilder {
     /**
      *
      * @param datasetId
-     * @param metadataUrls
-     *                 list of metadata URLs describing this service, never <code>null</code>
+     * @param metadata
+     *                 describing this service, never <code>null</code>
      * @return list of links, never <code>null</code>
      */
-    public List<Link> createLandingPageLinks( String datasetId, List<MetadataUrl> metadataUrls ) {
+    public List<Link> createLandingPageLinks( String datasetId, DatasetMetadata metadata ) {
         List<Link> links = new ArrayList<>();
         String selfUri = uriInfo.getRequestUri().toString();
         links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document as JSON" ) );
@@ -101,24 +102,19 @@ public class LinkBuilder {
         links.add( new Link( collectionsHref, DATA.getRel(), TEXT_HTML, "Supported Feature Collections as HTML" ) );
         links.add( new Link( collectionsHref, DATA.getRel(), APPLICATION_XML,
                              "Supported Feature Collections as XML" ) );
-        metadataUrls.forEach( metadataUrl -> {
-            links.add( createMetadataLink( metadataUrl, "Metadata describing this dataset" ) );
-        } );
+        addMetadataLinks( metadata, links );
+        addLicenseLink( datasetId, metadata, links );
         return links;
     }
 
-    public List<Link> createCollectionsLinks( String datasetId, ServiceMetadata serviceMetadata ) {
+    public List<Link> createCollectionsLinks( String datasetId, DatasetMetadata metadata ) {
         ArrayList<Link> links = new ArrayList<>();
         String selfUri = uriInfo.getRequestUri().toString();
         links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document as JSON" ) );
         links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
         links.add( new Link( selfUri, ALTERNATE.getRel(), APPLICATION_XML, "this document as XML" ) );
-        if ( serviceMetadata != null && serviceMetadata.hasLicense() ) {
-            String licenseHref = createBaseUriBuilder( datasetId )
-                                           .path( "license" )
-                                           .toString();
-            links.add( new Link( licenseHref, LICENSE.getRel(), TEXT_PLAIN, "the license of the feature collections" ) );
-        }
+        addMetadataLinks( metadata, links );
+        addLicenseLink( datasetId, metadata, links );
         return links;
     }
 
@@ -191,6 +187,28 @@ public class LinkBuilder {
         return links;
     }
 
+    private void addMetadataLinks( DatasetMetadata metadata, List<Link> links ) {
+        metadata.getMetadataUrls().forEach( metadataUrl -> {
+            links.add( createMetadataLink( metadataUrl, "Metadata describing this dataset" ) );
+        } );
+    }
+
+
+    private void addLicenseLink( String datasetId, DatasetMetadata metadata, List<Link> links ) {
+        if ( metadata != null && metadata.getDatasetLicense() != null ) {
+            License datasetLicense = metadata.getDatasetLicense();
+            if ( datasetLicense.getUrl() != null ) {
+                links.add( new Link( datasetLicense.getUrl(), LICENSE.getRel(), datasetLicense.getUrlFormat(),
+                                     datasetLicense.getName() ) );
+            } else {
+                String licenseHref = createBaseUriBuilder( datasetId )
+                                .path( "license" )
+                                .path( "dataset" )
+                                .toString();
+                links.add( new Link( licenseHref, LICENSE.getRel(), TEXT_PLAIN, datasetLicense.getName() ) );
+            }
+        }
+    }
 
     private UriBuilder createBaseUriBuilder( String datasetId ) {
         return uriInfo.getBaseUriBuilder()

@@ -1,6 +1,5 @@
 package org.deegree.services.oaf;
 
-import org.deegree.commons.ows.metadata.DatasetMetadata;
 import org.deegree.commons.ows.metadata.MetadataUrl;
 import org.deegree.commons.tom.gml.property.PropertyType;
 import org.deegree.commons.tom.ows.LanguageString;
@@ -27,13 +26,12 @@ import org.deegree.services.oaf.domain.collections.Extent;
 import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
-import org.deegree.services.oaf.config.htmlview.HtmlViewConfigProvider;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-import org.deegree.services.oaf.workspace.configuration.ServiceMetadata;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.ResourceInitException;
@@ -90,7 +88,7 @@ public class OafResource implements Resource {
         OWSMetadataProvider owsMetadataProvider = getMetadata( workspace );
         try {
             Map<String, FeatureTypeMetadata> featureTypeMetadata = parseFeatureTypeMetadata( owsMetadataProvider );
-            ServiceMetadata metadata = new ServiceMetadata( owsMetadataProvider, config.getServiceMetadata() );
+            DatasetMetadata metadata = new DatasetMetadata( owsMetadataProvider, config.getMetadata() );
             List<String> supportedCrs = parseQueryCrs( config );
             Map<QName, FeatureStore> featureStores = parseFeatureStores( workspace, featureTypeMetadata );
             this.oafConfiguration = new OafDatasetConfiguration( featureTypeMetadata, metadata, supportedCrs,
@@ -222,7 +220,7 @@ public class OafResource implements Resource {
             if ( !name.getNamespaceURI().equals( GMLNS ) && !name.getNamespaceURI().equals( GML3_2_NS ) ) {
                 try {
                     QName dateTimeProperty = getDateTimeProperty( name );
-                    DatasetMetadata datasetMetadata = metadata.getDatasetMetadata( name );
+                    org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata = metadata.getDatasetMetadata( name );
                     FeatureTypeMetadata ftMetadata = createFeatureTypeMetadata( featureStore, name, dateTimeProperty,
                                                                                 datasetMetadata );
                     featureTypeNames.put( name.getLocalPart(), ftMetadata );
@@ -234,7 +232,7 @@ public class OafResource implements Resource {
     }
 
     private FeatureTypeMetadata createFeatureTypeMetadata( FeatureStore featureStore, QName name,
-                                                           QName dateTimeProperty, DatasetMetadata datasetMetadata )
+                                                           QName dateTimeProperty, org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata )
                     throws FeatureStoreException {
         List<FilterProperty> filterProperties = parseFilterProperties( featureStore, name );
         Extent extent = createExtent( featureStore, name, dateTimeProperty );

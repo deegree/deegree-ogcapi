@@ -13,11 +13,12 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-import org.deegree.services.oaf.workspace.configuration.ServiceMetadata;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.slf4j.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
@@ -40,6 +41,9 @@ public class OpenApiCreator {
     private static final String VERSION = "1.0";
 
     private final ServletConfig servletConfig;
+
+    @Context
+    private UriInfo uriInfo;
 
     public OpenApiCreator( ServletConfig servletConfig ) {
         this.servletConfig = servletConfig;
@@ -114,7 +118,7 @@ public class OpenApiCreator {
     private OpenAPI createOpenApiDocument( String datasetId )
                     throws UnknownDatasetId {
         OafDatasetConfiguration oafConfiguration = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
-        ServiceMetadata metadata = oafConfiguration.getServiceMetadata();
+        DatasetMetadata metadata = oafConfiguration.getServiceMetadata();
         Info info = createInfo( metadata );
         OpenAPI oas = new OpenAPI();
         addserver( oas );
@@ -131,18 +135,40 @@ public class OpenApiCreator {
         }
     }
 
-    private Info createInfo( ServiceMetadata metadata ) {
+    private Info createInfo( DatasetMetadata metadata ) {
         String title = metadata.getTitle();
         String description = metadata.getDescription();
         Contact contact = createContact( metadata );
-        return new Info().title( title ).description( description ).version( VERSION ).contact( contact );
+        License license = createLicense( metadata );
+        return new Info().title( title ).description( description ).version( VERSION ).contact( contact ).license(
+                        license );
     }
 
-    private Contact createContact( ServiceMetadata metadata ) {
-        String contactName = metadata.getProviderName();
-        String contactUrl = metadata.getProviderUrl();
-        String email = metadata.getProviderEmail();
-        return new Contact().name( contactName ).url( contactUrl ).email( email );
+    private Contact createContact( DatasetMetadata metadata ) {
+        org.deegree.services.oaf.domain.landingpage.Contact providerContact = metadata.getProviderContact();
+        if ( providerContact != null ) {
+            String contactName = providerContact.getName();
+            String contactUrl = providerContact.getUrl();
+            String email = providerContact.getEmail();
+            return new Contact().name( contactName ).url( contactUrl ).email( email );
+        }
+        return null;
+    }
+
+    private License createLicense( DatasetMetadata metadata ) {
+        org.deegree.services.oaf.domain.License providerLicense = metadata.getProviderLicense();
+        if ( providerLicense != null ) {
+            String url = providerLicense.getUrl();
+            if ( url == null )
+                url = uriInfo.getBaseUriBuilder()
+                             .path( "datasets" )
+                             .path( uriInfo.getPathParameters().get( "datasetId" ).get( 0 ) )
+                             .path( "license" )
+                             .path( "provider" )
+                             .toString();
+            return new License().name( providerLicense.getName() ).url( url );
+        }
+        return null;
     }
 
 }

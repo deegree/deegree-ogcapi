@@ -7,23 +7,21 @@ import org.deegree.commons.ows.metadata.party.Address;
 import org.deegree.commons.ows.metadata.party.ContactInfo;
 import org.deegree.commons.ows.metadata.party.ResponsibleParty;
 import org.deegree.commons.tom.ows.LanguageString;
-import org.deegree.services.jaxb.oaf.ServiceMetadataType;
+import org.deegree.services.jaxb.oaf.LicenseType;
+import org.deegree.services.jaxb.oaf.MetadataType;
 import org.deegree.services.metadata.OWSMetadataProvider;
-import org.slf4j.Logger;
+import org.deegree.services.oaf.domain.License;
+import org.deegree.services.oaf.domain.landingpage.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Encapsulates metadata of the service
  *
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class ServiceMetadata {
-
-    private static final Logger LOG = getLogger( ServiceMetadata.class );
+public class DatasetMetadata {
 
     private static final String DEFAULT_TITLE = "deegree OGC API - Features";
 
@@ -33,25 +31,24 @@ public class ServiceMetadata {
 
     private String description = DEFAULT_DESCRIPTION;
 
-    private String providerName;
+    private final Contact providerContact = new Contact();
 
-    private String providerEmail;
-
-    private String providerUrl;
+    private final Contact creatorContact = new Contact();
 
     private List<MetadataUrl> metadataUrls = new ArrayList<>();
 
-    private String fees;
+    private License providerLicense;
 
-    private List<String> accessConstraints;
+    private License datasetLicense;
 
-    public ServiceMetadata( OWSMetadataProvider metadata, ServiceMetadataType serviceMetadata ) {
+    public DatasetMetadata( OWSMetadataProvider metadata, MetadataType configMetadata ) {
         if ( metadata != null ) {
             this.title = getTitle( metadata );
             this.description = getDescription( metadata );
-            parseLicense( metadata );
-            parseContact( metadata.getServiceProvider() );
-            parseMetadataUrls( serviceMetadata );
+            parseLicenses( configMetadata );
+            parseDatasetContact( configMetadata );
+            parseProviderContact( metadata.getServiceProvider() );
+            parseMetadataUrls( configMetadata );
         }
     }
 
@@ -70,24 +67,17 @@ public class ServiceMetadata {
     }
 
     /**
-     * @return may be <code>null</code>
+     * @return never <code>null</code>
      */
-    public String getProviderName() {
-        return providerName;
+    public Contact getProviderContact() {
+        return providerContact;
     }
 
     /**
-     * @return may be <code>null</code>
+     * @return never <code>null</code>
      */
-    public String getProviderUrl() {
-        return providerUrl;
-    }
-
-    /**
-     * @return may be <code>null</code>
-     */
-    public String getProviderEmail() {
-        return providerEmail;
+    public Contact getCreatorContact() {
+        return creatorContact;
     }
 
     /**
@@ -100,8 +90,8 @@ public class ServiceMetadata {
     /**
      * @return <code>true</code> if license is available, <code>false</code> otherwise
      */
-    public boolean hasLicense() {
-        if ( fees != null || ( accessConstraints != null && !accessConstraints.isEmpty() ) )
+    public boolean hasProviderLicenseUrl() {
+        if ( providerLicense != null && providerLicense.getUrl() != null )
             return true;
         return false;
     }
@@ -109,20 +99,40 @@ public class ServiceMetadata {
     /**
      * @return may be <code>null</code>
      */
-    public String getFees() {
-        return fees;
+    public License getProviderLicense() {
+        return providerLicense;
     }
 
     /**
-     * @return may be <code>null</code> or empty
+     * @return <code>true</code> if license is available, <code>false</code> otherwise
      */
-    public List<String> getAccessConstraints() {
-        return accessConstraints;
+    public boolean hasDatasetLicenseUrl() {
+        if ( datasetLicense != null && datasetLicense.getUrl() != null )
+            return true;
+        return false;
     }
 
-    private void parseContact( ServiceProvider serviceProvider ) {
+    /**
+     * @return may be <code>null</code>
+     */
+    public License getDatasetLicense() {
+        return datasetLicense;
+    }
+
+    private void parseDatasetContact( MetadataType metadata ) {
+        if ( metadata == null )
+            return;
+        MetadataType.DatasetCreator datasetCreator = metadata.getDatasetCreator();
+        if ( datasetCreator != null ) {
+            this.creatorContact.setName( datasetCreator.getName() );
+            this.creatorContact.setUrl( datasetCreator.getUrl() );
+            this.creatorContact.setEmail( datasetCreator.getEMail() );
+        }
+    }
+
+    private void parseProviderContact( ServiceProvider serviceProvider ) {
         if ( serviceProvider != null ) {
-            this.providerName = serviceProvider.getProviderName();
+            providerContact.setName( serviceProvider.getProviderName() );
             ResponsibleParty serviceContact = serviceProvider.getServiceContact();
             if ( serviceContact != null ) {
                 ContactInfo contactInfo = serviceContact.getContactInfo();
@@ -131,17 +141,17 @@ public class ServiceMetadata {
                     if ( address != null ) {
                         List<String> electronicMailAddress = address.getElectronicMailAddress();
                         if ( electronicMailAddress != null && !electronicMailAddress.isEmpty() )
-                            this.providerEmail = electronicMailAddress.get( 0 );
+                            this.providerContact.setEmail( electronicMailAddress.get( 0 ) );
                     }
                     if ( contactInfo.getOnlineResource() != null ) {
-                        this.providerUrl = contactInfo.getOnlineResource().toExternalForm();
+                        this.providerContact.setUrl( contactInfo.getOnlineResource().toExternalForm() );
                     }
                 }
             }
         }
     }
 
-    private void parseMetadataUrls( ServiceMetadataType serviceMetadata ) {
+    private void parseMetadataUrls( MetadataType serviceMetadata ) {
         if ( serviceMetadata != null ) {
             serviceMetadata.getMetadataURL().forEach( metadataUrl -> {
                 this.metadataUrls.add( new MetadataUrl( metadataUrl.getValue(), null, metadataUrl.getFormat() ) );
@@ -149,11 +159,24 @@ public class ServiceMetadata {
         }
     }
 
-    private void parseLicense( OWSMetadataProvider metadata ) {
-        ServiceIdentification serviceIdentification = metadata.getServiceIdentification();
-        if ( serviceIdentification != null ) {
-            this.fees = serviceIdentification.getFees();
-            this.accessConstraints = serviceIdentification.getAccessConstraints();
+    private void parseLicenses( MetadataType metadata ) {
+        if ( metadata == null )
+            return;
+        LicenseType providerLicense = metadata.getProviderLicense();
+        if ( providerLicense != null ) {
+            LicenseType.Url url = providerLicense.getUrl();
+            this.providerLicense = new License( providerLicense.getName(),
+                                                url != null ? url.getValue() : null,
+                                                url != null ? url.getFormat() : null,
+                                                providerLicense.getDescription() );
+        }
+        LicenseType datasetLicense = metadata.getDatasetLicense();
+        if ( datasetLicense != null ) {
+            LicenseType.Url url = datasetLicense.getUrl();
+            this.datasetLicense = new License( datasetLicense.getName(),
+                                               url != null ? url.getValue() : null,
+                                               url != null ? url.getFormat() : null,
+                                               datasetLicense.getDescription() );
         }
     }
 

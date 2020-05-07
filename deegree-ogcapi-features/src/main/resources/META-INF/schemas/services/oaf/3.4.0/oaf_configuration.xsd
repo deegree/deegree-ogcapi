@@ -14,7 +14,7 @@
     <complexType>
       <sequence>
         <element name="FeatureStoreId" minOccurs="0" maxOccurs="unbounded" type="string"/>
-        <element name="QueryCRS" type="string" minOccurs="0" maxOccurs="unbounded" />
+        <element name="QueryCRS" type="string" minOccurs="0" maxOccurs="unbounded"/>
         <element name="DateTimeProperties" minOccurs="0">
           <complexType>
             <sequence>
@@ -22,7 +22,7 @@
             </sequence>
           </complexType>
         </element>
-        <element name="ServiceMetadata" type="oaf:ServiceMetadataType" minOccurs="0"/>
+        <element name="Metadata" type="oaf:MetadataType" minOccurs="0"/>
       </sequence>
       <attribute name="configVersion" use="required">
         <simpleType>
@@ -41,17 +41,46 @@
     </sequence>
   </complexType>
 
-  <complexType name="ServiceMetadataType">
+  <complexType name="MetadataType">
     <sequence>
+      <element name="ProviderLicense" minOccurs="0" type="oaf:LicenseType"/>
+      <element name="DatasetLicense" minOccurs="0" type="oaf:LicenseType"/>
+      <element name="DatasetCreator" minOccurs="0">
+        <complexType>
+          <sequence>
+            <element name="Name" type="string"/>
+            <element name="Url" type="string" minOccurs="0"/>
+            <element name="EMail" type="string" minOccurs="0"/>
+          </sequence>
+        </complexType>
+      </element>
       <element name="MetadataURL" minOccurs="1" maxOccurs="unbounded">
         <complexType>
           <simpleContent>
             <extension base="string">
-              <attribute name="format" type="string" />
+              <attribute name="format" type="string"/>
             </extension>
           </simpleContent>
         </complexType>
       </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="LicenseType">
+    <sequence>
+      <element name="Name" type="string"/>
+      <choice>
+        <element name="Description" type="string"/>
+        <element name="Url">
+          <complexType>
+            <simpleContent>
+              <extension base="string">
+                <attribute name="format" type="string" default="text/html"/>
+              </extension>
+            </simpleContent>
+          </complexType>
+        </element>
+      </choice>
     </sequence>
   </complexType>
 

@@ -17,9 +17,22 @@
     </DateTimeProperty>
   </DateTimeProperties>
 
-  <ServiceMetadata>
+  <Metadata>
+    <ProviderLicense>
+      <Name>Tst</Name>
+      <Url>https://www.apache.org/licenses/LICENSE-2.0</Url>
+    </ProviderLicense>
+    <DatasetLicense>
+      <Name>TstD</Name>
+      <Url>https://www.apache.org/licenses/LICENSE-2.0</Url>
+    </DatasetLicense>
+    <DatasetCreator>
+      <Name>Test</Name>
+      <Url>http://deegree-enterprise.de</Url>
+      <EMail>info@deegree-enterprise.de</EMail>
+    </DatasetCreator>
     <MetadataURL format="application/xml">http://metaver?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=89362</MetadataURL>
     <MetadataURL format="text/html">http://localhost:8080/linkZuHTml/89362</MetadataURL>
-  </ServiceMetadata>
+  </Metadata>
 
 </deegreeOAF>

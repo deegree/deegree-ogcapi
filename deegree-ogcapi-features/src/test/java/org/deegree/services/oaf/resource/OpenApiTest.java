@@ -5,7 +5,7 @@ import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
-import org.deegree.services.oaf.workspace.configuration.ServiceMetadata;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
@@ -56,7 +56,7 @@ public class OpenApiTest extends JerseyTest {
     public void mockWorkspace() {
         PowerMockito.mockStatic( DeegreeWorkspaceInitializer.class );
         OafDatasetConfiguration oafConfiguration = Mockito.mock( OafDatasetConfiguration.class );
-        ServiceMetadata serviceMetadata = Mockito.mock( ServiceMetadata.class );
+        DatasetMetadata serviceMetadata = Mockito.mock( DatasetMetadata.class );
         when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
         OafDatasets oafDatasets = new OafDatasets();
         oafDatasets.addDataset( "oaf", oafConfiguration );

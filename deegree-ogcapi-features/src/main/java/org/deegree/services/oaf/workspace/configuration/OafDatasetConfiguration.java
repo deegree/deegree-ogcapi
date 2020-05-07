@@ -16,14 +16,14 @@ public class OafDatasetConfiguration {
 
     private final Map<String, FeatureTypeMetadata> featureTypeMetadata;
 
-    private final ServiceMetadata serviceMetadata;
+    private final DatasetMetadata serviceMetadata;
 
     private final List<String> suppportedCrs;
 
     private Map<QName, FeatureStore> featureStores;
 
     public OafDatasetConfiguration( Map<String, FeatureTypeMetadata> featureTypeMetadata,
-                                    ServiceMetadata serviceMetadata, List<String> suppportedCrs,
+                                    DatasetMetadata serviceMetadata, List<String> suppportedCrs,
                                     Map<QName, FeatureStore> featureStores ) {
         this.featureTypeMetadata = featureTypeMetadata;
         this.serviceMetadata = serviceMetadata;
@@ -74,7 +74,7 @@ public class OafDatasetConfiguration {
     /**
      * @return metadata of this dataset, never <code>null</code>
      */
-    public ServiceMetadata getServiceMetadata() {
+    public DatasetMetadata getServiceMetadata() {
         return serviceMetadata;
     }
 }

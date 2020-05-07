@@ -11,7 +11,7 @@ import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-import org.deegree.services.oaf.workspace.configuration.ServiceMetadata;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -98,12 +98,13 @@ public class LandingPage {
         }
 
         OafDatasetConfiguration dataset = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
-        ServiceMetadata metadata = dataset.getServiceMetadata();
+        DatasetMetadata metadata = dataset.getServiceMetadata();
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        List<Link> links = linkBuilder.createLandingPageLinks( datasetId, metadata.getMetadataUrls() );
+        List<Link> links = linkBuilder.createLandingPageLinks( datasetId, metadata );
         org.deegree.services.oaf.domain.landingpage.LandingPage landingPage = new org.deegree.services.oaf.domain.landingpage.LandingPage(
                         metadata.getTitle(), metadata.getDescription(), links );
+        landingPage.setContact( metadata.getCreatorContact() );
         return Response.ok( landingPage, mediaTypeFromRequestFormat( requestFormat ) ).build();
     }
 

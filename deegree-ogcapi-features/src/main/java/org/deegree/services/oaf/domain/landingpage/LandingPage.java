@@ -5,6 +5,7 @@ import org.deegree.services.oaf.link.Link;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_ATOM_NS_URL;
@@ -22,6 +23,9 @@ public class LandingPage extends OafDomainResource {
     @XmlElement(name = "Description", namespace = XML_CORE_NS_URL)
     private String description;
 
+    @XmlTransient
+    private Contact contact;
+
     @XmlElement(name = "link", namespace = XML_ATOM_NS_URL)
     private List<Link> links;
 
@@ -31,6 +35,13 @@ public class LandingPage extends OafDomainResource {
     public LandingPage( String title, String description, List<Link> links ) {
         this.title = title;
         this.description = description;
+        this.links = links;
+    }
+
+    public LandingPage( String title, String description, Contact contact, List<Link> links ) {
+        this.title = title;
+        this.description = description;
+        this.contact = contact;
         this.links = links;
     }
 
@@ -48,6 +59,14 @@ public class LandingPage extends OafDomainResource {
 
     public void setDescription( String description ) {
         this.description = description;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact( Contact contact ) {
+        this.contact = contact;
     }
 
     public List<Link> getLinks() {
