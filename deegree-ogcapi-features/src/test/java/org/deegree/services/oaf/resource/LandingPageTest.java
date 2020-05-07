@@ -1,10 +1,11 @@
 package org.deegree.services.oaf.resource;
 
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.link.LinkRelation;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
-import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
@@ -21,14 +22,23 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML_TYPE;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_ATOM_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
 import static org.deegree.services.oaf.RequestFormat.HTML;
 import static org.deegree.services.oaf.RequestFormat.JSON;
 import static org.deegree.services.oaf.RequestFormat.XML;
+import static org.deegree.services.oaf.link.LinkRelation.ALTERNATE;
+import static org.deegree.services.oaf.link.LinkRelation.CONFORMANCE;
+import static org.deegree.services.oaf.link.LinkRelation.DATA;
+import static org.deegree.services.oaf.link.LinkRelation.SELF;
+import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DESC;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -157,8 +167,32 @@ public class LandingPageTest extends JerseyTest {
         assertThat( response.readEntity( String.class ), isJson() );
     }
 
+    @Test
+    public void test_LandingPage_Links() {
+        Response response = target( "/datasets/oaf" ).request( APPLICATION_XML ).get();
+        String xml = response.readEntity( String.class );
+        assertThat( the( xml ), hasXPath( linkWith( SELF, APPLICATION_JSON ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( ALTERNATE, TEXT_HTML ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( ALTERNATE, APPLICATION_XML ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( SERVICE_DESC, APPLICATION_OPENAPI ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( SERVICE_DESC, TEXT_HTML ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( CONFORMANCE, APPLICATION_JSON ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( CONFORMANCE, TEXT_HTML ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( CONFORMANCE, APPLICATION_XML ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( DATA, APPLICATION_JSON ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( DATA, TEXT_HTML ), nsContext() ) );
+        assertThat( the( xml ), hasXPath( linkWith( DATA, APPLICATION_XML ), nsContext() ) );
+    }
+
+    private String linkWith( LinkRelation self, String applicationJson ) {
+        return "/core:LandingPage/atom:link[@rel='" + self.getRel() +
+               "' and @type='" + applicationJson + "']";
+    }
+
     private SimpleNamespaceContext nsContext() {
-        return new SimpleNamespaceContext().withBinding( "core", XML_CORE_NS_URL );
+        return new SimpleNamespaceContext()
+                        .withBinding( "core", XML_CORE_NS_URL )
+                        .withBinding( "atom", XML_ATOM_NS_URL );
     }
 
 }

@@ -10,6 +10,7 @@ import org.deegree.services.oaf.workspace.DataAccessFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -43,25 +44,8 @@ public class FeatureCollectionsTest extends JerseyTest {
         return new ResourceConfig( FeatureCollections.class );
     }
 
-    @Test
-    public void test_CollectionsDeclaration_Json_ShouldBeAvailable()
-                    throws Exception {
-        mockCollectionFactory();
-        Response response = target( "/datasets/oaf/collections" ).request( APPLICATION_JSON_TYPE ).get();
-
-        assertThat( response.getStatus(), is( 200 ) );
-    }
-
-    @Test
-    public void test_CollectionsDeclaration_Xml_ShouldBeAvailable()
-                    throws Exception {
-        mockCollectionFactory();
-        Response response = target( "/datasets/oaf/collections" ).request( APPLICATION_XML ).get();
-
-        assertThat( response.getStatus(), is( 200 ) );
-    }
-
-    private void mockCollectionFactory()
+    @Before
+    public void mockCollectionFactory()
                     throws UnknownCollectionId, UnknownDatasetId {
         PowerMockito.mockStatic( DataAccessFactory.class );
         DataAccess testFactory = mock( DataAccess.class );
@@ -71,6 +55,20 @@ public class FeatureCollectionsTest extends JerseyTest {
         when( testFactory.createCollection( eq( "oaf" ), eq( "test" ), any( LinkBuilder.class ) ) ).thenReturn(
                         collection );
         when( DataAccessFactory.getInstance() ).thenReturn( testFactory );
+    }
+
+    @Test
+    public void test_CollectionsDeclaration_Json_ShouldBeAvailable() {
+        Response response = target( "/datasets/oaf/collections" ).request( APPLICATION_JSON_TYPE ).get();
+
+        assertThat( response.getStatus(), is( 200 ) );
+    }
+
+    @Test
+    public void test_CollectionsDeclaration_Xml_ShouldBeAvailable() {
+        Response response = target( "/datasets/oaf/collections" ).request( APPLICATION_XML ).get();
+
+        assertThat( response.getStatus(), is( 200 ) );
     }
 
 }

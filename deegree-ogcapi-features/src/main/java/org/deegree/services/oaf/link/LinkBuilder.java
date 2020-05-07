@@ -15,6 +15,9 @@ import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
 import static org.deegree.services.oaf.link.LinkRelation.ALTERNATE;
 import static org.deegree.services.oaf.link.LinkRelation.COLLECTION;
@@ -65,8 +68,8 @@ public class LinkBuilder {
     }
 
     /**
-     *
      * @param datasetId
+     *                 id of the dataset, never <code>null</code>
      * @param metadata
      *                 describing this service, never <code>null</code>
      * @return list of links, never <code>null</code>
@@ -74,34 +77,21 @@ public class LinkBuilder {
     public List<Link> createLandingPageLinks( String datasetId, DatasetMetadata metadata ) {
         List<Link> links = new ArrayList<>();
         String selfUri = uriInfo.getRequestUri().toString();
-        links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document as JSON" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), APPLICATION_XML, "this document as XML" ) );
-
+        addSelfAndAlternateLinks( links, selfUri );
         String apiHref = createBaseUriBuilder( datasetId )
-                                    .path( "api" )
-                                    .toString();
-        links.add( new Link( apiHref, SERVICE_DESC.getRel(), APPLICATION_OPENAPI, "API definition" ) );
-        links.add( new Link( apiHref, SERVICE_DESC.getRel(), TEXT_HTML, "API definition as HTML" ) );
+                        .path( "api" )
+                        .toString();
+        addServiceDesc( links, apiHref );
 
         String conformanceHref = createBaseUriBuilder( datasetId )
-                                .path( "conformance" )
-                                .toString();
-        links.add( new Link( conformanceHref, CONFORMANCE.getRel(), APPLICATION_JSON,
-                             "OGC API conformance classes as Json" ) );
-        links.add( new Link( conformanceHref, CONFORMANCE.getRel(), TEXT_HTML,
-                             "OGC API conformance classes as HTML" ) );
-        links.add( new Link( conformanceHref, CONFORMANCE.getRel(), APPLICATION_XML,
-                             "OGC API conformance classes as XML" ) );
+                        .path( "conformance" )
+                        .toString();
+        addConformance( links, conformanceHref );
 
         String collectionsHref = createBaseUriBuilder( datasetId )
-                                        .path( "collections" )
-                                        .toString();
-        links.add( new Link( collectionsHref, DATA.getRel(), APPLICATION_JSON,
-                             "Supported Feature Collections as JSON" ) );
-        links.add( new Link( collectionsHref, DATA.getRel(), TEXT_HTML, "Supported Feature Collections as HTML" ) );
-        links.add( new Link( collectionsHref, DATA.getRel(), APPLICATION_XML,
-                             "Supported Feature Collections as XML" ) );
+                        .path( "collections" )
+                        .toString();
+        addData( links, collectionsHref );
         addMetadataLinks( metadata, links );
         addLicenseLink( datasetId, metadata, links );
         return links;
@@ -110,9 +100,7 @@ public class LinkBuilder {
     public List<Link> createCollectionsLinks( String datasetId, DatasetMetadata metadata ) {
         ArrayList<Link> links = new ArrayList<>();
         String selfUri = uriInfo.getRequestUri().toString();
-        links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document as JSON" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), APPLICATION_XML, "this document as XML" ) );
+        addSelfAndAlternateLinks( links, selfUri );
         addMetadataLinks( metadata, links );
         addLicenseLink( datasetId, metadata, links );
         return links;
@@ -124,27 +112,21 @@ public class LinkBuilder {
         List<String> collectionsParams = uriInfo.getPathParameters().get( "collectionId" );
         boolean collectionRequested = collectionsParams != null && !collectionsParams.isEmpty();
         if ( collectionRequested ) {
-            links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document as JSON" ) );
-            links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
-            links.add( new Link( selfUri, ALTERNATE.getRel(), APPLICATION_XML, "this document as XML" ) );
+            addSelfAndAlternateLinks( links, selfUri );
         } else {
             String collectionHref = createBaseUriBuilder( datasetId )
                             .path( "collections" )
                             .path( collectionId )
                             .toString();
-            links.add( new Link( collectionHref, COLLECTION.getRel(), APPLICATION_JSON, "Collection as GeoJson" ) );
-            links.add( new Link( collectionHref, COLLECTION.getRel(), TEXT_HTML, "Collection as HTML" ) );
-            links.add( new Link( collectionHref, COLLECTION.getRel(), APPLICATION_XML, "Collection as XML" ) );
+            addCollection( links, collectionHref );
         }
 
         String itemsHref = createBaseUriBuilder( datasetId )
-                                  .path( "collections" )
-                                  .path( collectionId )
-                                  .path( "items" )
-                                  .toString();
-        links.add( new Link( itemsHref, ITEMS.getRel(), APPLICATION_GEOJSON, "Features as GeoJson" ) );
-        links.add( new Link( itemsHref, ITEMS.getRel(), TEXT_HTML, "Features as HTML" ) );
-        links.add( new Link( itemsHref, ITEMS.getRel(), APPLICATION_GML, "Features as GML" ) );
+                        .path( "collections" )
+                        .path( collectionId )
+                        .path( "items" )
+                        .toString();
+        addItems( links, itemsHref );
 
         metadataUrls.forEach( metadataUrl -> {
             links.add( createMetadataLink( metadataUrl, "Metadata describing this Collection" ) );
@@ -152,39 +134,83 @@ public class LinkBuilder {
         return links;
     }
 
-    public ArrayList<Link> createFeaturesLinks( String datasetId, String collectionId, NextLink nextLink ) {
-        ArrayList<Link> links = new ArrayList<>();
+    public List<Link> createFeaturesLinks( String datasetId, String collectionId, NextLink nextLink ) {
+        List<Link> links = new ArrayList<>();
         String selfUri = uriInfo.getRequestUri().toString();
-        links.add( new Link( selfUri, SELF.getRel(), APPLICATION_GEOJSON, "this document as GeoJson" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), APPLICATION_GML, "this document as GML" ) );
+        addSelfAndAlternateGeo( links, selfUri );
         String nextUri = nextLink.createUri( uriInfo );
         if ( nextUri != null )
             links.add( new Link( nextUri, NEXT.getRel(), APPLICATION_GEOJSON, "next page" ) );
         String collectionUri = createBaseUriBuilder( datasetId )
-                                      .path( "collections" )
-                                      .path( collectionId )
-                                      .toString();
-        links.add( new Link( collectionUri, COLLECTION.getRel(), APPLICATION_JSON, "Collection as JSON" ) );
-        links.add( new Link( collectionUri, COLLECTION.getRel(), TEXT_HTML, "Collection as HTML" ) );
-        links.add( new Link( collectionUri, COLLECTION.getRel(), APPLICATION_XML, "Collection as XML" ) );
+                        .path( "collections" )
+                        .path( collectionId )
+                        .toString();
+        addCollection( links, collectionUri );
         return links;
     }
 
-    public ArrayList<Link> createFeatureLinks( String datasetId, String collectionId, String featureId ) {
-        ArrayList<Link> links = new ArrayList<>();
+    public List<Link> createFeatureLinks( String datasetId, String collectionId, String featureId ) {
+        List<Link> links = new ArrayList<>();
         String selfUri = uriInfo.getRequestUri().toString();
-        links.add( new Link( selfUri, SELF.getRel(), APPLICATION_GEOJSON, "this document as JSON" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
-        links.add( new Link( selfUri, ALTERNATE.getRel(), APPLICATION_GML, "this document as GML" ) );
+        addSelfAndAlternateGeo( links, selfUri );
         String collectionUri = createBaseUriBuilder( datasetId )
-                                      .path( "collections" )
-                                      .path( collectionId )
-                                      .toString();
-        links.add( new Link( collectionUri, COLLECTION.getRel(), APPLICATION_JSON, "Collection as JSON" ) );
-        links.add( new Link( collectionUri, COLLECTION.getRel(), TEXT_HTML, "Collection as HTML" ) );
-        links.add( new Link( collectionUri, COLLECTION.getRel(), APPLICATION_XML, "Collection as XML" ) );
+                        .path( "collections" )
+                        .path( collectionId )
+                        .toString();
+        addCollection( links, collectionUri );
         return links;
+    }
+
+    private void addSelfAndAlternateLinks( List<Link> links, String uri ) {
+        links.add( new Link( uri, SELF.getRel(), APPLICATION_JSON, "this document as JSON" ) );
+        links.add( new Link( uri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
+        links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_XML, "this document as XML" ) );
+    }
+
+    private void addSelfAndAlternateGeo( List<Link> links, String uri ) {
+        links.add( new Link( uri, SELF.getRel(), APPLICATION_GEOJSON, "this document as JSON" ) );
+        links.add( new Link( uri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
+        links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML, "this document as GML" ) );
+        links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_32, "this document as GML" ) );
+        links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_SF0, "this document as GML" ) );
+        links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_SF2, "this document as GML" ) );
+    }
+
+    private void addConformance( List<Link> links, String conformanceHref ) {
+        links.add( new Link( conformanceHref, CONFORMANCE.getRel(), APPLICATION_JSON,
+                             "OGC API conformance classes as Json" ) );
+        links.add( new Link( conformanceHref, CONFORMANCE.getRel(), TEXT_HTML,
+                             "OGC API conformance classes as HTML" ) );
+        links.add( new Link( conformanceHref, CONFORMANCE.getRel(), APPLICATION_XML,
+                             "OGC API conformance classes as XML" ) );
+    }
+
+    private void addServiceDesc( List<Link> links, String apiHref ) {
+        links.add( new Link( apiHref, SERVICE_DESC.getRel(), APPLICATION_OPENAPI, "API definition" ) );
+        links.add( new Link( apiHref, SERVICE_DESC.getRel(), TEXT_HTML, "API definition as HTML" ) );
+    }
+
+    private void addData( List<Link> links, String collectionsHref ) {
+        links.add( new Link( collectionsHref, DATA.getRel(), APPLICATION_JSON,
+                             "Supported Feature Collections as JSON" ) );
+        links.add( new Link( collectionsHref, DATA.getRel(), TEXT_HTML, "Supported Feature Collections as HTML" ) );
+        links.add( new Link( collectionsHref, DATA.getRel(), APPLICATION_XML,
+                             "Supported Feature Collections as XML" ) );
+    }
+
+    private void addCollection( List<Link> links, String uri ) {
+        links.add( new Link( uri, COLLECTION.getRel(), APPLICATION_JSON, "Collection as JSON" ) );
+        links.add( new Link( uri, COLLECTION.getRel(), TEXT_HTML, "Collection as HTML" ) );
+        links.add( new Link( uri, COLLECTION.getRel(), APPLICATION_XML, "Collection as XML" ) );
+    }
+
+    private void addItems( ArrayList<Link> links, String itemsHref ) {
+        links.add( new Link( itemsHref, ITEMS.getRel(), APPLICATION_GEOJSON, "Features as GeoJson" ) );
+        links.add( new Link( itemsHref, ITEMS.getRel(), TEXT_HTML, "Features as HTML" ) );
+        links.add( new Link( itemsHref, ITEMS.getRel(), APPLICATION_GML, "Features as GML" ) );
+        links.add( new Link( itemsHref, ITEMS.getRel(), APPLICATION_GML_32, "Features as GML" ) );
+        links.add( new Link( itemsHref, ITEMS.getRel(), APPLICATION_GML_SF0, "Features as GML" ) );
+        links.add( new Link( itemsHref, ITEMS.getRel(), APPLICATION_GML_SF2, "Features as GML" ) );
     }
 
     private void addMetadataLinks( DatasetMetadata metadata, List<Link> links ) {
@@ -192,7 +218,6 @@ public class LinkBuilder {
             links.add( createMetadataLink( metadataUrl, "Metadata describing this dataset" ) );
         } );
     }
-
 
     private void addLicenseLink( String datasetId, DatasetMetadata metadata, List<Link> links ) {
         if ( metadata != null && metadata.getDatasetLicense() != null ) {

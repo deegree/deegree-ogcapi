@@ -12,8 +12,8 @@ import org.deegree.services.oaf.domain.collections.Collections;
 import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
-import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
+import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.feature.FeatureResponse;
 import org.deegree.services.oaf.feature.FeaturesRequest;
 import org.deegree.services.oaf.link.Link;
@@ -69,7 +69,7 @@ public class DeegreeDataAccess implements DataAccess {
             int limit = featuresRequest.getLimit();
             int offset = featuresRequest.getOffset();
             NextLink nextLink = new NextLink( numberOfFeaturesMatched, limit, offset );
-            ArrayList<Link> links = linkBuilder.createFeaturesLinks( datasetId, collectionId, nextLink );
+            List<Link> links = linkBuilder.createFeaturesLinks( datasetId, collectionId, nextLink );
             return new FeatureResponse( features, limit, numberOfFeaturesMatched, offset, links,
                                         isMaxFeaturesAndStartIndexApplicable, crs );
         } catch ( FeatureStoreException | FilterEvaluationException | InvalidConfigurationException e ) {
