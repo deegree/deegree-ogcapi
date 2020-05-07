@@ -10,6 +10,7 @@ import org.deegree.ogcapi.config.actions.Update;
 import org.deegree.ogcapi.config.actions.UpdateBboxCache;
 import org.deegree.ogcapi.config.actions.Upload;
 import org.deegree.ogcapi.config.actions.Validate;
+import org.deegree.ogcapi.config.exceptions.BboxCacheUpdateException;
 import org.deegree.ogcapi.config.exceptions.DownloadException;
 import org.deegree.ogcapi.config.exceptions.InvalidPathException;
 import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
@@ -100,28 +101,39 @@ public class Config {
     @GET
     @Operation(description =
                     "/config/update - update currently running workspace, rescan config files and update resources\n"
-                    + "/config/update/wsname - update with workspace <wsname>, rescan config files and update resources")
+                    + "/config/update/wsname - update with workspace <wsname>, rescan config files and update resources"
+                    +
+                    "/config/update/bboxcache[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the currently running workspace, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed\n"
+                    + "/config/update/bboxcache/wsname[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the workspace with name <wsname>, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed")
     @Path("/update/{wsname}")
-    public void update( @Context HttpServletRequest request,
-                        @Context HttpServletResponse response,
-                        @PathParam("wsname") String wsname )
-                    throws IOException, ServletException {
+    public Response update( @Context HttpServletRequest request,
+                            @Context HttpServletResponse response,
+                            @PathParam("wsname") String wsname,
+                            @QueryParam("featureStoreId") String featureStoreId )
+                    throws IOException, ServletException, BboxCacheUpdateException {
         token.validate( request );
+        if ( wsname != null && wsname.startsWith( "bboxcache" ) ) {
+            String log = UpdateBboxCache.updateBboxCache( wsname, request.getQueryString() );
+            return Response.ok( log, TEXT_PLAIN ).build();
+        }
+        // TODO!
         Update.update( wsname, response );
+        return null;
     }
 
     @GET
     @Operation(description =
                     "/config/update/bboxcache[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the currently running workspace, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed\n"
-                    + "/config/update/bboxcache/wsname[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the workspace with name <wsname>, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed\\n\" );")
+                    + "/config/update/bboxcache/wsname[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the workspace with name <wsname>, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed")
     @Path("/update/bboxcache/{wsname}")
-    public void updateBboxCache( @Context HttpServletRequest request,
-                                 @Context HttpServletResponse response,
-                                 @PathParam("wsname") String wsname,
-                                 @QueryParam("featureStoreId") String featureStoreId )
-                    throws IOException {
+    public Response updateBboxCache( @Context HttpServletRequest request,
+                                     @Context HttpServletResponse response,
+                                     @PathParam("wsname") String wsname,
+                                     @QueryParam("featureStoreId") String featureStoreId )
+                    throws BboxCacheUpdateException {
         token.validate( request );
-        UpdateBboxCache.updateBboxCache( wsname, request.getQueryString(), response );
+        String log = UpdateBboxCache.updateBboxCache( wsname, request.getQueryString() );
+        return Response.ok( log, TEXT_PLAIN ).build();
     }
 
     @GET

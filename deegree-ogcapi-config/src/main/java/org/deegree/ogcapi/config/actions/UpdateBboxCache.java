@@ -1,6 +1,5 @@
 package org.deegree.ogcapi.config.actions;
 
-import org.apache.commons.io.IOUtils;
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.config.ResourceInitException;
 import org.deegree.commons.utils.kvp.KVPUtils;
@@ -8,12 +7,11 @@ import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.persistence.FeatureStoreException;
 import org.deegree.feature.persistence.FeatureStoreProvider;
 import org.deegree.feature.types.FeatureType;
+import org.deegree.ogcapi.config.exceptions.BboxCacheUpdateException;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
 import org.slf4j.Logger;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.io.IOUtils.write;
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -42,46 +39,36 @@ public class UpdateBboxCache {
     /**
      * Updates the bounding boxes of all feature types in all feature stores.
      *
-     *
      * @param path
-     *            identifying the resource to validate, never <code>null</code>
+     *                 identifying the resource to validate, never <code>null</code>
      * @param queryString
-     * @param response
-     *            the response to write the validation result in, never <code>null</code>
+     * @return
      * @throws IOException
-     *             if the OutputStream of the response could not be requested
+     *                 if the OutputStream of the response could not be requested
      */
-    public static void updateBboxCache( String path, String queryString, HttpServletResponse response )
-                            throws IOException {
-
+    public static String updateBboxCache( String path, String queryString )
+                    throws BboxCacheUpdateException {
         DeegreeWorkspace ws = getWorkspaceAndPath( path ).first;
-
         try {
             ws.initAll();
         } catch ( ResourceInitException e ) {
-            response.setStatus( 500 );
-            response.setContentType( "text/plain" );
-            write( "Error while validating: " + e.getLocalizedMessage() + "\n", response.getOutputStream() );
-            return;
+            throw new BboxCacheUpdateException( e );
         }
         try {
             List<String> featureStoreIds = parseFeatureStoreIds( queryString );
-            updateBboxCache( ws.getNewWorkspace(), featureStoreIds, response );
+            return updateBboxCache( ws.getNewWorkspace(), featureStoreIds );
         } catch ( Exception e ) {
-            response.setStatus( 400 );
-            write( "Error while processing request: " + e.getLocalizedMessage() + "\n", response.getOutputStream() );
+            throw new BboxCacheUpdateException( e );
         }
     }
 
-    private static void updateBboxCache( Workspace workspace, List<String> featureStoreIds, HttpServletResponse response )
-                            throws IOException {
+    private static String updateBboxCache( Workspace workspace, List<String> featureStoreIds ) {
         List<String> featureStoreIdsToUpdate = findFeatureStoreIdsToUpdate( featureStoreIds, workspace );
         UpdateLog updateLog = new UpdateLog();
         for ( String featureStoreId : featureStoreIdsToUpdate ) {
             updateCacheOfFeatureStore( workspace, featureStoreId, updateLog );
         }
-        response.setContentType( "text/plain" );
-        updateLog.logResult( response.getOutputStream() );
+        return updateLog.logResult();
     }
 
     private static void updateCacheOfFeatureStore( Workspace workspace, String featureStoreId, UpdateLog updateLog ) {
@@ -106,7 +93,8 @@ public class UpdateBboxCache {
         if ( !featureStoreIds.isEmpty() )
             return featureStoreIds;
         List<String> allFeatureStoreIds = new ArrayList<>();
-        for ( ResourceIdentifier<FeatureStore> resourceIdentifier : workspace.getResourcesOfType( FeatureStoreProvider.class ) ) {
+        for ( ResourceIdentifier<FeatureStore> resourceIdentifier : workspace.getResourcesOfType(
+                        FeatureStoreProvider.class ) ) {
             String featureStoreId = resourceIdentifier.getId();
             allFeatureStoreIds.add( featureStoreId );
         }
@@ -114,7 +102,7 @@ public class UpdateBboxCache {
     }
 
     private static List<String> parseFeatureStoreIds( String queryString )
-                            throws UnsupportedEncodingException {
+                    throws UnsupportedEncodingException {
         if ( queryString == null )
             return Collections.emptyList();
         Map<String, String> normalizedKVPMap = KVPUtils.getNormalizedKVPMap( queryString, null );
@@ -140,8 +128,7 @@ public class UpdateBboxCache {
             resultsPerFeatureStore.get( featureStore ).addSucceed( featureType );
         }
 
-        void logResult( ServletOutputStream outputStream )
-                                throws IOException {
+        private String logResult() {
             StringBuilder sb = new StringBuilder();
             sb.append( "Update of bbox cache finished: \n\n" );
             for ( Map.Entry<String, FailedAndSucceed> resultPerFeatureStore : resultsPerFeatureStore.entrySet() ) {
@@ -156,7 +143,7 @@ public class UpdateBboxCache {
                     sb.append( "    -  " ).append( featureType ).append( "\n" );
                 sb.append( "\n" );
             }
-            IOUtils.write( sb.toString(), outputStream );
+            return sb.toString();
         }
 
         static class FailedAndSucceed {
