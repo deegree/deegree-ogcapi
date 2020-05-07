@@ -225,18 +225,10 @@ var AppBreadcrump = new Vue({
     var self = this;
     var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
     self.itemsLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.featureId = thisLink.substring(thisLink.lastIndexOf("/") + 1);
     self.collectionLink = self.itemsLink.substring(0, self.itemsLink.lastIndexOf("/"));
     self.collectionsLink = self.collectionLink.substring(0, self.collectionLink.lastIndexOf("/"));
     self.landingPageLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
-
-    $.ajax({
-      dataType: "json",
-      //url: "http://localhost:8002/collections/strassenbaumkataster/items/APP_STRASSENBAUMKATASTER_100055201",
-      url: thisLink,
-      success: function(data) {
-        self.featureId = data.features[0].id;
-      }
-    });
 
     $.ajax({
       dataType: "json",
