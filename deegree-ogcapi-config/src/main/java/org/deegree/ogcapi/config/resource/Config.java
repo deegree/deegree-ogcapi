@@ -1,14 +1,18 @@
 package org.deegree.ogcapi.config.resource;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.deegree.commons.config.DeegreeWorkspace;
+import org.deegree.commons.utils.Pair;
 import org.deegree.ogcapi.config.actions.Delete;
-import org.deegree.ogcapi.config.actions.Download;
 import org.deegree.ogcapi.config.actions.List;
 import org.deegree.ogcapi.config.actions.Restart;
 import org.deegree.ogcapi.config.actions.Update;
 import org.deegree.ogcapi.config.actions.UpdateBboxCache;
 import org.deegree.ogcapi.config.actions.Upload;
 import org.deegree.ogcapi.config.actions.Validate;
+import org.deegree.ogcapi.config.exceptions.DownloadException;
+import org.deegree.ogcapi.config.exceptions.InvalidPathException;
+import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
 import org.deegree.services.config.ApiKey;
 import org.slf4j.Logger;
 
@@ -21,9 +25,18 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.File;
 import java.io.IOException;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
+import static org.deegree.ogcapi.config.actions.Download.downloadFile;
+import static org.deegree.ogcapi.config.actions.Download.downloadWorkspace;
+import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -40,12 +53,33 @@ public class Config {
     @Operation(description = "/config/download[/path] - download currently running workspace or file in workspace \n"
                              + "/config/download/wsname[/path] - download workspace with name <wsname> or file in workspace")
     @Path("/download{path : (.+)?}")
-    public void download( @Context HttpServletRequest request,
-                          @Context HttpServletResponse response,
-                          @PathParam("path") String path )
-                    throws IOException {
+    public Response download( @Context HttpServletRequest request,
+                              @Context HttpServletResponse response,
+                              @PathParam("path") String path )
+                    throws InvalidPathException {
         token.validate( request );
-        Download.download( path, response );
+        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
+
+        DeegreeWorkspace workspace = p.first;
+        if ( p.second == null ) {
+            StreamingOutput streamingOutput = outputStream -> {
+                try {
+                    downloadWorkspace( workspace, outputStream );
+                } catch ( InvalidWorkspaceException | DownloadException e ) {
+                    throw new WebApplicationException( e );
+                }
+            };
+            return Response.ok( streamingOutput, "application/zip" )
+                           .header( "Content-Disposition", "attachment; filename=" + workspace.getName() + ".zip" )
+                           .build();
+        } else {
+            File file = downloadFile( workspace, p.second );
+            if ( file.getName().endsWith( ".xml" ) )
+                return Response.ok( file, APPLICATION_XML_TYPE ).build();
+            else
+                return Response.ok( file, APPLICATION_OCTET_STREAM_TYPE ).build();
+        }
+
     }
 
     @GET

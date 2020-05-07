@@ -48,6 +48,7 @@ public class OgcApiFeatures extends ResourceConfig {
         packages( "org.deegree.services.oaf.exceptions" );
         packages( "org.deegree.services.oaf.filter" );
         packages( "org.deegree.ogcapi.config.resource" );
+        packages( "org.deegree.ogcapi.config.exceptions" );
     }
 
     private void initOgcFrontCntroller( @Context ServletConfig servletConfig ) {
@@ -56,7 +57,7 @@ public class OgcApiFeatures extends ResourceConfig {
             ogcFrontController.init( servletConfig );
             ogcFrontController.setActiveWorkspaceName( DEEGREE_WORKSPACE_NAME );
         } catch ( ServletException | IOException e ) {
-            LOG.error( "Initialization of the OGCFrontController failed.CConfig REST API is not available", e );
+            LOG.error( "Initialization of the OGCFrontController failed. Config REST API is not available", e );
         }
     }
 

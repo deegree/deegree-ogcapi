@@ -35,103 +35,47 @@
  ----------------------------------------------------------------------------*/
 package org.deegree.ogcapi.config.actions;
 
-import org.apache.commons.io.IOUtils;
 import org.deegree.commons.config.DeegreeWorkspace;
-import org.deegree.commons.utils.Pair;
+import org.deegree.ogcapi.config.exceptions.DownloadException;
+import org.deegree.ogcapi.config.exceptions.InvalidPathException;
+import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.zip.ZipOutputStream;
 
 import static org.apache.commons.io.IOUtils.closeQuietly;
-import static org.apache.commons.io.IOUtils.copy;
 import static org.deegree.commons.utils.io.Zip.zip;
-import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 
 /**
- * 
  * @author <a href="mailto:schmitz@lat-lon.de">Andreas Schmitz</a>
  * @author last edited by: $Author$
- * 
  * @version $Revision$, $Date$
  */
 public class Download {
 
-    /**
-     * @param path
-     * @param resp
-     * @throws IOException
-     */
-    public static void download( String path, HttpServletResponse resp )
-                            throws IOException {
-        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
-
-        if ( p.second == null ) {
-            try {
-                download( p.first, resp );
-            } catch ( IOException e ) {
-                resp.setStatus( 500 );
-                resp.setContentType( "text/plain" );
-                IOUtils.write( "Error while downloading: " + e.getLocalizedMessage() + "\n", resp.getOutputStream() );
-            }
-            return;
-        }
-
-        try {
-            download( p.first, p.second, resp );
-        } catch ( IOException e ) {
-            resp.setStatus( 500 );
-            resp.setContentType( "text/plain" );
-            IOUtils.write( "Error while downloading: " + e.getLocalizedMessage() + "\n", resp.getOutputStream() );
-        }
-
-    }
-
-    private static void download( DeegreeWorkspace ws, String file, HttpServletResponse resp )
-                            throws IOException {
+    public static File downloadFile( DeegreeWorkspace ws, String file )
+                    throws InvalidPathException {
         File f = new File( ws.getLocation(), file );
         if ( !f.exists() ) {
-            resp.setStatus( 404 );
-            resp.setContentType( "text/plain" );
-            IOUtils.write( "No such file in workspace: " + ws.getName() + " -> " + file + "\n", resp.getOutputStream() );
-            return;
+            throw new InvalidPathException( ws.getName(), file );
         }
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream( f );
-            if( f.getName().endsWith( ".xml" ) )
-            	resp.setContentType( "application/xml" );
-            else
-            	resp.setContentType( "application/octet-stream" );
-            copy( in, resp.getOutputStream() );
-        } finally {
-            closeQuietly( in );
-        }
+        return f;
     }
 
-    /**
-     * @param ws
-     * @param resp
-     * @throws IOException
-     */
-    private static void download( DeegreeWorkspace ws, HttpServletResponse resp )
-                            throws IOException {
+    public static void downloadWorkspace( DeegreeWorkspace ws, OutputStream outputStream )
+                    throws InvalidWorkspaceException, DownloadException {
         File dir = ws.getLocation();
         if ( !dir.exists() ) {
-            resp.setStatus( 404 );
-        	resp.setContentType( "text/plain" );
-            IOUtils.write( "No such workspace.\n", resp.getOutputStream() );
-            return;
+            throw new InvalidWorkspaceException( ws.getName() );
         }
-        resp.setContentType( "application/x-download" );
-        resp.setHeader( "Content-Disposition", "attachment; filename=" + dir.getName() + ".zip" );
-        resp.setContentType( "application/zip" );
         ZipOutputStream out = null;
         try {
-            out = new ZipOutputStream( resp.getOutputStream() );
+            out = new ZipOutputStream( outputStream );
             zip( dir, out, null );
+        } catch ( IOException e ) {
+            throw new DownloadException( e );
         } finally {
             closeQuietly( out );
         }
