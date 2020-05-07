@@ -15,12 +15,13 @@ import org.deegree.ogcapi.config.exceptions.DeleteException;
 import org.deegree.ogcapi.config.exceptions.DownloadException;
 import org.deegree.ogcapi.config.exceptions.InvalidPathException;
 import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
+import org.deegree.ogcapi.config.exceptions.RestartException;
+import org.deegree.ogcapi.config.exceptions.UpdateException;
 import org.deegree.ogcapi.config.exceptions.UploadException;
 import org.deegree.ogcapi.config.exceptions.ValidationException;
 import org.deegree.services.config.ApiKey;
 import org.slf4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
@@ -92,12 +93,13 @@ public class Config {
                              + "/config/restart[/path] - restarts all resources connected to the specified one\n"
                              + "/config/restart/wsname - restart with workspace <wsname>")
     @Path("/restart{path : (.+)?}")
-    public void restart( @Context HttpServletRequest request,
-                         @Context HttpServletResponse response,
-                         @PathParam("path") String path )
-                    throws IOException {
+    public Response restart( @Context HttpServletRequest request,
+                             @Context HttpServletResponse response,
+                             @PathParam("path") String path )
+                    throws RestartException {
         token.validate( request );
-        Restart.restart( path, response );
+        String restart = Restart.restart( path );
+        return Response.ok( restart, APPLICATION_OCTET_STREAM_TYPE ).build();
     }
 
     @GET
@@ -112,15 +114,14 @@ public class Config {
                             @Context HttpServletResponse response,
                             @PathParam("wsname") String wsname,
                             @QueryParam("featureStoreId") String featureStoreId )
-                    throws IOException, ServletException, BboxCacheUpdateException {
+                    throws BboxCacheUpdateException, UpdateException {
         token.validate( request );
         if ( wsname != null && wsname.startsWith( "bboxcache" ) ) {
             String log = UpdateBboxCache.updateBboxCache( wsname, request.getQueryString() );
             return Response.ok( log, TEXT_PLAIN ).build();
         }
-        // TODO!
-        Update.update( wsname, response );
-        return null;
+        String update = Update.update( wsname );
+        return Response.ok( update, TEXT_PLAIN ).build();
     }
 
     @GET

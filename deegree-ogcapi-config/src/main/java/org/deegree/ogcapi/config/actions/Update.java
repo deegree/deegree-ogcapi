@@ -1,35 +1,27 @@
 package org.deegree.ogcapi.config.actions;
 
-import org.apache.commons.io.IOUtils;
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.utils.Pair;
+import org.deegree.ogcapi.config.exceptions.UpdateException;
 import org.deegree.services.controller.OGCFrontController;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
 import org.deegree.workspace.WorkspaceUtils;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 
 /**
- *
  * @author <a href="mailto:markus@beefcafe.de">Markus Schneider</a>
  * @author last edited by: $Author$
- *
  * @version $Revision$, $Date$
  */
 public class Update {
 
-    public static void update( String path, HttpServletResponse resp )
-                            throws IOException, ServletException {
+    public static String update( String path )
+                    throws UpdateException {
         Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
-
-        resp.setContentType( "text/plain" );
-
         try {
             if ( p.second != null ) {
                 Workspace ws = p.first.getNewWorkspace();
@@ -37,18 +29,16 @@ public class Update {
                 for ( ResourceIdentifier<?> id : ids ) {
                     WorkspaceUtils.reinitializeChain( ws, id );
                 }
-                return;
+            } else {
+                OGCFrontController fc = OGCFrontController.getInstance();
+                fc.setActiveWorkspaceName( p.first.getName() );
+                fc.update();
             }
-
-            OGCFrontController fc = OGCFrontController.getInstance();
-            fc.setActiveWorkspaceName( p.first.getName() );
-            fc.update();
+            return "Update complete.";
         } catch ( Exception e ) {
-            IOUtils.write( "Error while updating: " + e.getLocalizedMessage() + "\n", resp.getOutputStream() );
-            return;
+            throw new UpdateException( e );
         }
 
-        IOUtils.write( "Update complete.", resp.getOutputStream() );
     }
 
 }
