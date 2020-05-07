@@ -3,6 +3,7 @@ package org.deegree.ogcapi.config.actions;
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.config.ResourceInitException;
 import org.deegree.commons.utils.Pair;
+import org.deegree.ogcapi.config.exceptions.ValidationException;
 import org.deegree.workspace.ErrorHandler;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceIdentifier;
@@ -11,19 +12,18 @@ import org.deegree.workspace.ResourceMetadata;
 import org.deegree.workspace.Workspace;
 import org.slf4j.Logger;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.InvalidPathException;
 import java.nio.file.PathMatcher;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.apache.commons.io.IOUtils.write;
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -37,15 +37,13 @@ public class Validate {
     private static final Logger LOG = getLogger( Validate.class );
 
     /**
-     *
      * @param path
-     *            identifying the resource to validate, never <code>null</code>
-     * @param resp
-     *            the reposne to write the validation result in, never <code>null</code>
+     *                 identifying the resource to validate, never <code>null</code>
+     * @return
      * @throws IOException
      */
-    public static void validate( String path, HttpServletResponse resp )
-                            throws IOException {
+    public static String validate( String path )
+                    throws ValidationException {
         Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
 
         try {
@@ -53,61 +51,55 @@ public class Validate {
             workspace.destroyAll();
             workspace.initAll();
         } catch ( ResourceInitException e ) {
-            setStatusCodeAndContentType( 500, resp );
-            write( "Error while validating: " + e.getLocalizedMessage() + "\n", resp.getOutputStream() );
-            return;
+            throw new ValidationException( e );
         }
 
-        try {
-            DeegreeWorkspace workspace = p.first;
-            String file = p.second;
-            if ( file == null ) {
-                validate( workspace, resp );
-            } else {
-                validate( workspace, file, resp );
-            }
-        } catch ( IOException e ) {
-            resp.setStatus( 500 );
-            resp.setContentType( "text/plain" );
-            write( "Error while validating: " + e.getLocalizedMessage() + "\n", resp.getOutputStream() );
+        DeegreeWorkspace workspace = p.first;
+        String file = p.second;
+        if ( file == null ) {
+            return validate( workspace );
+        } else {
+            return validate( workspace, file );
         }
     }
 
-    private static void validate( DeegreeWorkspace ws, String file, HttpServletResponse resp )
-                            throws IOException {
+    private static String validate( DeegreeWorkspace ws, String file )
+                    throws InvalidPathException {
         File wsLocation = ws.getLocation();
         File requestedPath = new File( wsLocation, file );
         if ( !requestedPath.exists() ) {
-            setStatusCodeAndContentType( 404, resp );
-            write( "No such file in workspace: " + ws.getName() + " -> " + file + "\n", resp.getOutputStream() );
-            return;
+            throw new InvalidPathException( ws.getName(), file );
         }
 
         PathMatcher pathMatcher = createPatternMatcher( requestedPath );
         Map<String, List<String>> resourcesToErrors = validateWithMatcher( ws, pathMatcher );
         String wsName = ws.getName();
-        setStatusCodeAndContentType( 200, resp );
+        StringBuilder sb = new StringBuilder();
         if ( resourcesToErrors.isEmpty() ) {
-            write( "Resource " + file + " in workspace " + wsName + " is valid.", resp.getOutputStream() );
+            sb.append( "Resource " ).append( file )
+              .append( " in workspace " ).append( wsName )
+              .append( " is valid." );
         } else {
-            write( "Resource " + file + " in workspace " + wsName
-                   + " is not valid. The files with errors are shown below.\n", resp.getOutputStream() );
-            writeErrors( resourcesToErrors, resp );
+            sb.append( "Resource " ).append( file )
+              .append( " in workspace " ).append( wsName )
+              .append( " is not valid. The files with errors are shown below." );
+            writeErrors( resourcesToErrors, sb );
         }
+        return sb.toString();
     }
 
-    private static void validate( DeegreeWorkspace ws, HttpServletResponse resp )
-                            throws IOException {
+    private static String validate( DeegreeWorkspace ws ) {
+        StringBuilder sb = new StringBuilder();
         Map<String, List<String>> resourcesToErrors = validateWithMatcher( ws, null );
         String wsName = ws.getName();
-        setStatusCodeAndContentType( 200, resp );
         if ( resourcesToErrors.isEmpty() ) {
-            write( "Workspace " + wsName + " is valid.", resp.getOutputStream() );
+            sb.append( "Workspace " ).append( wsName ).append( " is valid." );
         } else {
-            write( "Workspace " + wsName + " is not valid. The files with errors are shown below.\n",
-                   resp.getOutputStream() );
-            writeErrors( resourcesToErrors, resp );
+            sb.append( "Workspace " ).append( wsName )
+              .append( " is not valid. The files with errors are shown below." );
+            writeErrors( resourcesToErrors, sb );
         }
+        return sb.toString();
     }
 
     private static Map<String, List<String>> validateWithMatcher( DeegreeWorkspace ws, PathMatcher pathMatcher ) {
@@ -116,19 +108,18 @@ public class Validate {
         return collectErrors( ws, newWorkspace, pathMatcher, errorHandler );
     }
 
-    private static void writeErrors( Map<String, List<String>> resourcesToErrors, HttpServletResponse resp )
-                            throws IOException {
+    private static void writeErrors( Map<String, List<String>> resourcesToErrors, StringBuilder sb ) {
         for ( Map.Entry<String, List<String>> resourceToErrors : resourcesToErrors.entrySet() ) {
-            write( "\n", resp.getOutputStream() );
-            write( resourceToErrors.getKey() + ":\n", resp.getOutputStream() );
+            sb.append( "\n" );
+            sb.append( ":\n" );
             for ( String error : resourceToErrors.getValue() ) {
-                write( "   - " + error + "\n", resp.getOutputStream() );
+                sb.append( "   - " ).append( error ).append( "\n" );
             }
         }
     }
 
     private static Map<String, List<String>> collectErrors( DeegreeWorkspace ws, Workspace newWorkspace,
-                                                                      PathMatcher pathMatcher, ErrorHandler errorHandler ) {
+                                                            PathMatcher pathMatcher, ErrorHandler errorHandler ) {
         Map<String, List<String>> resourceToErrors = new TreeMap<>();
         if ( errorHandler.hasErrors() ) {
             List<ResourceManager<? extends Resource>> resourceManagers = newWorkspace.getResourceManagers();
@@ -143,10 +134,10 @@ public class Validate {
     }
 
     private static Map<String, List<String>> collectErrors( DeegreeWorkspace ws,
-                                                                      ResourceMetadata<? extends Resource> rm,
-                                                                      PathMatcher pathMatcher,
-                                                                      ErrorHandler errorHandler,
-                                                                      Map<String, List<String>> resourceToErrors ) {
+                                                            ResourceMetadata<? extends Resource> rm,
+                                                            PathMatcher pathMatcher,
+                                                            ErrorHandler errorHandler,
+                                                            Map<String, List<String>> resourceToErrors ) {
         File resourceLocation = rm.getLocation().getAsFile();
         if ( resourceLocation != null ) {
             ResourceIdentifier<? extends Resource> identifier = rm.getIdentifier();
@@ -181,11 +172,6 @@ public class Validate {
         File wsLocation = ws.getLocation();
         URI identifierWithPath = wsLocation.toURI().relativize( resourceLocation.toURI() );
         return identifierWithPath.toString();
-    }
-
-    private static void setStatusCodeAndContentType( int statusCode, HttpServletResponse resp ) {
-        resp.setStatus( statusCode );
-        resp.setContentType( "text/plain" );
     }
 
 }

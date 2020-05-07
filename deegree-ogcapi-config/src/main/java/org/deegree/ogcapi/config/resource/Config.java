@@ -13,6 +13,7 @@ import org.deegree.ogcapi.config.actions.Validate;
 import org.deegree.ogcapi.config.exceptions.DownloadException;
 import org.deegree.ogcapi.config.exceptions.InvalidPathException;
 import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
+import org.deegree.ogcapi.config.exceptions.ValidationException;
 import org.deegree.services.config.ApiKey;
 import org.slf4j.Logger;
 
@@ -140,12 +141,13 @@ public class Config {
     @Operation(description = "/config/validate[/path] - validate currently running workspace or file in workspace\n"
                              + "/config/validate/wsname[/path] - validate workspace with name <wsname> or file in workspace")
     @Path("/validate{path : (.+)?}")
-    public void validate( @Context HttpServletRequest request,
-                          @Context HttpServletResponse response,
-                          @PathParam("path") String path )
-                    throws IOException {
+    public Response validate( @Context HttpServletRequest request,
+                              @Context HttpServletResponse response,
+                              @PathParam("path") String path )
+                    throws ValidationException {
         token.validate( request );
-        Validate.validate( path, response );
+        String validationResult = Validate.validate( path );
+        return Response.ok( validationResult, TEXT_PLAIN ).build();
     }
 
     @PUT
