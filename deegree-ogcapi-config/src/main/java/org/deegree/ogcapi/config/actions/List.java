@@ -35,55 +35,46 @@
  ----------------------------------------------------------------------------*/
 package org.deegree.ogcapi.config.actions;
 
-import org.apache.commons.io.IOUtils;
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.utils.Pair;
+import org.deegree.ogcapi.config.exceptions.InvalidPathException;
+import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 
 /**
- * 
  * @author <a href="mailto:schmitz@lat-lon.de">Andreas Schmitz</a>
  * @author last edited by: $Author$
- * 
  * @version $Revision$, $Date$
  */
 public class List {
 
-    public static void list( String path, HttpServletResponse resp )
-                            throws IOException {
+    public static String list( String path )
+                    throws InvalidPathException, InvalidWorkspaceException {
         Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
 
-        resp.setContentType( "text/plain" );
-        
-        File dir = p.first.getLocation();
+        DeegreeWorkspace workspace = p.first;
+        File dir = workspace.getLocation();
         dir = p.second == null ? dir : new File( dir, p.second );
 
         if ( !dir.exists() ) {
-            resp.setStatus( 404 );
             if ( p.second == null ) {
-                IOUtils.write( "No such workspace: " + p.first.getName() + "\n", resp.getOutputStream() );
+                throw new InvalidWorkspaceException( workspace.getName() );
             } else {
-                IOUtils.write( "No such direcory in workspace: " + p.first.getName() + " -> " + p.second + "\n",
-                               resp.getOutputStream() );
+                throw new InvalidPathException( workspace.getName(), p.second );
             }
-            return;
         }
 
+        StringBuilder sb = new StringBuilder();
         File[] ls = dir.listFiles();
-        ServletOutputStream os = resp.getOutputStream();
         if ( ls != null ) {
             for ( File f : ls ) {
-                if ( !f.getName().equalsIgnoreCase( ".svn" ) ) {
-                    IOUtils.write( f.getName() + "\n", os );
-                }
+                sb.append( f.getName() ).append( "\n" );
             }
         }
+        return sb.toString();
     }
 
 }

@@ -34,6 +34,7 @@ import java.io.IOException;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.deegree.ogcapi.config.actions.Download.downloadFile;
 import static org.deegree.ogcapi.config.actions.Download.downloadWorkspace;
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
@@ -126,12 +127,13 @@ public class Config {
     @Operation(description = "/config/list[/path] - list currently running workspace or directory in workspace\n"
                              + "/config/list/wsname[/path] - list workspace with name <wsname> or directory in workspace")
     @Path("/list{path : (.+)?}")
-    public void list( @Context HttpServletRequest request,
-                      @Context HttpServletResponse response,
-                      @PathParam("path") String path )
-                    throws IOException {
+    public Response list( @Context HttpServletRequest request,
+                          @Context HttpServletResponse response,
+                          @PathParam("path") String path )
+                    throws InvalidPathException, InvalidWorkspaceException {
         token.validate( request );
-        List.list( path, response );
+        String fileList = List.list( path );
+        return Response.ok( fileList, TEXT_PLAIN ).build();
     }
 
     @GET
