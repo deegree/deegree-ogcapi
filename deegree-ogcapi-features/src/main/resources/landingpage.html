@@ -47,6 +47,12 @@
             <h1 v-cloak class="mt-5">{{ title }}</h1>
             <p v-cloak class="lead">{{ description }}</p>
             <div class="row">
+                <div class="col-sm-3">Contact</div>
+                <div class="col-md-9">
+                    <a v-cloak v-bind:href="contact.url" >{{ contact.name }}</a> (<a v-cloak v-bind:href="'mailto:' + contact.email" >E-Mail</a>)
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-3">Collections</div>
                 <div class="col-md-9">
                     <a v-cloak v-bind:href="collectionlink.href" >{{ collectionlink.title }}</a>
@@ -68,6 +74,12 @@
                 <div class="col-sm-3">Metadata</div>
                 <div class="col-md-9">
                     <a v-cloak v-bind:href="metadataLink.href" >{{ metadataLink.title }}</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">License</div>
+                <div class="col-md-9">
+                    <a v-cloak v-bind:href="licenseLink.href" >{{ licenseLink.title }}</a>
                 </div>
             </div>
         </div>
@@ -99,7 +111,9 @@ var App = new Vue({
     apilink: [],
     collectionlink: [],
     conformanceLink: [],
-    metadataLink: []
+    metadataLink: [],
+    licenseLink: [],
+    contact: []
   },
 
   created() {
@@ -117,6 +131,8 @@ var App = new Vue({
         self.collectionlink = firstByRel(data, 'data');
         self.conformanceLink = firstByRel(data, 'conformance');
         self.metadataLink = firstByRel(data, 'describedBy');
+        self.licenseLink = firstByRel(data, 'license');
+        self.contact = data.contact;
       }
     });
   }
