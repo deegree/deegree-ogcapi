@@ -20,10 +20,8 @@ import org.deegree.ogcapi.config.exceptions.UpdateException;
 import org.deegree.ogcapi.config.exceptions.UploadException;
 import org.deegree.ogcapi.config.exceptions.ValidationException;
 import org.deegree.services.config.ApiKey;
-import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -43,15 +41,12 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.deegree.ogcapi.config.actions.Download.downloadFile;
 import static org.deegree.ogcapi.config.actions.Download.downloadWorkspace;
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 @Path("/config")
 public class Config {
-
-    private static final Logger LOG = getLogger( Config.class );
 
     private static ApiKey token = new ApiKey();
 
@@ -60,7 +55,6 @@ public class Config {
                              + "/config/download/wsname[/path] - download workspace with name <wsname> or file in workspace")
     @Path("/download{path : (.+)?}")
     public Response download( @Context HttpServletRequest request,
-                              @Context HttpServletResponse response,
                               @PathParam("path") String path )
                     throws InvalidPathException {
         token.validate( request );
@@ -94,7 +88,6 @@ public class Config {
                              + "/config/restart/wsname - restart with workspace <wsname>")
     @Path("/restart{path : (.+)?}")
     public Response restart( @Context HttpServletRequest request,
-                             @Context HttpServletResponse response,
                              @PathParam("path") String path )
                     throws RestartException {
         token.validate( request );
@@ -111,7 +104,6 @@ public class Config {
                     + "/config/update/bboxcache/wsname[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the workspace with name <wsname>, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed")
     @Path("/update/{wsname}")
     public Response update( @Context HttpServletRequest request,
-                            @Context HttpServletResponse response,
                             @PathParam("wsname") String wsname,
                             @QueryParam("featureStoreId") String featureStoreId )
                     throws BboxCacheUpdateException, UpdateException {
@@ -130,7 +122,6 @@ public class Config {
                     + "/config/update/bboxcache/wsname[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the workspace with name <wsname>, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed")
     @Path("/update/bboxcache/{wsname}")
     public Response updateBboxCache( @Context HttpServletRequest request,
-                                     @Context HttpServletResponse response,
                                      @PathParam("wsname") String wsname,
                                      @QueryParam("featureStoreId") String featureStoreId )
                     throws BboxCacheUpdateException {
@@ -144,7 +135,6 @@ public class Config {
                              + "/config/list/wsname[/path] - list workspace with name <wsname> or directory in workspace")
     @Path("/list{path : (.+)?}")
     public Response list( @Context HttpServletRequest request,
-                          @Context HttpServletResponse response,
                           @PathParam("path") String path )
                     throws InvalidPathException, InvalidWorkspaceException {
         token.validate( request );
@@ -157,7 +147,6 @@ public class Config {
                              + "/config/validate/wsname[/path] - validate workspace with name <wsname> or file in workspace")
     @Path("/validate{path : (.+)?}")
     public Response validate( @Context HttpServletRequest request,
-                              @Context HttpServletResponse response,
                               @PathParam("path") String path )
                     throws ValidationException {
         token.validate( request );
@@ -171,7 +160,6 @@ public class Config {
                              + "/config/upload/wsname/path/file - upload file into workspace with name <wsname>")
     @Path("/upload{path : (.+)?}")
     public Response upload( @Context HttpServletRequest request,
-                            @Context HttpServletResponse response,
                             @PathParam("path") String path )
                     throws IOException, UploadException {
         token.validate( request );
@@ -184,7 +172,6 @@ public class Config {
                              + "/config/delete/wsname[/path] - delete workspace with name <wsname> or file in workspace")
     @Path("/delete{path : (.+)?}")
     public Response delete( @Context HttpServletRequest request,
-                            @Context HttpServletResponse response,
                             @PathParam("path") String path )
                     throws InvalidPathException, DeleteException {
         token.validate( request );
