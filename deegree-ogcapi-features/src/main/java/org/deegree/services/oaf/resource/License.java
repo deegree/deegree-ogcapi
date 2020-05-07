@@ -20,10 +20,10 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-@Path("/datasets/{datasetId}")
+@Path("/datasets/{datasetId}/license")
 public class License {
 
-    @Path("/license/provider")
+    @Path("/provider")
     @GET
     @Produces({ TEXT_PLAIN })
     @Operation(summary = "License", description = "License of all collections of this datasets", responses = {
@@ -42,7 +42,7 @@ public class License {
         return Response.ok( metadata.getProviderLicense().getDescription() ).build();
     }
 
-    @Path("/license/dataset")
+    @Path("/dataset")
     @GET
     @Produces({ TEXT_PLAIN })
     @Operation(summary = "License", description = "License of all collections of this datasets", responses = {
