@@ -1,19 +1,15 @@
 package org.deegree.ogcapi.config.resource;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.deegree.ogcapi.config.actions.Delete;
+import org.deegree.ogcapi.config.actions.Download;
+import org.deegree.ogcapi.config.actions.List;
+import org.deegree.ogcapi.config.actions.Restart;
+import org.deegree.ogcapi.config.actions.Update;
+import org.deegree.ogcapi.config.actions.UpdateBboxCache;
+import org.deegree.ogcapi.config.actions.Upload;
+import org.deegree.ogcapi.config.actions.Validate;
 import org.deegree.services.config.ApiKey;
-import org.deegree.services.config.actions.Crs;
-import org.deegree.services.config.actions.Delete;
-import org.deegree.services.config.actions.Download;
-import org.deegree.services.config.actions.Invalidate;
-import org.deegree.services.config.actions.List;
-import org.deegree.services.config.actions.ListFonts;
-import org.deegree.services.config.actions.ListWorkspaces;
-import org.deegree.services.config.actions.Restart;
-import org.deegree.services.config.actions.Update;
-import org.deegree.services.config.actions.UpdateBboxCache;
-import org.deegree.services.config.actions.Upload;
-import org.deegree.services.config.actions.Validate;
 import org.slf4j.Logger;
 
 import javax.servlet.ServletException;
@@ -21,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -94,26 +89,6 @@ public class Config {
     }
 
     @GET
-    @Operation(description = "/config/listworkspaces - list available workspace names")
-    @Path("/listworkspaces")
-    public void listworkspaces( @Context HttpServletRequest request,
-                                @Context HttpServletResponse response )
-                    throws IOException {
-        token.validate( request );
-        ListWorkspaces.listWorkspaces( response );
-    }
-
-    @GET
-    @Operation(description = "/config/listfonts - list currently available fonts on the server")
-    @Path("/listfonts")
-    public void listfonts( @Context HttpServletRequest request,
-                           @Context HttpServletResponse response )
-                    throws IOException {
-        token.validate( request );
-        ListFonts.listFonts( response );
-    }
-
-    @GET
     @Operation(description = "/config/list[/path] - list currently running workspace or directory in workspace\n"
                              + "/config/list/wsname[/path] - list workspace with name <wsname> or directory in workspace")
     @Path("/list{path : (.+)?}")
@@ -123,51 +98,6 @@ public class Config {
                     throws IOException {
         token.validate( request );
         List.list( path, response );
-    }
-
-    @GET
-    @Operation(description = "/config/invalidate/datasources/tile/id/matrixset[?bbox=] - invalidate part or all of a tile store cache's tile matrix set")
-    @Path("/invalidate/datasources/tile/id/matrixset")
-    public void invalidate( @Context HttpServletRequest request,
-                            @Context HttpServletResponse response,
-                            @PathParam("path") String path,
-                            @QueryParam("bbox") String bbox )
-                    throws IOException {
-        token.validate( request );
-        Invalidate.invalidate( path, request.getQueryString(), response );
-    }
-
-    @GET
-    @Operation(description = "/config/crs/list - list available CRS definitions")
-    @Path("/crs/list")
-    public void crsList( @Context HttpServletRequest request,
-                         @Context HttpServletResponse response,
-                         @PathParam("path") String path )
-                    throws IOException {
-        token.validate( request );
-        Crs.listCrs( response );
-    }
-
-    @POST
-    @Operation(description = "/config/crs/getcodes with wkt=<wkt> - retrieves a list of CRS codes corresponding to the WKT (POSTed KVP)")
-    @Path("/crs/getcodes")
-    public void crsGetCodes( @Context HttpServletRequest request,
-                             @Context HttpServletResponse response,
-                             @PathParam("path") String path )
-                    throws IOException {
-        token.validate( request );
-        Crs.getCodes( request, response );
-    }
-
-    @GET
-    @Operation(description = "/config/crs/<code> - checks if a CRS definition is available, returns true/false")
-    @Path("/crs/{code}")
-    public void crsCodes( @Context HttpServletRequest request,
-                          @Context HttpServletResponse response,
-                          @PathParam("code") String code )
-                    throws IOException {
-        token.validate( request );
-        Crs.checkCrs( code, response );
     }
 
     @GET
