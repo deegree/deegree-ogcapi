@@ -11,9 +11,11 @@ import org.deegree.ogcapi.config.actions.UpdateBboxCache;
 import org.deegree.ogcapi.config.actions.Upload;
 import org.deegree.ogcapi.config.actions.Validate;
 import org.deegree.ogcapi.config.exceptions.BboxCacheUpdateException;
+import org.deegree.ogcapi.config.exceptions.DeleteException;
 import org.deegree.ogcapi.config.exceptions.DownloadException;
 import org.deegree.ogcapi.config.exceptions.InvalidPathException;
 import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
+import org.deegree.ogcapi.config.exceptions.UploadException;
 import org.deegree.ogcapi.config.exceptions.ValidationException;
 import org.deegree.services.config.ApiKey;
 import org.slf4j.Logger;
@@ -167,23 +169,26 @@ public class Config {
                              + "/config/upload/path/file - upload file into current workspace\n"
                              + "/config/upload/wsname/path/file - upload file into workspace with name <wsname>")
     @Path("/upload{path : (.+)?}")
-    public void upload( @Context HttpServletRequest request,
-                        @Context HttpServletResponse response,
-                        @PathParam("path") String path )
-                    throws IOException {
+    public Response upload( @Context HttpServletRequest request,
+                            @Context HttpServletResponse response,
+                            @PathParam("path") String path )
+                    throws IOException, UploadException {
         token.validate( request );
-        Upload.upload( path, request, response );
+        String upload = Upload.upload( path, request );
+        return Response.ok( upload, TEXT_PLAIN ).build();
     }
 
     @DELETE
     @Operation(description = "/config/delete[/path] - delete currently running workspace or file in workspace\n"
                              + "/config/delete/wsname[/path] - delete workspace with name <wsname> or file in workspace")
     @Path("/delete{path : (.+)?}")
-    public void delete( @Context HttpServletRequest request,
-                        @Context HttpServletResponse response,
-                        @PathParam("path") String path )
-                    throws IOException {
+    public Response delete( @Context HttpServletRequest request,
+                            @Context HttpServletResponse response,
+                            @PathParam("path") String path )
+                    throws InvalidPathException, DeleteException {
         token.validate( request );
-        Delete.delete( path, response );
+        String delete = Delete.delete( path );
+        return Response.ok( delete, TEXT_PLAIN ).build();
     }
+
 }

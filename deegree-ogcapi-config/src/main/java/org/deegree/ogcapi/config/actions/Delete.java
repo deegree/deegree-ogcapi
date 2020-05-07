@@ -35,53 +35,45 @@
  ----------------------------------------------------------------------------*/
 package org.deegree.ogcapi.config.actions;
 
-import org.apache.commons.io.IOUtils;
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.utils.Pair;
+import org.deegree.ogcapi.config.exceptions.DeleteException;
+import org.deegree.ogcapi.config.exceptions.InvalidPathException;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 
 import static org.apache.commons.io.FileUtils.deleteQuietly;
 import static org.deegree.commons.config.DeegreeWorkspace.unregisterWorkspace;
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 
 /**
- * 
  * @author <a href="mailto:schmitz@lat-lon.de">Andreas Schmitz</a>
  * @author last edited by: $Author$
- * 
  * @version $Revision$, $Date$
  */
 public class Delete {
 
-    public static void delete( String path, HttpServletResponse resp )
-                            throws IOException {
-
+    public static String delete( String path )
+                    throws DeleteException, InvalidPathException {
         Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
-
-        resp.setContentType( "text/plain" );
 
         if ( p.second == null ) {
             File dir = p.first.getLocation();
             if ( !deleteQuietly( dir ) ) {
-                IOUtils.write( "Workspace deletion unsuccessful.\n", resp.getOutputStream() );
-            } else {
-                IOUtils.write( "Workspace deleted.\n", resp.getOutputStream() );
+                unregisterWorkspace( p.first.getName() );
+                throw new DeleteException( "Workspace deletion unsuccessful." );
             }
             unregisterWorkspace( p.first.getName() );
-            return;
+            return "Workspace deleted.";
         }
         File fileOrDir = new File( p.first.getLocation(), p.second );
         if ( !fileOrDir.exists() ) {
-            resp.setStatus( 404 );
+            throw new InvalidPathException( p.first.getName(), fileOrDir.getName() );
         }
         if ( !deleteQuietly( fileOrDir ) ) {
-            IOUtils.write( "Deletion unsuccessful.\n", resp.getOutputStream() );
-        } else {
-            IOUtils.write( fileOrDir.getName() + " deleted.\n", resp.getOutputStream() );
+            throw new DeleteException( "Deletion unsuccessful." );
         }
+        return fileOrDir.getName() + " deleted.";
     }
 
 }

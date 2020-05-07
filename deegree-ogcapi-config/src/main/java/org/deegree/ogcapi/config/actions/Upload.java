@@ -36,13 +36,12 @@
 package org.deegree.ogcapi.config.actions;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.utils.Pair;
+import org.deegree.ogcapi.config.exceptions.UploadException;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
@@ -54,28 +53,23 @@ import static org.deegree.commons.utils.io.Zip.unzip;
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 
 /**
- * 
  * @author <a href="mailto:schmitz@lat-lon.de">Andreas Schmitz</a>
  * @author last edited by: $Author$
- * 
  * @version $Revision$, $Date$
  */
 public class Upload {
 
-    public static void upload( String path, HttpServletRequest req, HttpServletResponse resp )
-                            throws IOException {
+    public static String upload( String path, HttpServletRequest req )
+                    throws IOException, UploadException {
 
         Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
 
-        resp.setContentType( "text/plain" );
-
         if ( p.second == null ) {
-            IOUtils.write( "No file name given.\n", resp.getOutputStream() );
-            return;
+            throw new UploadException( "No file name given." );
         }
 
         boolean isZip = p.second.endsWith( ".zip" ) || req.getContentType() != null
-                        && req.getContentType().equals( "application/zip" );
+                                                       && req.getContentType().equals( "application/zip" );
 
         ServletInputStream in = null;
         try {
@@ -84,30 +78,26 @@ public class Upload {
                 // unzip a workspace
                 String wsName = p.second.substring( 0, p.second.length() - 4 );
                 String dirName = p.second.endsWith( ".zip" ) ? wsName : p.second;
-                File workspaceRoot = new File ( getWorkspaceRoot() );
+                File workspaceRoot = new File( getWorkspaceRoot() );
                 File dir = new File( workspaceRoot, dirName );
                 if ( !FilenameUtils.directoryContains( workspaceRoot.getCanonicalPath(), dir.getCanonicalPath() ) ) {
-                    IOUtils.write( "Workspace " + wsName + " invalid.\n", resp.getOutputStream() );
-                    return;
+                    throw new UploadException( "Workspace " + wsName + " invalid." );
                 } else if ( isWorkspace( dirName ) ) {
-                    IOUtils.write( "Workspace " + wsName + " exists.\n", resp.getOutputStream() );
-                    return;
+                    throw new UploadException( "Workspace " + wsName + " exists." );
                 }
                 unzip( in, dir );
-                IOUtils.write( "Workspace " + wsName + " uploaded.\n", resp.getOutputStream() );
+                return "Workspace " + wsName + " uploaded.";
             } else {
                 File workspaceDir = p.first.getLocation();
                 File dest = new File( workspaceDir, p.second );
                 if ( !FilenameUtils.directoryContains( workspaceDir.getCanonicalPath(), dest.getCanonicalPath() ) ) {
-                    IOUtils.write( "Unable to upload file: " + p.second + ".\n", resp.getOutputStream() );
-                    return;
+                    throw new UploadException( "Unable to upload file: " + p.second + "." );
                 }
                 if ( !dest.getParentFile().exists() && !dest.getParentFile().mkdirs() ) {
-                    IOUtils.write( "Unable to create parent directory for upload.\n", resp.getOutputStream() );
-                    return;
+                    throw new UploadException( "Unable to create parent directory for upload." );
                 }
                 copyInputStreamToFile( in, dest );
-                IOUtils.write( dest.getName() + " uploaded.\n", resp.getOutputStream() );
+                return dest.getName() + " uploaded.";
             }
         } finally {
             closeQuietly( in );
