@@ -3,9 +3,7 @@ package org.deegree.services.oaf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deegree.services.controller.OGCFrontController;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
-import org.deegree.services.oaf.resource.LandingPage;
-import org.deegree.services.oaf.resource.OpenApi;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 
@@ -35,20 +33,20 @@ public class OgcApiFeatures extends ResourceConfig {
 
         initOgcFrontCntroller( servletConfig );
 
-        OpenApi openApiResource = new OpenApi();
-        openApiResource.setOpenApiCreator( new OpenApiCreator( servletConfig ) );
-        register( openApiResource );
-
-        LandingPage landingPageResource = new LandingPage();
-        register( landingPageResource );
-        packages( "org.deegree.services.oaf.resource" );
         packages( "com.fasterxml.jackson.jaxrs.json" );
+        packages( "org.deegree.services.oaf.resource" );
         packages( "org.deegree.services.oaf.feature" );
         packages( "org.deegree.services.oaf.converter" );
         packages( "org.deegree.services.oaf.exceptions" );
         packages( "org.deegree.services.oaf.filter" );
         packages( "org.deegree.ogcapi.config.resource" );
         packages( "org.deegree.ogcapi.config.exceptions" );
+        register( new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bindAsContract( OpenApiCreator.class );
+            }
+        } );
     }
 
     private void initOgcFrontCntroller( @Context ServletConfig servletConfig ) {

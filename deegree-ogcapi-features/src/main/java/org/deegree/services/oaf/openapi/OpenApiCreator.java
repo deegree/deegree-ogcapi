@@ -12,8 +12,8 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.slf4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -40,23 +40,22 @@ public class OpenApiCreator {
 
     private static final String VERSION = "1.0";
 
-    private final ServletConfig servletConfig;
+    @Context
+    private ServletConfig servletConfig;
 
     @Context
     private UriInfo uriInfo;
 
-    public OpenApiCreator( ServletConfig servletConfig ) {
-        this.servletConfig = servletConfig;
-    }
+    @Context
+    private Application app;
 
-    public OpenAPI createOpenApi( HttpHeaders headers, ServletConfig config, Application app, UriInfo uriInfo,
-                                  String datasetId )
+    public OpenAPI createOpenApi( HttpHeaders headers, String datasetId )
                     throws Exception {
         OpenAPI oas = createOpenApiDocument( datasetId );
         SwaggerConfiguration oasConfig = createSwaggerConfiguration( oas );
 
-        String ctxId = ServletConfigContextUtils.getContextIdFromServletConfig( config );
-        OpenApiContext ctx = ( new JaxrsOpenApiContextBuilder() ).servletConfig( config ).application( app )
+        String ctxId = ServletConfigContextUtils.getContextIdFromServletConfig( servletConfig );
+        OpenApiContext ctx = ( new JaxrsOpenApiContextBuilder() ).servletConfig( servletConfig ).application( app )
                                                                  // .resourcePackages( this.resourcePackages )
                                                                  // .configLocation( this.configLocation )
                                                                  .openApiConfiguration( oasConfig ).ctxId(
@@ -127,7 +126,7 @@ public class OpenApiCreator {
     }
 
     private void addserver( OpenAPI oas ) {
-        String contextPath = this.servletConfig.getServletContext().getContextPath();
+        String contextPath = servletConfig.getServletContext().getContextPath();
         if ( contextPath != null && !contextPath.isEmpty() ) {
             Server server = new Server().url( contextPath );
             List<Server> servers = Collections.singletonList( server );

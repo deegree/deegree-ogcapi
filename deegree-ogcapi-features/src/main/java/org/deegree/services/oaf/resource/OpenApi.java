@@ -1,44 +1,29 @@
 package org.deegree.services.oaf.resource;
 
-import io.swagger.v3.core.filter.SpecFilter;
 import io.swagger.v3.core.util.Json;
-import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
-import io.swagger.v3.jaxrs2.integration.ServletConfigContextUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.integration.SwaggerConfiguration;
-import io.swagger.v3.oas.integration.api.OpenApiContext;
 import io.swagger.v3.oas.models.OpenAPI;
-import org.deegree.services.oaf.openapi.OafOpenApiFilter;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
-import org.slf4j.Logger;
 
-import javax.servlet.ServletConfig;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI_TYPE;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -46,16 +31,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Path("/datasets/{datasetId}/api")
 public class OpenApi {
 
-
     @Context
-    ServletContext servletContext;
+    private ServletContext servletContext;
 
-    @Context
-    ServletConfig config;
-
-    @Context
-    Application app;
-
+    @Inject
     private OpenApiCreator openApiCreator;
 
     @GET
@@ -68,7 +47,7 @@ public class OpenApi {
                     @PathParam("datasetId")
                                     String datasetId )
                     throws Exception {
-        OpenAPI openApi = this.openApiCreator.createOpenApi( headers, config, app, uriInfo, datasetId );
+        OpenAPI openApi = this.openApiCreator.createOpenApi( headers, datasetId );
 
         if ( openApi == null )
             return Response.status( 404 ).build();
@@ -99,14 +78,6 @@ public class OpenApi {
             System.out.println( e.getLocalizedMessage() );
             return null;
         }
-    }
-
-    /**
-     * @param openApiCreator
-     *                 used to create the OpenAPI configuration never <code>null</code>
-     */
-    public void setOpenApiCreator( OpenApiCreator openApiCreator ) {
-        this.openApiCreator = openApiCreator;
     }
 
 }

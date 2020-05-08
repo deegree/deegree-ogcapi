@@ -3,9 +3,10 @@ package org.deegree.services.oaf.resource;
 import org.deegree.services.oaf.OgcApiFeaturesMediaType;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
-import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
@@ -40,15 +41,19 @@ public class OpenApiTest extends JerseyTest {
     @Override
     protected Application configure() {
         enable( TestProperties.LOG_TRAFFIC );
-        OpenApi openApi = new OpenApi();
         ServletContext servletContext = mock( ServletContext.class );
         when( servletContext.getContextPath() ).thenReturn( "" );
         ServletConfig servletConfig = mock( ServletConfig.class );
         when( servletConfig.getServletContext() ).thenReturn( servletContext );
-        OpenApiCreator openApiCreator = new OpenApiCreator( servletConfig );
-        openApi.setOpenApiCreator( openApiCreator );
         ResourceConfig resourceConfig = new ResourceConfig();
-        resourceConfig.register( openApi );
+        resourceConfig.packages( "org.deegree.services.oaf.resource" );
+        resourceConfig.register( new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bind( servletConfig ).to( ServletConfig.class );
+                bindAsContract( OpenApiCreator.class );
+            }
+        } );
         return resourceConfig;
     }
 
