@@ -1,6 +1,9 @@
 package org.deegree.services.oaf.feature;
 
+import org.deegree.cs.exceptions.TransformationException;
+import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.Feature;
+import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.gml.GMLOutputFactory;
 import org.deegree.gml.GMLStreamWriter;
 import org.deegree.gml.GMLVersion;
@@ -45,34 +48,44 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
     public void writeTo( FeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
                          MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream out )
                     throws WebApplicationException {
-        XMLStreamWriter xmlStreamWriter = null;
+        GMLStreamWriter gmlStreamWriter = null;
         try {
-            xmlStreamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter( out );
-            GMLStreamWriter gmlStreamWriter = GMLOutputFactory.createGMLStreamWriter( GMLVersion.GML_32,
-                                                                                      xmlStreamWriter );
+            XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter( out );
+            gmlStreamWriter = GMLOutputFactory.createGMLStreamWriter( GMLVersion.GML_32,
+                                                                      xmlStreamWriter );
             GMLFeatureWriter featureWriter = new GMLFeatureWriter( gmlStreamWriter );
             xmlStreamWriter.writeStartElement( "sf", "FeatureCollection", XML_SF_NS_URL );
             xmlStreamWriter.writeNamespace( "sf", XML_SF_NS_URL );
             xmlStreamWriter.writeNamespace( "xsi", "http://www.w3.org/2001/XMLSchema-instance" );
 
-            for ( Feature feature : features.getFeatures() ) {
-                xmlStreamWriter.writeStartElement( "sf", "featureMember", XML_SF_NS_URL );
-                featureWriter.export( feature );
-                xmlStreamWriter.writeEndElement();
-            }
+            writeFeatures( features.getFeatures(), xmlStreamWriter, featureWriter );
 
             xmlStreamWriter.writeEndElement();
 
         } catch ( Exception ex ) {
             throw new WebApplicationException( ex );
         } finally {
-            if ( xmlStreamWriter != null ) {
+            if ( gmlStreamWriter != null ) {
                 try {
-                    xmlStreamWriter.close();
+                    gmlStreamWriter.close();
                 } catch ( XMLStreamException e ) {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void writeFeatures( FeatureInputStream featureStream, XMLStreamWriter xmlStreamWriter,
+                                GMLFeatureWriter featureWriter )
+                    throws XMLStreamException, UnknownCRSException, TransformationException {
+        try {
+            for ( Feature feature : featureStream ) {
+                xmlStreamWriter.writeStartElement( "sf", "featureMember", XML_SF_NS_URL );
+                featureWriter.export( feature );
+                xmlStreamWriter.writeEndElement();
+            }
+        } finally {
+            featureStream.close();
         }
     }
 
