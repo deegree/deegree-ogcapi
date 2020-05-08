@@ -6,6 +6,7 @@ import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.persistence.FeatureStoreException;
 import org.deegree.feature.persistence.query.Query;
 import org.deegree.feature.stream.FeatureInputStream;
+import org.deegree.feature.types.FeatureType;
 import org.deegree.filter.FilterEvaluationException;
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
@@ -22,7 +23,9 @@ import org.deegree.services.oaf.link.NextLink;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +73,8 @@ public class DeegreeDataAccess implements DataAccess {
             int offset = featuresRequest.getOffset();
             NextLink nextLink = new NextLink( numberOfFeaturesMatched, limit, offset );
             List<Link> links = linkBuilder.createFeaturesLinks( datasetId, collectionId, nextLink );
-            return new FeatureResponse( features, limit, numberOfFeaturesMatched, offset, links,
+            Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
+            return new FeatureResponse( features, featureTypeNsPrefixes, limit, numberOfFeaturesMatched, offset, links,
                                         isMaxFeaturesAndStartIndexApplicable, crs );
         } catch ( FeatureStoreException | FilterEvaluationException | InvalidConfigurationException e ) {
             throw new InternalQueryException( e );
@@ -90,7 +94,8 @@ public class DeegreeDataAccess implements DataAccess {
             Query queryById = queryBuilder.createQueryById( featureType.getName(), featureId );
             FeatureInputStream feature = featureStore.query( queryById );
             List<Link> inks = linkBuilder.createFeatureLinks( datasetId, collectionId, featureId );
-            return new FeatureResponse( feature, 1, 1, 0, inks, true, crs );
+            Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
+            return new FeatureResponse( feature, featureTypeNsPrefixes, 1, 1, 0, inks, true, crs );
         } catch ( FeatureStoreException | FilterEvaluationException e ) {
             throw new InternalQueryException( e );
         }
@@ -136,6 +141,18 @@ public class DeegreeDataAccess implements DataAccess {
         String description = featureType.getDescription();
         List<String> suppportedCrs = oafConfiguration.getSuppportedCrs();
         return new Collection( featureTypeId, title, description, links, featureType.getExtent(), suppportedCrs );
+    }
+
+    private Map<String, String> getFeatureTypeNsPrefixes( FeatureStore featureStore ) {
+        Map<String, String> prefixToNs = new HashMap<String, String>();
+        FeatureType[] featureTypes = featureStore.getSchema().getFeatureTypes();
+        for ( FeatureType ft : featureTypes ) {
+            QName ftName = ft.getName();
+            if ( ftName.getPrefix() != null ) {
+                prefixToNs.put( ftName.getPrefix(), ftName.getNamespaceURI() );
+            }
+        }
+        return prefixToNs;
     }
 
 }

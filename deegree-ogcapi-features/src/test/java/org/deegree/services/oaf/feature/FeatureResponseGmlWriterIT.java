@@ -14,12 +14,16 @@ import org.xmlmatchers.namespace.SimpleNamespaceContext;
 import org.xmlmatchers.xpath.XpathReturnType;
 
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
 import javax.xml.validation.Schema;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static org.deegree.gml.GMLVersion.GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
@@ -81,7 +85,10 @@ public class FeatureResponseGmlWriterIT {
 
         FeatureInputStream featureStream = new IteratorFeatureInputStream(
                         new ListCloseableIterator( featureCollection ) );
-        return new FeatureResponse( featureStream, featureCollection.size(), featureCollection.size(), 0, links, false,
+        Map<String, String> featureTypeNsPrefixes = new HashMap<>();
+        QName name = featureCollection.getName();
+        featureTypeNsPrefixes.put( name.getPrefix(), name.getNamespaceURI() );
+        return new FeatureResponse( featureStream, featureTypeNsPrefixes, featureCollection.size(), featureCollection.size(), 0, links, false,
                                     null );
     }
 
@@ -89,7 +96,8 @@ public class FeatureResponseGmlWriterIT {
         List<Link> links = java.util.Collections.singletonList(
                         new Link( "http://self", "self", "application/json", "title" ) );
         FeatureInputStream featureStream = new EmptyFeatureInputStream();
-        return new FeatureResponse( featureStream, 10, 100, 0, links, false, null );
+        Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
+        return new FeatureResponse( featureStream, featureTypeNsPrefixes, 10, 100, 0, links, false, null );
     }
 
     private class ListCloseableIterator implements CloseableIterator<Feature> {

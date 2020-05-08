@@ -13,7 +13,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasNoJsonPath;
@@ -48,7 +50,8 @@ public class FeatureResponeWriterTest {
         Collection<Feature> features = new ArrayList<>();
         final FeatureCollection featureCollection = new GenericFeatureCollection( "COL_1", features );
         FeatureInputStream featureStream = new EmptyFeatureInputStream();
-        return new FeatureResponse( featureStream, 10, 100, 0, links, false, null );
+        Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
+        return new FeatureResponse( featureStream, featureTypeNsPrefixes, 10, 100, 0, links, false, null );
     }
 
 }

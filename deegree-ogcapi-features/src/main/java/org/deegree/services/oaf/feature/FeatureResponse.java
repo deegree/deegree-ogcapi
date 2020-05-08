@@ -1,10 +1,11 @@
 package org.deegree.services.oaf.feature;
 
-import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.services.oaf.link.Link;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -14,6 +15,8 @@ public class FeatureResponse {
     private final FeatureInputStream features;
 
     private final int numberOfFeaturesMatched;
+
+    private final Map<String, String> featureTypeNsPrefixes;
 
     private final int numberOfFeatures;
 
@@ -25,10 +28,13 @@ public class FeatureResponse {
 
     private final String responseCrsName;
 
-    public FeatureResponse( FeatureInputStream features, int numberOfFeatures, int numberOfFeaturesMatched,
+    public FeatureResponse( FeatureInputStream features,
+                            Map<String, String> featureTypeNsPrefixes,
+                            int numberOfFeatures, int numberOfFeaturesMatched,
                             int startIndex, List<Link> links, boolean isMaxFeaturesAndStartIndexApplicable,
                             String responseCrsName ) {
         this.features = features;
+        this.featureTypeNsPrefixes = featureTypeNsPrefixes;
         this.numberOfFeatures = numberOfFeatures;
         this.numberOfFeaturesMatched = numberOfFeaturesMatched;
         this.startIndex = startIndex;
@@ -63,5 +69,11 @@ public class FeatureResponse {
 
     public String getResponseCrsName() {
         return responseCrsName;
+    }
+
+    public Map<String, String> getFeatureTypeNsPrefixes() {
+        if ( featureTypeNsPrefixes == null )
+            return Collections.emptyMap();
+        return featureTypeNsPrefixes;
     }
 }

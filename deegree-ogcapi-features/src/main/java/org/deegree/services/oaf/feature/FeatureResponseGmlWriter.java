@@ -21,6 +21,8 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
@@ -53,7 +55,11 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
             XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter( out );
             gmlStreamWriter = GMLOutputFactory.createGMLStreamWriter( GMLVersion.GML_32,
                                                                       xmlStreamWriter );
+            Map<String, String> prefixToNs = new HashMap<>();
+            prefixToNs.putAll( features.getFeatureTypeNsPrefixes() );
+            gmlStreamWriter.setNamespaceBindings( prefixToNs );
             GMLFeatureWriter featureWriter = new GMLFeatureWriter( gmlStreamWriter );
+
             xmlStreamWriter.writeStartElement( "sf", "FeatureCollection", XML_SF_NS_URL );
             xmlStreamWriter.writeNamespace( "sf", XML_SF_NS_URL );
             xmlStreamWriter.writeNamespace( "xsi", "http://www.w3.org/2001/XMLSchema-instance" );

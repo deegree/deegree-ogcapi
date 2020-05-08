@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 
@@ -24,13 +25,15 @@ public class TestData {
     public static FeatureResponse features() {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
-        return new FeatureResponse( features, 10, 100, 0, java.util.Collections.singletonList( link ), false, null );
+        Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
+        return new FeatureResponse( features, featureTypeNsPrefixes, 10, 100, 0, java.util.Collections.singletonList( link ), false, null );
     }
 
     public static FeatureResponse feature() {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
-        return new FeatureResponse( features, 1, 1, 0, java.util.Collections.singletonList( link ), false, null );
+        Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
+        return new FeatureResponse( features, featureTypeNsPrefixes, 1, 1, 0, java.util.Collections.singletonList( link ), false, null );
     }
 
     public static Collections createCollections() {
