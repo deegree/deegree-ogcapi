@@ -20,7 +20,9 @@ import org.deegree.ogcapi.config.exceptions.UpdateException;
 import org.deegree.ogcapi.config.exceptions.UploadException;
 import org.deegree.ogcapi.config.exceptions.ValidationException;
 import org.deegree.services.config.ApiKey;
+import org.slf4j.Logger;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -41,12 +43,18 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.deegree.ogcapi.config.actions.Download.downloadFile;
 import static org.deegree.ogcapi.config.actions.Download.downloadWorkspace;
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 @Path("/config")
 public class Config {
+
+    private static final Logger LOG = getLogger( Config.class );
+
+    @Inject
+    private RestartOrUpdateHandler restartOrUpdateHandler;
 
     private static ApiKey token = new ApiKey();
 
@@ -92,20 +100,33 @@ public class Config {
                     throws RestartException {
         token.validate( request );
         String restart = Restart.restart( path );
+        afterRestartOrUpdate();
         return Response.ok( restart, APPLICATION_OCTET_STREAM_TYPE ).build();
     }
 
     @GET
     @Operation(description =
-                    "/config/update - update currently running workspace, rescan config files and update resources\n"
-                    + "/config/update/wsname - update with workspace <wsname>, rescan config files and update resources"
+                    "/config/update - update currently running workspace, rescan config files and update resources")
+    @Path("/update")
+    public Response update( @Context HttpServletRequest request,
+                            @QueryParam("featureStoreId") String featureStoreId )
+                    throws UpdateException {
+        token.validate( request );
+        String update = Update.update( null );
+        afterRestartOrUpdate();
+        return Response.ok( update, TEXT_PLAIN ).build();
+    }
+
+    @GET
+    @Operation(description =
+                    "/config/update/wsname - update with workspace <wsname>, rescan config files and update resources"
                     +
                     "/config/update/bboxcache[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the currently running workspace, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed\n"
                     + "/config/update/bboxcache/wsname[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the workspace with name <wsname>, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed")
     @Path("/update/{wsname}")
-    public Response update( @Context HttpServletRequest request,
-                            @PathParam("wsname") String wsname,
-                            @QueryParam("featureStoreId") String featureStoreId )
+    public Response updateWorkspace( @Context HttpServletRequest request,
+                                     @PathParam("wsname") String wsname,
+                                     @QueryParam("featureStoreId") String featureStoreId )
                     throws BboxCacheUpdateException, UpdateException {
         token.validate( request );
         if ( wsname != null && wsname.startsWith( "bboxcache" ) ) {
@@ -113,6 +134,7 @@ public class Config {
             return Response.ok( log, TEXT_PLAIN ).build();
         }
         String update = Update.update( wsname );
+        afterRestartOrUpdate();
         return Response.ok( update, TEXT_PLAIN ).build();
     }
 
@@ -177,6 +199,13 @@ public class Config {
         token.validate( request );
         String delete = Delete.delete( path );
         return Response.ok( delete, TEXT_PLAIN ).build();
+    }
+
+    private void afterRestartOrUpdate() {
+        if ( restartOrUpdateHandler != null ) {
+            LOG.info( "Handle after restart/update" );
+            restartOrUpdateHandler.afterRestartOrUpdate();
+        }
     }
 
 }

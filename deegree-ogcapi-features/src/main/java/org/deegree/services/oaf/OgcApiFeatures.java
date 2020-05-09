@@ -1,8 +1,10 @@
 package org.deegree.services.oaf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.deegree.ogcapi.config.resource.RestartOrUpdateHandler;
 import org.deegree.services.controller.OGCFrontController;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceRestartOrUpdateHandler;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
@@ -45,6 +47,7 @@ public class OgcApiFeatures extends ResourceConfig {
             @Override
             protected void configure() {
                 bindAsContract( OpenApiCreator.class );
+                bind( DeegreeWorkspaceRestartOrUpdateHandler.class ).to( RestartOrUpdateHandler.class );
             }
         } );
     }

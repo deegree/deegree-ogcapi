@@ -46,25 +46,7 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
         DeegreeWorkspace workspace = DeegreeWorkspace.getInstance( DEEGREE_WORKSPACE_NAME );
         try {
             workspace.initAll();
-
-            Workspace newWorkspace = workspace.getNewWorkspace();
-            List<ResourceIdentifier<Resource>> oafResourceIdentifiers = newWorkspace.getResourcesOfType(
-                            OgcApiProvider.class );
-            oafResourceIdentifiers.forEach( resourceResourceIdentifier -> {
-                String id = resourceResourceIdentifier.getId();
-                OafResource resource = (OafResource) newWorkspace.getResource( OgcApiProvider.class, id );
-                OafDatasetConfiguration oafConfiguration = resource.getOafConfiguration();
-                this.oafConfiguration.addDataset( id, oafConfiguration );
-                HtmlViewConfiguration htmlViewConfiguration = resource.getHtmlViewConfiguration();
-                if ( htmlViewConfiguration != null )
-                    this.htmlViewConfigurations.put( id, htmlViewConfiguration );
-            } );
-
-            HtmlViewConfigResource globalHtmlViewConfigResource = workspace.getNewWorkspace().getResource(
-                            OgcApiConfigProvider.class,
-                            "htmlview" );
-            if ( globalHtmlViewConfigResource != null )
-                this.globalHtmlViewConfiguration = globalHtmlViewConfigResource.getHtmlViewConfiguration();
+            initConfiguration( workspace.getNewWorkspace() );
         } catch ( ResourceInitException e ) {
             LOG.error( "Workspace could not be initialised", e );
             throw new WorkspaceInitException( e );
@@ -73,6 +55,14 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
 
     @Override
     public void contextDestroyed( ServletContextEvent event ) {
+    }
+
+    public static void reinitialize() {
+        LOG.info( "Reinitialize workspace" );
+        oafConfiguration = new OafDatasets();
+        htmlViewConfigurations = new HashMap<>();
+        DeegreeWorkspace workspace = DeegreeWorkspace.getInstance( DEEGREE_WORKSPACE_NAME );
+        initConfiguration( workspace.getNewWorkspace() );
     }
 
     public static OafDatasets getOafDatasets() {
@@ -95,6 +85,26 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
      */
     public static HtmlViewConfiguration getGlobalHtmlViewConfiguration() {
         return globalHtmlViewConfiguration;
+    }
+
+    private static void initConfiguration( Workspace newWorkspace ) {
+        List<ResourceIdentifier<Resource>> oafResourceIdentifiers = newWorkspace.getResourcesOfType(
+                        OgcApiProvider.class );
+        oafResourceIdentifiers.forEach( resourceResourceIdentifier -> {
+            String id = resourceResourceIdentifier.getId();
+            OafResource resource = (OafResource) newWorkspace.getResource( OgcApiProvider.class, id );
+            OafDatasetConfiguration oafDatasetConfiguration = resource.getOafConfiguration();
+            oafConfiguration.addDataset( id, oafDatasetConfiguration );
+            HtmlViewConfiguration htmlViewConfiguration = resource.getHtmlViewConfiguration();
+            if ( htmlViewConfiguration != null )
+                htmlViewConfigurations.put( id, htmlViewConfiguration );
+        } );
+
+        HtmlViewConfigResource globalHtmlViewConfigResource = newWorkspace.getResource(
+                        OgcApiConfigProvider.class,
+                        "htmlview" );
+        if ( globalHtmlViewConfigResource != null )
+            globalHtmlViewConfiguration = globalHtmlViewConfigResource.getHtmlViewConfiguration();
     }
 
 }
