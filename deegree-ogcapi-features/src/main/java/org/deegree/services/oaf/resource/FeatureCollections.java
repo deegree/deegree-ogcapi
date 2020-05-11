@@ -20,7 +20,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.InputStream;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -74,11 +73,14 @@ public class FeatureCollections {
     @GET
     @Produces({ TEXT_HTML })
     @Operation(hidden = true)
-    public InputStream collectionsHtml(
+    public Response collectionsHtml(
+                    @PathParam("datasetId") String datasetId,
+                    @Context UriInfo uriInfo,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
                     @QueryParam("f")
-                                    String format ) {
-        return getClass().getResourceAsStream( "/collections.html" );
+                                    String format )
+                    throws UnknownDatasetId, InvalidParameterValue {
+        return collections( datasetId, uriInfo, format, JSON );
     }
 
     @GET
