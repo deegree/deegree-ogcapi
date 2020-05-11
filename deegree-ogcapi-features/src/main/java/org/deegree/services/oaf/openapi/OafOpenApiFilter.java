@@ -19,6 +19,7 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.slf4j.Logger;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,11 +64,14 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     private final OafDatasetConfiguration datasetConfiguration;
 
-    public OafOpenApiFilter( String datasetId )
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+
+    public OafOpenApiFilter( String datasetId, DeegreeWorkspaceInitializer deegreeWorkspaceInitializer )
                     throws UnknownDatasetId {
         this.datasetId = datasetId;
 
-        OafDatasets oafDatasets = DeegreeWorkspaceInitializer.getOafDatasets();
+        OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
         this.datasetConfiguration = oafDatasets.getDataset( datasetId );
     }
 

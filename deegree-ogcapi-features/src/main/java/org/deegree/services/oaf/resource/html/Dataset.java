@@ -6,6 +6,7 @@ import org.deegree.services.oaf.domain.html.ImpressumConfiguration;
 import org.deegree.services.oaf.domain.html.MapConfiguration;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,12 +29,15 @@ public class Dataset {
     @Context
     ServletContext servletContext;
 
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+
     @Operation(hidden = true)
     @Path("/css/main.css")
     @GET
     public InputStream getCssFile( @PathParam("datasetId") String datasetId )
                     throws FileNotFoundException {
-        HtmlViewConfiguration htmlViewConfiguration = DeegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
+        HtmlViewConfiguration htmlViewConfiguration = deegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
         if ( htmlViewConfiguration != null && htmlViewConfiguration.getCssFile() != null )
             return new FileInputStream( htmlViewConfiguration.getCssFile() );
         return getClass().getResourceAsStream( "/css/main.css" );
@@ -44,7 +48,7 @@ public class Dataset {
     @GET
     @Produces(APPLICATION_JSON)
     public Response getMapConfig( @PathParam("datasetId") String datasetId ) {
-        HtmlViewConfiguration htmlViewConfiguration = DeegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
+        HtmlViewConfiguration htmlViewConfiguration = deegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
         if ( htmlViewConfiguration == null || htmlViewConfiguration.getWmsUrl() == null )
             return Response.status( Response.Status.NOT_FOUND ).build();
         MapConfiguration mapConfiguration = new MapConfiguration( htmlViewConfiguration.getWmsUrl(),
@@ -59,7 +63,7 @@ public class Dataset {
     @GET
     @Produces(APPLICATION_JSON)
     public Response getImpressumUrl( @PathParam("datasetId") String datasetId ) {
-        HtmlViewConfiguration htmlViewConfiguration = DeegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
+        HtmlViewConfiguration htmlViewConfiguration = deegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
         if ( htmlViewConfiguration == null || htmlViewConfiguration.getImpressumUrl() == null )
             return Response.status( Response.Status.NOT_FOUND ).build();
         return Response.ok( new ImpressumConfiguration( htmlViewConfiguration.getImpressumUrl() ),

@@ -5,6 +5,7 @@ import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.domain.html.ImpressumConfiguration;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,12 +27,15 @@ public class Global {
     @Context
     ServletContext servletContext;
 
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+
     @Operation(hidden = true)
     @Path("css/main.css")
     @GET
     public InputStream getDefaultCssFile()
                     throws FileNotFoundException {
-        HtmlViewConfiguration globalHtmlViewConfiguration = DeegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
+        HtmlViewConfiguration globalHtmlViewConfiguration = deegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
         if ( globalHtmlViewConfiguration != null && globalHtmlViewConfiguration.getCssFile() != null )
             return new FileInputStream( globalHtmlViewConfiguration.getCssFile() );
         return getClass().getResourceAsStream( "/css/main.css" );
@@ -42,7 +46,7 @@ public class Global {
     @GET
     @Produces(APPLICATION_JSON)
     public Response getDefaultImpressumUrl() {
-        HtmlViewConfiguration globalHtmlViewConfiguration = DeegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
+        HtmlViewConfiguration globalHtmlViewConfiguration = deegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
         if ( globalHtmlViewConfiguration == null || globalHtmlViewConfiguration.getImpressumUrl() == null )
             return Response.status( Response.Status.NOT_FOUND ).build();
         return Response.ok( new ImpressumConfiguration( globalHtmlViewConfiguration.getImpressumUrl() ),

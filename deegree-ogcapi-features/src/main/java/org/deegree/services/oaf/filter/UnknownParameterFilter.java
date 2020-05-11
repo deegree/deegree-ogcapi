@@ -8,6 +8,7 @@ import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -51,6 +52,9 @@ public class UnknownParameterFilter implements ContainerRequestFilter {
 
     @Context
     private UriInfo uriInfo;
+
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
     @Override
     public void filter( ContainerRequestContext requestContext )
@@ -99,7 +103,7 @@ public class UnknownParameterFilter implements ContainerRequestFilter {
             String collectionId = pathParameters.get( "collectionId" ).get( 0 );
 
             try {
-                OafDatasetConfiguration oafConfiguration = DeegreeWorkspaceInitializer.getOafDatasets().getDataset(
+                OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset(
                                 datasetId );
                 FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
                 if ( featureTypeMetadata != null ) {

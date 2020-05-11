@@ -6,9 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -23,6 +24,9 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 @Path("/datasets/{datasetId}/license")
 public class License {
 
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+
     @Path("/provider")
     @GET
     @Produces({ TEXT_PLAIN })
@@ -34,7 +38,7 @@ public class License {
                     @PathParam("datasetId")
                                     String datasetId )
                     throws UnknownDatasetId {
-        OafDatasetConfiguration dataset = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         DatasetMetadata metadata = dataset.getServiceMetadata();
 
         if ( metadata.hasProviderLicenseUrl() )
@@ -53,7 +57,7 @@ public class License {
                     @PathParam("datasetId")
                                     String datasetId )
                     throws UnknownDatasetId {
-        OafDatasetConfiguration dataset = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         DatasetMetadata metadata = dataset.getServiceMetadata();
 
         if ( metadata.hasDatasetLicenseUrl() )

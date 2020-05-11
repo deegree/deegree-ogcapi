@@ -12,8 +12,8 @@ import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
-import org.deegree.services.oaf.workspace.DataAccessFactory;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -37,7 +37,8 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets/{datasetId}/collections/{collectionId}")
 public class FeatureCollection {
 
-    private DataAccess collectionFactory = DataAccessFactory.getInstance();
+    @Inject
+    private DataAccess dataAccess;
 
     @GET
     @Produces({ APPLICATION_JSON })
@@ -117,7 +118,7 @@ public class FeatureCollection {
             return Response.ok( getClass().getResourceAsStream( "/collection.html" ), TEXT_HTML ).build();
         }
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        Collection collection = collectionFactory.createCollection( datasetId, collectionId, linkBuilder );
+        Collection collection = dataAccess.createCollection( datasetId, collectionId, linkBuilder );
         if ( XML.equals( requestFormat ) ) {
             Collections collections = new Collections();
             collections.addCollection( collection );

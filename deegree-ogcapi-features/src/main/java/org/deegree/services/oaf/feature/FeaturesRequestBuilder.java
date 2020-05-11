@@ -2,14 +2,9 @@ package org.deegree.services.oaf.feature;
 
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
-import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 
-import javax.ws.rs.core.MultivaluedMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -13,11 +13,7 @@ import org.glassfish.jersey.test.TestProperties;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -25,6 +21,7 @@ import javax.ws.rs.core.Application;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
+import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -34,8 +31,6 @@ import static org.mockito.Mockito.when;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DeegreeWorkspaceInitializer.class)
 public class OpenApiTest extends JerseyTest {
 
     @Override
@@ -52,6 +47,7 @@ public class OpenApiTest extends JerseyTest {
             protected void configure() {
                 bind( servletConfig ).to( ServletConfig.class );
                 bindAsContract( OpenApiCreator.class );
+                bind( mockWorkspaceInitializer( "strassenbaum" ) ).to( DeegreeWorkspaceInitializer.class );
             }
         } );
         return resourceConfig;
@@ -59,13 +55,13 @@ public class OpenApiTest extends JerseyTest {
 
     @Before
     public void mockWorkspace() {
-        PowerMockito.mockStatic( DeegreeWorkspaceInitializer.class );
         OafDatasetConfiguration oafConfiguration = Mockito.mock( OafDatasetConfiguration.class );
         DatasetMetadata serviceMetadata = Mockito.mock( DatasetMetadata.class );
         when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
         OafDatasets oafDatasets = new OafDatasets();
         oafDatasets.addDataset( "oaf", oafConfiguration );
-        when( DeegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
+        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
+        when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
     }
 
     @Test

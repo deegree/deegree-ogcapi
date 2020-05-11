@@ -16,6 +16,7 @@ import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.slf4j.Logger;
 
+import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
@@ -49,6 +50,9 @@ public class OpenApiCreator {
     @Context
     private Application app;
 
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+
     public OpenAPI createOpenApi( HttpHeaders headers, String datasetId )
                     throws Exception {
         OpenAPI oas = createOpenApiDocument( datasetId );
@@ -65,7 +69,7 @@ public class OpenApiCreator {
         if ( oas != null && ctx.getOpenApiConfiguration() != null
              && ctx.getOpenApiConfiguration().getFilterClass() != null ) {
             try {
-                OafOpenApiFilter filter = new OafOpenApiFilter( datasetId );
+                OafOpenApiFilter filter = new OafOpenApiFilter( datasetId, deegreeWorkspaceInitializer );
                 SpecFilter f = new SpecFilter();
                 oas = f.filter( oas, filter, getQueryParams( uriInfo.getQueryParameters() ), getCookies( headers ),
                                 getHeaders( headers ) );
@@ -116,7 +120,7 @@ public class OpenApiCreator {
 
     private OpenAPI createOpenApiDocument( String datasetId )
                     throws UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         DatasetMetadata metadata = oafConfiguration.getServiceMetadata();
         Info info = createInfo( metadata );
         OpenAPI oas = new OpenAPI();

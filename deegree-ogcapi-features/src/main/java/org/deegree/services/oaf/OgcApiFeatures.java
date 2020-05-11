@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deegree.ogcapi.config.resource.RestartOrUpdateHandler;
 import org.deegree.services.controller.OGCFrontController;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
+import org.deegree.services.oaf.workspace.DataAccess;
+import org.deegree.services.oaf.workspace.DeegreeDataAccess;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceRestartOrUpdateHandler;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -35,6 +38,9 @@ public class OgcApiFeatures extends ResourceConfig {
 
         initOgcFrontCntroller( servletConfig );
 
+        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = new DeegreeWorkspaceInitializer();
+        deegreeWorkspaceInitializer.initialize();
+
         packages( "com.fasterxml.jackson.jaxrs.json" );
         packages( "org.deegree.services.oaf.resource" );
         packages( "org.deegree.services.oaf.feature" );
@@ -47,6 +53,8 @@ public class OgcApiFeatures extends ResourceConfig {
             @Override
             protected void configure() {
                 bindAsContract( OpenApiCreator.class );
+                bindAsContract( DeegreeDataAccess.class ).to( DataAccess.class );
+                bind( deegreeWorkspaceInitializer ).to( DeegreeWorkspaceInitializer.class );
                 bind( DeegreeWorkspaceRestartOrUpdateHandler.class ).to( RestartOrUpdateHandler.class );
             }
         } );

@@ -13,8 +13,8 @@ import org.deegree.services.oaf.feature.FeatureResponse;
 import org.deegree.services.oaf.feature.FeatureResponseCreator;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
-import org.deegree.services.oaf.workspace.DataAccessFactory;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -42,7 +42,8 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets/{datasetId}/collections/{collectionId}/items/{featureId}")
 public class Feature {
 
-    private final DataAccess dataAccess = DataAccessFactory.getInstance();
+    @Inject
+    private DataAccess dataAccess;
 
     private final FeatureResponseCreator featureResponseCreator = new FeatureResponseCreator();
 

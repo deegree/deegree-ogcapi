@@ -14,9 +14,6 @@ import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
 import org.slf4j.Logger;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +25,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-@WebListener
-public class DeegreeWorkspaceInitializer implements ServletContextListener {
+public class DeegreeWorkspaceInitializer {
 
     private static final Logger LOG = getLogger( DeegreeWorkspaceInitializer.class );
 
@@ -41,8 +37,7 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
 
     private static HtmlViewConfiguration globalHtmlViewConfiguration;
 
-    @Override
-    public void contextInitialized( ServletContextEvent event ) {
+    public void initialize() {
         DeegreeWorkspace workspace = DeegreeWorkspace.getInstance( DEEGREE_WORKSPACE_NAME );
         try {
             workspace.initAll();
@@ -53,11 +48,7 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
         }
     }
 
-    @Override
-    public void contextDestroyed( ServletContextEvent event ) {
-    }
-
-    public static void reinitialize() {
+    public void reinitialize() {
         LOG.info( "Reinitialize workspace" );
         oafConfiguration = new OafDatasets();
         htmlViewConfigurations = new HashMap<>();
@@ -65,7 +56,7 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
         initConfiguration( workspace.getNewWorkspace() );
     }
 
-    public static OafDatasets getOafDatasets() {
+    public OafDatasets getOafDatasets() {
         return oafConfiguration;
     }
 
@@ -74,7 +65,7 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
      *                 the id of the dataset
      * @return the {@link HtmlViewConfiguration}  of the dataset with the passed id, <code>null</code> if not available
      */
-    public static HtmlViewConfiguration getHtmlViewConfiguration( String datasetId ) {
+    public HtmlViewConfiguration getHtmlViewConfiguration( String datasetId ) {
         if ( htmlViewConfigurations.containsKey( datasetId ) )
             return htmlViewConfigurations.get( datasetId );
         return null;
@@ -83,11 +74,11 @@ public class DeegreeWorkspaceInitializer implements ServletContextListener {
     /**
      * @return the global {@link HtmlViewConfiguration}, <code>null</code> if not available
      */
-    public static HtmlViewConfiguration getGlobalHtmlViewConfiguration() {
+    public HtmlViewConfiguration getGlobalHtmlViewConfiguration() {
         return globalHtmlViewConfiguration;
     }
 
-    private static void initConfiguration( Workspace newWorkspace ) {
+    private void initConfiguration( Workspace newWorkspace ) {
         List<ResourceIdentifier<Resource>> oafResourceIdentifiers = newWorkspace.getResourcesOfType(
                         OgcApiProvider.class );
         oafResourceIdentifiers.forEach( resourceResourceIdentifier -> {

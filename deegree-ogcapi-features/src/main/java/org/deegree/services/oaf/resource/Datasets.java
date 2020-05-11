@@ -12,6 +12,7 @@ import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -35,6 +36,9 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
  */
 @Path("/datasets")
 public class Datasets {
+
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
     @GET
     @Produces({ APPLICATION_JSON })
@@ -68,7 +72,7 @@ public class Datasets {
         List<Link> links = linkBuilder.createDatasetsLinks();
         List<Dataset> datasets = new ArrayList<>();
 
-        OafDatasets oafDatasets = DeegreeWorkspaceInitializer.getOafDatasets();
+        OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
         Map<String, OafDatasetConfiguration> datasetsConfigurations = oafDatasets.getDatasets();
         datasetsConfigurations.forEach( ( id, oafDatasetConfiguration ) -> {
             List<Link> datasetLinks = linkBuilder.createDatasetLinks( id );

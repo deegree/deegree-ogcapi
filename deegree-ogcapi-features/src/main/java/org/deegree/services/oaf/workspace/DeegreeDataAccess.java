@@ -23,6 +23,7 @@ import org.deegree.services.oaf.link.NextLink;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
+import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,10 +35,13 @@ import java.util.Map;
  */
 public class DeegreeDataAccess implements DataAccess {
 
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+
     @Override
     public Collections createCollections( String datasetId, LinkBuilder linkBuilder )
                     throws UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         List<Link> links = linkBuilder.createCollectionsLinks( datasetId, oafConfiguration.getServiceMetadata() );
         List<Collection> collections = createCollectionList( oafConfiguration, datasetId, linkBuilder );
         return new Collections( links, collections );
@@ -46,7 +50,7 @@ public class DeegreeDataAccess implements DataAccess {
     @Override
     public Collection createCollection( String datasetId, String collectionId, LinkBuilder linkBuilder )
                     throws UnknownCollectionId, UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         Map<String, FeatureTypeMetadata> featureTypeNames = oafConfiguration.getFeatureTypeMetadata();
         if ( featureTypeNames.containsKey( collectionId ) ) {
             return createCollection( oafConfiguration, datasetId, featureTypeNames.get( collectionId ), linkBuilder );
@@ -58,7 +62,7 @@ public class DeegreeDataAccess implements DataAccess {
     public FeatureResponse retrieveFeatures( String datasetId, String collectionId, FeaturesRequest featuresRequest,
                                              LinkBuilder linkBuilder )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         FeatureTypeMetadata featureType = validateAndRetrieveFeatureType( oafConfiguration, collectionId );
         String crs = validateAndRetrieveCrs( featuresRequest.getResponseCrs() );
         FeatureStore featureStore = oafConfiguration.getFeatureStore( featureType.getName(), collectionId );
@@ -85,7 +89,7 @@ public class DeegreeDataAccess implements DataAccess {
     public FeatureResponse retrieveFeature( String datasetId, String collectionId, String featureId, String responseCrs,
                                             LinkBuilder linkBuilder )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         FeatureTypeMetadata featureType = validateAndRetrieveFeatureType( oafConfiguration, collectionId );
         String crs = validateAndRetrieveCrs( responseCrs );
         FeatureStore featureStore = oafConfiguration.getFeatureStore( featureType.getName(), collectionId );

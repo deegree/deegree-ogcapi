@@ -10,9 +10,10 @@ import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -21,7 +22,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Arrays;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -38,7 +38,8 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets/{datasetId}")
 public class LandingPage {
 
-    private final static List<String> SUPPPORTED_QUERY_PARAMS = Arrays.asList( new String[] { "f" } );
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
     @GET
     @Produces({ APPLICATION_JSON })
@@ -97,7 +98,7 @@ public class LandingPage {
             return Response.ok( getClass().getResourceAsStream( "/landingpage.html" ), TEXT_HTML ).build();
         }
 
-        OafDatasetConfiguration dataset = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         DatasetMetadata metadata = dataset.getServiceMetadata();
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );

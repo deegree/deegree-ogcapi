@@ -18,12 +18,12 @@ import org.deegree.services.oaf.feature.FeaturesRequest;
 import org.deegree.services.oaf.feature.FeaturesRequestBuilder;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
-import org.deegree.services.oaf.workspace.DataAccessFactory;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -31,9 +31,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.HashMap;
@@ -57,9 +55,13 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets/{datasetId}/collections/{collectionId}/items")
 public class Features {
 
-    private final DataAccess dataAccess = DataAccessFactory.getInstance();
-
     private final FeatureResponseCreator featureResponseCreator = new FeatureResponseCreator();
+
+    @Inject
+    private DataAccess dataAccess;
+
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
     @GET
     @Produces({ APPLICATION_GEOJSON })
@@ -131,7 +133,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format, XML, acceptHeader );
+        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format, XML,
+                         acceptHeader );
     }
 
     @GET
@@ -244,7 +247,7 @@ public class Features {
                                                                     MultivaluedMap<String, String> queryParameters )
                     throws UnknownDatasetId {
         Map<FilterProperty, List<String>> filterRequestProperties = new HashMap<>();
-        OafDatasetConfiguration oafConfiguration = DeegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         if ( featureTypeMetadata != null ) {
             List<FilterProperty> filterProperties = featureTypeMetadata.getFilterProperties();

@@ -10,8 +10,8 @@ import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
-import org.deegree.services.oaf.workspace.DataAccessFactory;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,7 +36,8 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets/{datasetId}/collections")
 public class FeatureCollections {
 
-    private DataAccess collectionFactory = DataAccessFactory.getInstance();
+    @Inject
+    private DataAccess dataAccess;
 
     @GET
     @Produces({ APPLICATION_JSON })
@@ -103,7 +104,7 @@ public class FeatureCollections {
         }
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        Collections collections = collectionFactory.createCollections( datasetId, linkBuilder );
+        Collections collections = dataAccess.createCollections( datasetId, linkBuilder );
         return Response.ok( collections, mediaTypeFromRequestFormat( requestFormat ) ).build();
     }
 

@@ -2,20 +2,13 @@ package org.deegree.services.oaf.resource;
 
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.link.LinkRelation;
+import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
-import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-import org.deegree.services.oaf.workspace.configuration.OafDatasets;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.xmlmatchers.namespace.SimpleNamespaceContext;
 
 import javax.ws.rs.core.Application;
@@ -34,6 +27,7 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENA
 import static org.deegree.services.oaf.RequestFormat.HTML;
 import static org.deegree.services.oaf.RequestFormat.JSON;
 import static org.deegree.services.oaf.RequestFormat.XML;
+import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.deegree.services.oaf.link.LinkRelation.ALTERNATE;
 import static org.deegree.services.oaf.link.LinkRelation.CONFORMANCE;
 import static org.deegree.services.oaf.link.LinkRelation.DATA;
@@ -41,32 +35,26 @@ import static org.deegree.services.oaf.link.LinkRelation.SELF;
 import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DESC;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 import static org.xmlmatchers.XmlMatchers.hasXPath;
 import static org.xmlmatchers.transform.XmlConverters.the;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DeegreeWorkspaceInitializer.class)
 public class LandingPageTest extends JerseyTest {
 
     @Override
     protected Application configure() {
         enable( TestProperties.LOG_TRAFFIC );
-        return new ResourceConfig( LandingPage.class, UnknownDatasetId.class );
-    }
-
-    @Before
-    public void mockWorkspace() {
-        PowerMockito.mockStatic( DeegreeWorkspaceInitializer.class );
-        OafDatasetConfiguration oafConfiguration = Mockito.mock( OafDatasetConfiguration.class );
-        DatasetMetadata serviceMetadata = Mockito.mock( DatasetMetadata.class );
-        when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
-        OafDatasets oafDatasets = new OafDatasets();
-        oafDatasets.addDataset( "oaf", oafConfiguration );
-        when( DeegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
+        ResourceConfig resourceConfig = new ResourceConfig( LandingPage.class, UnknownDatasetId.class );
+        resourceConfig.register( new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bind( mockWorkspaceInitializer( "strassenbaum" ) ).to( DeegreeWorkspaceInitializer.class );
+                bindAsContract( OpenApiCreator.class );
+            }
+        } );
+        return resourceConfig;
     }
 
     @Test
