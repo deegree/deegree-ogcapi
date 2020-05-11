@@ -2,6 +2,7 @@ package org.deegree.ogcapi.config.actions;
 
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.config.ResourceInitException;
+import org.deegree.commons.utils.Pair;
 import org.deegree.commons.utils.kvp.KVPUtils;
 import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.persistence.FeatureStoreException;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -39,16 +39,16 @@ public class UpdateBboxCache {
     /**
      * Updates the bounding boxes of all feature types in all feature stores.
      *
-     * @param path
+     * @param p
      *                 identifying the resource to validate, never <code>null</code>
      * @param queryString
      * @return
      * @throws IOException
      *                 if the OutputStream of the response could not be requested
      */
-    public static String updateBboxCache( String path, String queryString )
+    public static String updateBboxCache( Pair<DeegreeWorkspace, String> p, String queryString )
                     throws BboxCacheUpdateException {
-        DeegreeWorkspace ws = getWorkspaceAndPath( path ).first;
+        DeegreeWorkspace ws = p.first;
         try {
             ws.initAll();
         } catch ( ResourceInitException e ) {

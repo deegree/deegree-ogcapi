@@ -16,6 +16,7 @@ import org.deegree.ogcapi.config.exceptions.DownloadException;
 import org.deegree.ogcapi.config.exceptions.InvalidPathException;
 import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
 import org.deegree.ogcapi.config.exceptions.RestartException;
+import org.deegree.ogcapi.config.exceptions.UnsupportedWorkspaceException;
 import org.deegree.ogcapi.config.exceptions.UpdateException;
 import org.deegree.ogcapi.config.exceptions.UploadException;
 import org.deegree.ogcapi.config.exceptions.ValidationException;
@@ -53,6 +54,8 @@ public class Config {
 
     private static final Logger LOG = getLogger( Config.class );
 
+    public static final String DEEGREE_WORKSPACE_NAME = "ogcapi-workspace";
+
     @Inject
     private RestartOrUpdateHandler restartOrUpdateHandler;
 
@@ -64,9 +67,9 @@ public class Config {
     @Path("/download{path : (.+)?}")
     public Response download( @Context HttpServletRequest request,
                               @PathParam("path") String path )
-                    throws InvalidPathException {
+                    throws InvalidPathException, UnsupportedWorkspaceException {
         token.validate( request );
-        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( path );
 
         DeegreeWorkspace workspace = p.first;
         if ( p.second == null ) {
@@ -97,9 +100,11 @@ public class Config {
     @Path("/restart{path : (.+)?}")
     public Response restart( @Context HttpServletRequest request,
                              @PathParam("path") String path )
-                    throws RestartException {
+                    throws RestartException, UnsupportedWorkspaceException {
         token.validate( request );
-        String restart = Restart.restart( path );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( path );
+
+        String restart = Restart.restart( p );
         afterRestartOrUpdate();
         return Response.ok( restart, APPLICATION_OCTET_STREAM_TYPE ).build();
     }
@@ -110,9 +115,10 @@ public class Config {
     @Path("/update")
     public Response update( @Context HttpServletRequest request,
                             @QueryParam("featureStoreId") String featureStoreId )
-                    throws UpdateException {
+                    throws UpdateException, UnsupportedWorkspaceException {
         token.validate( request );
-        String update = Update.update( null );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( null );
+        String update = Update.update( p );
         afterRestartOrUpdate();
         return Response.ok( update, TEXT_PLAIN ).build();
     }
@@ -127,13 +133,15 @@ public class Config {
     public Response updateWorkspace( @Context HttpServletRequest request,
                                      @PathParam("wsname") String wsname,
                                      @QueryParam("featureStoreId") String featureStoreId )
-                    throws BboxCacheUpdateException, UpdateException {
+                    throws BboxCacheUpdateException, UpdateException, UnsupportedWorkspaceException {
         token.validate( request );
         if ( wsname != null && wsname.startsWith( "bboxcache" ) ) {
-            String log = UpdateBboxCache.updateBboxCache( wsname, request.getQueryString() );
+            Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( wsname );
+            String log = UpdateBboxCache.updateBboxCache( p, request.getQueryString() );
             return Response.ok( log, TEXT_PLAIN ).build();
         }
-        String update = Update.update( wsname );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( wsname );
+        String update = Update.update( p );
         afterRestartOrUpdate();
         return Response.ok( update, TEXT_PLAIN ).build();
     }
@@ -146,9 +154,10 @@ public class Config {
     public Response updateBboxCache( @Context HttpServletRequest request,
                                      @PathParam("wsname") String wsname,
                                      @QueryParam("featureStoreId") String featureStoreId )
-                    throws BboxCacheUpdateException {
+                    throws BboxCacheUpdateException, UnsupportedWorkspaceException {
         token.validate( request );
-        String log = UpdateBboxCache.updateBboxCache( wsname, request.getQueryString() );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( wsname );
+        String log = UpdateBboxCache.updateBboxCache( p, request.getQueryString() );
         return Response.ok( log, TEXT_PLAIN ).build();
     }
 
@@ -158,9 +167,10 @@ public class Config {
     @Path("/list{path : (.+)?}")
     public Response list( @Context HttpServletRequest request,
                           @PathParam("path") String path )
-                    throws InvalidPathException, InvalidWorkspaceException {
+                    throws InvalidPathException, InvalidWorkspaceException, UnsupportedWorkspaceException {
         token.validate( request );
-        String fileList = List.list( path );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( path );
+        String fileList = List.list( p );
         return Response.ok( fileList, TEXT_PLAIN ).build();
     }
 
@@ -170,9 +180,10 @@ public class Config {
     @Path("/validate{path : (.+)?}")
     public Response validate( @Context HttpServletRequest request,
                               @PathParam("path") String path )
-                    throws ValidationException {
+                    throws ValidationException, UnsupportedWorkspaceException, InvalidPathException {
         token.validate( request );
-        String validationResult = Validate.validate( path );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( path );
+        String validationResult = Validate.validate( p );
         return Response.ok( validationResult, TEXT_PLAIN ).build();
     }
 
@@ -183,9 +194,10 @@ public class Config {
     @Path("/upload{path : (.+)?}")
     public Response upload( @Context HttpServletRequest request,
                             @PathParam("path") String path )
-                    throws IOException, UploadException {
+                    throws IOException, UploadException, UnsupportedWorkspaceException {
         token.validate( request );
-        String upload = Upload.upload( path, request );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( path );
+        String upload = Upload.upload( p, request );
         return Response.ok( upload, TEXT_PLAIN ).build();
     }
 
@@ -195,10 +207,20 @@ public class Config {
     @Path("/delete{path : (.+)?}")
     public Response delete( @Context HttpServletRequest request,
                             @PathParam("path") String path )
-                    throws InvalidPathException, DeleteException {
+                    throws InvalidPathException, DeleteException, UnsupportedWorkspaceException {
         token.validate( request );
-        String delete = Delete.delete( path );
+        Pair<DeegreeWorkspace, String> p = getDeegreeWorkspaceAndPath( path );
+        String delete = Delete.delete( p );
         return Response.ok( delete, TEXT_PLAIN ).build();
+    }
+
+    private Pair<DeegreeWorkspace, String> getDeegreeWorkspaceAndPath( String path )
+                    throws UnsupportedWorkspaceException {
+        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
+        DeegreeWorkspace workspace = p.first;
+        if ( workspace != null && !DEEGREE_WORKSPACE_NAME.equals( workspace.getName() ) )
+            throw new UnsupportedWorkspaceException( workspace.getName() );
+        return p;
     }
 
     private void afterRestartOrUpdate() {

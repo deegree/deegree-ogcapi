@@ -3,6 +3,7 @@ package org.deegree.ogcapi.config.actions;
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.config.ResourceInitException;
 import org.deegree.commons.utils.Pair;
+import org.deegree.ogcapi.config.exceptions.InvalidPathException;
 import org.deegree.ogcapi.config.exceptions.ValidationException;
 import org.deegree.workspace.ErrorHandler;
 import org.deegree.workspace.Resource;
@@ -17,14 +18,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.InvalidPathException;
 import java.nio.file.PathMatcher;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -37,15 +36,13 @@ public class Validate {
     private static final Logger LOG = getLogger( Validate.class );
 
     /**
-     * @param path
+     * @param p
      *                 identifying the resource to validate, never <code>null</code>
      * @return
      * @throws IOException
      */
-    public static String validate( String path )
-                    throws ValidationException {
-        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
-
+    public static String validate( Pair<DeegreeWorkspace, String> p )
+                    throws ValidationException, InvalidPathException {
         try {
             DeegreeWorkspace workspace = p.getFirst();
             workspace.destroyAll();

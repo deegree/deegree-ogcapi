@@ -51,10 +51,8 @@ import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
  */
 public class List {
 
-    public static String list( String path )
+    public static String list( Pair<DeegreeWorkspace, String> p )
                     throws InvalidPathException, InvalidWorkspaceException {
-        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
-
         DeegreeWorkspace workspace = p.first;
         File dir = workspace.getLocation();
         dir = p.second == null ? dir : new File( dir, p.second );

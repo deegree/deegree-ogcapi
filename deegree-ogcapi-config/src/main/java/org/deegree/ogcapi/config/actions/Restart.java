@@ -49,8 +49,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
-
 /**
  * @author <a href="mailto:schmitz@lat-lon.de">Andreas Schmitz</a>
  * @author last edited by: $Author$
@@ -58,9 +56,8 @@ import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
  */
 public class Restart {
 
-    public static String restart( String path )
+    public static String restart( Pair<DeegreeWorkspace, String> p )
                     throws RestartException {
-        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
         try {
             DeegreeWorkspace workspace = p.first;
             if ( p.second == null ) {

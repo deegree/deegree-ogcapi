@@ -59,11 +59,8 @@ import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
  */
 public class Upload {
 
-    public static String upload( String path, HttpServletRequest req )
+    public static String upload( Pair<DeegreeWorkspace, String> p, HttpServletRequest req )
                     throws IOException, UploadException {
-
-        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
-
         if ( p.second == null ) {
             throw new UploadException( "No file name given." );
         }

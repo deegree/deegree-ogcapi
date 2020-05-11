@@ -44,7 +44,6 @@ import java.io.File;
 
 import static org.apache.commons.io.FileUtils.deleteQuietly;
 import static org.deegree.commons.config.DeegreeWorkspace.unregisterWorkspace;
-import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 
 /**
  * @author <a href="mailto:schmitz@lat-lon.de">Andreas Schmitz</a>
@@ -53,10 +52,8 @@ import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
  */
 public class Delete {
 
-    public static String delete( String path )
+    public static String delete( Pair<DeegreeWorkspace, String> p )
                     throws DeleteException, InvalidPathException {
-        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
-
         if ( p.second == null ) {
             File dir = p.first.getLocation();
             if ( !deleteQuietly( dir ) ) {

@@ -10,8 +10,6 @@ import org.deegree.workspace.WorkspaceUtils;
 
 import java.util.List;
 
-import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
-
 /**
  * @author <a href="mailto:markus@beefcafe.de">Markus Schneider</a>
  * @author last edited by: $Author$
@@ -19,9 +17,8 @@ import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
  */
 public class Update {
 
-    public static String update( String path )
+    public static String update( Pair<DeegreeWorkspace, String> p )
                     throws UpdateException {
-        Pair<DeegreeWorkspace, String> p = getWorkspaceAndPath( path );
         try {
             if ( p.second != null ) {
                 Workspace ws = p.first.getNewWorkspace();
