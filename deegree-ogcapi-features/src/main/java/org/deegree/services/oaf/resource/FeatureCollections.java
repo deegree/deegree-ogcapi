@@ -80,7 +80,7 @@ public class FeatureCollections {
                     @QueryParam("f")
                                     String format )
                     throws UnknownDatasetId, InvalidParameterValue {
-        return collections( datasetId, uriInfo, format, JSON );
+        return collections( datasetId, uriInfo, format, HTML );
     }
 
     @GET
