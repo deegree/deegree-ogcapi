@@ -262,7 +262,7 @@
                 <div class="col">
                     <b-table class="table-borderless"
                              thead-class="hidden_header"
-                             small show-empty :items="items" :fields="fields" :current-page="currentPage" :per-page="0">
+                             small show-empty :items="items" :fields="fields" :current-page="currentPage" :per-page="perPage">
                         <template v-slot:cell()="data">
                             <b-card>
                                 <template v-slot:header>
@@ -362,13 +362,12 @@ new Vue({
       filterOpenEndChecked: false
     }
   },
+  /*
   created() {
-    this.fetchData().catch(error => {
-      console.error(error)
-    }),
     this.calculateBboxFilterValues(),
     this.calculateDatetimeFilterValues()
   },
+  */
   methods: {
     async fetchData() {
       var baseUrl = retrieveBaseUrl();
@@ -386,7 +385,7 @@ new Vue({
           });
       });
       this.totalItems = json.numberMatched;
-      this.perPage = json.numberReturned;
+      //this.perPage = json.numberReturned;
       fetchConfigAndSetFeatures(json);
     },
     filterProperty: function( event ) {
