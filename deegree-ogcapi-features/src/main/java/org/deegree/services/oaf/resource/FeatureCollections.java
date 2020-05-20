@@ -3,6 +3,9 @@ package org.deegree.services.oaf.resource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.RequestFormat;
 import org.deegree.services.oaf.domain.collections.Collections;
@@ -42,6 +45,7 @@ public class FeatureCollections {
     @Produces({ APPLICATION_JSON })
     @Operation(summary = "describes collections", description = "Describes all collections provided by this service")
     @Tag(name = "Collections")
+    @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = Collections.class)))
     public Response collectionsJson(
                     @PathParam("datasetId")
                                     String datasetId,
@@ -56,8 +60,7 @@ public class FeatureCollections {
 
     @GET
     @Produces({ APPLICATION_XML })
-    @Operation(summary = "describes collections", description = "Describes all collections provided by this service")
-    @Tag(name = "Collections")
+    @Operation(hidden = true)
     public Response collectionsXml(
                     @PathParam("datasetId")
                                     String datasetId,

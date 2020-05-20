@@ -3,6 +3,9 @@ package org.deegree.services.oaf.resource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.RequestFormat;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
@@ -45,6 +48,7 @@ public class LandingPage {
     @Produces({ APPLICATION_JSON })
     @Operation(summary = "landing page", description = "Landing page of this dataset")
     @Tag(name = "Capabilities")
+    @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = LandingPage.class)))
     public Response landingPageJson(
                     @Context UriInfo uriInfo,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
@@ -56,8 +60,8 @@ public class LandingPage {
 
     @GET
     @Produces({ APPLICATION_XML })
-    @Operation(summary = "landing page", description = "Landing page of this dataset")
     @Tag(name = "Capabilities")
+    @Operation(hidden = true)
     public Response landingPageJsonXml(
                     @Context UriInfo uriInfo,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM)

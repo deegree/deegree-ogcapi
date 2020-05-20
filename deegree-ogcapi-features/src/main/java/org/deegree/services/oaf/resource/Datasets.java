@@ -42,6 +42,7 @@ public class Datasets {
 
     @GET
     @Produces({ APPLICATION_JSON })
+    @Operation(hidden = true)
     public Response datasetsJson(
                     @Context UriInfo uriInfo,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM)

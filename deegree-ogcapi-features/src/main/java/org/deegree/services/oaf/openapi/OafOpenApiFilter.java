@@ -16,14 +16,12 @@ import org.deegree.commons.tom.primitive.BaseType;
 import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.feature.types.FeatureType;
 import org.deegree.feature.types.property.SimplePropertyType;
-import org.deegree.services.oaf.OgcApiFeaturesMediaType;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
-import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -32,16 +30,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 public class OafOpenApiFilter extends AbstractSpecFilter {
-
-    private static final Logger LOG = getLogger( OafOpenApiFilter.class );
 
     private static final String COLLECTIONID = "collectionId";
 
@@ -49,9 +50,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     public static final String CONFIG_PATH = "/config";
 
-    private static final String DATASETS_PATH = "/datasets";
-
-    public static final String DATASET_PATH = "/datasets/{datasetId}";
+    public static final String DATASET_PREFIX = "/datasets/{datasetId}";
 
     public static final String LANDINGPAGE_PATH = "/datasets/{datasetId}";
 
@@ -59,7 +58,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     public static final String CONFORMANCE_PATH = "/datasets/{datasetId}/conformance";
 
-    public static final String LICENSE_PATH = "/datasets/{datasetId}/license";
+    private static final String COLLECTIONS_PATH = "/datasets/{datasetId}/collections";
 
     private static final String COLLECTION_PATH = "/datasets/{datasetId}/collections/{collectionId}";
 
@@ -105,9 +104,23 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     private void filterPaths( OpenAPI openAPI ) {
         Paths paths = openAPI.getPaths();
+        PathItem api = paths.get( API_PATH );
+        PathItem landingPage = paths.get( LANDINGPAGE_PATH );
+        PathItem conformance = paths.get( CONFORMANCE_PATH );
+        PathItem collections = paths.get( COLLECTIONS_PATH );
         PathItem collection = paths.get( COLLECTION_PATH );
         PathItem features = paths.get( FEATURES_PATH );
         PathItem feature = paths.get( FEATURE_PATH );
+
+        addMediaTypes( api, TEXT_HTML );
+        addMediaTypes( landingPage, APPLICATION_JSON, APPLICATION_XML, TEXT_HTML );
+        addMediaTypes( conformance, APPLICATION_JSON, APPLICATION_XML, TEXT_HTML );
+        addMediaTypes( collections, APPLICATION_JSON, APPLICATION_XML, TEXT_HTML );
+        addMediaTypes( collection, APPLICATION_JSON, APPLICATION_XML, TEXT_HTML );
+        addMediaTypes( features, APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
+                       APPLICATION_GML_SF2, TEXT_HTML );
+        addMediaTypes( feature, APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
+                       APPLICATION_GML_SF2, TEXT_HTML );
 
         Map<String, FeatureTypeMetadata> featureTypeMetadatas = datasetConfiguration.getFeatureTypeMetadata();
         featureTypeMetadatas.entrySet().forEach( featureTypeMetadata -> {
@@ -126,7 +139,6 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
         } );
 
-        paths.remove( DATASETS_PATH );
         paths.remove( COLLECTION_PATH );
         paths.remove( FEATURES_PATH );
         paths.remove( FEATURE_PATH );
@@ -135,7 +147,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         paths.entrySet().forEach( stringPathItemEntry -> {
             if ( !stringPathItemEntry.getKey().startsWith( CONFIG_PATH ) ) {
                 String replacedPath = createNewPath( stringPathItemEntry );
-                PathItem value = addHtmlResource( stringPathItemEntry );
+                PathItem value = stringPathItemEntry.getValue();
                 removeDatasetParam( value );
                 pathItemsWithAdaptedPath.put( replacedPath, value );
             }
@@ -144,20 +156,19 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         paths.putAll( pathItemsWithAdaptedPath );
     }
 
-    private PathItem addHtmlResource( Map.Entry<String, PathItem> stringPathItemEntry ) {
-        PathItem value = stringPathItemEntry.getValue();
-        if ( LICENSE_PATH.equals( stringPathItemEntry.getKey() ) || stringPathItemEntry.getKey().startsWith(
-                        CONFIG_PATH ) )
-            return value;
-        Content content = value.getGet().getResponses().getDefault().getContent();
-        MediaType mediaTypeHtml = new MediaType().schema( new Schema() );
-        content.addMediaType( TEXT_HTML, mediaTypeHtml );
-        return value;
+    private void addMediaTypes( PathItem pathItem, String... mediaTypes ) {
+        if ( pathItem == null )
+            return;
+        Content content = pathItem.getGet().getResponses().getDefault().getContent();
+        for ( String mediaTypeString : mediaTypes ) {
+            MediaType mediaType = new MediaType().schema( new Schema() );
+            content.addMediaType( mediaTypeString, mediaType );
+        }
     }
 
     private String createNewPath( Map.Entry<String, PathItem> stringPathItemEntry ) {
         String path = stringPathItemEntry.getKey();
-        String replacedPath = path.replace( DATASET_PATH, "" );
+        String replacedPath = path.replace( DATASET_PREFIX, "" );
         if ( replacedPath.isEmpty() )
             replacedPath = "/";
         return replacedPath;
@@ -178,7 +189,6 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
     private void addSchema( PathItem pathItem, FeatureType featureType ) {
         Operation get = pathItem.getGet();
         ApiResponse response = get.getResponses().getDefault();
-       // response.setDescription( "default response" );
         MediaType mediaType = response.getContent().get( APPLICATION_GEOJSON );
         if ( mediaType.getSchema() == null ) {
             Schema schema = createFeatureResponseSchema( featureType );

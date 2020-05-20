@@ -3,6 +3,9 @@ package org.deegree.services.oaf.resource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.RequestFormat;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
@@ -39,6 +42,7 @@ public class Conformance {
     @Produces({ APPLICATION_JSON })
     @Operation(summary = "supported conformance classes", description = "Retrieves the supported conformance classes")
     @Tag(name = "Capabilities")
+    @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = org.deegree.services.oaf.domain.conformance.Conformance.class)))
     public Response conformanceJson(
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
                     @QueryParam("f")
@@ -49,8 +53,7 @@ public class Conformance {
 
     @GET
     @Produces({ APPLICATION_XML })
-    @Operation(summary = "supported conformance classes", description = "Retrieves the supported conformance classes")
-    @Tag(name = "Capabilities")
+    @Operation(hidden = true)
     public Response conformanceXml(
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
                     @QueryParam("f")

@@ -72,8 +72,7 @@ public class Feature {
 
     @GET
     @Produces({ APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2 })
-    @Operation(summary = "retrieves feature of collection {collectionId}", description = "Retrieves one single feature of the collection with the id {collectionId}")
-    @Tag(name = "Data")
+    @Operation(hidden = true)
     public Response featureGml(
                     @Context
                                     UriInfo uriInfo,
