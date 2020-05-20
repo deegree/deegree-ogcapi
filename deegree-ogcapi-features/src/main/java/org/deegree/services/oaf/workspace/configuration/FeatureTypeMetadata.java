@@ -1,6 +1,7 @@
 package org.deegree.services.oaf.workspace.configuration;
 
 import org.deegree.commons.ows.metadata.MetadataUrl;
+import org.deegree.feature.types.FeatureType;
 import org.deegree.services.oaf.domain.collections.Extent;
 
 import javax.xml.namespace.QName;
@@ -24,6 +25,8 @@ public class FeatureTypeMetadata {
     private List<MetadataUrl> metadataUrls;
 
     private List<FilterProperty> filterProperties;
+
+    private FeatureType featureType;
 
     public FeatureTypeMetadata( QName featureTypeName ) {
         this.name = featureTypeName;
@@ -60,6 +63,11 @@ public class FeatureTypeMetadata {
         return this;
     }
 
+    public FeatureTypeMetadata featureType( FeatureType featureType ) {
+        this.featureType = featureType;
+        return this;
+    }
+
     public QName getName() {
         return name;
     }
@@ -86,5 +94,9 @@ public class FeatureTypeMetadata {
 
     public List<FilterProperty> getFilterProperties() {
         return filterProperties;
+    }
+
+    public FeatureType getFeatureType() {
+        return featureType;
     }
 }

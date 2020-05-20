@@ -9,8 +9,14 @@ import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.servers.Server;
+import org.deegree.commons.tom.gml.property.PropertyType;
 import org.deegree.commons.tom.primitive.BaseType;
+import org.deegree.commons.tom.primitive.PrimitiveType;
+import org.deegree.feature.types.FeatureType;
+import org.deegree.feature.types.property.SimplePropertyType;
+import org.deegree.services.oaf.OgcApiFeaturesMediaType;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
@@ -27,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -110,6 +117,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
             paths.addPathItem( replaceCollectionId( COLLECTION_PATH, key ), newCollectionPathItem );
 
             PathItem newFeaturesPathItem = createNewPathItem( features, key, metadata );
+            addSchema( newFeaturesPathItem, metadata.getFeatureType() );
             addFilterProperties( newFeaturesPathItem, metadata.getFilterProperties() );
             paths.addPathItem( replaceCollectionId( FEATURES_PATH, key ), newFeaturesPathItem );
 
@@ -162,9 +170,49 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         filterProperties.forEach( filterProperty -> {
             Parameter filterParameter = new Parameter().name( filterProperty.getName().getLocalPart() ).in(
                             "query" ).style( Parameter.StyleEnum.FORM ).explode( false ).schema(
-                            new Schema().type( mapToAllowedType( filterProperty ) ) );
+                            new Schema().type( mapToParameterType( filterProperty ) ) );
             parameters.add( filterParameter );
         } );
+    }
+
+    private void addSchema( PathItem pathItem, FeatureType featureType ) {
+        Operation get = pathItem.getGet();
+        ApiResponse response = get.getResponses().getDefault();
+       // response.setDescription( "default response" );
+        MediaType mediaType = response.getContent().get( APPLICATION_GEOJSON );
+        if ( mediaType.getSchema() == null ) {
+            Schema schema = createFeatureResponseSchema( featureType );
+            mediaType.setSchema( schema );
+        }
+    }
+
+    private Schema createFeatureResponseSchema( FeatureType featureType ) {
+        Schema<Object> schema = new Schema<>();
+        Schema numberMatched = new Schema()
+                        .name( "numberMatched" )
+                        .type( "integer" );
+        Schema numberReturned = new Schema()
+                        .name( "numberReturned" )
+                        .type( "integer" );
+        Schema links = new Schema()
+                        .name( "links" )
+                        .type( "array" );
+        schema.addProperties( "numberMatched", numberMatched );
+        schema.addProperties( "numberReturned", numberReturned );
+        schema.addProperties( "numberReturned", links );
+        schema.addProperties( "features", createFeatureTypeSchema( featureType ) );
+        return schema;
+    }
+
+    private Schema createFeatureTypeSchema( FeatureType featureType ) {
+        Schema<Object> schema = new Schema<>();
+        featureType.getPropertyDeclarations().forEach( propertyType -> {
+            Schema propertiesItem = new Schema()
+                            .name( propertyType.getName().getLocalPart() )
+                            .type( mapToPropertyType( propertyType ) );
+            schema.addProperties( propertyType.getName().getLocalPart(), propertiesItem );
+        } );
+        return schema;
     }
 
     private PathItem createNewPathItem( PathItem pathItemToClone, String name, FeatureTypeMetadata metadata ) {
@@ -250,7 +298,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         return toReplace;
     }
 
-    private String mapToAllowedType( FilterProperty filterProperty ) {
+    private String mapToParameterType( FilterProperty filterProperty ) {
         BaseType type = filterProperty.getType();
         switch ( type ) {
         case DOUBLE:
@@ -266,4 +314,27 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         }
     }
 
+    private String mapToPropertyType( PropertyType propertyType ) {
+        if ( propertyType instanceof SimplePropertyType ) {
+            PrimitiveType primitiveType = ( (SimplePropertyType) propertyType ).getPrimitiveType();
+            BaseType baseType = primitiveType.getBaseType();
+            switch ( baseType ) {
+            case DOUBLE:
+            case DECIMAL:
+                return "number";
+            case INTEGER:
+                return "integer";
+            case BOOLEAN:
+                return "boolean";
+            case DATE:
+            case DATE_TIME:
+            case TIME:
+            case STRING:
+                return "string";
+            default:
+                return "object";
+            }
+        }
+        return "object";
+    }
 }

@@ -101,8 +101,7 @@ public class Features {
 
     @GET
     @Produces({ APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2 })
-    @Operation(summary = "retrieves features of collection {collectionId}", description = "Retrieves the features of the collection with the id {collectionId}")
-    @Tag(name = "Data")
+    @Operation(hidden = true)
     public Response featuresGml(
                     @Context
                                     UriInfo uriInfo,

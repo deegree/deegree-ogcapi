@@ -234,21 +234,26 @@ public class OafResource implements Resource {
     private FeatureTypeMetadata createFeatureTypeMetadata( FeatureStore featureStore, QName name,
                                                            QName dateTimeProperty, org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata )
                     throws FeatureStoreException {
-        List<FilterProperty> filterProperties = parseFilterProperties( featureStore, name );
+        FeatureType featureType = featureStore.getSchema().getFeatureType( name );
+        List<FilterProperty> filterProperties = parseFilterProperties( featureType );
         Extent extent = createExtent( featureStore, name, dateTimeProperty );
         String title = datasetMetadata != null ? asString( datasetMetadata.getTitle( null ) ) : null;
         String description = datasetMetadata != null ? asString( datasetMetadata.getAbstract( null ) ) : null;
         List<MetadataUrl> metadataUrls = datasetMetadata != null && !datasetMetadata.getMetadataUrls().isEmpty() ?
                                          datasetMetadata.getMetadataUrls() :
                                          Collections.emptyList();
-        return new FeatureTypeMetadata( name ).dateTimeProperty( dateTimeProperty ).extent( extent ).title(
-                        title ).description( description ).metadataUrls( metadataUrls ).filterProperties(
-                        filterProperties );
+        return new FeatureTypeMetadata( name )
+                        .dateTimeProperty( dateTimeProperty )
+                        .extent( extent )
+                        .title( title )
+                        .description( description )
+                        .metadataUrls( metadataUrls )
+                        .filterProperties( filterProperties )
+                        .featureType( featureType );
     }
 
-    private List<FilterProperty> parseFilterProperties( FeatureStore featureStore, QName name ) {
+    private List<FilterProperty> parseFilterProperties( FeatureType featureType ) {
         List<FilterProperty> filterProperties = new ArrayList<>();
-        FeatureType featureType = featureStore.getSchema().getFeatureType( name );
 
         List<PropertyType> propertyDeclarations = featureType.getPropertyDeclarations();
         propertyDeclarations.forEach( propertyDeclaration -> {
