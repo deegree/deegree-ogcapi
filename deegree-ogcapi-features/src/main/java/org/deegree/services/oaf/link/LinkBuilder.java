@@ -47,7 +47,7 @@ public class LinkBuilder {
      */
     public List<Link> createDatasetsLinks() {
         List<Link> links = new ArrayList<>();
-        String selfUri = uriInfo.getRequestUri().toString();
+        String selfUri = getSelfUri();
         links.add( new Link( selfUri, SELF.getRel(), APPLICATION_JSON, "this document" ) );
         links.add( new Link( selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML" ) );
         return links;
@@ -76,7 +76,7 @@ public class LinkBuilder {
      */
     public List<Link> createLandingPageLinks( String datasetId, DatasetMetadata metadata ) {
         List<Link> links = new ArrayList<>();
-        String selfUri = uriInfo.getRequestUri().toString();
+        String selfUri = getSelfUri();
         addSelfAndAlternateLinks( links, selfUri );
         String apiHref = createBaseUriBuilder( datasetId )
                         .path( "api" )
@@ -99,7 +99,7 @@ public class LinkBuilder {
 
     public List<Link> createCollectionsLinks( String datasetId, DatasetMetadata metadata ) {
         ArrayList<Link> links = new ArrayList<>();
-        String selfUri = uriInfo.getRequestUri().toString();
+        String selfUri = getSelfUri();
         addSelfAndAlternateLinks( links, selfUri );
         addMetadataLinks( metadata, links );
         addLicenseLink( datasetId, metadata, links );
@@ -108,7 +108,7 @@ public class LinkBuilder {
 
     public List<Link> createCollectionLinks( String datasetId, String collectionId, List<MetadataUrl> metadataUrls ) {
         ArrayList<Link> links = new ArrayList<>();
-        String selfUri = uriInfo.getRequestUri().toString();
+        String selfUri = getSelfUri();
         List<String> collectionsParams = uriInfo.getPathParameters().get( "collectionId" );
         boolean collectionRequested = collectionsParams != null && !collectionsParams.isEmpty();
         if ( collectionRequested ) {
@@ -136,7 +136,7 @@ public class LinkBuilder {
 
     public List<Link> createFeaturesLinks( String datasetId, String collectionId, NextLink nextLink ) {
         List<Link> links = new ArrayList<>();
-        String selfUri = uriInfo.getRequestUri().toString();
+        String selfUri = getSelfUri();
         addSelfAndAlternateGeo( links, selfUri );
         String nextUri = nextLink.createUri( uriInfo );
         if ( nextUri != null )
@@ -151,7 +151,7 @@ public class LinkBuilder {
 
     public List<Link> createFeatureLinks( String datasetId, String collectionId, String featureId ) {
         List<Link> links = new ArrayList<>();
-        String selfUri = uriInfo.getRequestUri().toString();
+        String selfUri = getSelfUri();
         addSelfAndAlternateGeo( links, selfUri );
         String collectionUri = createBaseUriBuilder( datasetId )
                         .path( "collections" )
@@ -234,6 +234,11 @@ public class LinkBuilder {
             }
         }
     }
+
+    private String getSelfUri() {
+        return uriInfo.getBaseUriBuilder().path(  uriInfo.getPath() ).toString();
+    }
+
 
     private UriBuilder createBaseUriBuilder( String datasetId ) {
         return uriInfo.getBaseUriBuilder()
