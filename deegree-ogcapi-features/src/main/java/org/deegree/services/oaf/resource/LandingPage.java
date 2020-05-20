@@ -46,7 +46,7 @@ public class LandingPage {
 
     @GET
     @Produces({ APPLICATION_JSON })
-    @Operation(summary = "landing page", description = "Landing page of this dataset")
+    @Operation(operationId = "landingPage", summary = "landing page", description = "Landing page of this dataset")
     @Tag(name = "Capabilities")
     @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = LandingPage.class)))
     public Response landingPageJson(

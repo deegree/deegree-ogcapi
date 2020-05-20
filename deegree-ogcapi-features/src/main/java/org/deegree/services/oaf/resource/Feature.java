@@ -49,9 +49,9 @@ public class Feature {
 
     @GET
     @Produces({ APPLICATION_GEOJSON })
-    @Operation(summary = "retrieves feature of collection {collectionId}", description = "Retrieves one single feature of the collection with the id {collectionId}")
+    @Operation(operationId = "feature", summary = "retrieves feature of collection {collectionId}", description = "Retrieves one single feature of the collection with the id {collectionId}")
     @Tag(name = "Data")
-    public Response featureGeoJson(
+    public Response featureJson(
                     @Context
                                     UriInfo uriInfo,
                     @PathParam("datasetId")

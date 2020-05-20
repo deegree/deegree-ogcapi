@@ -39,7 +39,7 @@ public class OpenApi {
 
     @GET
     @Produces({ APPLICATION_OPENAPI })
-    @Operation(summary = "api documentation", description = "api documentation")
+    @Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
     @Tag(name = "Capabilities")
     public Response getOpenApiJson(
                     @Context HttpHeaders headers,

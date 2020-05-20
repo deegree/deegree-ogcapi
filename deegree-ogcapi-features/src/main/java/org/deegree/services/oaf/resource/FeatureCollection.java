@@ -45,7 +45,7 @@ public class FeatureCollection {
 
     @GET
     @Produces({ APPLICATION_JSON })
-    @Operation(summary = "describes collection {collectionId}", description = "Describes the collection with the id {collectionId}")
+    @Operation(operationId = "collection", summary = "describes collection {collectionId}", description = "Describes the collection with the id {collectionId}")
     @Tag(name = "Collections")
     @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = Collections.class)))
     public Response collectionJson(

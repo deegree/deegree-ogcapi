@@ -43,7 +43,7 @@ public class FeatureCollections {
 
     @GET
     @Produces({ APPLICATION_JSON })
-    @Operation(summary = "describes collections", description = "Describes all collections provided by this service")
+    @Operation(operationId = "collections", summary = "describes collections", description = "Describes all collections provided by this service")
     @Tag(name = "Collections")
     @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = Collections.class)))
     public Response collectionsJson(

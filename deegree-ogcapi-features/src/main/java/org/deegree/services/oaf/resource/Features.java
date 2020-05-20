@@ -65,7 +65,7 @@ public class Features {
 
     @GET
     @Produces({ APPLICATION_GEOJSON })
-    @Operation(summary = "retrieves features of collection {collectionId}", description = "Retrieves the features of the collection with the id {collectionId}")
+    @Operation(operationId = "features", summary = "retrieves features of collection {collectionId}", description = "Retrieves the features of the collection with the id {collectionId}")
     @Tag(name = "Data")
     public Response featuresGeoJson(
                     @Context

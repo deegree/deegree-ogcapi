@@ -40,7 +40,7 @@ public class Conformance {
 
     @GET
     @Produces({ APPLICATION_JSON })
-    @Operation(summary = "supported conformance classes", description = "Retrieves the supported conformance classes")
+    @Operation(operationId = "conformance", summary = "supported conformance classes", description = "Retrieves the supported conformance classes")
     @Tag(name = "Capabilities")
     @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = org.deegree.services.oaf.domain.conformance.Conformance.class)))
     public Response conformanceJson(
