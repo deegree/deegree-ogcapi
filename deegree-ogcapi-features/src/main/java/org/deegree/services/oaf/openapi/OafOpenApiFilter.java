@@ -5,11 +5,13 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.servers.Server;
 import org.deegree.commons.tom.gml.property.PropertyType;
 import org.deegree.commons.tom.primitive.BaseType;
@@ -30,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
@@ -113,13 +114,13 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         PathItem feature = paths.get( FEATURE_PATH );
 
         addMediaTypes( api, TEXT_HTML );
-        addMediaTypes( landingPage, APPLICATION_JSON, APPLICATION_XML, TEXT_HTML );
-        addMediaTypes( conformance, APPLICATION_JSON, APPLICATION_XML, TEXT_HTML );
-        addMediaTypes( collections, APPLICATION_JSON, APPLICATION_XML, TEXT_HTML );
-        addMediaTypes( collection, APPLICATION_JSON, APPLICATION_XML, TEXT_HTML );
-        addMediaTypes( features, APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
+        addMediaTypes( landingPage, APPLICATION_XML, TEXT_HTML );
+        addMediaTypes( conformance, APPLICATION_XML, TEXT_HTML );
+        addMediaTypes( collections, APPLICATION_XML, TEXT_HTML );
+        addMediaTypes( collection, APPLICATION_XML, TEXT_HTML );
+        addMediaTypes( features, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
                        APPLICATION_GML_SF2, TEXT_HTML );
-        addMediaTypes( feature, APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
+        addMediaTypes( feature, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
                        APPLICATION_GML_SF2, TEXT_HTML );
 
         Map<String, FeatureTypeMetadata> featureTypeMetadatas = datasetConfiguration.getFeatureTypeMetadata();
@@ -190,26 +191,24 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         Operation get = pathItem.getGet();
         ApiResponse response = get.getResponses().getDefault();
         MediaType mediaType = response.getContent().get( APPLICATION_GEOJSON );
-        if ( mediaType.getSchema() == null ) {
-            Schema schema = createFeatureResponseSchema( featureType );
-            mediaType.setSchema( schema );
-        }
+        Schema schema = createFeatureResponseSchema( featureType );
+        mediaType.setSchema( schema );
     }
 
     private Schema createFeatureResponseSchema( FeatureType featureType ) {
-        Schema<Object> schema = new Schema<>();
+        Schema schema = new Schema();
         Schema numberMatched = new Schema()
                         .name( "numberMatched" )
                         .type( "integer" );
         Schema numberReturned = new Schema()
                         .name( "numberReturned" )
                         .type( "integer" );
-        Schema links = new Schema()
-                        .name( "links" )
-                        .type( "array" );
+        Schema links = new ArraySchema()
+                        .items( new Schema().$ref( "#/components/schemas/Link" ) )
+                        .name( "links" );
         schema.addProperties( "numberMatched", numberMatched );
         schema.addProperties( "numberReturned", numberReturned );
-        schema.addProperties( "numberReturned", links );
+        schema.addProperties( "links", links );
         schema.addProperties( "features", createFeatureTypeSchema( featureType ) );
         return schema;
     }
@@ -264,7 +263,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         clonedOperation.setSecurity( operation.getSecurity() );
         clonedOperation.setServers( operation.getServers() );
         clonedOperation.setTags( operation.getTags() );
-        clonedOperation.setResponses( operation.getResponses() );
+        ApiResponses responses = createNewResponses( operation.getResponses() );
+        clonedOperation.setResponses( responses );
         return clonedOperation;
     }
 
@@ -278,10 +278,90 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         return parameters;
     }
 
+    private ApiResponses createNewResponses( ApiResponses responses ) {
+        if ( responses == null )
+            return null;
+        ApiResponses clonedResponses = new ApiResponses();
+        clonedResponses.setDefault( createNewDefault( responses.getDefault() ) );
+        clonedResponses.setExtensions( responses.getExtensions() );
+        return clonedResponses;
+    }
+
+    private ApiResponse createNewDefault( ApiResponse response ) {
+        if ( response == null )
+            return null;
+        ApiResponse clonedResponse = new ApiResponse();
+        clonedResponse.setDescription( response.getDescription() );
+        clonedResponse.set$ref( response.get$ref() );
+        clonedResponse.setContent( createNewContent( response.getContent() ) );
+        clonedResponse.setExtensions( response.getExtensions() );
+        clonedResponse.setHeaders( response.getHeaders() );
+        clonedResponse.setLinks( response.getLinks() );
+        return response;
+    }
+
+    private Content createNewContent( Content content ) {
+        if ( content == null )
+            return null;
+        Content clonedContent = new Content();
+        content.forEach( ( s, mediaType ) -> {
+            clonedContent.addMediaType( s, createNewMediaType( mediaType ) );
+        } );
+        return content;
+    }
+
+    private MediaType createNewMediaType( MediaType mediaType ) {
+        if ( mediaType == null )
+            return null;
+        MediaType clonedMediaType = new MediaType();
+        clonedMediaType.setSchema( createNewSchema( mediaType.getSchema() ) );
+        clonedMediaType.setEncoding( mediaType.getEncoding() );
+        clonedMediaType.setExample( mediaType.getExample() );
+        clonedMediaType.setExamples( mediaType.getExamples() );
+        clonedMediaType.setExtensions( mediaType.getExtensions() );
+        return mediaType;
+    }
+
+    private Schema createNewSchema( Schema schema ) {
+        if ( schema == null )
+            return null;
+        Schema clonedSchema = new Schema();
+        clonedSchema.set$ref( schema.get$ref() );
+        clonedSchema.setAdditionalProperties( schema.getAdditionalProperties() );
+        clonedSchema.setDefault( schema.getAdditionalProperties() );
+        clonedSchema.setDeprecated( schema.getDeprecated() );
+        clonedSchema.setDescription( schema.getDescription() );
+        clonedSchema.setDiscriminator( schema.getDiscriminator() );
+        clonedSchema.setEnum( schema.getEnum() );
+        clonedSchema.setExample( schema.getExample() );
+        clonedSchema.setExclusiveMaximum( schema.getExclusiveMaximum() );
+        clonedSchema.setExclusiveMinimum( schema.getExclusiveMinimum() );
+        clonedSchema.setExtensions( schema.getExtensions() );
+        clonedSchema.setExternalDocs( schema.getExternalDocs() );
+        clonedSchema.setFormat( schema.getFormat() );
+        clonedSchema.setMaximum( schema.getMaximum() );
+        clonedSchema.setMaxItems( schema.getMaxItems() );
+        clonedSchema.setMaxLength( schema.getMaxLength() );
+        clonedSchema.setMaxProperties( schema.getMaxProperties() );
+        clonedSchema.setMinProperties( schema.getMinProperties() );
+        clonedSchema.setMultipleOf( schema.getMultipleOf() );
+        clonedSchema.setName( schema.getName() );
+        clonedSchema.setNot( schema.getNot() );
+        clonedSchema.setNullable( schema.getNullable() );
+        clonedSchema.setPattern( schema.getPattern() );
+        clonedSchema.setProperties( schema.getProperties() );
+        clonedSchema.setReadOnly( schema.getReadOnly() );
+        clonedSchema.setRequired( schema.getRequired() );
+        clonedSchema.setTitle( schema.getTitle() );
+        clonedSchema.setType( schema.getType() );
+        clonedSchema.setUniqueItems( schema.getUniqueItems() );
+        clonedSchema.setXml( schema.getXml() );
+        return clonedSchema;
+    }
+
     private void removeDatasetParam( PathItem pathItem ) {
         if ( pathItem == null )
             return;
-        ;
         pathItem.readOperationsMap().entrySet().forEach( method2operation -> {
             Operation operation = method2operation.getValue();
             Parameter datasetIdParameter = getDatasetIdParameter( operation );

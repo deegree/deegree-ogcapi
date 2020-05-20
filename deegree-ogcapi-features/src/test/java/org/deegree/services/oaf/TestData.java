@@ -1,6 +1,9 @@
 package org.deegree.services.oaf;
 
 import org.deegree.feature.stream.EmptyFeatureInputStream;
+import org.deegree.feature.types.AppSchema;
+import org.deegree.feature.types.FeatureType;
+import org.deegree.gml.schema.GMLAppSchemaReader;
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
 import org.deegree.services.oaf.domain.collections.Extent;
@@ -26,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.deegree.gml.GMLVersion.GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -51,27 +55,37 @@ public class TestData {
         return testFactory;
     }
 
+    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer() {
+        QName featureTypeName = new QName( "http://www.deegree.org/app", "strassenbaumkataster" );
+        return mockWorkspaceInitializer( featureTypeName );
+    }
+
     public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( String collectionId ) {
+        QName featureTypeName = new QName( collectionId );
+        return mockWorkspaceInitializer( featureTypeName );
+    }
+
+    private static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName ) {
         OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
         DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
         when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
 
         Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
-        FeatureTypeMetadata ftm = new FeatureTypeMetadata( new QName( collectionId ) );
-        featureTypeMetadata.put( collectionId, ftm );
+        FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
+
+        try {
+            String schemaURL = TestData.class.getResource( "feature/schema/strassenbaumkataster.xsd" ).toString();
+            GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader( GML_32, null, schemaURL );
+            AppSchema schema = xsdAdapter.extractAppSchema();
+            FeatureType featureType = schema.getFeatureType( featureTypeName );
+            if ( featureType != null )
+                ftm.featureType( featureType );
+        } catch ( Exception e ) {
+        }
+
+        featureTypeMetadata.put( featureTypeName.getLocalPart(), ftm );
         when( oafConfiguration.getFeatureTypeMetadata() ).thenReturn( featureTypeMetadata );
 
-        OafDatasets oafDatasets = new OafDatasets();
-        oafDatasets.addDataset( "oaf", oafConfiguration );
-        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
-        when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
-        return deegreeWorkspaceInitializer;
-    }
-
-    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer() {
-        OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
-        DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
-        when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
         OafDatasets oafDatasets = new OafDatasets();
         oafDatasets.addDataset( "oaf", oafConfiguration );
         DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );

@@ -40,7 +40,7 @@ public class OafOpenApiFilterTest {
         URL resource = OafOpenApiFilterTest.class.getResource( "openapi.json" );
         OpenAPI openAPI = parser.read( resource.toExternalForm() );
 
-        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer( "strassenbaum" );
+        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer();
 
         OafOpenApiFilter filter = new OafOpenApiFilter( "oaf", deegreeWorkspaceInitializer );
         filter.filterOpenAPI( openAPI, null, null, null );
@@ -56,17 +56,17 @@ public class OafOpenApiFilterTest {
         assertThat( paths.get( "/collections" ), notNullValue() );
         assertThat( paths.get( "/collections" ), hasResponseMediaType( APPLICATION_JSON, APPLICATION_XML, TEXT_HTML ) );
 
-        assertThat( paths.get( "/collections/strassenbaum" ), notNullValue() );
-        assertThat( paths.get( "/collections/strassenbaum" ),
+        assertThat( paths.get( "/collections/strassenbaumkataster" ), notNullValue() );
+        assertThat( paths.get( "/collections/strassenbaumkataster" ),
                     hasResponseMediaType( APPLICATION_JSON, APPLICATION_XML, TEXT_HTML ) );
 
-        assertThat( paths.get( "/collections/strassenbaum/items" ), notNullValue() );
-        assertThat( paths.get( "/collections/strassenbaum/items" ),
+        assertThat( paths.get( "/collections/strassenbaumkataster/items" ), notNullValue() );
+        assertThat( paths.get( "/collections/strassenbaumkataster/items" ),
                     hasResponseMediaType( APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
                                           APPLICATION_GML_SF2, TEXT_HTML ) );
 
-        assertThat( paths.get( "/collections/strassenbaum/items/{featureId}" ), notNullValue() );
-        assertThat( paths.get( "/collections/strassenbaum/items/{featureId}" ),
+        assertThat( paths.get( "/collections/strassenbaumkataster/items/{featureId}" ), notNullValue() );
+        assertThat( paths.get( "/collections/strassenbaumkataster/items/{featureId}" ),
                     hasResponseMediaType( APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
                                           APPLICATION_GML_SF2, TEXT_HTML ) );
     }
