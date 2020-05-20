@@ -46,12 +46,6 @@
         <div class="col-lg-12" id="content">
             <h1 v-cloak class="mt-5">{{ title }}</h1>
             <p v-cloak class="lead">{{ description }}</p>
-            <div class="row" v-if="contact && contact.name">
-                <div class="col-sm-3">Contact</div>
-                <div class="col-md-9">
-                    <a v-cloak v-bind:href="contact.url" >{{ contact.name }}</a> (<a v-cloak v-bind:href="'mailto:' + contact.email" >E-Mail</a>)
-                </div>
-            </div>
             <div class="row">
                 <div class="col-sm-3">Collections</div>
                 <div class="col-md-9">
@@ -74,6 +68,12 @@
                 <div class="col-sm-3">Metadata</div>
                 <div class="col-md-9">
                     <a v-cloak v-bind:href="metadataLink.href" >{{ metadataLink.title }}</a>
+                </div>
+            </div>
+            <div class="row" v-if="contact && contact.name">
+                <div class="col-sm-3">Contact</div>
+                <div class="col-md-9">
+                    <a v-cloak v-bind:href="contact.url" >{{ contact.name }}</a> (<a v-cloak v-bind:href="'mailto:' + contact.email" >E-Mail</a>)
                 </div>
             </div>
             <div class="row" v-if="licenseLink">
