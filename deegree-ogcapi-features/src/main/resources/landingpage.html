@@ -117,24 +117,25 @@ var App = new Vue({
   },
 
   created() {
-    // create a closure to access component in the callback below
-    var self = this;
+    this.fetchData().catch(error => {
+      console.error(error)
+    })
+  },
+  methods: {
+    async fetchData() {
+      var baseUrl = retrieveBaseUrl();
+      const response = await fetch( baseUrl, {headers: {'Accept': 'application/json' } } );
+      const json = await response.json();
 
-    $.ajax({
-      dataType: "json",
-      //url: "http://localhost:8002/",
-      url: window.location,
-      success: function(data) {
-        self.title = data.title;
-        self.description = data.description;
-        self.apilink = firstByRel(data, 'service-desc');
-        self.collectionlink = firstByRel(data, 'data');
-        self.conformanceLink = firstByRel(data, 'conformance');
-        self.metadataLink = firstByRel(data, 'describedBy');
-        self.licenseLink = firstByRel(data, 'license');
-        self.contact = data.contact;
-      }
-    });
+      this.title = json.title;
+      this.description = json.description;
+      this.apilink = firstByRel(json, 'service-desc');
+      this.collectionlink = firstByRel(json, 'data');
+      this.conformanceLink = firstByRel(json, 'conformance');
+      this.metadataLink = firstByRel(json, 'describedBy');
+      this.licenseLink = firstByRel(json, 'license');
+      this.contact = data.contact;
+    }
   }
 })
 
@@ -176,9 +177,17 @@ function createImpressumUrl(){
 }
 
 function addTrailingSlash(){
-  if( !window.location.href.endsWith("/") ){
+  if( window.location.href.indexOf('?') < 0 && !window.location.href.endsWith("/") ){
     window.location.href = window.location.href + "/";
   }
+}
+
+function retrieveBaseUrl() {
+  var featuresRefWithoutQuery = window.location.href;
+  if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
+    featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+  }
+  return featuresRefWithoutQuery;
 }
 </script>
 </body>

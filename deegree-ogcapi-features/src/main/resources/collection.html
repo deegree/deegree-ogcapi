@@ -116,21 +116,21 @@ var App = new Vue({
   },
 
   created() {
-    // create a closure to access component in the callback below
-    var self = this;
-
-    $.ajax({
-      dataType: "json",
-      //url: "http://localhost:8002/collections/strassenbaumkataster",
-      url: window.location.href,
-      success: function(data) {
-        self.title = data.title;
-        self.description = data.description;
-        self.links = data.links;
-        self.extent = data.extent;
-        fetchConfigAndSetExtent(self.extent.spatial.bbox);
-      }
-    });
+    this.fetchData().catch(error => {
+      console.error(error)
+    })
+  },
+  methods: {
+    async fetchData() {
+      var baseUrl = retrieveBaseUrl();
+      const response = await fetch( baseUrl, {headers: {'Accept': 'application/json' } } );
+      const json = await response.json();
+      this.title = json.title;
+      this.description = json.description;
+      this.links = json.links;
+      this.extent = json.extent;
+      fetchConfigAndSetExtent(this.extent.spatial.bbox);
+    }
   }
 })
 
@@ -288,6 +288,14 @@ function registerCrs(crsCode, projDef){
        return true;
    }
    return false;
+}
+
+function retrieveBaseUrl() {
+      var featuresRefWithoutQuery = window.location.href;
+      if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+      }
+      return featuresRefWithoutQuery;
 }
 </script>
 </body>

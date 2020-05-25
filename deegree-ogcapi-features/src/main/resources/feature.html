@@ -198,7 +198,7 @@ var App = new Vue({
   },
   methods: {
     async fetchData() {
-      var baseUrl = window.location.href;
+      var baseUrl = retrieveBaseUrl();
       const response = await fetch( baseUrl, {headers: {'Accept': 'application/geo+json' } } );
       const json = await response.json();
 
@@ -449,6 +449,14 @@ function registerCrs(crsCode, projDef){
        return true;
    }
    return false;
+}
+
+function retrieveBaseUrl() {
+      var featuresRefWithoutQuery = window.location.href;
+      if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+      }
+      return featuresRefWithoutQuery;
 }
 </script>
 </body>

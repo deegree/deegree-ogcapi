@@ -587,7 +587,6 @@ function removeTrailingSlash(){
 }
 
 function retrieveBaseUrl() {
-      var params = parseQueryString(window.location.search);
       var featuresRefWithoutQuery = window.location.href;
       if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
         featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
@@ -615,7 +614,9 @@ function createUrlWithQuery(url, params) {
     url = url + '?';
     let key;
     for (key in params) {
-        url = url + key + '=' + params[key] + '&';
+       if( key != 'f' ) {
+          url = url + key + '=' + params[key] + '&';
+        }
     };
     return url;
 }
