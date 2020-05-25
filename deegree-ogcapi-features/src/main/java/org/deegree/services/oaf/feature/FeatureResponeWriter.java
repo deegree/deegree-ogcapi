@@ -1,5 +1,6 @@
 package org.deegree.services.oaf.feature;
 
+import org.deegree.commons.tom.datetime.ISO8601Converter;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
@@ -22,6 +23,9 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import static org.deegree.cs.persistence.CRSManager.lookup;
@@ -57,6 +61,7 @@ public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> 
             writeLinks( features.getLinks(), geoJsonStreamWriter );
             writeNumberMatched( features.getNumberOfFeaturesMatched(), geoJsonStreamWriter );
             writeNumberReturned( numberReturned, geoJsonStreamWriter );
+            writeTimeStamp( geoJsonStreamWriter );
             writeCrs( features.getResponseCrsName(), geoJsonStreamWriter );
             // Closes the feature array as well as the object. Links could not be written later.
             // geoJsonStreamWriter.endFeatureCollection();
@@ -150,6 +155,13 @@ public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> 
                     throws IOException {
         writer.name( "numberReturned" ).value( numberOfFeatures );
     }
+
+    private void writeTimeStamp( GeoJsonWriter writer )
+                    throws IOException {
+        String now = ISO8601Converter.formatDateTime( new Date() );
+        writer.name( "timeStamp" ).value( now );
+    }
+
 
     private void writeLink( GeoJsonWriter writer, Link link )
                     throws IOException {
