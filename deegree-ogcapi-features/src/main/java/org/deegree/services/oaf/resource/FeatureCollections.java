@@ -13,6 +13,8 @@ import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -37,6 +39,9 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
  */
 @Path("/datasets/{datasetId}/collections")
 public class FeatureCollections {
+
+    @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
     @Inject
     private DataAccess dataAccess;
@@ -108,12 +113,13 @@ public class FeatureCollections {
                                   RequestFormat defaultFormat )
                     throws UnknownDatasetId, InvalidParameterValue {
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         if ( HTML.equals( requestFormat ) ) {
             return Response.ok( getClass().getResourceAsStream( "/collections.html" ), TEXT_HTML ).build();
         }
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        Collections collections = dataAccess.createCollections( datasetId, linkBuilder );
+        Collections collections = dataAccess.createCollections( oafConfiguration, linkBuilder );
         return Response.ok( collections, mediaTypeFromRequestFormat( requestFormat ) ).build();
     }
 

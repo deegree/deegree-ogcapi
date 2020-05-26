@@ -14,7 +14,6 @@ import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
-import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.feature.FeatureResponse;
 import org.deegree.services.oaf.feature.FeaturesRequest;
 import org.deegree.services.oaf.link.Link;
@@ -23,7 +22,6 @@ import org.deegree.services.oaf.link.NextLink;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
-import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,22 +33,19 @@ import java.util.Map;
  */
 public class DeegreeDataAccess implements DataAccess {
 
-    @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
-
     @Override
-    public Collections createCollections( String datasetId, LinkBuilder linkBuilder )
-                    throws UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+    public Collections createCollections( OafDatasetConfiguration oafConfiguration, LinkBuilder linkBuilder ) {
+        String datasetId = oafConfiguration.getId();
         List<Link> links = linkBuilder.createCollectionsLinks( datasetId, oafConfiguration.getServiceMetadata() );
         List<Collection> collections = createCollectionList( oafConfiguration, datasetId, linkBuilder );
         return new Collections( links, collections );
     }
 
     @Override
-    public Collection createCollection( String datasetId, String collectionId, LinkBuilder linkBuilder )
-                    throws UnknownCollectionId, UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+    public Collection createCollection( OafDatasetConfiguration oafConfiguration, String collectionId,
+                                        LinkBuilder linkBuilder )
+                    throws UnknownCollectionId {
+        String datasetId = oafConfiguration.getId();
         Map<String, FeatureTypeMetadata> featureTypeNames = oafConfiguration.getFeatureTypeMetadata();
         if ( featureTypeNames.containsKey( collectionId ) ) {
             return createCollection( oafConfiguration, datasetId, featureTypeNames.get( collectionId ), linkBuilder );
@@ -59,10 +54,10 @@ public class DeegreeDataAccess implements DataAccess {
     }
 
     @Override
-    public FeatureResponse retrieveFeatures( String datasetId, String collectionId, FeaturesRequest featuresRequest,
+    public FeatureResponse retrieveFeatures( OafDatasetConfiguration oafConfiguration, String collectionId,
+                                             FeaturesRequest featuresRequest,
                                              LinkBuilder linkBuilder )
-                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue {
         FeatureTypeMetadata featureType = validateAndRetrieveFeatureType( oafConfiguration, collectionId );
         String crs = validateAndRetrieveCrs( featuresRequest.getResponseCrs() );
         FeatureStore featureStore = oafConfiguration.getFeatureStore( featureType.getName(), collectionId );
@@ -76,6 +71,7 @@ public class DeegreeDataAccess implements DataAccess {
             int limit = featuresRequest.getLimit();
             int offset = featuresRequest.getOffset();
             NextLink nextLink = new NextLink( numberOfFeaturesMatched, limit, offset );
+            String datasetId = oafConfiguration.getId();
             List<Link> links = linkBuilder.createFeaturesLinks( datasetId, collectionId, nextLink );
             Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
             return new FeatureResponse( features, featureTypeNsPrefixes, limit, numberOfFeaturesMatched, offset, links,
@@ -86,10 +82,10 @@ public class DeegreeDataAccess implements DataAccess {
     }
 
     @Override
-    public FeatureResponse retrieveFeature( String datasetId, String collectionId, String featureId, String responseCrs,
+    public FeatureResponse retrieveFeature( OafDatasetConfiguration oafConfiguration, String collectionId,
+                                            String featureId, String responseCrs,
                                             LinkBuilder linkBuilder )
-                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+                    throws InternalQueryException, InvalidParameterValue, UnknownCollectionId {
         FeatureTypeMetadata featureType = validateAndRetrieveFeatureType( oafConfiguration, collectionId );
         String crs = validateAndRetrieveCrs( responseCrs );
         FeatureStore featureStore = oafConfiguration.getFeatureStore( featureType.getName(), collectionId );
@@ -97,6 +93,7 @@ public class DeegreeDataAccess implements DataAccess {
             DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder( oafConfiguration );
             Query queryById = queryBuilder.createQueryById( featureType.getName(), featureId );
             FeatureInputStream feature = featureStore.query( queryById );
+            String datasetId = oafConfiguration.getId();
             List<Link> inks = linkBuilder.createFeatureLinks( datasetId, collectionId, featureId );
             Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
             return new FeatureResponse( feature, featureTypeNsPrefixes, 1, 1, 0, inks, true, crs );

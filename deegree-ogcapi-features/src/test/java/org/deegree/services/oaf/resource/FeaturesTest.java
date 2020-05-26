@@ -8,6 +8,7 @@ import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -111,12 +112,14 @@ public class FeaturesTest extends JerseyTest {
         Collection collection = createCollection();
         Collections testCollection = createCollections( collection );
         try {
-            when( testFactory.createCollections( eq( "oaf" ), any( LinkBuilder.class ) ) ).thenReturn( testCollection );
-            when( testFactory.createCollection( eq( "oaf" ), eq( "test" ), any( LinkBuilder.class ) ) ).thenReturn(
-                            collection );
-            when( testFactory.retrieveFeatures( eq( "oaf" ), eq( "test" ), any( FeaturesRequest.class ),
+            when( testFactory.createCollections( any( OafDatasetConfiguration.class ),
+                                                 any( LinkBuilder.class ) ) ).thenReturn( testCollection );
+            when( testFactory.createCollection( any( OafDatasetConfiguration.class ), eq( "test" ),
+                                                any( LinkBuilder.class ) ) ).thenReturn( collection );
+            when( testFactory.retrieveFeatures( any( OafDatasetConfiguration.class ), eq( "test" ),
+                                                any( FeaturesRequest.class ),
                                                 any( LinkBuilder.class ) ) ).thenReturn( features() );
-            when( testFactory.retrieveFeature( eq( "oaf" ), eq( "test" ), eq( "42" ), isNull(),
+            when( testFactory.retrieveFeature( any( OafDatasetConfiguration.class ), eq( "test" ), eq( "42" ), isNull(),
                                                any( LinkBuilder.class ) ) ).thenReturn( feature() );
         } catch ( Exception e ) {
             e.printStackTrace();

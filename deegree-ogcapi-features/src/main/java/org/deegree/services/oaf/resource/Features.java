@@ -59,10 +59,10 @@ public class Features {
     private final FeatureResponseCreator featureResponseCreator = new FeatureResponseCreator();
 
     @Inject
-    private DataAccess dataAccess;
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
     @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+    private DataAccess dataAccess;
 
     @GET
     @Produces({ APPLICATION_GEOJSON })
@@ -224,6 +224,7 @@ public class Features {
                                RequestFormat defaultFormat, String acceptHeader )
                     throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         if ( HTML.equals( requestFormat ) ) {
             return Response.ok( getClass().getResourceAsStream( "/features.html" ), TEXT_HTML ).build();
         }
@@ -239,7 +240,7 @@ public class Features {
                         .withResponseCrs( crs )
                         .withFilterParameters( filterParameters ).build();
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        FeatureResponse featureResponse = dataAccess.retrieveFeatures( datasetId, collectionId, featuresRequest,
+        FeatureResponse featureResponse = dataAccess.retrieveFeatures( oafConfiguration, collectionId, featuresRequest,
                                                                        linkBuilder );
         if ( XML.equals( requestFormat ) ) {
             return featureResponseCreator.createGmlResponseWithHeaders( featureResponse,

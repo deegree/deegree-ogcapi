@@ -14,6 +14,8 @@ import java.util.Map;
  */
 public class OafDatasetConfiguration {
 
+    private final String id;
+
     private final Map<String, FeatureTypeMetadata> featureTypeMetadata;
 
     private final DatasetMetadata serviceMetadata;
@@ -22,13 +24,21 @@ public class OafDatasetConfiguration {
 
     private Map<QName, FeatureStore> featureStores;
 
-    public OafDatasetConfiguration( Map<String, FeatureTypeMetadata> featureTypeMetadata,
+    public OafDatasetConfiguration( String id, Map<String, FeatureTypeMetadata> featureTypeMetadata,
                                     DatasetMetadata serviceMetadata, List<String> suppportedCrs,
                                     Map<QName, FeatureStore> featureStores ) {
+        this.id = id;
         this.featureTypeMetadata = featureTypeMetadata;
         this.serviceMetadata = serviceMetadata;
         this.suppportedCrs = suppportedCrs;
         this.featureStores = featureStores;
+    }
+
+    /**
+     * @return the id of this dataset, never <code>null</code>
+     */
+    public String getId() {
+        return id;
     }
 
     /**

@@ -15,6 +15,8 @@ import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -41,6 +43,9 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 public class FeatureCollection {
 
     @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+
+    @Inject
     private DataAccess dataAccess;
 
     @GET
@@ -54,7 +59,7 @@ public class FeatureCollection {
                     @PathParam("collectionId")
                                     String collectionId,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -72,7 +77,7 @@ public class FeatureCollection {
                     @PathParam("collectionId")
                                     String collectionId,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -90,7 +95,7 @@ public class FeatureCollection {
                     @PathParam("collectionId")
                                     String collectionId,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -107,7 +112,7 @@ public class FeatureCollection {
                     @PathParam("collectionId")
                                     String collectionId,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -119,13 +124,13 @@ public class FeatureCollection {
     private Response collection( String datasetId, String collectionId, UriInfo uriInfo, String formatParamValue,
                                  RequestFormat defaultFormat )
                     throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
-
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         if ( HTML.equals( requestFormat ) ) {
             return Response.ok( getClass().getResourceAsStream( "/collection.html" ), TEXT_HTML ).build();
         }
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        Collection collection = dataAccess.createCollection( datasetId, collectionId, linkBuilder );
+        Collection collection = dataAccess.createCollection( oafConfiguration, collectionId, linkBuilder );
         if ( XML.equals( requestFormat ) ) {
             Collections collections = new Collections();
             collections.addCollection( collection );

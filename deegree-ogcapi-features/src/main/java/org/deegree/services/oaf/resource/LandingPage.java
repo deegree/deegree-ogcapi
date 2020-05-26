@@ -101,12 +101,12 @@ public class LandingPage {
     private Response landingPage( UriInfo uriInfo, String datasetId, String formatParamValue,
                                   RequestFormat defaultFormat )
                     throws UnknownDatasetId, InvalidParameterValue {
+        OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
         if ( HTML.equals( requestFormat ) ) {
             return Response.ok( getClass().getResourceAsStream( "/landingpage.html" ), TEXT_HTML ).build();
         }
 
-        OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         DatasetMetadata metadata = dataset.getServiceMetadata();
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );

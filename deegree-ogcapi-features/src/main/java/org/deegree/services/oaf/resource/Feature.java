@@ -14,6 +14,8 @@ import org.deegree.services.oaf.feature.FeatureResponse;
 import org.deegree.services.oaf.feature.FeatureResponseCreator;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -44,6 +46,9 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 public class Feature {
 
     @Inject
+    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+
+    @Inject
     private DataAccess dataAccess;
 
     private final FeatureResponseCreator featureResponseCreator = new FeatureResponseCreator();
@@ -65,7 +70,7 @@ public class Feature {
                     @QueryParam("crs")
                                     String crs,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues =  { "json", "html", "xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
@@ -89,7 +94,7 @@ public class Feature {
                     @QueryParam("crs")
                                     String crs,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
@@ -112,7 +117,7 @@ public class Feature {
                     @QueryParam("crs")
                                     String crs,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
@@ -134,7 +139,7 @@ public class Feature {
                     @QueryParam("crs")
                                     String crs,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
@@ -151,12 +156,13 @@ public class Feature {
                               String formatParamValue, RequestFormat defaultFormat, String acceptHeader )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
+        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         if ( HTML.equals( requestFormat ) ) {
             return Response.ok( getClass().getResourceAsStream( "/feature.html" ), TEXT_HTML ).build();
         }
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        FeatureResponse featureResponse = dataAccess.retrieveFeature( datasetId, collectionId, featureId, crs,
+        FeatureResponse featureResponse = dataAccess.retrieveFeature( oafConfiguration, collectionId, featureId, crs,
                                                                       linkBuilder );
         if ( XML.equals( requestFormat ) ) {
             return featureResponseCreator.createGmlResponseWithHeaders( featureResponse, acceptHeader );

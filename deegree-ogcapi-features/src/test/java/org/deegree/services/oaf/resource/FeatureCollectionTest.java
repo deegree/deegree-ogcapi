@@ -1,6 +1,7 @@
 package org.deegree.services.oaf.resource;
 
 import org.deegree.services.oaf.workspace.DataAccess;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -15,6 +16,7 @@ import javax.xml.namespace.NamespaceContext;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
+import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.xmlmatchers.XmlMatchers.hasXPath;
@@ -33,6 +35,7 @@ public class FeatureCollectionTest extends JerseyTest {
             @Override
             protected void configure() {
                 bind( mockDataAccess() ).to( DataAccess.class );
+                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
             }
         } );
         return resourceConfig;

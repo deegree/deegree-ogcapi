@@ -21,17 +21,17 @@ import org.deegree.services.jaxb.oaf.DateTimePropertyType;
 import org.deegree.services.jaxb.oaf.DeegreeOAF;
 import org.deegree.services.metadata.OWSMetadataProvider;
 import org.deegree.services.metadata.provider.OWSMetadataProviderProvider;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
+import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.config.htmlview.OgcApiConfigProvider;
 import org.deegree.services.oaf.domain.collections.Extent;
 import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
-import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
-import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.ResourceInitException;
@@ -88,10 +88,11 @@ public class OafResource implements Resource {
         OWSMetadataProvider owsMetadataProvider = getMetadata( workspace );
         try {
             Map<String, FeatureTypeMetadata> featureTypeMetadata = parseFeatureTypeMetadata( owsMetadataProvider );
-            DatasetMetadata metadata = new DatasetMetadata( owsMetadataProvider, config.getMetadata() );
+            DatasetMetadata datasetMetadata = new DatasetMetadata( owsMetadataProvider, config.getMetadata() );
             List<String> supportedCrs = parseQueryCrs( config );
             Map<QName, FeatureStore> featureStores = parseFeatureStores( workspace, featureTypeMetadata );
-            this.oafConfiguration = new OafDatasetConfiguration( featureTypeMetadata, metadata, supportedCrs,
+            String id = metadata.getIdentifier().getId();
+            this.oafConfiguration = new OafDatasetConfiguration( id, featureTypeMetadata, datasetMetadata, supportedCrs,
                                                                  featureStores );
             this.htmlViewConfiguration = getHtmlViewConfig( workspace );
         } catch ( InvalidConfigurationException e ) {
@@ -220,7 +221,8 @@ public class OafResource implements Resource {
             if ( !name.getNamespaceURI().equals( GMLNS ) && !name.getNamespaceURI().equals( GML3_2_NS ) ) {
                 try {
                     QName dateTimeProperty = getDateTimeProperty( name );
-                    org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata = metadata.getDatasetMetadata( name );
+                    org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata = metadata.getDatasetMetadata(
+                                    name );
                     FeatureTypeMetadata ftMetadata = createFeatureTypeMetadata( featureStore, name, dateTimeProperty,
                                                                                 datasetMetadata );
                     featureTypeNames.put( name.getLocalPart(), ftMetadata );
@@ -232,7 +234,8 @@ public class OafResource implements Resource {
     }
 
     private FeatureTypeMetadata createFeatureTypeMetadata( FeatureStore featureStore, QName name,
-                                                           QName dateTimeProperty, org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata )
+                                                           QName dateTimeProperty,
+                                                           org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata )
                     throws FeatureStoreException {
         FeatureType featureType = featureStore.getSchema().getFeatureType( name );
         List<FilterProperty> filterProperties = parseFilterProperties( featureType );

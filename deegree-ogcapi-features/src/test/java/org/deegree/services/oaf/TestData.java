@@ -10,7 +10,6 @@ import org.deegree.services.oaf.domain.collections.Extent;
 import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
-import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.feature.FeatureResponse;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
@@ -46,10 +45,12 @@ public class TestData {
         Collection collection = createCollection();
         Collections testCollection = createCollections( collection );
         try {
-            when( testFactory.createCollections( eq( "oaf" ), any( LinkBuilder.class ) ) ).thenReturn( testCollection );
-            when( testFactory.createCollection( eq( "oaf" ), eq( "test" ), any( LinkBuilder.class ) ) ).thenReturn(
+            when( testFactory.createCollections( any( OafDatasetConfiguration.class ),
+                                                 any( LinkBuilder.class ) ) ).thenReturn( testCollection );
+            when( testFactory.createCollection( any( OafDatasetConfiguration.class ), eq( "test" ),
+                                                any( LinkBuilder.class ) ) ).thenReturn(
                             collection );
-        } catch ( UnknownDatasetId | UnknownCollectionId e ) {
+        } catch ( UnknownCollectionId e ) {
             e.printStackTrace();
         }
         return testFactory;
