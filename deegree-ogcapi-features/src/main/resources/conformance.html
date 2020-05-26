@@ -25,7 +25,10 @@
             <a class="navbar-brand" href="#"></a>
             <ul class="nav" id ="breadcrump">
                 <li class="breadcrumb-item">
-                    <a v-bind:href="landingPageLink">Landing Page</a>
+                    <a v-bind:href="datasetsLink">Datasets</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="datasetLink">{{ datasetName }}</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">Conformance Classes</li>
             </ul>
@@ -103,13 +106,18 @@ var App = new Vue({
 var AppBreadcrump = new Vue({
   el: '#breadcrump',
   data: {
-    landingPageLink: []
+    landingPageLink: [],
+    datasetLink: [],
+    datasetName: [],
+    datasetsLink: []
   },
 
   created() {
     var self = this;
     var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
-    self.landingPageLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.datasetLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
+    self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
   }
 })
 

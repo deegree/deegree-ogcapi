@@ -23,7 +23,13 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"></a>
-            <ul class="nav">
+            <ul class="nav" id="breadcrump">
+                <li class="breadcrumb-item">
+                    <a v-bind:href="datasetsLink">Datasets</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-cloak v-bind:href="datasetLink">{{ datasetName }}</a>
+                </li>
                 <li class="breadcrumb-item active" aria-current="page">Landing Page</li>
             </ul>
             <ul class="nav justify-content-end">
@@ -99,7 +105,7 @@
 <script src="../../webjars/jquery/3.4.1/jquery.min.js" ></script>
 <script src="../../webjars/popper.js/1.16.0/umd/popper.min.js" ></script>
 <script src="../../webjars/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
-<script src="../../webjars/vue/2.6.11/vue.min.js" ></script>
+<script src="../../webjars/vue/2.6.11/vue.js" ></script>
 <script>
 addTrailingSlash();
 
@@ -134,8 +140,25 @@ var App = new Vue({
       this.conformanceLink = firstByRel(json, 'conformance');
       this.metadataLink = firstByRel(json, 'describedBy');
       this.licenseLink = firstByRel(json, 'license');
-      this.contact = data.contact;
+      this.contact = json.contact;
     }
+  }
+})
+
+var AppBreadcrump = new Vue({
+  el: '#breadcrump',
+  data: {
+    datasetLink: [],
+    datasetName: [],
+    datasetsLink: []
+  },
+
+  created() {
+    var self = this;
+    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+    self.datasetsLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.datasetLink = thisLink;
+    self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
   }
 })
 
