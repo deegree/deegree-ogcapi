@@ -53,7 +53,8 @@ public class FeatureCollection {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -70,7 +71,8 @@ public class FeatureCollection {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -87,7 +89,8 @@ public class FeatureCollection {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -103,7 +106,8 @@ public class FeatureCollection {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format,
                     @Context

@@ -3,6 +3,7 @@ package org.deegree.services.oaf.resource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.deegree.services.oaf.RequestFormat;
 import org.deegree.services.oaf.domain.dataset.Dataset;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
@@ -45,7 +46,8 @@ public class Datasets {
     @Operation(hidden = true)
     public Response datasetsJson(
                     @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema(allowableValues =  { "json", "html", "xml"}))
                     @QueryParam("f") String format )
                     throws InvalidParameterValue {
         return datasets( uriInfo, format, JSON );
@@ -56,7 +58,8 @@ public class Datasets {
     @Operation(hidden = true)
     public Response datasetsHtml(
                     @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f") String format )
                     throws InvalidParameterValue {
         return datasets( uriInfo, format, HTML );

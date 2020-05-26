@@ -44,7 +44,8 @@ public class Conformance {
     @Tag(name = "Capabilities")
     @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = org.deegree.services.oaf.domain.conformance.Conformance.class)))
     public Response conformanceJson(
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue {
@@ -55,7 +56,8 @@ public class Conformance {
     @Produces({ APPLICATION_XML })
     @Operation(hidden = true)
     public Response conformanceXml(
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue {
@@ -66,7 +68,8 @@ public class Conformance {
     @Produces({ TEXT_HTML })
     @Operation(hidden = true)
     public Response conformanceHtml(
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue {
@@ -76,7 +79,8 @@ public class Conformance {
     @GET
     @Operation(hidden = true)
     public Response conformanceOther(
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue {

@@ -3,6 +3,7 @@ package org.deegree.services.oaf.resource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.RequestFormat;
 import org.deegree.services.oaf.exceptions.InternalQueryException;
@@ -63,7 +64,8 @@ public class Feature {
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema(allowableValues =  { "json", "html", "xml"}))
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
@@ -86,7 +88,8 @@ public class Feature {
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
@@ -108,7 +111,8 @@ public class Feature {
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
@@ -129,7 +133,8 @@ public class Feature {
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {

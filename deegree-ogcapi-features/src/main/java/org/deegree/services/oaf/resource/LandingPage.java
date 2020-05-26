@@ -51,7 +51,8 @@ public class LandingPage {
     @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = LandingPage.class)))
     public Response landingPageJson(
                     @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f") String format,
                     @PathParam("datasetId") String datasetId )
                     throws UnknownDatasetId, InvalidParameterValue {
@@ -64,7 +65,8 @@ public class LandingPage {
     @Operation(hidden = true)
     public Response landingPageJsonXml(
                     @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f") String format,
                     @PathParam("datasetId") String datasetId )
                     throws UnknownDatasetId, InvalidParameterValue {
@@ -76,7 +78,8 @@ public class LandingPage {
     @Operation(hidden = true)
     public Response landingPageHtml(
                     @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f") String format,
                     @PathParam("datasetId") String datasetId )
                     throws UnknownDatasetId, InvalidParameterValue {
@@ -87,7 +90,8 @@ public class LandingPage {
     @Operation(hidden = true)
     public Response landingPageOther(
                     @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f") String format,
                     @PathParam("datasetId") String datasetId )
                     throws UnknownDatasetId, InvalidParameterValue {

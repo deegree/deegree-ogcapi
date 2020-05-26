@@ -49,7 +49,8 @@ public class FeatureCollections {
     public Response collectionsJson(
                     @PathParam("datasetId")
                                     String datasetId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -64,7 +65,8 @@ public class FeatureCollections {
     public Response collectionsXml(
                     @PathParam("datasetId")
                                     String datasetId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format,
                     @Context
@@ -79,7 +81,8 @@ public class FeatureCollections {
     public Response collectionsHtml(
                     @PathParam("datasetId") String datasetId,
                     @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws UnknownDatasetId, InvalidParameterValue {
@@ -93,7 +96,8 @@ public class FeatureCollections {
                                     String datasetId,
                     @Context
                                     UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM)
+                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
                     @QueryParam("f")
                                     String format )
                     throws UnknownDatasetId, InvalidParameterValue {
