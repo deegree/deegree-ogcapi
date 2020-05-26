@@ -91,9 +91,6 @@
                     <a v-cloak v-bind:href="datasetLink">{{ datasetName }}</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a v-bind:href="landingPageLink">Landing Page</a>
-                </li>
-                <li class="breadcrumb-item">
                     <a v-bind:href="collectionsLink">Collections</a>
                 </li>
                 <li v-cloak class="breadcrumb-item">
@@ -221,7 +218,6 @@ var AppBreadcrump = new Vue({
   data: {
     collectionId: [],
     featureId: [],
-    landingPageLink: [],
     datasetLink: [],
     datasetName: [],
     datasetsLink: [],
@@ -237,7 +233,6 @@ var AppBreadcrump = new Vue({
     self.featureId = thisLink.substring(thisLink.lastIndexOf("/") + 1);
     self.collectionLink = self.itemsLink.substring(0, self.itemsLink.lastIndexOf("/"));
     self.collectionsLink = self.collectionLink.substring(0, self.collectionLink.lastIndexOf("/"));
-    self.landingPageLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
     self.datasetLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
     self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
     self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
