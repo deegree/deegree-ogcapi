@@ -262,7 +262,7 @@
                 <div class="col">
                     <b-table class="table-borderless"
                              thead-class="hidden_header"
-                             small show-empty :items="items" :fields="fields" :current-page="currentPage" :per-page="perPage">
+                             small :items="items" :fields="fields" :current-page="currentPage" :per-page="perPage">
                         <template v-slot:cell()="data">
                             <b-card>
                                 <template v-slot:header>
