@@ -312,7 +312,7 @@ async function fetchConfigAndSetFeature(featureJson) {
 function setMapBackgroundAndFeature(wmsUrl, wmsLayers, crsCode, projDef, featureJson){
     var crsCodeRegistered = registerCrs(crsCode, projDef);
     if( crsCodeRegistered ){
-        var userConfig = ol.proj.get('EPSG:25832');
+        var userConfig = ol.proj.get(crsCode);
         map.setView(
             new ol.View({
                 projection: userConfig
@@ -327,14 +327,14 @@ function setMapBackgroundAndFeature(wmsUrl, wmsLayers, crsCode, projDef, feature
       })
     });
     map.getLayers().insertAt(0, wmsLayer);
-    setFeature(featureJson);
+    setFeature(featureJson, crsCode);
 }
 
-function setFeature(featureJson){
+function setFeature(featureJson, crsCode){
   featureSource.clear();
   featureSource.addFeatures(featureSource.getFormat().readFeatures(featureJson, {
                     "dataProjection" : "EPSG:4326",
-                    "featureProjection" : "EPSG:25832"
+                    "featureProjection" : crsCode
              }));
 
   var extentGeom = ol.geom.Polygon.fromExtent(featureSource.getExtent())
@@ -456,7 +456,7 @@ function createConfigUrl(path){
 
 function registerCrs(crsCode, projDef){
    if( crsCode != null &&  projDef != null ) {
-       proj4.defs('EPSG:25832', '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+       proj4.defs(crsCode, projDef);
        ol.proj.proj4.register(proj4);
        return true;
    }
