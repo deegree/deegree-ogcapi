@@ -199,8 +199,11 @@ function createImpressumUrl(){
 }
 
 function addTrailingSlash(){
+  var indexOf = window.location.href.indexOf('?');
   if( window.location.href.indexOf('?') < 0 && !window.location.href.endsWith("/") ){
     window.location.href = window.location.href + "/";
+  } else if ( window.location.href.indexOf('?') > 0 && window.location.href.indexOf('/?') < 0 ) {
+    window.location.href = window.location.href.replace('?', '/?');
   }
 }
 
