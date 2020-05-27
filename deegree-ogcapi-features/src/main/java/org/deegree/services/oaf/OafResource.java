@@ -17,8 +17,6 @@ import org.deegree.feature.types.FeatureType;
 import org.deegree.feature.types.property.SimplePropertyType;
 import org.deegree.geometry.Envelope;
 import org.deegree.geometry.GeometryTransformer;
-import org.deegree.services.jaxb.oaf.DateTimePropertyType;
-import org.deegree.services.jaxb.oaf.DeegreeOAF;
 import org.deegree.services.metadata.OWSMetadataProvider;
 import org.deegree.services.metadata.provider.OWSMetadataProviderProvider;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
@@ -32,6 +30,8 @@ import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
+import org.deegree.services.ogcapi.features.DateTimePropertyType;
+import org.deegree.services.ogcapi.features.DeegreeOAF;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.ResourceInitException;
@@ -221,8 +221,8 @@ public class OafResource implements Resource {
             if ( !name.getNamespaceURI().equals( GMLNS ) && !name.getNamespaceURI().equals( GML3_2_NS ) ) {
                 try {
                     QName dateTimeProperty = getDateTimeProperty( name );
-                    org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata = metadata.getDatasetMetadata(
-                                    name );
+                    org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata =
+                                    metadata != null ? metadata.getDatasetMetadata( name ) : null;
                     FeatureTypeMetadata ftMetadata = createFeatureTypeMetadata( featureStore, name, dateTimeProperty,
                                                                                 datasetMetadata );
                     featureTypeNames.put( name.getLocalPart(), ftMetadata );

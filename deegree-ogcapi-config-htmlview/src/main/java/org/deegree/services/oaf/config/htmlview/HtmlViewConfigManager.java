@@ -9,7 +9,8 @@ import org.deegree.workspace.standard.DefaultResourceManagerMetadata;
 public class HtmlViewConfigManager extends DefaultResourceManager<HtmlViewConfigResource> {
 
     public HtmlViewConfigManager() {
-        super( new DefaultResourceManagerMetadata<HtmlViewConfigResource>( OgcApiConfigProvider.class, "OGC API Features HTML config", "services" ) );
+        super( new DefaultResourceManagerMetadata<>( OgcApiConfigProvider.class,
+                                                     "OGC API HTML config", "html" ) );
     }
 
 }

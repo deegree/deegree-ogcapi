@@ -1,6 +1,6 @@
 package org.deegree.services.oaf.config.htmlview;
 
-import org.deegree.services.jaxb.config.htmlview.HtmlView;
+import org.deegree.services.jaxb.ogcapi.htmlview.HtmlView;
 import org.deegree.workspace.ResourceBuilder;
 import org.deegree.workspace.ResourceMetadata;
 import org.deegree.workspace.Workspace;
@@ -16,7 +16,8 @@ public class HtmlViewConfigBuilder implements ResourceBuilder<HtmlViewConfigReso
 
     private HtmlView config;
 
-    public HtmlViewConfigBuilder( ResourceMetadata<HtmlViewConfigResource> metadata, Workspace workspace, HtmlView config ) {
+    public HtmlViewConfigBuilder( ResourceMetadata<HtmlViewConfigResource> metadata, Workspace workspace,
+                                  HtmlView config ) {
         this.metadata = metadata;
         this.workspace = workspace;
         this.config = config;

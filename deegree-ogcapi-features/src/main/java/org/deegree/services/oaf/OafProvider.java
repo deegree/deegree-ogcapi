@@ -14,7 +14,7 @@ public class OafProvider extends OgcApiProvider {
 
     @Override
     public String getNamespace() {
-        return "http://www.deegree.org/services/oaf";
+        return "http://www.deegree.org/ogcapi/features";
     }
 
     @Override
@@ -24,7 +24,7 @@ public class OafProvider extends OgcApiProvider {
 
     @Override
     public URL getSchema() {
-        return OafProvider.class.getResource( "/META-INF/schemas/services/oaf/3.4.0/oaf_configuration.xsd" );
+        return OafProvider.class.getResource( "/META-INF/schemas/ogcapi/features/3.4.0/features.xsd" );
     }
 
 }

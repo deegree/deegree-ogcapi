@@ -1,7 +1,7 @@
 package org.deegree.services.oaf.config.htmlview;
 
 import org.deegree.commons.xml.jaxb.JAXBUtils;
-import org.deegree.services.jaxb.config.htmlview.HtmlView;
+import org.deegree.services.jaxb.ogcapi.htmlview.HtmlView;
 import org.deegree.workspace.ResourceBuilder;
 import org.deegree.workspace.ResourceInitException;
 import org.deegree.workspace.ResourceLocation;
@@ -14,7 +14,7 @@ import org.deegree.workspace.standard.AbstractResourceProvider;
  */
 public class HtmlViewConfigMetadata extends AbstractResourceMetadata<HtmlViewConfigResource> {
 
-    private static final String CONFIG_JAXB_PACKAGE = "org.deegree.services.jaxb.config.htmlview";
+    private static final String CONFIG_JAXB_PACKAGE = "org.deegree.services.jaxb.ogcapi.htmlview";
 
     public HtmlViewConfigMetadata( Workspace workspace, ResourceLocation<HtmlViewConfigResource> location,
                                    AbstractResourceProvider<HtmlViewConfigResource> provider ) {

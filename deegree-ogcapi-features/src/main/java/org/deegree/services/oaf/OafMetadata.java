@@ -4,11 +4,11 @@ import org.deegree.commons.xml.jaxb.JAXBUtils;
 import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.persistence.FeatureStoreManager;
 import org.deegree.feature.persistence.FeatureStoreProvider;
-import org.deegree.services.jaxb.oaf.DeegreeOAF;
 import org.deegree.services.metadata.OWSMetadataProvider;
 import org.deegree.services.metadata.OWSMetadataProviderManager;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfigManager;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
+import org.deegree.services.ogcapi.features.DeegreeOAF;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceBuilder;
 import org.deegree.workspace.ResourceIdentifier;
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class OafMetadata extends AbstractResourceMetadata<Resource> {
 
-    private static final String CONFIG_JAXB_PACKAGE = "org.deegree.services.jaxb.oaf";
+    private static final String CONFIG_JAXB_PACKAGE = "org.deegree.services.ogcapi.features";
 
     public OafMetadata( Workspace workspace, ResourceLocation<Resource> location,
                         AbstractResourceProvider<Resource> provider ) {

@@ -1,6 +1,6 @@
 package org.deegree.services.oaf.config.htmlview;
 
-import org.deegree.services.jaxb.config.htmlview.HtmlView;
+import org.deegree.services.jaxb.ogcapi.htmlview.HtmlView;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceMetadata;
 import org.deegree.workspace.Workspace;

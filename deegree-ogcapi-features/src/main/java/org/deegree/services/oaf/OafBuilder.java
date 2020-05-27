@@ -1,6 +1,6 @@
 package org.deegree.services.oaf;
 
-import org.deegree.services.jaxb.oaf.DeegreeOAF;
+import org.deegree.services.ogcapi.features.DeegreeOAF;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceBuilder;
 import org.deegree.workspace.ResourceMetadata;

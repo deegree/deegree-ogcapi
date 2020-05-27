@@ -7,11 +7,11 @@ import org.deegree.commons.ows.metadata.party.Address;
 import org.deegree.commons.ows.metadata.party.ContactInfo;
 import org.deegree.commons.ows.metadata.party.ResponsibleParty;
 import org.deegree.commons.tom.ows.LanguageString;
-import org.deegree.services.jaxb.oaf.LicenseType;
-import org.deegree.services.jaxb.oaf.MetadataType;
 import org.deegree.services.metadata.OWSMetadataProvider;
 import org.deegree.services.oaf.domain.License;
 import org.deegree.services.oaf.domain.landingpage.Contact;
+import org.deegree.services.ogcapi.features.LicenseType;
+import org.deegree.services.ogcapi.features.MetadataType;
 
 import java.util.ArrayList;
 import java.util.List;

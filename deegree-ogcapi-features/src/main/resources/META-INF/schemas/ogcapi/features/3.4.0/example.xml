@@ -1,7 +1,7 @@
 <deegreeOAF configVersion="3.4.0"
-            xmlns="http://www.deegree.org/services/oaf"
+            xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/services/oaf oaf_configuration.xsd">
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features oaf_configuration.xsd">
 
   <FeatureStoreId>test</FeatureStoreId>
 

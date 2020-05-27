@@ -13,7 +13,7 @@ public class HtmlViewConfigProvider extends OgcApiConfigProvider {
 
     @Override
     public String getNamespace() {
-        return "http://www.deegree.org/services/oaf/htmlviewconfig";
+        return "http://www.deegree.org/ogcapi/htmlview";
     }
 
     @Override
@@ -24,7 +24,7 @@ public class HtmlViewConfigProvider extends OgcApiConfigProvider {
 
     @Override
     public URL getSchema() {
-        return HtmlViewConfigProvider.class.getResource( "/META-INF/schemas/config/htmlview/3.4.0/htmlviewconfig.xsd" );
+        return HtmlViewConfigProvider.class.getResource( "/META-INF/schemas/ogcapi/htmlview/3.4.0/htmlviewconfig.xsd" );
     }
 
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.deegree.org/services/oaf/htmlviewconfig"
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.deegree.org/ogcapi/htmlview"
         elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
   <annotation>
     <appinfo>
       <jaxb:schemaBindings>
-        <jaxb:package name="org.deegree.services.jaxb.config.htmlview"/>
+        <jaxb:package name="org.deegree.services.jaxb.ogcapi.htmlview"/>
       </jaxb:schemaBindings>
     </appinfo>
   </annotation>

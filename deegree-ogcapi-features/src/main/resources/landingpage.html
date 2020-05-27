@@ -69,7 +69,7 @@
                     <a v-cloak v-bind:href="conformanceLink.href" >{{ conformanceLink.title }}</a>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" v-if="metadataLink">
                 <div class="col-sm-3">Metadata</div>
                 <div class="col-md-9">
                     <a v-cloak v-bind:href="metadataLink.href" >{{ metadataLink.title }}</a>

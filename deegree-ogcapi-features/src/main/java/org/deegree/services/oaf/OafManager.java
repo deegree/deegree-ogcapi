@@ -10,7 +10,7 @@ import org.deegree.workspace.standard.DefaultResourceManagerMetadata;
 public class OafManager extends DefaultResourceManager<Resource> {
 
     public OafManager() {
-        super( new DefaultResourceManagerMetadata<Resource>( OgcApiProvider.class, "OGC API", "services" ) );
+        super( new DefaultResourceManagerMetadata<Resource>( OgcApiProvider.class, "OGC API", "ogcapi" ) );
     }
 
 }
