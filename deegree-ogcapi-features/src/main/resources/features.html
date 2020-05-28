@@ -265,7 +265,7 @@
                 <div class="col">
                     <b-table class="table-borderless"
                              thead-class="hidden_header"
-                             small :items="items" :fields="fields" :current-page="currentPage" :per-page="perPage">
+                             small show-empty :items="items" :fields="fields" :current-page="currentPage" :per-page="0">
                         <template v-slot:cell()="data">
                             <b-card>
                                 <template v-slot:header>
@@ -711,7 +711,7 @@ function setFeatures(featuresJson, crsCode){
   featureSource.clear();
   featureSource.addFeatures(featureSource.getFormat().readFeatures(featuresJson, {
                     "dataProjection" : "EPSG:4326",
-                    "featureProjection" : "EPSG:25832"
+                    "featureProjection" : crsCode
              }));
 
   var extentGeom = ol.geom.Polygon.fromExtent(featureSource.getExtent())
