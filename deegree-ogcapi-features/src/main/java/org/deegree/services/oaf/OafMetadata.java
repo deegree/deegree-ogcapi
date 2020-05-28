@@ -6,8 +6,7 @@ import org.deegree.feature.persistence.FeatureStoreManager;
 import org.deegree.feature.persistence.FeatureStoreProvider;
 import org.deegree.services.metadata.OWSMetadataProvider;
 import org.deegree.services.metadata.OWSMetadataProviderManager;
-import org.deegree.services.oaf.config.htmlview.HtmlViewConfigManager;
-import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
+import org.deegree.services.oaf.config.htmlview.OgcApiConfigProvider;
 import org.deegree.services.ogcapi.features.DeegreeOAF;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceBuilder;
@@ -60,12 +59,11 @@ public class OafMetadata extends AbstractResourceMetadata<Resource> {
                 }
             }
 
-            HtmlViewConfigManager hvmgr = workspace.getResourceManager( HtmlViewConfigManager.class );
-            for ( ResourceMetadata<HtmlViewConfigResource> hv : hvmgr.getResourceMetadata() ) {
-                ResourceIdentifier<HtmlViewConfigResource> id = hv.getIdentifier();
-                if ( id.getId().equals( getIdentifier().getId() + "_htmlview" ) ) {
-                    softDependencies.add( id );
-                }
+            String htmlViewId = cfg.getHtmlViewId();
+            if ( htmlViewId != null ) {
+                dependencies.add( new DefaultResourceIdentifier<>( OgcApiConfigProvider.class, htmlViewId ) );
+            } else {
+                softDependencies.add( new DefaultResourceIdentifier<>( OgcApiConfigProvider.class, "htnmlview" ) );
             }
 
             return new OafBuilder( this, workspace, cfg );

@@ -22,6 +22,7 @@
             </sequence>
           </complexType>
         </element>
+        <element name="HtmlViewId" type="string" minOccurs="0"/>
         <element name="Metadata" type="oaf:MetadataType" minOccurs="0"/>
       </sequence>
       <attribute name="configVersion" use="required">

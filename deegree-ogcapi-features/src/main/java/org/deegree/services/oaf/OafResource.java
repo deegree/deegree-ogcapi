@@ -128,11 +128,12 @@ public class OafResource implements Resource {
     }
 
     private HtmlViewConfiguration getHtmlViewConfig( Workspace workspace ) {
-        HtmlViewConfigResource htmlViewConfigResource = workspace.getResource( OgcApiConfigProvider.class,
-                                                                               getMetadata().getIdentifier().getId()
-                                                                               + "_htmlview" );
-        if ( htmlViewConfigResource != null )
+        String htmlViewId = config.getHtmlViewId();
+        if ( htmlViewId != null ) {
+            HtmlViewConfigResource htmlViewConfigResource = workspace.getResource( OgcApiConfigProvider.class,
+                                                                                   htmlViewId );
             return htmlViewConfigResource.getHtmlViewConfiguration();
+        }
         HtmlViewConfigResource globalHtmlViewConfigResource = workspace.getResource( OgcApiConfigProvider.class,
                                                                                      "htmlview" );
         if ( globalHtmlViewConfigResource != null )
