@@ -52,8 +52,12 @@ public class OafDatasetConfiguration {
      * @param collectionId
      *                 must not be <code>null</code>
      * @return the {@link FeatureTypeMetadata} of the feature type (OAF collection) with the passed name, may be <code>null</code>
+     * @throws UnknownCollectionId
+     *                 if the collection is not available
      */
-    public FeatureTypeMetadata getFeatureTypeMetadata( String collectionId ) {
+    public FeatureTypeMetadata getFeatureTypeMetadata( String collectionId )
+                    throws UnknownCollectionId {
+        checkCollection( collectionId );
         return featureTypeMetadata.get( collectionId );
     }
 
@@ -86,5 +90,20 @@ public class OafDatasetConfiguration {
      */
     public DatasetMetadata getServiceMetadata() {
         return serviceMetadata;
+    }
+
+    /**
+     * Checks if a collection with the passed collection id is available by this configuration.
+     *
+     * @param collectionId
+     *                 the id of the collection
+     * @throws UnknownCollectionId
+     *                 if the collection is not available
+     */
+    public void checkCollection( String collectionId )
+                    throws UnknownCollectionId {
+        if ( !featureTypeMetadata.containsKey( collectionId ) ) {
+            throw new UnknownCollectionId( collectionId );
+        }
     }
 }

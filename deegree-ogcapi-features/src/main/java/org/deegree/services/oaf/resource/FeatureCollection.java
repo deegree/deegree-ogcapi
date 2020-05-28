@@ -126,6 +126,7 @@ public class FeatureCollection {
                     throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
         OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        oafConfiguration.checkCollection( collectionId );
         if ( HTML.equals( requestFormat ) ) {
             return Response.ok( getClass().getResourceAsStream( "/collection.html" ), TEXT_HTML ).build();
         }

@@ -1,6 +1,7 @@
 package org.deegree.services.oaf.filter;
 
 import org.deegree.services.oaf.domain.exceptions.OgcApiFeaturesExceptionReport;
+import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.resource.Features;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
@@ -113,7 +114,7 @@ public class UnknownParameterFilter implements ContainerRequestFilter {
                         expectedParams.add( filterName );
                     } );
                 }
-            } catch ( UnknownDatasetId e ) {
+            } catch ( UnknownDatasetId | UnknownCollectionId e ) {
                 // will be handled later
             }
 

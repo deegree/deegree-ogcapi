@@ -225,6 +225,7 @@ public class Features {
                     throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
         OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
+        oafConfiguration.checkCollection( collectionId );
         if ( HTML.equals( requestFormat ) ) {
             return Response.ok( getClass().getResourceAsStream( "/features.html" ), TEXT_HTML ).build();
         }
@@ -251,7 +252,7 @@ public class Features {
 
     private Map<FilterProperty, List<String>> findFilterParameters( String datasetId, String collectionId,
                                                                     MultivaluedMap<String, String> queryParameters )
-                    throws UnknownDatasetId {
+                    throws UnknownDatasetId, UnknownCollectionId {
         Map<FilterProperty, List<String>> filterRequestProperties = new HashMap<>();
         OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );

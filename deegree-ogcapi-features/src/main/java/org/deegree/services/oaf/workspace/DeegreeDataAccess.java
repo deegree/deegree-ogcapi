@@ -46,11 +46,8 @@ public class DeegreeDataAccess implements DataAccess {
                                         LinkBuilder linkBuilder )
                     throws UnknownCollectionId {
         String datasetId = oafConfiguration.getId();
-        Map<String, FeatureTypeMetadata> featureTypeNames = oafConfiguration.getFeatureTypeMetadata();
-        if ( featureTypeNames.containsKey( collectionId ) ) {
-            return createCollection( oafConfiguration, datasetId, featureTypeNames.get( collectionId ), linkBuilder );
-        }
-        throw new UnknownCollectionId( collectionId );
+        FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
+        return createCollection( oafConfiguration, datasetId, featureTypeMetadata, linkBuilder );
     }
 
     @Override
@@ -58,12 +55,12 @@ public class DeegreeDataAccess implements DataAccess {
                                              FeaturesRequest featuresRequest,
                                              LinkBuilder linkBuilder )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue {
-        FeatureTypeMetadata featureType = validateAndRetrieveFeatureType( oafConfiguration, collectionId );
+        FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         String crs = validateAndRetrieveCrs( featuresRequest.getResponseCrs() );
-        FeatureStore featureStore = oafConfiguration.getFeatureStore( featureType.getName(), collectionId );
+        FeatureStore featureStore = oafConfiguration.getFeatureStore( featureTypeMetadata.getName(), collectionId );
         try {
             DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder( oafConfiguration );
-            Query query = queryBuilder.createQuery( featureType, featuresRequest );
+            Query query = queryBuilder.createQuery( featureTypeMetadata, featuresRequest );
             int numberOfFeaturesMatched = featureStore.queryHits( query );
             FeatureInputStream features = featureStore.query( query );
             boolean isMaxFeaturesAndStartIndexApplicable = featureStore.isMaxFeaturesAndStartIndexApplicable(
@@ -86,12 +83,12 @@ public class DeegreeDataAccess implements DataAccess {
                                             String featureId, String responseCrs,
                                             LinkBuilder linkBuilder )
                     throws InternalQueryException, InvalidParameterValue, UnknownCollectionId {
-        FeatureTypeMetadata featureType = validateAndRetrieveFeatureType( oafConfiguration, collectionId );
+        FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         String crs = validateAndRetrieveCrs( responseCrs );
-        FeatureStore featureStore = oafConfiguration.getFeatureStore( featureType.getName(), collectionId );
+        FeatureStore featureStore = oafConfiguration.getFeatureStore( featureTypeMetadata.getName(), collectionId );
         try {
             DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder( oafConfiguration );
-            Query queryById = queryBuilder.createQueryById( featureType.getName(), featureId );
+            Query queryById = queryBuilder.createQueryById( featureTypeMetadata.getName(), featureId );
             FeatureInputStream feature = featureStore.query( queryById );
             String datasetId = oafConfiguration.getId();
             List<Link> inks = linkBuilder.createFeatureLinks( datasetId, collectionId, featureId );
@@ -100,15 +97,6 @@ public class DeegreeDataAccess implements DataAccess {
         } catch ( FeatureStoreException | FilterEvaluationException e ) {
             throw new InternalQueryException( e );
         }
-    }
-
-    private FeatureTypeMetadata validateAndRetrieveFeatureType( OafDatasetConfiguration oafConfiguration,
-                                                                String collectionId )
-                    throws UnknownCollectionId {
-        Map<String, FeatureTypeMetadata> featureTypeNames = oafConfiguration.getFeatureTypeMetadata();
-        if ( !featureTypeNames.containsKey( collectionId ) )
-            throw new UnknownCollectionId( collectionId );
-        return featureTypeNames.get( collectionId );
     }
 
     private String validateAndRetrieveCrs( String crs )
