@@ -184,7 +184,7 @@ var footerApp = new Vue({
 function firstByRel(data, rel){
   var links = $( data.links ).filter(
     function( n, i ) {
-      return i.rel===rel && i.type==='text/html';
+      return i.rel===rel && (i.type==='text/html' || i.type==='text/plain');
     });
     if ( links.length > 0 )
       return links[0];
