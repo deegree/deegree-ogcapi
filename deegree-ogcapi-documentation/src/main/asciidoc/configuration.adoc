@@ -1,3 +1,80 @@
 == Configuration
 
-How to configure
+This sections describes how to configure the deegree OAF webapp.
+
+=== The OAF workspace
+
+The deegree OAF workspace name must be *_ogcapi-workspace_*. The directory structure and related files is as follows:
+
+```
+├── config.apikey                           // optional APIKEY to access REST-API
+└── ogcapi-workspace                        // mandatory, exact name is required
+    ├── datasources
+    │   └── feature                         // must contain at least one feature store configuration
+    │       ├── <featurestore-id>.xml
+    │       └── <anotherfeaturestore-id>.xml
+    ├── html                                // NEW
+    │   ├── htmlview.xml                    // global HTML encoding configuration
+    │   ├── <htmlview-id>.xml               // HTML encoding configuration for a dataset
+    │   └── default-style.css               // optional CSS
+    ├── jdbc
+    │   └── <connection-id>.xml             // required for database feature stores only
+    └── ogcapi                              // NEW
+        ├── metadata.xml                    // global metadata configuration
+        ├── <dataset-id>.xml                // dataset configuration
+        └── <dataset-id>_metadata.xml       // metadata configuration for dataset
+```
+
+=== Configuration files
+
+The deegree OAF workspace can contains the following configuration files:
+
+- `oaf.xml` (mandatory) - contains the
+-
+
+==== Supported feature stores
+
+Currently deegree OAF supports the following feature stores:
+
+- `SQLFeatureStore` - retrieves data from a database supporting an extended mapping.
+- `SimpleSQLFeatureStore` - retrieves data from a database using a single table mapping.
+- `MemoryFeatureStore` - retrieves data from a file in GML file format.
+- `ShapeFeatureStore` - retrieves data from a file in SHAPE file format.
+
+The supported databases are:
+- Oracle database
+- PostgreSQL/PostGIS database
+
+==== Metadata configuration
+
+The service metadata can be defined per workspace or for each OAF configuration.
+Use the file name `metadata.xml` to define a global configuration.
+
+Use a file name ending with `_metadata.xml` to define the service metadata per dataset.
+Use the dataset name as a prefix. For example if you have a dataset configured in  `streets.xml` the related metadata file has the file name `streets_metadata.xml`.
+
+==== Migration of an existing deegree workspace
+
+
+=== deegree config REST-API
+
+REST-API for configuration is available
+
+```
+GET /config/download[/path] - download currently running workspace or file in workspace
+GET /config/restart - restart currently running workspace
+GET /config/restart[/path] - restarts all resources connected to the specified one
+GET /config/restart/wsname - restart with workspace <wsname>
+GET /config/update - update currently running workspace, rescan config files and update resources
+GET /config/update/wsname - update with workspace <wsname>, rescan config files and update resources
+GET /config/list[/path] - list currently running workspace or directory in workspace
+GET /config/list/wsname[/path] - list workspace with name <wsname> or directory in workspace
+GET /config/validate[/path] - validate currently running workspace or file in workspace
+GET /config/validate/wsname[/path] - validate workspace with name <wsname> or file in workspace
+GET /config/update/bboxcache[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the currently running workspace, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed
+GET /config/update/bboxcache/wsname[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the workspace with name <wsname>, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed
+PUT /config/upload/path/file - upload file into current workspace
+PUT /config/upload/wsname/path/file - upload file into workspace with name <wsname>
+DELETE /config/delete[/path] - delete currently running workspace or file in workspace
+DELETE /config/delete/wsname[/path] - delete workspace with name <wsname> or file in workspace
+```

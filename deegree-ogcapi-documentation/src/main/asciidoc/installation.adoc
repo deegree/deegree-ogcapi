@@ -1,9 +1,70 @@
 == Installation
 
-How to install
+There are many ways to install deegree OAF on a server. This section will describe the various installation paths available.
 
+[[requirements]]
 === Requirements
+
+deegree OAF works on every Java Servlet container implementing the Java Servlet API 3.1 using an OpenJDK or Oracle JRE 8. The JRE and Java Servlet container constitute the runtime environment.
+The installation of these components must be done prior of this installation.
+
+The server hosting the service should have at least 4 GB of free memory and more than 2 CPU cores available.
+
+NOTE: OpenJDK 8 with Apache Tomcat 9 is the recommended runtime environment.
 
 === Webapp
 
+The deegree webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database from the deegree Enterprise repository.
+
+TODO: What about file based sources? For file based both can be used.
+
+To deploy the deegree webapp there are different setups possible. Each instance of the runtime environment can host one or more webapps.
+
+For every deployed webapp there must be a deegree workspace available with the name *_ogcapi-workspace_*. It is possible that multiple instances of the webapp can
+share one single instance of a deegree workspace, for example a setup serving the same data by multiple instances in a load-balancing scenario.
+
+To serve different data configured in different deegree workspace's you need to run multiple instances of the runtime environment.
+
+Use the environment variable `DEEGREE_WORKSPACEROOT` to set the path to the deegree workspace directory.
+
+NOTE: Deploying one single webapp per instance is recommended.
+
+IMPORTANT: The name of the deegree workspace has to be *_ogcapi-workspace_*. Using other directory names different to the given workspace name will not work with the deegree OAF webapp. Furthermore deegree workspaces containing service configurations for the legacy services such as WFS and WMS will not work! As well using the legacy WAR files of deegree with a *_ogcapi-workspace_* won't work too.
+
+==== Deploy the webapp
+
+Copy the WAR file to the deployment folder of the runtime environment.
+
+==== Start the webapp
+
+To start the webapp the runtime environment needs to be started.
+
+==== Stop the webapp
+
+To stop the webapp the runtime environment needs to be stopped.
+
+==== Uninstallation
+
+To uninstall the webapp:
+
+1. Stop the runtime environment (if it is running).
+2. Delete the webapp and the directory in which the deegree OAF webapp is installed.
+
 === Docker
+
+When using the Docker image the installation of Docker is required. Check the https://docs.docker.com/get-docker/[Docker Documentation] for requirements and installation instructions.
+The docker image provides all software components and no additional software installations are necessary.
+
+The docker image is available
+
+==== Start the container
+
+Use the `docker run` command to start a container.
+
+==== Stop the container
+
+Use the `docker stop` command to stop the container.
+
+==== Remove the container
+
+Use the `docker rm` command to remove the container.
