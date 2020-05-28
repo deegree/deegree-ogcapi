@@ -13,7 +13,9 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 @Provider
 public class InvalidConfigurationException extends Exception implements ExceptionMapper<InvalidConfigurationException> {
 
-    public InvalidConfigurationException(){}
+    public InvalidConfigurationException() {
+        super();
+    }
 
     public InvalidConfigurationException( String message ) {
         super( String.format( message ) );

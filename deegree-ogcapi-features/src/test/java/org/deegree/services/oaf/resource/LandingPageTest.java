@@ -1,6 +1,6 @@
 package org.deegree.services.oaf.resource;
 
-import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.exceptions.OgcApiFeaturesExceptionMapper;
 import org.deegree.services.oaf.link.LinkRelation;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
@@ -46,7 +46,7 @@ public class LandingPageTest extends JerseyTest {
     @Override
     protected Application configure() {
         enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( LandingPage.class, UnknownDatasetId.class );
+        ResourceConfig resourceConfig = new ResourceConfig( LandingPage.class, OgcApiFeaturesExceptionMapper.class );
         resourceConfig.register( new AbstractBinder() {
             @Override
             protected void configure() {
@@ -150,7 +150,7 @@ public class LandingPageTest extends JerseyTest {
     public void test_LandingPageDeclaration_Json_UnknownFormat() {
         Response response = target( "/datasets/oaf" ).queryParam( "f", "unknown" ).request(
                         APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 404 ) );
+        assertThat( response.getStatus(), is( 400 ) );
         assertThat( response.getMediaType(), is( APPLICATION_JSON_TYPE ) );
         assertThat( response.readEntity( String.class ), isJson() );
     }

@@ -10,6 +10,7 @@ import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 public class InternalQueryException extends OgcApiFeaturesException {
 
     public InternalQueryException() {
+        super();
     }
 
     public InternalQueryException( Throwable e ) {
@@ -21,7 +22,7 @@ public class InternalQueryException extends OgcApiFeaturesException {
     }
 
     @Override
-    protected Response.Status getStatusCode() {
+    public Response.Status getStatusCode() {
         return INTERNAL_SERVER_ERROR;
     }
 
