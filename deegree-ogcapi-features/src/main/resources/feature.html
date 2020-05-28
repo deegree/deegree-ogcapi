@@ -117,53 +117,58 @@
 </header>
 
 <div class="container" id="content">
-    <div class="row">
-        <div class="col">
-            <h3 v-cloak class="mt-5">{{ featureId }}</h3>
-        </div>
+    <div v-if="!isItemAvailable">
+        <h5 v-cloak class="mt-5">Feature with ID {{ featureId }} is not known</h5>
     </div>
-    <hr/>
-    <div class="row justify-content-between">
-        <div class="col-md">
-            <div class="row mt-2">
-                <div class="col">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">Attribute</th>
-                            <th scope="col">Value</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(property, attribute) in properties">
-                            <td v-cloak>{{ attribute }}</td>
-                            <td v-cloak>{{ property }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+    <div v-else>
+        <div class="row">
+            <div class="col">
+                <h3 v-cloak class="mt-5">{{ featureId }}</h3>
+            </div>
+        </div>
+        <hr/>
+        <div class="row justify-content-between">
+            <div class="col-md">
+                <div class="row mt-2">
+                    <div class="col">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">Attribute</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(property, attribute) in properties">
+                                <td v-cloak>{{ attribute }}</td>
+                                <td v-cloak>{{ property }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div id="map" class="map">
+                    <div id="info"></div>
+                    <!--
+                    <div id="popup" class="ol-popup">
+                        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                        <div id="popup-content"></div>
+                    </div>
+                    -->
                 </div>
             </div>
         </div>
-        <div class="col-md">
-            <div id="map" class="map">
-                <div id="info"></div>
-                <!--
-                <div id="popup" class="ol-popup">
-                    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                    <div id="popup-content"></div>
-                </div>
-                -->
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-            <div class="col-sm-2">Links</div>
-            <div class="col-md-10">
-                <div v-for="link in links">
-                    <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href" >{{ link.title }}</a>
+        <div class="row">
+                <div class="col-sm-2">Links</div>
+                <div class="col-md-10">
+                    <div v-for="link in links">
+                        <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href" >{{ link.title }}</a>
+                    </div>
                 </div>
-            </div>
+        </div>
     </div>
 </div>
 
@@ -191,7 +196,8 @@ var App = new Vue({
   data: {
     featureId: [],
     properties: [],
-    links: []
+    links: [],
+    isItemAvailable: false
   },
 
   created() {
@@ -205,10 +211,16 @@ var App = new Vue({
       const response = await fetch( baseUrl, {headers: {'Accept': 'application/geo+json' } } );
       const json = await response.json();
 
-      this.featureId = json.features[0].id;
-      this.properties = json.features[0].properties;
-      this.links = json.links;
-      fetchConfigAndSetFeature(json);
+      this.isItemAvailable = json.features;
+
+      if( this.isItemAvailable ){
+        this.featureId = json.features[0].id;
+        this.properties = json.features[0].properties;
+        this.links = json.links;
+        fetchConfigAndSetFeature(json);
+      } else {
+        this.featureId = baseUrl.substring(baseUrl.lastIndexOf("/") + 1);
+      }
     }
   }
 })
