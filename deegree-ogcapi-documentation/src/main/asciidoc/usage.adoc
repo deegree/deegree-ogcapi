@@ -1,13 +1,31 @@
 == Usage
 
-How to use
+This section describes how to access the data in the different encodings and how to use the HTML encoding to browse the data.
 
+[[openapi]]
 === OpenAPI
+
+The OpenAPI page is available under the context /openapi.
+
+
 
 === Making a request
 
+Use the generic OpenAPI
+
 === Accessing a response
 
+
+
+[[json_encoding]]
+=== Accessing data in Json/GeoJson
+
+[[gml_encoding]]
+=== Accessing data in GML
+
+[[html_encoding]]
 === Using the HTML interface
 
+The HTML encoding provides easy access to the spatial data using a browser.
+It requires no additional client or browser plugin to browse the data.
 
