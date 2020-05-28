@@ -180,9 +180,13 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
             return;
         List<Parameter> parameters = pathItem.getGet().getParameters();
         filterProperties.forEach( filterProperty -> {
-            Parameter filterParameter = new Parameter().name( filterProperty.getName().getLocalPart() ).in(
-                            "query" ).style( Parameter.StyleEnum.FORM ).explode( false ).schema(
-                            new Schema().type( mapToParameterType( filterProperty ) ) );
+            Parameter filterParameter = new Parameter()
+                            .name( filterProperty.getName().getLocalPart() )
+                            .description( descriptionByParameterType( filterProperty )  )
+                            .in( "query" )
+                            .style( Parameter.StyleEnum.FORM )
+                            .explode( false )
+                            .schema( new Schema().type( mapToParameterType( filterProperty ) ) );
             parameters.add( filterParameter );
         } );
     }
@@ -402,6 +406,19 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         default:
             return "string";
         }
+    }
+
+    private String descriptionByParameterType( FilterProperty filterProperty ) {
+        BaseType type = filterProperty.getType();
+        switch ( type ) {
+        case DOUBLE:
+        case DECIMAL:
+        case INTEGER:
+            return "Use '<', '<=', '>' and '>=' for simple numeric comparison operations, e.g. 'param=<10'. Note: not working in OpenAPI 'Try it out' mode due to type validation.";
+        case STRING:
+            return "Use '*' as wildcard for search.";
+        }
+        return null;
     }
 
     private String mapToPropertyType( PropertyType propertyType ) {
