@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.deegree.services.oaf.RequestFormat;
+import org.deegree.services.oaf.config.datasets.DatasetsConfiguration;
 import org.deegree.services.oaf.domain.dataset.Dataset;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.link.Link;
@@ -47,7 +48,7 @@ public class Datasets {
     public Response datasetsJson(
                     @Context UriInfo uriInfo,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues =  { "json", "html", "xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f") String format )
                     throws InvalidParameterValue {
         return datasets( uriInfo, format, JSON );
@@ -59,7 +60,7 @@ public class Datasets {
     public Response datasetsHtml(
                     @Context UriInfo uriInfo,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f") String format )
                     throws InvalidParameterValue {
         return datasets( uriInfo, format, HTML );
@@ -83,8 +84,11 @@ public class Datasets {
             Dataset dataset = new Dataset( id, datasetLinks );
             datasets.add( dataset );
         } );
-        org.deegree.services.oaf.domain.dataset.Datasets allDatasets = new org.deegree.services.oaf.domain.dataset.Datasets(
-                        links, datasets );
+        DatasetsConfiguration datasetsConfiguration = deegreeWorkspaceInitializer.getDatasetsConfiguration();
+        org.deegree.services.oaf.domain.dataset.Datasets allDatasets = new org.deegree.services.oaf.domain.dataset.Datasets()
+                        .withLinks( links )
+                        .withDatasets( datasets )
+                        .withDatasetsConfiguration( datasetsConfiguration );
         return Response.ok( allDatasets, APPLICATION_GEOJSON ).build();
     }
 

@@ -4,6 +4,9 @@ import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.config.ResourceInitException;
 import org.deegree.services.oaf.OafResource;
 import org.deegree.services.oaf.OgcApiProvider;
+import org.deegree.services.oaf.config.datasets.DatasetsConfigResource;
+import org.deegree.services.oaf.config.datasets.DatasetsConfiguration;
+import org.deegree.services.oaf.config.datasets.OgcApiDatasetsProvider;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.config.htmlview.OgcApiConfigProvider;
@@ -21,7 +24,7 @@ import java.util.Map;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Instantiation of the deegree workspces. This is a workaround!
+ * Instantiation of the deegree workspaces. This is a workaround!
  *
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
@@ -30,6 +33,8 @@ public class DeegreeWorkspaceInitializer {
     private static final Logger LOG = getLogger( DeegreeWorkspaceInitializer.class );
 
     public static final String DEEGREE_WORKSPACE_NAME = "ogcapi-workspace";
+
+    private static DatasetsConfiguration datasetsConfiguration;
 
     private static OafDatasets oafConfiguration = new OafDatasets();
 
@@ -50,8 +55,7 @@ public class DeegreeWorkspaceInitializer {
 
     public void reinitialize() {
         LOG.info( "Reinitialize workspace" );
-        oafConfiguration = new OafDatasets();
-        htmlViewConfigurations = new HashMap<>();
+        clearConfigs();
         DeegreeWorkspace workspace = DeegreeWorkspace.getInstance( DEEGREE_WORKSPACE_NAME );
         initConfiguration( workspace.getNewWorkspace() );
     }
@@ -78,7 +82,41 @@ public class DeegreeWorkspaceInitializer {
         return globalHtmlViewConfiguration;
     }
 
+    /**
+     * @return the datasets configuration, may be <code>null</code>
+     */
+    public DatasetsConfiguration getDatasetsConfiguration() {
+        return datasetsConfiguration;
+    }
+
     private void initConfiguration( Workspace newWorkspace ) {
+        initOafDatasets( newWorkspace );
+        initGlobalHtmlView( newWorkspace );
+        initDatasets( newWorkspace );
+    }
+
+    private void initDatasets( Workspace newWorkspace ) {
+        List<ResourceIdentifier<DatasetsConfigResource>> datasetsResourceIdentifier = newWorkspace.getResourcesOfType(
+                        OgcApiDatasetsProvider.class );
+        if ( datasetsResourceIdentifier.size() > 1 )
+            LOG.warn( "Multiple datasets configurations are available. They are ignored!" );
+        if ( datasetsResourceIdentifier.size() == 1 ) {
+            String id = datasetsResourceIdentifier.get( 0 ).getId();
+            DatasetsConfigResource datasetsConfigResource = newWorkspace.getResource(
+                            OgcApiDatasetsProvider.class, id );
+            datasetsConfiguration = datasetsConfigResource.getDatasetsConfiguration();
+        }
+    }
+
+    private void initGlobalHtmlView( Workspace newWorkspace ) {
+        HtmlViewConfigResource globalHtmlViewConfigResource = newWorkspace.getResource(
+                        OgcApiConfigProvider.class,
+                        "htmlview" );
+        if ( globalHtmlViewConfigResource != null )
+            globalHtmlViewConfiguration = globalHtmlViewConfigResource.getHtmlViewConfiguration();
+    }
+
+    private void initOafDatasets( Workspace newWorkspace ) {
         List<ResourceIdentifier<Resource>> oafResourceIdentifiers = newWorkspace.getResourcesOfType(
                         OgcApiProvider.class );
         oafResourceIdentifiers.forEach( resourceResourceIdentifier -> {
@@ -90,12 +128,13 @@ public class DeegreeWorkspaceInitializer {
             if ( htmlViewConfiguration != null )
                 htmlViewConfigurations.put( id, htmlViewConfiguration );
         } );
+    }
 
-        HtmlViewConfigResource globalHtmlViewConfigResource = newWorkspace.getResource(
-                        OgcApiConfigProvider.class,
-                        "htmlview" );
-        if ( globalHtmlViewConfigResource != null )
-            globalHtmlViewConfiguration = globalHtmlViewConfigResource.getHtmlViewConfiguration();
+    private void clearConfigs() {
+        oafConfiguration = new OafDatasets();
+        htmlViewConfigurations.clear();
+        globalHtmlViewConfiguration = null;
+        datasetsConfiguration = null;
     }
 
 }

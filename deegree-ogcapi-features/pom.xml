@@ -2,8 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>deegree-ogcapi-features</artifactId>
-  <name>deegree-services-oaf</name>
+  <name>deegree-ogcapi-features</name>
   <description>OGC API Features (OAF) implementation - Querying and modifying of geospatial data objects</description>
+
   <parent>
     <groupId>de.deegree-enterprise</groupId>
     <artifactId>deegree-ogcapi</artifactId>
@@ -41,6 +42,11 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>deegree-ogcapi-config-htmlview</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>deegree-ogcapi-datasets</artifactId>
       <version>${project.version}</version>
     </dependency>
     <!-- deegree-core -->

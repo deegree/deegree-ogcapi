@@ -725,6 +725,7 @@
   </properties>
 
   <modules>
+    <module>deegree-ogcapi-datasets</module>
     <module>deegree-ogcapi-features</module>
     <module>deegree-ogcapi-documentation</module>
     <module>deegree-ogcapi-config</module>
