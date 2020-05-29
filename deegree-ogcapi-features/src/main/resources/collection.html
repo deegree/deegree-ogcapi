@@ -206,7 +206,8 @@ function setMapBackgroundAndExtent(wmsUrl, wmsLayers, crsCode, projDef, bbox){
         var userConfig = ol.proj.get(crsCode);
         map.setView(
             new ol.View({
-                projection: userConfig
+                projection: userConfig,
+                constrainResolution: true
             })
         );
     }
@@ -235,7 +236,7 @@ function setExtent(bbox, crsCodeRegistered, crsCode){
 
     var extentGeom = ol.geom.Polygon.fromExtent(boundingExtent)
     extentGeom.scale(1.2);
-    map.getView().fit(extentGeom.getExtent(), {'maxZoom':20} );
+    map.getView().fit(extentGeom.getExtent(), {'maxZoom':20, 'nearest': true} );
 }
 
 var extentSource = new ol.source.Vector({
@@ -264,7 +265,8 @@ var map = new ol.Map({
   view: new ol.View({
     projection: 'EPSG:4326',
     center: [10.0143, 53.5537],
-    zoom: 14
+    zoom: 14,
+    constrainResolution: true
   })
 });
 
