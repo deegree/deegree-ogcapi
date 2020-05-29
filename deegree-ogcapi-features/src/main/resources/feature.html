@@ -120,18 +120,18 @@
 </header>
 
 <div class="container" id="content">
-    <div v-if="!isItemAvailable">
-        <h5 v-cloak class="mt-5">Feature with ID {{ featureId }} is not known</h5>
-    </div>
-    <div v-else>
+    <div>
         <div class="row">
-            <div class="col">
+            <div class="col" v-if="!isItemAvailable">
+                <h3 v-cloak class="mt-5">Feature with ID {{ featureId }} is not known</h3>
+            </div>
+            <div class="col" v-else>
                 <h3 v-cloak class="mt-5">{{ featureId }}</h3>
             </div>
         </div>
         <hr/>
         <div class="row justify-content-between">
-            <div class="col-md">
+            <div class="col-md" v-if="isItemAvailable" >
                 <div class="row mt-2">
                     <div class="col">
                         <table class="table table-striped">
@@ -164,7 +164,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" v-if="isItemAvailable">
                 <div class="col-sm-2">Links</div>
                 <div class="col-md-10">
                     <div v-for="link in links">
@@ -222,6 +222,7 @@ var App = new Vue({
         this.links = json.links;
         fetchConfigAndSetFeature(json);
       } else {
+        document.getElementById('map').style.display='none';
         this.featureId = baseUrl.substring(baseUrl.lastIndexOf("/") + 1);
       }
     }
