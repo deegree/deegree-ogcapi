@@ -68,7 +68,7 @@ public class Datasets {
             this.description = datasetsConfiguration.getDescription();
             org.deegree.services.oaf.config.datasets.Contact contact = datasetsConfiguration.getContact();
             if ( contact != null ) {
-                this.contact = new Contact( contact.getName(), contact.getEmail(), contact.getUrl() );
+                this.contact = new Contact( contact.getName(), contact.getUrl(), contact.getEmail() );
             }
         }
         return this;
