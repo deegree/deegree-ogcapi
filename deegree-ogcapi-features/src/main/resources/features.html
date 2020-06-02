@@ -348,7 +348,7 @@ new Vue({
             key: 'id',
             label: 'Feature'
           }],
-      items: [],
+      items: '',
       currentPage: 0,
       perPage: 10,
       totalItems: 0,
@@ -515,9 +515,9 @@ new Vue({
 var AppCollection = new Vue({
   el: '#collection',
   data: {
-    title: [],
-    description: [],
-    extent: []
+    title: '',
+    description: '',
+    extent: ''
   },
 
   created() {
@@ -544,13 +544,13 @@ var AppCollection = new Vue({
 var AppBreadcrump = new Vue({
   el: '#breadcrump',
   data: {
-    collectionId: [],
-    featureId: [],
-    datasetLink: [],
-    datasetName: [],
-    datasetsLink: [],
-    collectionsLink: [],
-    collectionLink: []
+    collectionId: '',
+    featureId: '',
+    datasetLink: '',
+    datasetName: '',
+    datasetsLink: '',
+    collectionsLink: '',
+    collectionLink: ''
   },
 
   created() {

@@ -106,8 +106,8 @@ removeTrailingSlash();
 var App = new Vue({
   el: '#content',
   data: {
-    collections: [],
-    licenseLink: []
+    collections: '',
+    licenseLink: ''
   },
 
   created() {
@@ -130,9 +130,9 @@ var App = new Vue({
 var AppBreadcrump = new Vue({
   el: '#breadcrump',
   data: {
-    datasetLink: [],
-    datasetName: [],
-    datasetsLink: []
+    datasetLink: '',
+    datasetName: '',
+    datasetsLink: ''
   },
 
   created() {
