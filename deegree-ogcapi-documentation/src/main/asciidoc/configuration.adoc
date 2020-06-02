@@ -1,10 +1,13 @@
+[[configuration]]
 == Configuration
 
 This sections describes how to configure the deegree OAF webapp.
 
 === The OAF workspace
 
-The deegree OAF workspace name must be *_ogcapi-workspace_*. The directory structure and related files is as follows:
+The deegree workspace is the modular, resource-oriented and extensible configuration concept used by deegree. The deegree OAF workspace name must be *_ogcapi-workspace_*.
+
+The directory structure and related files is as follows:
 
 ```
 ├── config.apikey                           // optional APIKEY to access REST-API
@@ -19,19 +22,22 @@ The deegree OAF workspace name must be *_ogcapi-workspace_*. The directory struc
     │   └── default-style.css               // optional CSS
     ├── jdbc
     │   └── <connection-id>.xml             // required for database feature stores only
-    └── ogcapi                              // NEW
+    ├── ogcapi                              // NEW
+    │   └── <dataset-id>.xml                // dataset configuration
+    └── services                            //
         ├── metadata.xml                    // global metadata configuration
-        ├── <dataset-id>.xml                // dataset configuration
         └── <dataset-id>_metadata.xml       // metadata configuration for dataset
 ```
+
+More information about deegree's workspace concept is available in the https://download.deegree.org/documentation/current/html/#_the_deegree_workspace[deegree webservices handbook].
 
 === Configuration files
 
 The deegree OAF workspace can contains the following configuration files:
 
 - `oaf.xml` (mandatory) - contains the
--
 
+[[config_feature_store]]
 ==== Supported feature stores
 
 Currently deegree OAF supports the following feature stores:
@@ -55,10 +61,17 @@ Use the dataset name as a prefix. For example if you have a dataset configured i
 
 ==== Migration of an existing deegree workspace
 
+Given that an existing deegree workspace contains at least one feature store the following steps
+need to be done to provide the data via deegree OAF:
+
+- Add a configuration file in ogcapi
+- Enable HTML encoding by adding a file in html (optional)
+- add metadata (optional)
+
 
 === deegree config REST-API
 
-REST-API for configuration is available
+deegree OAF provides a REST-API for configuration purposes. As in deegree webservices a client can use the REST interface to manage the configuration. The following list of operations is supported:
 
 ```
 GET /config/download[/path] - download currently running workspace or file in workspace

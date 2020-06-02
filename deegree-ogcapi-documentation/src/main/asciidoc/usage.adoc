@@ -5,17 +5,19 @@ This section describes how to access the data in the different encodings and how
 [[openapi]]
 === OpenAPI
 
-The OpenAPI page is available under the context /openapi.
+The OpenAPI page is available under the context /api.
+If you have deployed the deegree webapp under the context of deegree-oaf and you have a dataset configured with the name
+street the resulting request path would be /deegree-oaf/datasets/streets/api
+example URI HTTP GET http://localhost:8080/deegree-oaf/datasets/streets/api
 
 
-
+[[use_request]]
 === Making a request
 
-Use the generic OpenAPI
+Use the generic OpenAPI specification to make a request.
 
+[[use_response]]
 === Accessing a response
-
-
 
 [[json_encoding]]
 === Accessing data in Json/GeoJson
