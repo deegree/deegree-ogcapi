@@ -10,7 +10,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../webjars/bootstrap/4.4.1/css/bootstrap.min.css" >
-    <link rel="stylesheet" href="css/main.css" >
+    <link rel="stylesheet" href="/css/main.css" >
 
     <title>deegree - OGC API Features 1.0 - Landing Page</title>
 
@@ -109,8 +109,6 @@
 </footer>
 
 <script>
-addTrailingSlash();
-
 var App = new Vue({
   el: '#content',
   data: {
@@ -194,20 +192,13 @@ function firstByRel(data, rel){
 }
 
 function createImpressumUrl(){
-  var baseUrl = window.location.href;
-  var indexIncludeDataset = (baseUrl.lastIndexOf("dataset") + 9)
+  var baseUrl = retrieveBaseUrl();
+  if( !baseUrl.endsWith('/') )
+     baseUrl = baseUrl + "/";
+  var indexIncludeDataset = (baseUrl.lastIndexOf("datasets") + 9)
   var indexOfDatasetId = baseUrl.substring(indexIncludeDataset, baseUrl.length ).indexOf( "/" ) + indexIncludeDataset;
   var configUrl = baseUrl.substring ( 0, indexOfDatasetId ) + "/config/impressum";
   return configUrl;
-}
-
-function addTrailingSlash(){
-  var indexOf = window.location.href.indexOf('?');
-  if( window.location.href.indexOf('?') < 0 && !window.location.href.endsWith("/") ){
-    window.location.href = window.location.href + "/";
-  } else if ( window.location.href.indexOf('?') > 0 && window.location.href.indexOf('/?') < 0 ) {
-    window.location.href = window.location.href.replace('?', '/?');
-  }
 }
 
 function retrieveBaseUrl() {
