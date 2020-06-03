@@ -46,13 +46,13 @@
           <version>9.4.21.v20190926</version>
           <configuration>
             <webApp>
-              <contextPath>/</contextPath>
+              <contextPath>/deegree-services-oaf</contextPath>
             </webApp>
             <webAppSourceDirectory>target/${project.artifactId}-${project.version}</webAppSourceDirectory>
             <stopPort>8079</stopPort>
             <stopKey>stopit</stopKey>
             <httpConnector>
-              <port>8002</port>
+              <port>8081</port>
               <idleTimeout>60000</idleTimeout>
             </httpConnector>
             <systemProperties>
