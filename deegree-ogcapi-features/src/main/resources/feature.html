@@ -9,9 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../../../../../webjars/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css" type="text/css">
-    <link rel="stylesheet" href="../../../css/main.css" >
 
     <title>deegree - OGC API Features 1.0 - Feature</title>
 
@@ -80,12 +79,34 @@
       }
     </style>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="../../../../../webjars/jquery/3.4.1/jquery.min.js"></script>
-    <script src="../../../../../webjars/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="../../../../../webjars/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <script src="../../../../../webjars/vue/2.6.11/vue.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
+    <script>
+        function loadCss(relativePath){
+            var url = asAbsoluteUrl(relativePath);
+
+            var link = document.createElement("link");
+            link.setAttribute("rel", "stylesheet");
+            link.setAttribute("type", "text/css");
+            link.setAttribute("href", url);
+
+            document.getElementsByTagName("head")[0].appendChild( link );
+        }
+
+        function asAbsoluteUrl(relativePath ) {
+            var url = window.location.href;
+            if( !url.endsWith("/") )
+              url = url + "/";
+
+            url = url + relativePath;
+            return url;
+        }
+        loadCss( "../../../../css/main.css" );
+    </script>
 </head>
 <body>
 
@@ -192,8 +213,6 @@
 </footer>
 
 <script>
-removeTrailingSlash();
-
 var App = new Vue({
   el: '#content',
   data: {
@@ -284,12 +303,6 @@ var footerApp = new Vue({
     });
   }
 })
-
-function removeTrailingSlash(){
-  if( window.location.href.endsWith("/") ){
-    window.location.href = window.location.href.substring(0, window.location.href.length -1);
-  }
-}
 
 var styles = [
   new ol.style.Style({
@@ -485,6 +498,9 @@ function retrieveBaseUrl() {
       var featuresRefWithoutQuery = window.location.href;
       if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
         featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+      }
+      if ( featuresRefWithoutQuery.endsWith("/") ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
       }
       return featuresRefWithoutQuery;
 }

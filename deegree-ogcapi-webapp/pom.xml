@@ -30,13 +30,6 @@
                 </includes>
                 <targetPath>swagger-ui</targetPath>
               </resource>
-              <resource>
-                <directory>${project.build.directory}/webjars/META-INF/resources/webjars</directory>
-                <includes>
-                  <include>**/*.*</include>
-                </includes>
-                <targetPath>webjars</targetPath>
-              </resource>
             </webResources>
           </configuration>
         </plugin>
@@ -125,39 +118,6 @@
                 <outputDirectory>${project.build.directory}/swagger-ui</outputDirectory>
                 <excludes>
                 </excludes>
-              </configuration>
-            </execution>
-            <execution>
-              <id>webjars</id>
-              <phase>prepare-package</phase>
-              <goals>
-                <goal>unpack</goal>
-              </goals>
-              <configuration>
-                <artifactItems>
-                  <artifactItem>
-                    <groupId>org.webjars</groupId>
-                    <artifactId>jquery</artifactId>
-                    <version>3.4.1</version>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.webjars</groupId>
-                    <artifactId>popper.js</artifactId>
-                    <version>1.16.0</version>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.webjars</groupId>
-                    <artifactId>bootstrap</artifactId>
-                    <version>4.4.1</version>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.webjars</groupId>
-                    <artifactId>vue</artifactId>
-                    <version>2.6.11</version>
-                  </artifactItem>
-                </artifactItems>
-                <includes>META-INF/resources/**</includes>
-                <outputDirectory>${project.build.directory}/webjars</outputDirectory>
               </configuration>
             </execution>
           </executions>
