@@ -6,12 +6,11 @@ This section show how to get help in case of problems.
 
 * Mixing legacy service configuration with OGC API configuration is not supported.
 
-* Startup time of deegree OAF webapp may increase noticeably when the deegree workspace contains many ressources (e.g. more than 100 files).
+* Startup time of deegree OAF webapp may increase noticeably when the deegree workspace contains many resources (e.g. more than 100 files).
 
-* Using the browser's back button when navigating the HTML view may result in empty pages or switch to the Json encoding.
+* Using the browser's back button when navigating the HTML view may result in empty pages or switch to Json encoding.
 
 == Support
 
 Professional support is provided by deegree enterprise team. Contact support@deegree-enterprise.de in case of any inquiry.
 
-== FAQ

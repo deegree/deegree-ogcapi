@@ -3,31 +3,54 @@
 
 This sections describes how to configure the deegree OAF webapp.
 
+IMPORTANT: deegree OAF is under development, and new configuration options may be added in future releases. For the lastest parameters please consult the example workspace provided with the release version!
+
 === The OAF workspace
 
 The deegree workspace is the modular, resource-oriented and extensible configuration concept used by deegree. The deegree OAF workspace name must be *_ogcapi-workspace_*.
 
-The directory structure and related files is as follows:
+The directory structure and related files are described by the following example:
 
-```
-├── config.apikey                           // optional APIKEY to access REST-API
-└── ogcapi-workspace                        // mandatory, exact name is required
+.ogcapi-workspace/
+----
+├── config.apikey                 # <1>
+└── ogcapi-workspace              # <2>
     ├── datasources
-    │   └── feature                         // must contain at least one feature store configuration
-    │       ├── <featurestore-id>.xml
-    │       └── <anotherfeaturestore-id>.xml
-    ├── html                                // NEW
-    │   ├── htmlview.xml                    // global HTML encoding configuration
-    │   ├── <htmlview-id>.xml               // HTML encoding configuration for a dataset
-    │   └── default-style.css               // optional CSS
+    │   └── feature               # <3>
+    │       ├── streets.xml       # <4>
+    │       └── trees.xml         # <5>
+    ├── html                      # <6>
+    │   ├── htmlview.xml          # <7>
+    │   ├── streetsview.xml       # <8>
+    │   ├── treesview.xml         # <9>
+    │   └── default-style.css     # <10>
     ├── jdbc
-    │   └── <connection-id>.xml             // required for database feature stores only
-    ├── ogcapi                              // NEW
-    │   └── <dataset-id>.xml                // dataset configuration
-    └── services                            //
-        ├── metadata.xml                    // global metadata configuration
-        └── <dataset-id>_metadata.xml       // metadata configuration for dataset
-```
+    │   └── <connection-id>.xml   # <11>
+    ├── ogcapi                    # <12>
+    │   ├── datasets.xml          # <13>
+    │   ├── streets.xml           # <14>
+    │   └── trees.xml             # <15>
+    └── services
+        ├── metadata.xml          # <16>
+        └── trees_metadata.xml    # <17>
+----
+<1> config file with APIKEY required to access REST-API (optional)
+<2> the workspace root, exact name is required, path can be set with environment variable `DEEGREE_WORKSPACEROOT` (mandatory)
+<3> subdirectory must contain at least one feature store configuration
+<4> a feature store with id _streets_
+<5> a feature store with id _trees_
+<6> subdirectory with configuration of HTML encoding (optional)
+<7> global HTML encoding configuration (optional)
+<8> HTML encoding configuration for the dataset streets (optional)
+<9> HTML encoding configuration for the dataset trees (optional)
+<10> optional CSS file (optional)
+<11> configuration file required for database feature stores only (optional)
+<12> subdirectory must contain at least one dataset configuration (mandatory)
+<13> global datasets configuration (optional)
+<14> dataset configuration for the dataset streets (mandatory)
+<15> dataset configuration for the dataset trees (mandatory)
+<16> global metadata configuration (optional)
+<17> metadata configuration for dataset trees (optional)
 
 More information about deegree's workspace concept is available in the https://download.deegree.org/documentation/current/html/#_the_deegree_workspace[deegree webservices handbook].
 
@@ -35,10 +58,150 @@ More information about deegree's workspace concept is available in the https://d
 
 The deegree OAF workspace can contains the following configuration files:
 
-- `oaf.xml` (mandatory) - contains the
+- *dataset configuration* files in subdirectory _ogcapi/_
+- *HTML encoding configuration* files in subdirectory _html/_
+- *feature store configuration* files in subdirectory _datasources/feature/_
+- *JDBC connection configuration* files in subdirectory _jdbc/_
+- *meta data configuration* in subdirectory _services/_
+- *security configuration* file named _config.apikey_ in the root directory of the workspace
+
+==== Dataset configuration
+
+To provide information about the dataset provider the following configuration file can be used:
+
+.ogcapi/datasets.xml
+[source,xml]
+----
+<Datasets configVersion="3.4.0"
+                        xmlns="http://www.deegree.org/ogcapi/datasets"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  http://schemas.deegree.org/ogcapi/datasets/3.4.0/datasets.xsd">
+  <Title>Datasets Title</Title>
+  <Description>Datasets Description</Description>
+  <Contact>
+    <Name>Contact Name</Name>
+    <Url>https://www.deegree.org</Url>
+    <EMail>info@deegree.org</EMail>
+  </Contact>
+</Datasets>
+----
+
+NOTE: The file _datasets.xml_ shall be stored in the subdirectory _ogcapi/_. The file is optional.
+
+The configuration file can contains the following elements:
+
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|Title |0..1 |String |Title
+|Description |0..1 |String |Description
+|Contact |0..1 |Complex |Contact configuration
+|===
+
+The element ```<Contact/>``` has the following subelements:
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|Name |0..1 |String |Name of the dataset provider
+|Url |0..1 |String |URL of the dataset provider
+|Email |0..1 |String |Email of the dataset provider
+|===
+
+NOTE: The content of this file is returned under the resource _/datasets_.
+
+Each dataset is configured in a separate file. This example shows a minimal configuration for a dataset called "streets". The filename defines the _{datasetId}_.
+
+.ogcapi/streets.xml
+[source,xml]
+----
+<deegreeOAF configVersion="3.4.0"
+            xmlns="http://www.deegree.org/ogcapi/features"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/ogcapi/features/3.4.0/features.xsd">
+
+  <FeatureStoreId>streets</FeatureStoreId>  <!--1-->
+
+  <QueryCRS>http://www.opengis.net/def/crs/OGC/1.3/CRS84</QueryCRS>  <!--2-->
+  <QueryCRS>EPSG:4326</QueryCRS>  <!--3-->
+
+  <HtmlViewId>streetview</HtmlViewId>  <!--4-->
+
+</deegreeOAF>
+----
+<1> Identifier of the feature store configuration, links to file _datasources/feature/streets.xml_.
+<2> Mandatory CRS, first CRS must be http://www.opengis.net/def/crs/OGC/1.3/CRS84 to be conform to OGC API Features Core.
+<3> Additional CRS, to retrieve data in the given CRS the optional query parameter `+{crs}+` needs to be used, see section <<query_parameter>> for more information.
+<4> Identifier of the HTML encoding configuration, links to file _html/streetsview.xml_.
+
+The next example shows a configuration for a dataset called "trees" with all options available.
+
+.ogcapi/trees.xml
+[source,xml]
+----
+<deegreeOAF configVersion="3.4.0"
+            xmlns="http://www.deegree.org/ogcapi/features"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/ogcapi/features/3.4.0/features.xsd">
+
+  <FeatureStoreId>trees</FeatureStoreId>  <!--1-->
+
+  <QueryCRS>http://www.opengis.net/def/crs/OGC/1.3/CRS84</QueryCRS>  <!--2-->
+  <QueryCRS>EPSG:4326</QueryCRS>  <!--3-->
+
+  <DateTimeProperties>
+    <DateTimeProperty> <!--4-->
+      <FeatureTypeName xmlns:app="http://www.deegree.org/app">app:trees</FeatureTypeName>
+      <PropertyName xmlns:app="http://www.deegree.org/app">app:seedyear</PropertyName>
+    </DateTimeProperty>
+  </DateTimeProperties>
+
+  <HtmlViewId>treesview</HtmlViewId>  <!--5-->
+
+  <Metadata>
+    <ProviderLicense> <!--6-->
+      <Name>ProviderLicense</Name>
+      <Url>https://www.apache.org/licenses/LICENSE-2.0</Url>
+    </ProviderLicense>
+    <DatasetLicense>  <!--7-->
+      <Name>DatasetLicense</Name>
+      <Url>https://www.apache.org/licenses/LICENSE-2.0</Url>
+    </DatasetLicense>
+    <DatasetCreator> <!--8-->
+      <Name>Dataset Creator Name</Name>
+      <Url>http://deegree-enterprise.de</Url>
+      <EMail>info@deegree-enterprise.de</EMail>
+    </DatasetCreator>
+    <MetadataURL format="application/xml">http://example.metadata.org?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=1234</MetadataURL> <!--9-->
+    <MetadataURL format="text/html">http://example.metadata.org/path_to_html/1234</MetadataURL> <!--10-->
+  </Metadata>
+
+</deegreeOAF>
+----
+<1> Identifier of the feature store configuration, links to file _datasources/feature/trees.xml_.
+<2> Mandatory CRS, first CRS must be http://www.opengis.net/def/crs/OGC/1.3/CRS84 to be conform to OGC API Features Core.
+<3> Additional CRS, to retrieve data in the given CRS the optional query parameter `+{crs}+` needs to be used, see section <<query_parameter>> for more information.
+<4> DateTime property defines a property _app:seedyear_ of the feature type _app:trees_ as a datetime property.
+<5> Identifier of the HTML encoding configuration, links to file _html/treesview.xml_.
+<6> Provider license applicable to the service provider
+<7> Dataset license applicable to the dataset
+<8> Dataset provider contact details
+<9> Metadata link in format `application/xml`
+<10> Metadate link in format `text/html`
+
+NOTE: The dataset configuration file shall be stored in the subdirectory _ogcapi/_. The file is mandatory.
+
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|FeatureStoreId |0..n |String |Identifier of a feature store, see <<config_feature_store>> which implementations are supported. This identifier also defines the _{collectionId}_
+|QueryCRS |0..n |String |The CRS codes supported, `CRS84` must be provided as the first element
+|HtmlViewId |0..1 |String |Identifier of the HTML encoding configuration, see <<config_htmlview>> for more information
+|DateTimeProperties |0..1 |Complex |Configuration of date and time properties, see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_parameter_datetime[parameter datetime in the OGC API specification] for more information
+|ServiceMetadata |0..1 |Complex |Configuration of service and dataset metadata
+|===
 
 [[config_feature_store]]
-==== Supported feature stores
+==== Feature store configuration
 
 Currently deegree OAF supports the following feature stores:
 
@@ -47,10 +210,56 @@ Currently deegree OAF supports the following feature stores:
 - `MemoryFeatureStore` - retrieves data from a file in GML file format.
 - `ShapeFeatureStore` - retrieves data from a file in SHAPE file format.
 
-The supported databases are:
-- Oracle database
-- PostgreSQL/PostGIS database
+The supported databases for `SQLFeatureStore` and `SimpleSQLFeatureStore` are:
 
+- Oracle database, and
+- PostgreSQL/PostGIS database.
+
+A detailed documentation of the feature store configuration is described in section "Feature Stores"
+of the https://download.deegree.org/documentation/current/html/#anchor-configuration-featurestore[deegree webservices handbook].
+
+NOTE: The _{featureId}_ is defined by the feature store configuration.
+
+[[config_htmlview]]
+==== HTML encoding configuration
+
+To configure the HTML encoding the following configuration file can be used.
+
+.html/treesview.xml
+[source,xml]
+----
+<HtmlView configVersion="3.4.0"
+          xmlns="http://www.deegree.org/ogcapi/htmlview"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview http://schemas.deegree.org/ogcapi/3.4.0/htmlview.xsd">
+
+  <CssFile>../html/lgv.css</CssFile>  <!--1-->
+  <ImpressumUrl>https://www.hamburg.de/impressum/</ImpressumUrl> <!--2-->
+  <Map>
+    <WMSUrl>https://geodienste.hamburg.de/HH_WMS_Cache_Stadtplan</WMSUrl> <!--3-->
+    <WMSLayers>stadtplan</WMSLayers> <!--4-->
+    <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</CrsProj4Definition> <!--5-->
+  </Map>
+
+</HtmlView>
+----
+<1> optional CSS file used for all HTML views (optional)
+<2> link to page containing publishing, copyright, and legal information
+<3> URL of WMS used for the base map
+<4> layer name of the base map
+<5> CRS configuration of the base map
+
+NOTE: The file _treesview.xml_ shall be stored in the subdirectory _html/_. To define a global configuration the file name must be _htmlview.xml_. The file is optional.
+
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|CssFile |0..1 |URI |relative path to a CSS file
+|ImpressumUrl |0..1 |URL |URL to an existing page
+|Map |0..1 |Complex |Configuration for the base map
+|===
+
+[[config_metadata]]
 ==== Metadata configuration
 
 The service metadata can be defined per workspace or for each OAF configuration.
@@ -59,15 +268,16 @@ Use the file name `metadata.xml` to define a global configuration.
 Use a file name ending with `_metadata.xml` to define the service metadata per dataset.
 Use the dataset name as a prefix. For example if you have a dataset configured in  `streets.xml` the related metadata file has the file name `streets_metadata.xml`.
 
+A detailed documentation of the metadata configuration is described in section "Metadata"
+of the https://download.deegree.org/documentation/current/html/#anchor-configuration-service-metadata[deegree webservices handbook].
+
 ==== Migration of an existing deegree workspace
 
 Given that an existing deegree workspace contains at least one feature store the following steps
 need to be done to provide the data via deegree OAF:
 
-- Add a configuration file in ogcapi
-- Enable HTML encoding by adding a file in html (optional)
-- add metadata (optional)
-
+- Add a dataset configuration file in subdirectory _ogcapi/_, e.g. _streets.xml_
+- Enable HTML encoding by adding a file in subdirectory _html/_ (optional), e.g. _streetsview.xml_
 
 === deegree config REST-API
 
@@ -91,3 +301,8 @@ PUT /config/upload/wsname/path/file - upload file into workspace with name <wsna
 DELETE /config/delete[/path] - delete currently running workspace or file in workspace
 DELETE /config/delete/wsname[/path] - delete workspace with name <wsname> or file in workspace
 ```
+
+The REST-API is enabled by default. To protect this interface from unauthorized use, it is automatically secured with a so-called API key. Each HTTP request requires that the API key contained in the file _config.apikey_ is transferred.
+
+A detailed documentation of the REST-API interface and how access is configured is described in section "15.1. Usage of the interface"
+of the deegree Webservices handbook.footnote:[Documentation provided with deegree Enterprise, file: _documentation/manuals/deegree-core-documentation.pdf_].
