@@ -120,11 +120,8 @@ public class OafResource implements Resource {
     }
 
     private OWSMetadataProvider getMetadata( Workspace workspace ) {
-        OWSMetadataProvider oafMetadata = workspace.getResource( OWSMetadataProviderProvider.class,
-                                                                 getMetadata().getIdentifier().getId() + "_metadata" );
-        if ( oafMetadata != null )
-            return oafMetadata;
-        return workspace.getResource( OWSMetadataProviderProvider.class, "metadata" );
+        return workspace.getResource( OWSMetadataProviderProvider.class,
+                                      getMetadata().getIdentifier().getId() + "_metadata" );
     }
 
     private HtmlViewConfiguration getHtmlViewConfig( Workspace workspace ) {
@@ -241,7 +238,7 @@ public class OafResource implements Resource {
         FeatureType featureType = featureStore.getSchema().getFeatureType( name );
         List<FilterProperty> filterProperties = parseFilterProperties( featureType );
         Extent extent = createExtent( featureStore, name, dateTimeProperty );
-        String title = datasetMetadata != null ? asString( datasetMetadata.getTitle( null ) ) : null;
+        String title = datasetMetadata != null ? asString( datasetMetadata.getTitle( null ) ) : name.getLocalPart();
         String description = datasetMetadata != null ? asString( datasetMetadata.getAbstract( null ) ) : null;
         List<MetadataUrl> metadataUrls = datasetMetadata != null && !datasetMetadata.getMetadataUrls().isEmpty() ?
                                          datasetMetadata.getMetadataUrls() :
