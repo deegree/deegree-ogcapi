@@ -27,12 +27,12 @@ The Web API is provided as an Open API 3.0 document implementing the requirement
 
 * OpenAPI Specification 3.0.
 
-deegree OAF was built on the robust API and configuration concept of deegree and has the following features:
+deegree OAF was built on the robust API and configuration concept of OSGeo deegree webservices and has the following features:
 
 * easy to install: simple deployment in every Java Servlet container
-* easy to configure: uses the standard deegree configuration
+* easy to configure: uses the deegree workspace configuration concept
 ** connects to several data sources such as files, and databases
-** serves rich HTML output format including a map component based on https://openlayers.org/[OpenLayers]
+** serves a rich HTML output format including a map component based on https://openlayers.org/[OpenLayers]
 ** links to metadata in different formats
 
 === Quick Start
@@ -53,7 +53,7 @@ For simplicity, this document consistently uses:
 
 - deegree OAF - to refer to the deegree implementation of "OGC API - Features - Part 1: Core".
 
-Furthermore the following terms are used in this documentation:
+Furthermore the following terms are used in this document:
 
 === dataset
 Is a collection of data. In the context of deegree OAF a dataset is the set of feature types provided by a feature store. It is identified by it's _{datasetId}_.

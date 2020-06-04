@@ -74,7 +74,8 @@
               </attributes>
               <sourceDirectory>src/main/asciidoc</sourceDirectory>
               <sourceDocumentName>index.adoc</sourceDocumentName>
-              <outputDirectory>${project.build.directory}/deegree-ogcapi-pdf</outputDirectory>
+              <outputDirectory>${project.build.directory}/pdf</outputDirectory>
+              <outputFile>${project.artifactId}.pdf</outputFile>
             </configuration>
           </execution>
           <execution>
@@ -94,7 +95,7 @@
               </attributes>
               <sourceDirectory>src/main/asciidoc</sourceDirectory>
               <sourceDocumentName>index.adoc</sourceDocumentName>
-              <outputDirectory>${project.build.directory}/deegree-ogcapi-html</outputDirectory>
+              <outputDirectory>${project.build.directory}/html</outputDirectory>
             </configuration>
           </execution>
         </executions>

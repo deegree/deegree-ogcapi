@@ -52,6 +52,8 @@ The directory structure and related files are described by the following example
 <16> metadata configuration for dataset streets (optional)
 <17> metadata configuration for dataset trees (optional)
 
+IMPORTANT: The name of the deegree workspace must to be *_ogcapi-workspace_*. Using other directory names different to this workspace name will not work with the deegree OAF webapp. Furthermore a deegree workspaces containing service configuration files for deegree webservices such as WFS and WMS will not provide these services! As well using the deegree webservices WAR file with a *_ogcapi-workspace_* won't work too.
+
 More information about deegree's workspace concept is available in the https://download.deegree.org/documentation/current/html/#_the_deegree_workspace[deegree webservices handbook].
 
 === Configuration files
@@ -88,7 +90,7 @@ To provide information about the dataset provider the following configuration fi
 
 NOTE: The file _datasets.xml_ shall be stored in the subdirectory _ogcapi/_. The file is optional.
 
-The configuration file can contains the following elements:
+This configuration file can contains the following elements:
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
@@ -110,7 +112,7 @@ The element ```<Contact/>``` has the following subelements:
 
 NOTE: The content of this file is returned under the resource _/datasets_.
 
-Each dataset is configured in a separate file. This example shows a minimal configuration for a dataset called "streets". The filename defines the _{datasetId}_.
+Each dataset is configured in a separate file. The following example shows a minimal configuration for a dataset called "streets". The filename defines the _{datasetId}_.
 
 .ogcapi/streets.xml
 [source,xml]
@@ -191,6 +193,8 @@ The next example shows a configuration for a dataset called "trees" with all opt
 
 NOTE: The dataset configuration file must be stored in the subdirectory _ogcapi/_. The file is mandatory.
 
+This configuration file can contains the following elements:
+
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
 |Option |Cardinality |Value |Description
@@ -224,7 +228,7 @@ NOTE: The _{featureId}_ is defined by the feature store configuration.
 [[config_htmlview]]
 ==== HTML encoding configuration
 
-To configure the HTML encoding the following configuration file can be used.
+To configure the HTML encoding a configuration file can be used. The following example contains the configuration for the dataset _trees_.
 
 .html/treesview.xml
 [source,xml]
@@ -251,6 +255,8 @@ To configure the HTML encoding the following configuration file can be used.
 <5> CRS configuration of the base map
 
 NOTE: The file _treesview.xml_ must be stored in the subdirectory _html/_. To define a global configuration the file name must be _htmlview.xml_. The file is optional.
+
+This configuration file can contains the following elements:
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
@@ -302,7 +308,7 @@ NOTE: The file _streets_metadata.xml_ must be stored in the subdirectory _servic
 A detailed documentation of the metadata configuration is described in section "Metadata"
 of the https://download.deegree.org/documentation/current/html/#anchor-configuration-service-metadata[deegree webservices handbook].
 
-==== Migration of an existing deegree workspace
+=== Migration of an existing deegree workspace
 
 Given that an existing deegree workspace contains at least one feature store the following steps
 need to be done to provide the data via deegree OAF:
@@ -337,4 +343,4 @@ DELETE /config/delete/wsname[/path] - delete workspace with name <wsname> or fil
 The REST-API is enabled by default. To protect this interface from unauthorized use, it is automatically secured with a so-called API key. Each HTTP request requires that the API key contained in the file _config.apikey_ is transferred.
 
 A detailed documentation of the REST-API interface and how access is configured is described in section "15.1. Usage of the interface"
-of the deegree Webservices handbook.footnote:[Documentation provided with deegree Enterprise, file: _documentation/manuals/deegree-core-documentation.pdf_].
+of the deegree webservices handbook.footnote:[Documentation provided with deegree Enterprise, file: _documentation/manuals/deegree-core-documentation.pdf_].

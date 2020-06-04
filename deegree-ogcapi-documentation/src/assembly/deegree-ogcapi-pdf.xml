@@ -8,9 +8,8 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <files>
     <file>
-      <source>${project.build.directory}/deegree-ogcapi-pdf/index.pdf</source>
+      <source>${project.build.directory}/pdf/${project.artifactId}.pdf</source>
       <outputDirectory>/</outputDirectory>
-      <destName>deegree-ogcapi-documentation.pdf</destName>
     </file>
   </files>
 </assembly>

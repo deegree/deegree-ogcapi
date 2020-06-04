@@ -8,8 +8,8 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>${project.build.directory}/deegree-ogcapi-html</directory>
-      <outputDirectory>deegree-ogcapi-documentation</outputDirectory>
+      <directory>${project.build.directory}/html</directory>
+      <outputDirectory>${project.artifactId}</outputDirectory>
     </fileSet>
   </fileSets>
 </assembly>

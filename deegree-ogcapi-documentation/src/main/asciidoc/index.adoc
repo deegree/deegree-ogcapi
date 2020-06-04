@@ -7,19 +7,21 @@
 :source-highlighter: coderay
 :title-logo-image: images/Logo_deegree.png
 
-= deegree OGC API Implementation
-lat/lon Gesellschaft für raumbezogene Informationssysteme mbH ; grit - graphische Informationstechnik - Beratungsgesellschaft mbH
+= deegree OGC API - Features Implementation
+lat/lon Gesellschaft für raumbezogene Informationssysteme mbH & grit graphische Informationstechnik - Beratungsgesellschaft mbH
 
 toc::[]
 
 == Preambel
-grit - graphische Informationstechnik - Beratungsgesellschaft mbH +
-info@grit.de http://www.grit.de +
-Landwehrstr. 143 59368 Werne +
-
 lat/lon - Gesellschaft für raumbezogene Informationssysteme mbH +
 info@lat-lon.de http://www.lat-lon.de/ +
-Aennchenstraße 19 53177 Bonn +
+Aennchenstraße 19, D-53177 Bonn +
+
+grit - graphische Informationstechnik - Beratungsgesellschaft mbH +
+info@grit.de http://www.grit.de +
+Landwehrstr. 143, D-59368 Werne +
+
+(C)opyright lat/lon, grit 2020
 
 include::intro.adoc[]
 
