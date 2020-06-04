@@ -2,7 +2,7 @@
 
 This section show how to get help in case of problems.
 
-== Known Issues
+=== Known Issues
 
 * Mixing legacy service configuration with OGC API configuration is not supported.
 
@@ -10,7 +10,11 @@ This section show how to get help in case of problems.
 
 * Using the browser's back button when navigating the HTML view may result in empty pages or switch to Json encoding.
 
-== Support
+=== Support
 
 Professional support is provided by deegree enterprise team. Contact support@deegree-enterprise.de in case of any inquiry.
 
+=== FAQ
+[qanda]
+How to update the _bbox_cache.properties_?::
+  Use REST-API operation `/config/update/bboxcache` to recalculates the bounding boxes of the feature stores. See section <<config_restapi>> for more information how to use the REST-API.

@@ -31,11 +31,11 @@ The directory structure and related files are described by the following example
     │   ├── streets.xml           # <14>
     │   └── trees.xml             # <15>
     └── services
-        ├── metadata.xml          # <16>
+        ├── streets_metadata.xml  # <16>
         └── trees_metadata.xml    # <17>
 ----
 <1> config file with APIKEY required to access REST-API (optional)
-<2> the workspace root, exact name is required, path can be set with environment variable `DEEGREE_WORKSPACEROOT` (mandatory)
+<2> the workspace root directory, the exact name is required, path can be set with environment variable `DEEGREE_WORKSPACEROOT` (mandatory)
 <3> subdirectory must contain at least one feature store configuration
 <4> a feature store with id _streets_
 <5> a feature store with id _trees_
@@ -49,7 +49,7 @@ The directory structure and related files are described by the following example
 <13> global datasets configuration (optional)
 <14> dataset configuration for the dataset streets (mandatory)
 <15> dataset configuration for the dataset trees (mandatory)
-<16> global metadata configuration (optional)
+<16> metadata configuration for dataset streets (optional)
 <17> metadata configuration for dataset trees (optional)
 
 More information about deegree's workspace concept is available in the https://download.deegree.org/documentation/current/html/#_the_deegree_workspace[deegree webservices handbook].
@@ -99,6 +99,7 @@ The configuration file can contains the following elements:
 |===
 
 The element ```<Contact/>``` has the following subelements:
+
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
 |Option |Cardinality |Value |Description
@@ -185,10 +186,10 @@ The next example shows a configuration for a dataset called "trees" with all opt
 <6> Provider license applicable to the service provider
 <7> Dataset license applicable to the dataset
 <8> Dataset provider contact details
-<9> Metadata link in format `application/xml`
-<10> Metadate link in format `text/html`
+<9> Metadata link in format `application/xml` for the dataset
+<10> Metadata link in format `text/html` for the dataset
 
-NOTE: The dataset configuration file shall be stored in the subdirectory _ogcapi/_. The file is mandatory.
+NOTE: The dataset configuration file must be stored in the subdirectory _ogcapi/_. The file is mandatory.
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
@@ -197,7 +198,7 @@ NOTE: The dataset configuration file shall be stored in the subdirectory _ogcapi
 |QueryCRS |0..n |String |The CRS codes supported, `CRS84` must be provided as the first element
 |HtmlViewId |0..1 |String |Identifier of the HTML encoding configuration, see <<config_htmlview>> for more information
 |DateTimeProperties |0..1 |Complex |Configuration of date and time properties, see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_parameter_datetime[parameter datetime in the OGC API specification] for more information
-|ServiceMetadata |0..1 |Complex |Configuration of service and dataset metadata
+|ServiceMetadata |0..1 |Complex |Configuration of the dataset metadata
 |===
 
 [[config_feature_store]]
@@ -249,7 +250,7 @@ To configure the HTML encoding the following configuration file can be used.
 <4> layer name of the base map
 <5> CRS configuration of the base map
 
-NOTE: The file _treesview.xml_ shall be stored in the subdirectory _html/_. To define a global configuration the file name must be _htmlview.xml_. The file is optional.
+NOTE: The file _treesview.xml_ must be stored in the subdirectory _html/_. To define a global configuration the file name must be _htmlview.xml_. The file is optional.
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
@@ -262,11 +263,41 @@ NOTE: The file _treesview.xml_ shall be stored in the subdirectory _html/_. To d
 [[config_metadata]]
 ==== Metadata configuration
 
-The service metadata can be defined per workspace or for each OAF configuration.
-Use the file name `metadata.xml` to define a global configuration.
+The service metadata can be defined for each dataset. Use a file name ending with _{datasetId}_metadata.xml_ to define the service metadata per dataset.
+Use the dataset identifier as a prefix. For example if you have a dataset configured in _streets.xml_ the related metadata file has the file name _streets_metadata.xml_.
 
-Use a file name ending with `_metadata.xml` to define the service metadata per dataset.
-Use the dataset name as a prefix. For example if you have a dataset configured in  `streets.xml` the related metadata file has the file name `streets_metadata.xml`.
+The following excerpt of the _streets_metadata.xml_ shows which options are available:
+
+.services/streets_metadata.xml
+[source,xml]
+----
+<deegreeServicesMetadata>
+
+  <ServiceIdentification> <!--1-->
+    <Title>deegree OGC API - Features</Title>
+    <Abstract>Streets of the city of Hamburg</Abstract>
+  </ServiceIdentification>
+
+  <DatasetMetadata>
+    <MetadataUrlTemplate>http://example.metadata.org/services/csw?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=${metadataSetId}</MetadataUrlTemplate> <!--2-->
+    <MetadataUrlTemplate format="text/html">http://example.metadata.org/csw/htmlrepaesentation/${metadataSetId}</MetadataUrlTemplate> <!--3-->
+    <Dataset>
+      <Name xmlns:app="http://www.deegree.org/app">app:streets</Name> <!--4-->
+      <Title>Streets</Title> <!--5-->
+      <Abstract>Streets of the city of Hamburg</Abstract>
+      <MetadataSetId>beefcafe-beef-cafe-beef-cafebeefcaf</MetadataSetId>
+    </Dataset>
+  </DatasetMetadata>
+
+</deegreeServicesMetadata>
+----
+<1> Information about the service, in the context of OAF it is used per dataset
+<2> Service metadata link
+<3> Service metadata link in format `text/html`
+<4> Dataset name which links to the feature type configured, here the {collectionId}
+<5> Title of the feature collection, used in HTML encoding instead of the {collectionId}
+
+NOTE: The file _streets_metadata.xml_ must be stored in the subdirectory _services/_. The file is mandatory.
 
 A detailed documentation of the metadata configuration is described in section "Metadata"
 of the https://download.deegree.org/documentation/current/html/#anchor-configuration-service-metadata[deegree webservices handbook].
@@ -279,6 +310,7 @@ need to be done to provide the data via deegree OAF:
 - Add a dataset configuration file in subdirectory _ogcapi/_, e.g. _streets.xml_
 - Enable HTML encoding by adding a file in subdirectory _html/_ (optional), e.g. _streetsview.xml_
 
+[[config_restapi]]
 === deegree config REST-API
 
 deegree OAF provides a REST-API for configuration purposes. As in deegree webservices a client can use the REST interface to manage the configuration. The following list of operations is supported:

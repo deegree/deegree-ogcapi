@@ -31,16 +31,15 @@ deegree OAF was built on the robust API and configuration concept of deegree and
 
 * easy to install: simple deployment in every Java Servlet container
 * easy to configure: uses the standard deegree configuration
-** connects to several data sources such as files, databases
-** serves rich HTML output format including a map component based on https://openlayers.org/[OpenLayers].
+** connects to several data sources such as files, and databases
+** serves rich HTML output format including a map component based on https://openlayers.org/[OpenLayers]
 ** links to metadata in different formats
-
 
 === Quick Start
 
-. Install the deegree OAF webapp on your preferred Java Servlet container (the runtime environment). See section <<Installation>> for more information.
+. Install the deegree OAF webapp on your preferred Java Servlet container (the runtime environment). See section <<installation>> for more information.
 . Create the necessary deegree configuration files stored within a deegree workspace with at least one datasource. Which files are required is described in section <<Configuration>>.
-. Install deegree OAF webapp and start the runtime environment. This is described in section <<installation>>.
+. Install deegree OAF webapp and start the runtime environment. This is described in section <<start_webapp>>.
 . Start a browser and open the OpenAPI specification. How to use the Web API document is explained in section <<openapi>>.
 . Browse the content using the HTML encoding. How to use the HTML encoding to access the data is described in section <<html_encoding>>.
 
