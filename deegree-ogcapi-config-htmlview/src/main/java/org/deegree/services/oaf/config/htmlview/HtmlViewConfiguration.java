@@ -13,6 +13,8 @@ public class HtmlViewConfiguration {
 
     private final String impressumUrl;
 
+    private final String privacyUrl;
+
     private final String wmsUrl;
 
     private final String wmsLayers;
@@ -26,6 +28,8 @@ public class HtmlViewConfiguration {
      *                 must be an file and must exist, may be <code>null</code>
      * @param impressumUrl
      *                 the URL to retrieve the impressum, may be <code>null</code>
+     * @param privacyUrl
+     *                 the URL to retrieve the privacy, may be <code>null</code>
      * @param wmsUrl
      *                 the URL of the WMS, may be <code>null</code>
      * @param wmsLayers
@@ -33,12 +37,13 @@ public class HtmlViewConfiguration {
      * @param crsCode
      *                 the crs code of the map, may be <code>null</code>
      * @param crsProj4Definition
-     *                 the proj4 definion of the crs of the map, may be <code>null</code>
      */
-    public HtmlViewConfiguration( File cssFile, String impressumUrl, String wmsUrl, String wmsLayers, String crsCode,
+    public HtmlViewConfiguration( File cssFile, String impressumUrl, String privacyUrl, String wmsUrl,
+                                  String wmsLayers, String crsCode,
                                   String crsProj4Definition ) {
         this.cssFile = cssFile;
         this.impressumUrl = impressumUrl;
+        this.privacyUrl = privacyUrl;
         this.wmsUrl = wmsUrl;
         this.wmsLayers = wmsLayers;
         this.crsCode = crsCode;
@@ -86,4 +91,12 @@ public class HtmlViewConfiguration {
     public String getImpressumUrl() {
         return impressumUrl;
     }
+
+    /**
+     * @return the URL to retrieve the privacy policy, may be <code>null</code>
+     */
+    public String getPrivacyUrl() {
+        return privacyUrl;
+    }
+
 }

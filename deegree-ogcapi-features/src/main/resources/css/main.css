@@ -73,6 +73,7 @@ body {
   padding: 1rem;
   background-color: #f8f9fa;
   text-align: right;
+  color: #007bff;
 }
 
 /* Link Impressum */
@@ -87,4 +88,18 @@ body {
   text-decoration: underline;
 }
 .impressum:active {
+}
+
+/* Link Privacy */
+.privacy:link {
+  color: #007bff;
+}
+.privacy:visited {
+  color: #007bff;
+}
+.privacy:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+.privacy:active {
 }

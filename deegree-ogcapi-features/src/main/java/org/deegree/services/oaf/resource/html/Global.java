@@ -2,7 +2,7 @@ package org.deegree.services.oaf.resource.html;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
-import org.deegree.services.oaf.domain.html.ImpressumConfiguration;
+import org.deegree.services.oaf.domain.html.HtmlPageConfiguration;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 
 import javax.inject.Inject;
@@ -42,15 +42,17 @@ public class Global {
     }
 
     @Operation(hidden = true)
-    @Path("impressum")
+    @Path("html")
     @GET
     @Produces(APPLICATION_JSON)
-    public Response getDefaultImpressumUrl() {
+    public Response getDefaultHtmlConfig() {
         HtmlViewConfiguration globalHtmlViewConfiguration = deegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
-        if ( globalHtmlViewConfiguration == null || globalHtmlViewConfiguration.getImpressumUrl() == null )
+        if ( globalHtmlViewConfiguration == null || ( globalHtmlViewConfiguration.getImpressumUrl() == null
+                                                      && globalHtmlViewConfiguration.getPrivacyUrl() == null ) )
             return Response.status( Response.Status.NOT_FOUND ).build();
-        return Response.ok( new ImpressumConfiguration( globalHtmlViewConfiguration.getImpressumUrl() ),
-                            APPLICATION_JSON ).build();
+        HtmlPageConfiguration configuration = new HtmlPageConfiguration( globalHtmlViewConfiguration.getImpressumUrl(),
+                                                                  globalHtmlViewConfiguration.getPrivacyUrl() );
+        return Response.ok( configuration, APPLICATION_JSON ).build();
     }
 
 }

@@ -352,12 +352,16 @@
 </div>
 
 <footer class="page-footer" id="footer">
-    <div v-if="impressumUrl && impressumUrl.length > 0" >
+    <span v-if="impressumUrl && impressumUrl.length > 0" >
         <a v-cloak v-bind:href="impressumUrl"  target="_blank" class="impressum"> Impressum</a>
-    </div>
-    <div v-else >
+    </span>
+    <span v-else >
         <a href="https://deegree-enterprise.de"  target="_blank" class="impressum"> deegree Enterprise Edition</a>
-    </div>
+    </span>
+    <span v-if="privacyUrl && privacyUrl.length > 0" >
+        <span> | </span>
+       <a v-cloak v-bind:href="privacyUrl"  target="_blank" class="privacy"> Privacy Policy</a>
+    </span>
 </footer>
 
 <script>
@@ -597,7 +601,8 @@ var AppBreadcrump = new Vue({
 var footerApp = new Vue({
   el: '#footer',
   data: {
-    impressumUrl: ''
+    impressumUrl: '',
+    privacyUrl: ''
   },
 
   created() {
@@ -606,9 +611,10 @@ var footerApp = new Vue({
 
     $.ajax({
       dataType: "json",
-      url: createImpressumUrl(),
+      url: createHtmlConfigUrl(),
       success: function(data) {
         self.impressumUrl = data.impressumUrl;
+        self.privacyUrl = data.privacyUrl;
       }
     });
   }
@@ -848,8 +854,8 @@ select.on('select', function(e) {
 });
 */
 
-function createImpressumUrl(){
-  return createConfigUrl("/config/impressum");
+function createHtmlConfigUrl(){
+  return createConfigUrl("/config/html");
 }
 
 function createMapConfigUrl(){

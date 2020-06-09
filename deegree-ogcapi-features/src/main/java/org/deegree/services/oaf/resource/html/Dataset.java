@@ -2,7 +2,7 @@ package org.deegree.services.oaf.resource.html;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
-import org.deegree.services.oaf.domain.html.ImpressumConfiguration;
+import org.deegree.services.oaf.domain.html.HtmlPageConfiguration;
 import org.deegree.services.oaf.domain.html.MapConfiguration;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 
@@ -59,15 +59,17 @@ public class Dataset {
     }
 
     @Operation(hidden = true)
-    @Path("/config/impressum")
+    @Path("/config/html")
     @GET
     @Produces(APPLICATION_JSON)
-    public Response getImpressumUrl( @PathParam("datasetId") String datasetId ) {
+    public Response getHtmlConfig( @PathParam("datasetId") String datasetId ) {
         HtmlViewConfiguration htmlViewConfiguration = deegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
-        if ( htmlViewConfiguration == null || htmlViewConfiguration.getImpressumUrl() == null )
+        if ( htmlViewConfiguration == null || ( htmlViewConfiguration.getImpressumUrl() == null
+                                                && htmlViewConfiguration.getPrivacyUrl() == null ) )
             return Response.status( Response.Status.NOT_FOUND ).build();
-        return Response.ok( new ImpressumConfiguration( htmlViewConfiguration.getImpressumUrl() ),
-                            APPLICATION_JSON ).build();
+        HtmlPageConfiguration configuration = new HtmlPageConfiguration( htmlViewConfiguration.getImpressumUrl(),
+                                                                         htmlViewConfiguration.getPrivacyUrl() );
+        return Response.ok( configuration, APPLICATION_JSON ).build();
     }
 
 }
