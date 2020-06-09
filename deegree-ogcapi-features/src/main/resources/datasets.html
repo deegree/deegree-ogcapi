@@ -37,6 +37,9 @@
 
         function asAbsoluteUrl(relativePath ) {
             var url = window.location.href;
+            if ( url.indexOf('?') >= 0 ) {
+              url = url.substr(0, url.indexOf('?'));
+            }
             if( !url.endsWith("/") )
               url = url + "/";
 
@@ -126,7 +129,7 @@ var App = new Vue({
 
     $.ajax({
       dataType: "json",
-      url: window.location.href,
+      url: retrieveBaseUrl(),
       success: function(data) {
         self.title = data.title;
         self.description = data.description;
@@ -167,10 +170,21 @@ function parseLinks(data, rel, type){
 }
 
 function createImpressumUrl(){
-  var baseUrl = window.location.href;
+  var baseUrl = retrieveBaseUrl();
   var indexOfDataset = (baseUrl.lastIndexOf("dataset"))
   var configUrl = baseUrl.substring ( 0, indexOfDataset ) + "impressum";
   return configUrl;
+}
+
+function retrieveBaseUrl() {
+  var featuresRefWithoutQuery = window.location.href;
+  if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
+    featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+  }
+      if ( featuresRefWithoutQuery.endsWith("/") ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
+      }
+  return featuresRefWithoutQuery;
 }
 </script>
 </body>
