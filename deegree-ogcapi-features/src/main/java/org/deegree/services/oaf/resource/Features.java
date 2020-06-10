@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.RequestFormat;
@@ -81,21 +80,21 @@ public class Features {
                     @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
-                    @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset [minx, miny, maxx, maxy].", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6), example = "567190,5934330,567200,5934360")
+                    @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset [minx, miny, maxx, maxy]. Example: '567190,5934330,567200,5934360'", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
                     @QueryParam("bbox")
                                     List<Double> bbox,
-                    @Parameter(description = "The coordinate reference system of the value of the bbox parameter. Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84", style = ParameterStyle.FORM, example = "EPSG:25832")
+                    @Parameter(description = "The coordinate reference system of the value of the bbox parameter. Example: 'EPSG:25832' Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84", style = ParameterStyle.FORM)
                     @QueryParam("bbox-crs")
                                     String bboxCrs,
-                    @Parameter(description = "The datetime used as filter.", style = ParameterStyle.FORM,
-                                    example = "2018-07-05" )
+                    @Parameter(description =
+                                    "The datetime used as filter. Either a date-time or a period string that adheres to RFC 3339. Examples: A date-time: '2018-02-12T23:20:50Z' A period: '2018-02-12T00:00:00Z/2018-03-18T12:31:12Z' or '2018-02-12T00:00:00Z/P1M6DT12H31M12S''", style = ParameterStyle.FORM)
                     @QueryParam("datetime")
                                     String datetime,
-                    @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM, example = "EPSG:25832" )
+                    @Parameter(description = "The coordinate reference system of the response geometries. Example: 'EPSG:25832' Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
@@ -132,7 +131,7 @@ public class Features {
                     @QueryParam("crs")
                                     String crs,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
@@ -169,7 +168,7 @@ public class Features {
                     @QueryParam("crs")
                                     String crs,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
@@ -204,7 +203,7 @@ public class Features {
                     @QueryParam("crs")
                                     String crs,
                     @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
+                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
