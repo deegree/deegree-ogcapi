@@ -17,6 +17,7 @@ import org.deegree.commons.tom.gml.property.PropertyType;
 import org.deegree.commons.tom.primitive.BaseType;
 import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.feature.types.FeatureType;
+import org.deegree.feature.types.property.GeometryPropertyType;
 import org.deegree.feature.types.property.SimplePropertyType;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
@@ -27,10 +28,12 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
@@ -66,6 +69,9 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
     private static final String FEATURES_PATH = "/datasets/{datasetId}/collections/{collectionId}/items";
 
     private static final String FEATURE_PATH = "/datasets/{datasetId}/collections/{collectionId}/items/{featureId}";
+
+    public static final List<String> SUPPPORTED_GEOM_TYPES = Arrays.asList( "Point", "LineString", "Polygon", "MultiPoint", "MultiLineString",
+                                                                            "MultiPolygon" );
 
     private final String datasetId;
 
@@ -182,7 +188,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         filterProperties.forEach( filterProperty -> {
             Parameter filterParameter = new Parameter()
                             .name( filterProperty.getName().getLocalPart() )
-                            .description( descriptionByParameterType( filterProperty )  )
+                            .description( descriptionByParameterType( filterProperty ) )
                             .in( "query" )
                             .style( Parameter.StyleEnum.FORM )
                             .explode( false )
@@ -220,12 +226,34 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
     private Schema createFeatureTypeSchema( FeatureType featureType ) {
         Schema<Object> schema = new Schema<>();
         featureType.getPropertyDeclarations().forEach( propertyType -> {
-            Schema propertiesItem = new Schema()
-                            .name( propertyType.getName().getLocalPart() )
-                            .type( mapToPropertyType( propertyType ) );
+            Schema propertiesItem = createSchemaForProperty( propertyType );
             schema.addProperties( propertyType.getName().getLocalPart(), propertiesItem );
         } );
         return schema;
+    }
+
+    private Schema createSchemaForProperty( PropertyType propertyType ) {
+        if ( propertyType instanceof GeometryPropertyType ) {
+            Map<String, Schema> properties = new HashMap<>();
+            Schema typeEnum = new Schema();
+            typeEnum.setDescription( "Type of the geometry, one of " + SUPPPORTED_GEOM_TYPES.stream().collect(
+                            Collectors.joining( ", " ) ) );
+            typeEnum.setEnum( SUPPPORTED_GEOM_TYPES );
+            properties.put( "type", typeEnum );
+            Schema coordinatesSchema = new ArraySchema()
+                            .items( new Schema().type( "number" ) )
+                            .description( "An array of double values or an array of arrays of double values describing the geometry" );
+            properties.put( "coordinates", coordinatesSchema );
+            return new Schema()
+                            .name( propertyType.getName().getLocalPart() )
+                            .description( "Geometry (" + SUPPPORTED_GEOM_TYPES.stream().collect(
+                                            Collectors.joining( ", " ) ) + ") as specified in RFC 7946." )
+                            .type( mapToPropertyType( propertyType ) )
+                            .properties( properties );
+        }
+        return new Schema()
+                        .name( propertyType.getName().getLocalPart() )
+                        .type( mapToPropertyType( propertyType ) );
     }
 
     private PathItem createNewPathItem( PathItem pathItemToClone, String name, FeatureTypeMetadata metadata ) {
