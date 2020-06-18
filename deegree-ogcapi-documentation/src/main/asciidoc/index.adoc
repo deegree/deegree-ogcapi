@@ -13,6 +13,9 @@ lat/lon Gesellschaft für raumbezogene Informationssysteme mbH & grit graphische
 toc::[]
 
 == Preambel
+
+List of Authors: Jens Fitzke, Torsten Friebe, Lyn Goltz, Sabine Schmitz, Dirk Stenger
+
 lat/lon - Gesellschaft für raumbezogene Informationssysteme mbH +
 info@lat-lon.de http://www.lat-lon.de/ +
 Aennchenstraße 19, D-53177 Bonn +
