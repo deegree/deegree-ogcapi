@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI_TYPE;
@@ -38,10 +39,10 @@ public class OpenApi {
     private OpenApiCreator openApiCreator;
 
     @GET
-    @Produces({ APPLICATION_OPENAPI })
+    @Produces({ APPLICATION_OPENAPI, APPLICATION_JSON })
     @Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
     @Tag(name = "Capabilities")
-    public Response getOpenApiJson(
+    public Response getOpenApiOpenApiJson(
                     @Context HttpHeaders headers,
                     @Context UriInfo uriInfo,
                     @PathParam("datasetId")
@@ -51,8 +52,7 @@ public class OpenApi {
 
         if ( openApi == null )
             return Response.status( 404 ).build();
-        return Response.status( Response.Status.OK ).entity( Json.mapper().writeValueAsString( openApi ) ).type(
-                        APPLICATION_OPENAPI_TYPE ).build();
+        return Response.status( Response.Status.OK ).entity( Json.mapper().writeValueAsString( openApi ) ).build();
     }
 
     @GET
