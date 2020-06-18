@@ -52,7 +52,7 @@ The directory structure and related files are described by the following example
 <16> metadata configuration for dataset streets (optional)
 <17> metadata configuration for dataset trees (optional)
 
-IMPORTANT: The name of the deegree workspace must to be *_ogcapi-workspace_*. Using other directory names different to this workspace name will not work with the deegree OAF webapp. Furthermore a deegree workspaces containing service configuration files for deegree webservices such as WFS and WMS will not provide these services! As well using the deegree webservices WAR file with a *_ogcapi-workspace_* won't work too.
+IMPORTANT: The name of the deegree workspace must be *_ogcapi-workspace_*. Using any other directory name different to this will not work with the deegree OAF webapp. This deegree workspace may contain service configuration files for deegree webservices such as WFS and WMS but those services won't be available with deegree OAF webapp!
 
 More information about deegree's workspace concept is available in the https://download.deegree.org/documentation/current/html/#_the_deegree_workspace[deegree webservices handbook].
 

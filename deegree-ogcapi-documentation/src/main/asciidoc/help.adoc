@@ -4,11 +4,11 @@ This section show how to get help in case of problems.
 
 === Known Issues
 
-* Mixing legacy service configuration with OGC API configuration is not supported.
+* Mixing legacy service configuration with OGC API configuration is not supported by deegree OAF webapp.
 
 * Startup time of deegree OAF webapp may increase noticeably when the deegree workspace contains many resources (e.g. more than 100 files).
 
-* Using the browser's back button when navigating the HTML view may result in empty pages or switch to Json encoding.
+* Using the browser's back button when navigating the HTML view may result in empty pages or switch to Json encoding. Chrome browser is affected.
 
 === Support
 
@@ -18,3 +18,6 @@ Professional support is provided by deegree enterprise team. Contact support@dee
 [qanda]
 How to update the _bbox_cache.properties_?::
   Use REST-API operation `/config/update/bboxcache` to recalculates the bounding boxes of the feature stores. See section <<config_restapi>> for more information how to use the REST-API.
+
+How to use the same workspace with deegree OAF and deegree webservices?::
+  Deploy both webapps for deegree OAF and deegree webservices configured to use the same workspace called _ogcapi-workspace_. Use the file _webapps.properties_ to configure this. Keep in mind that deegree OAF will provide the OGC API - Features and deegree webservices will provide only the legacy service implementations. You may see warnings in the logging messages for both instances that configuration files have been ignored.
