@@ -127,6 +127,8 @@ public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> 
                     featuresAdded++;
                 }
             }
+            if ( featuresAdded > 0 )
+                writer.endArray();
             return featuresAdded;
         } finally {
             featureInputStream.close();
