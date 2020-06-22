@@ -105,16 +105,23 @@
 </div>
 
 <footer class="page-footer" id="footer">
-    <span v-if="impressumUrl && impressumUrl.length > 0" >
-        <a v-cloak v-bind:href="impressumUrl"  target="_blank" class="impressum"> Impressum</a>
-    </span>
-    <span v-else >
-        <a href="https://deegree-enterprise.de"  target="_blank" class="impressum"> deegree Enterprise Edition</a>
-    </span>
-    <span v-if="privacyUrl && privacyUrl.length > 0" >
-        <span> | </span>
-       <a v-cloak v-bind:href="privacyUrl"  target="_blank" class="privacy"> Privacy Policy</a>
-    </span>
+    <div class="d-flex row justify-content-between">
+        <div class="px-md-5">
+            <a v-cloak v-bind:href="helpUrl" target="_blank" class="help"> Help</a>
+        </div>
+        <div class="px-md-5">
+            <span v-if="impressumUrl && impressumUrl.length > 0">
+                <a v-cloak v-bind:href="impressumUrl" target="_blank" class="impressum"> Impressum</a>
+            </span>
+            <span v-else>
+                <a href="https://deegree-enterprise.de" target="_blank" class="impressum"> deegree Enterprise Edition</a>
+            </span>
+            <span v-if="privacyUrl && privacyUrl.length > 0">
+               <span> | </span>
+               <a v-cloak v-bind:href="privacyUrl" target="_blank" class="privacy"> Privacy Policy</a>
+            </span>
+        </div>
+    </div>
 </footer>
 
 <script>
@@ -147,6 +154,7 @@ var App = new Vue({
 var footerApp = new Vue({
   el: '#footer',
   data: {
+    helpUrl: '',
     impressumUrl: '',
     privacyUrl: ''
   },
@@ -154,6 +162,7 @@ var footerApp = new Vue({
   created() {
     // create a closure to access component in the callback below
     var self = this;
+    this.helpUrl = createDocumentationUrl();
 
     $.ajax({
       dataType: "json",
@@ -178,8 +187,13 @@ function parseLinks(data, rel, type){
 function createHtmlConfigUrl(){
   var baseUrl = retrieveBaseUrl();
   var indexOfDataset = (baseUrl.lastIndexOf("dataset"))
-  var configUrl = baseUrl.substring ( 0, indexOfDataset ) + "html";
-  return configUrl;
+  return baseUrl.substring ( 0, indexOfDataset ) + "html";
+}
+
+function createDocumentationUrl(){
+  var baseUrl = retrieveBaseUrl();
+  var indexOfDataset = (baseUrl.lastIndexOf("dataset"))
+  return baseUrl.substring ( 0, indexOfDataset ) + "documentation/index.html";
 }
 
 function retrieveBaseUrl() {
