@@ -70,6 +70,9 @@ Is a set of features from a dataset. It is identified by it's _{collectionId}_.
 === feature store
 Is a ressource within the deegree workspace providing access to stored features. In the context of deegree OAF a feature store provides access to datasource such as SHAPE file or a database.
 
+=== metadata
+Is a description of the dataset. In the context of deegree OAF metadata can be linked per dataset.
+
 === WebAPI
 An API using an architectural style that is based upon open standards and best practices such as https://swagger.io/specification/[OpenAPI Specification] and it's implementation https://swagger.io/[Swagger].
 

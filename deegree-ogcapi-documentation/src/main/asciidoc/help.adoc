@@ -4,11 +4,11 @@ This section show how to get help in case of problems.
 
 === Known Issues
 
-* Mixing legacy service configuration with OGC API configuration is not supported by deegree OAF webapp.
+* Mixing legacy service configuration with OGC API configuration is currently not supported by deegree OAF webapp.
 
 * Startup time of deegree OAF webapp may increase noticeably when the deegree workspace contains many resources (e.g. more than 100 files).
 
-* Using the browser's back button when navigating the HTML view may result in empty pages or switch to Json encoding. Chrome browser is affected.
+* Using the browser's back button when navigating the HTML view may result in empty pages or switch to Json encoding. Affected browsers: Google Chrome, Chromium.
 
 === Support
 

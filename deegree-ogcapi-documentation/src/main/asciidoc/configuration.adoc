@@ -9,7 +9,7 @@ IMPORTANT: deegree OAF is under development, and new configuration options may b
 
 The deegree workspace is the modular, resource-oriented and extensible configuration concept used by deegree. The deegree OAF workspace name must be *_ogcapi-workspace_*.
 
-The directory structure and related files are described by the following example:
+The directory structure and related files are described by the following example. This example consists out of two datasets called _trees_ and _streets_.:
 
 .ogcapi-workspace/
 ----
@@ -39,7 +39,7 @@ The directory structure and related files are described by the following example
 <3> subdirectory must contain at least one feature store configuration
 <4> a feature store with id _streets_
 <5> a feature store with id _trees_
-<6> subdirectory with configuration of HTML encoding (optional)
+<6> subdirectory with the configuration of the HTML encoding (optional)
 <7> global HTML encoding configuration (optional)
 <8> HTML encoding configuration for the dataset streets (optional)
 <9> HTML encoding configuration for the dataset trees (optional)
@@ -55,6 +55,7 @@ The directory structure and related files are described by the following example
 IMPORTANT: The name of the deegree workspace must be *_ogcapi-workspace_*. Using any other directory name different to this will not work with the deegree OAF webapp. This deegree workspace may contain service configuration files for deegree webservices such as WFS and WMS but those services won't be available with deegree OAF webapp!
 
 More information about deegree's workspace concept is available in the https://download.deegree.org/documentation/current/html/#_the_deegree_workspace[deegree webservices handbook].
+There you will find more information about the feature store configuration and the JDBC connection configuration.
 
 === Configuration files
 
@@ -64,12 +65,12 @@ The deegree OAF workspace can contains the following configuration files:
 - *HTML encoding configuration* files in subdirectory _html/_
 - *feature store configuration* files in subdirectory _datasources/feature/_
 - *JDBC connection configuration* files in subdirectory _jdbc/_
-- *meta data configuration* in subdirectory _services/_
+- *metadata configuration* in subdirectory _services/_
 - *security configuration* file named _config.apikey_ in the root directory of the workspace
 
 ==== Dataset configuration
 
-To provide information about the dataset provider the following configuration file can be used:
+To provide general information about the dataset provider the following configuration file can be used:
 
 .ogcapi/datasets.xml
 [source,xml]
@@ -200,9 +201,29 @@ This configuration file can contains the following elements:
 |Option |Cardinality |Value |Description
 |FeatureStoreId |0..n |String |Identifier of a feature store, see <<config_feature_store>> which implementations are supported. This identifier also defines the _{collectionId}_
 |QueryCRS |0..n |String |The CRS codes supported, `CRS84` must be provided as the first element
-|HtmlViewId |0..1 |String |Identifier of the HTML encoding configuration, see <<config_htmlview>> for more information
 |DateTimeProperties |0..1 |Complex |Configuration of date and time properties, see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_parameter_datetime[parameter datetime in the OGC API specification] for more information
-|ServiceMetadata |0..1 |Complex |Configuration of the dataset metadata
+|HtmlViewId |0..1 |String |Identifier of the HTML encoding configuration, see <<config_htmlview>> for more information
+|Metadata |0..1 |Complex |Configuration of the dataset metadata
+|===
+
+The element ```<DateTimeProperties/>``` can contains multiple elements of ```<DateTimeProperty/>``` which has the following subelements:
+
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|FeatureTypeName |0..1 |String |QName of the feature type
+|PropertyName |0..1 |String |QName of the property
+|===
+
+The element ```<Metadata/>``` has the following subelements:
+
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|ProviderLicense |0..1 |Complex |License of the dataset provider
+|DatasetLicense |0..1 |Complex |License of the dataset
+|DatasetCreator |0..1 |Complex |Contact details of the dataset creator
+|MetadataURL |0..n |URL |URL of the metadata record describing the dataset, use the attribute `format` to link HTML or XML representation.
 |===
 
 [[config_feature_store]]
@@ -322,9 +343,10 @@ need to be done to provide the data via deegree OAF:
 [[config_restapi]]
 === deegree config REST-API
 
-deegree OAF provides a REST-API for configuration purposes. As in deegree webservices a client can use the REST interface to manage the configuration. The following list of operations is supported:
+deegree OAF provides a REST-API for configuration purposes. As in deegree webservices a client can use the REST interface to manage the configuration. The following operations are supported:
 
 ```
+[HTTP METHOD] [RESOURCE] - [DESCRIPTION]
 GET /config/download[/path] - download currently running workspace or file in workspace
 GET /config/restart - restart currently running workspace
 GET /config/restart[/path] - restarts all resources connected to the specified one
