@@ -64,10 +64,10 @@ public class Dataset {
     @Produces(APPLICATION_JSON)
     public Response getHtmlConfig( @PathParam("datasetId") String datasetId ) {
         HtmlViewConfiguration htmlViewConfiguration = deegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
-        if ( htmlViewConfiguration == null || ( htmlViewConfiguration.getImpressumUrl() == null
+        if ( htmlViewConfiguration == null || ( htmlViewConfiguration.getImprintUrl() == null
                                                 && htmlViewConfiguration.getPrivacyUrl() == null ) )
             return Response.status( Response.Status.NOT_FOUND ).build();
-        HtmlPageConfiguration configuration = new HtmlPageConfiguration( htmlViewConfiguration.getImpressumUrl(),
+        HtmlPageConfiguration configuration = new HtmlPageConfiguration( htmlViewConfiguration.getImprintUrl(),
                                                                          htmlViewConfiguration.getPrivacyUrl() );
         return Response.ok( configuration, APPLICATION_JSON ).build();
     }

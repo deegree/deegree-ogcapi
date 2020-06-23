@@ -121,11 +121,11 @@
             <a v-cloak v-bind:href="helpUrl" target="_blank" class="help"> Help</a>
         </div>
         <div class="px-md-5">
-            <span v-if="impressumUrl && impressumUrl.length > 0">
-                <a v-cloak v-bind:href="impressumUrl" target="_blank" class="impressum"> Impressum</a>
+            <span v-if="imprintUrl && imprintUrl.length > 0">
+                <a v-cloak v-bind:href="imprintUrl" target="_blank" class="imprint"> Imprint</a>
             </span>
             <span v-else>
-                <a href="https://deegree-enterprise.de" target="_blank" class="impressum"> deegree Enterprise Edition</a>
+                <a href="https://deegree-enterprise.de" target="_blank" class="imprint"> deegree Enterprise Edition</a>
             </span>
             <span v-if="privacyUrl && privacyUrl.length > 0">
                <span> | </span>
@@ -181,7 +181,7 @@ var footerApp = new Vue({
   el: '#footer',
   data: {
     helpUrl: '',
-    impressumUrl: '',
+    imprintUrl: '',
     privacyUrl: ''
   },
 
@@ -194,7 +194,7 @@ var footerApp = new Vue({
       dataType: "json",
       url: createHtmlConfigUrl(),
       success: function(data) {
-        self.impressumUrl = data.impressumUrl;
+        self.imprintUrl = data.imprintUrl;
         self.privacyUrl = data.privacyUrl;
       }
     });

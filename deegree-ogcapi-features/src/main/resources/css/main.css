@@ -76,18 +76,18 @@ body {
   color: #007bff;
 }
 
-/* Link Impressum */
-.impressum:link {
+/* Link Imprint */
+.imprint:link {
   color: #007bff;
 }
-.impressum:visited {
+.imprint:visited {
   color: #007bff;
 }
-.impressum:hover {
+.imprint:hover {
   color: #0056b3;
   text-decoration: underline;
 }
-.impressum:active {
+.imprint:active {
 }
 
 /* Link Privacy */

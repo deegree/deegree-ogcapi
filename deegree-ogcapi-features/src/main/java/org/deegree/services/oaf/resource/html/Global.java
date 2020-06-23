@@ -47,10 +47,10 @@ public class Global {
     @Produces(APPLICATION_JSON)
     public Response getDefaultHtmlConfig() {
         HtmlViewConfiguration globalHtmlViewConfiguration = deegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
-        if ( globalHtmlViewConfiguration == null || ( globalHtmlViewConfiguration.getImpressumUrl() == null
+        if ( globalHtmlViewConfiguration == null || ( globalHtmlViewConfiguration.getImprintUrl() == null
                                                       && globalHtmlViewConfiguration.getPrivacyUrl() == null ) )
             return Response.status( Response.Status.NOT_FOUND ).build();
-        HtmlPageConfiguration configuration = new HtmlPageConfiguration( globalHtmlViewConfiguration.getImpressumUrl(),
+        HtmlPageConfiguration configuration = new HtmlPageConfiguration( globalHtmlViewConfiguration.getImprintUrl(),
                                                                   globalHtmlViewConfiguration.getPrivacyUrl() );
         return Response.ok( configuration, APPLICATION_JSON ).build();
     }
