@@ -76,18 +76,18 @@ body {
   color: #007bff;
 }
 
-/* Link Imprint */
-.imprint:link {
+/* Link Legal Notice */
+.legalNotice:link {
   color: #007bff;
 }
-.imprint:visited {
+.legalNotice:visited {
   color: #007bff;
 }
-.imprint:hover {
+.legalNotice:hover {
   color: #0056b3;
   text-decoration: underline;
 }
-.imprint:active {
+.legalNotice:active {
 }
 
 /* Link Privacy */

@@ -1,21 +1,21 @@
 package org.deegree.services.oaf.domain.html;
 
 /**
- * Encapsulates zhe configuration of the imprint
+ * Encapsulates zhe configuration of the legal notice
  */
 public class HtmlPageConfiguration {
 
-    private final String imprintUrl;
+    private final String legalNoticeUrl;
 
     private final String privacyUrl;
 
-    public HtmlPageConfiguration( String imprintUrl, String privacyUrl ) {
-        this.imprintUrl = imprintUrl;
+    public HtmlPageConfiguration( String legalNoticeUrl, String privacyUrl ) {
+        this.legalNoticeUrl = legalNoticeUrl;
         this.privacyUrl = privacyUrl;
     }
 
-    public String getImprintUrl() {
-        return imprintUrl;
+    public String getLegalNoticeUrl() {
+        return legalNoticeUrl;
     }
 
     public String getPrivacyUrl() {

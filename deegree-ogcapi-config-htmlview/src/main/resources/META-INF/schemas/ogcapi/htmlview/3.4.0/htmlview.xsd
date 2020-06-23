@@ -13,7 +13,7 @@
     <complexType>
       <sequence>
         <element name="CssFile" minOccurs="0" type="string"/>
-        <element name="ImprintUrl" minOccurs="0" type="anyURI"/>
+        <element name="LegalNoticeUrl" minOccurs="0" type="anyURI"/>
         <element name="PrivacyPolicyUrl" minOccurs="0" type="anyURI"/>
         <element name="Map" minOccurs="0">
           <complexType>

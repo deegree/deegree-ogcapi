@@ -260,7 +260,7 @@ To configure the HTML encoding a configuration file can be used. The following e
           xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview http://schemas.deegree.org/ogcapi/3.4.0/htmlview.xsd">
 
   <CssFile>../html/lgv.css</CssFile>  <!--1-->
-  <ImprintUrl>https://www.hamburg.de/imprint/</ImprintUrl> <!--2-->
+  <LegalNoticeUrl>https://www.hamburg.de/legalNotice/</LegalNoticeUrl> <!--2-->
   <PrivacyPolicyUrl>https://www.hamburg.de/datenschutz/</PrivacyPolicyUrl> <!--3-->
   <Map>
     <WMSUrl>https://geodienste.hamburg.de/HH_WMS_Cache_Stadtplan</WMSUrl> <!--4-->
@@ -285,7 +285,7 @@ This configuration file can contains the following elements:
 |===
 |Option |Cardinality |Value |Description
 |CssFile |0..1 |URI |relative path to a CSS file
-|ImprintUrl |0..1 |URL |URL to an existing page
+|LegalNoticeUrl |0..1 |URL |URL to an existing page
 |PrivacyPolicyUrl |0..1 |URL |URL to an existing page
 |Map |0..1 |Complex |Configuration for the base map
 |===
