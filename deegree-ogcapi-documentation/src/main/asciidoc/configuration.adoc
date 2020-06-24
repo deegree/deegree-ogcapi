@@ -262,10 +262,11 @@ To configure the HTML encoding a configuration file can be used. The following e
   <CssFile>../html/lgv.css</CssFile>  <!--1-->
   <LegalNoticeUrl>https://www.hamburg.de/legalNotice/</LegalNoticeUrl> <!--2-->
   <PrivacyPolicyUrl>https://www.hamburg.de/datenschutz/</PrivacyPolicyUrl> <!--3-->
+  <DocumentationUrl>https://www.hamburg.de/</DocumentationUrl> <!--4-->
   <Map>
-    <WMSUrl>https://geodienste.hamburg.de/HH_WMS_Cache_Stadtplan</WMSUrl> <!--4-->
-    <WMSLayers>stadtplan</WMSLayers> <!--5-->
-    <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</CrsProj4Definition> <!--6-->
+    <WMSUrl>https://geodienste.hamburg.de/HH_WMS_Cache_Stadtplan</WMSUrl> <!--5-->
+    <WMSLayers>stadtplan</WMSLayers> <!--6-->
+    <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</CrsProj4Definition> <!--7-->
   </Map>
 
 </HtmlView>
@@ -273,9 +274,10 @@ To configure the HTML encoding a configuration file can be used. The following e
 <1> optional CSS file used for all HTML views (optional)
 <2> link to page containing publishing, copyright, and legal information
 <3> link to page containing privacy policy
-<4> URL of WMS used for the base map
-<5> layer name of the base map
-<6> CRS configuration of the base map
+<4> link to page containing documentation, if missing this documentation is referenced
+<5> URL of WMS used for the base map
+<6> layer name of the base map
+<7> CRS configuration of the base map
 
 NOTE: The file _treesview.xml_ must be stored in the subdirectory _html/_. To define a global configuration the file name must be _htmlview.xml_. The file is optional.
 
