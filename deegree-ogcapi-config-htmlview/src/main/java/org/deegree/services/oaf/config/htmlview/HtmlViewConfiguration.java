@@ -11,7 +11,7 @@ public class HtmlViewConfiguration {
 
     private final File cssFile;
 
-    private final String imprintUrl;
+    private final String legalNoticeUrl;
 
     private final String privacyUrl;
 
@@ -26,8 +26,8 @@ public class HtmlViewConfiguration {
     /**
      * @param cssFile
      *                 must be an file and must exist, may be <code>null</code>
-     * @param imprintUrl
-     *                 the URL to retrieve the imprint, may be <code>null</code>
+     * @param legalNoticeUrl
+     *                 the URL to retrieve the legalNotice, may be <code>null</code>
      * @param privacyUrl
      *                 the URL to retrieve the privacy, may be <code>null</code>
      * @param wmsUrl
@@ -38,11 +38,11 @@ public class HtmlViewConfiguration {
      *                 the crs code of the map, may be <code>null</code>
      * @param crsProj4Definition
      */
-    public HtmlViewConfiguration( File cssFile, String imprintUrl, String privacyUrl, String wmsUrl,
+    public HtmlViewConfiguration( File cssFile, String legalNoticeUrl, String privacyUrl, String wmsUrl,
                                   String wmsLayers, String crsCode,
                                   String crsProj4Definition ) {
         this.cssFile = cssFile;
-        this.imprintUrl = imprintUrl;
+        this.legalNoticeUrl = legalNoticeUrl;
         this.privacyUrl = privacyUrl;
         this.wmsUrl = wmsUrl;
         this.wmsLayers = wmsLayers;
@@ -86,10 +86,10 @@ public class HtmlViewConfiguration {
     }
 
     /**
-     * @return the URL to retrieve the imprint, may be <code>null</code>
+     * @return the URL to retrieve the legalNotice, may be <code>null</code>
      */
-    public String getImprintUrl() {
-        return imprintUrl;
+    public String getLegalNoticeUrl() {
+        return legalNoticeUrl;
     }
 
     /**
