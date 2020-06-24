@@ -338,7 +338,7 @@ Given that an existing deegree workspace contains at least one feature store the
 need to be done to provide the data via deegree OAF:
 
 - Add a dataset configuration file in subdirectory _ogcapi/_, e.g. _streets.xml_
-- Enable HTML encoding by adding a file in subdirectory _html/_ (optional), e.g. _streetsview.xml_
+- Configure the HTML encoding by adding a file in subdirectory _html/_ (optional), e.g. _streetsview.xml_
 
 [[config_restapi]]
 === deegree config REST-API
