@@ -15,6 +15,7 @@
         <element name="CssFile" minOccurs="0" type="string"/>
         <element name="LegalNoticeUrl" minOccurs="0" type="anyURI"/>
         <element name="PrivacyPolicyUrl" minOccurs="0" type="anyURI"/>
+        <element name="DocumentationUrl" minOccurs="0" type="anyURI"/>
         <element name="Map" minOccurs="0">
           <complexType>
             <sequence>

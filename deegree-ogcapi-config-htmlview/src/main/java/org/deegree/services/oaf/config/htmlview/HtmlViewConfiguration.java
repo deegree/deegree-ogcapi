@@ -15,6 +15,8 @@ public class HtmlViewConfiguration {
 
     private final String privacyUrl;
 
+    private final String documentationUrl;
+
     private final String wmsUrl;
 
     private final String wmsLayers;
@@ -30,6 +32,8 @@ public class HtmlViewConfiguration {
      *                 the URL to retrieve the legalNotice, may be <code>null</code>
      * @param privacyUrl
      *                 the URL to retrieve the privacy, may be <code>null</code>
+     * @param documentationUrl
+     *                 the URL to retrieve the documentation, may be <code>null</code>
      * @param wmsUrl
      *                 the URL of the WMS, may be <code>null</code>
      * @param wmsLayers
@@ -38,12 +42,12 @@ public class HtmlViewConfiguration {
      *                 the crs code of the map, may be <code>null</code>
      * @param crsProj4Definition
      */
-    public HtmlViewConfiguration( File cssFile, String legalNoticeUrl, String privacyUrl, String wmsUrl,
-                                  String wmsLayers, String crsCode,
-                                  String crsProj4Definition ) {
+    public HtmlViewConfiguration( File cssFile, String legalNoticeUrl, String privacyUrl, String documentationUrl,
+                                  String wmsUrl, String wmsLayers, String crsCode, String crsProj4Definition ) {
         this.cssFile = cssFile;
         this.legalNoticeUrl = legalNoticeUrl;
         this.privacyUrl = privacyUrl;
+        this.documentationUrl = documentationUrl;
         this.wmsUrl = wmsUrl;
         this.wmsLayers = wmsLayers;
         this.crsCode = crsCode;
@@ -97,6 +101,13 @@ public class HtmlViewConfiguration {
      */
     public String getPrivacyUrl() {
         return privacyUrl;
+    }
+
+    /**
+     * @return the URL to retrieve the documentation, may be <code>null</code>
+     */
+    public String getDocumentationUrl() {
+        return documentationUrl;
     }
 
 }

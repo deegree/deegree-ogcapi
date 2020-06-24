@@ -309,12 +309,12 @@ var footerApp = new Vue({
   created() {
     // create a closure to access component in the callback below
     var self = this;
-    this.helpUrl = createDocumentationUrl();
 
     $.ajax({
       dataType: "json",
       url: createHtmlConfigUrl(),
       success: function(data) {
+        self.helpUrl = data.documentationUrl ? data.documentationUrl : createDocumentationUrl();
         self.legalNoticeUrl = data.legalNoticeUrl;
         self.privacyUrl = data.privacyUrl;
       }

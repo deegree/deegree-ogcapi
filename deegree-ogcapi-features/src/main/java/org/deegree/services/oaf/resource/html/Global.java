@@ -48,10 +48,12 @@ public class Global {
     public Response getDefaultHtmlConfig() {
         HtmlViewConfiguration globalHtmlViewConfiguration = deegreeWorkspaceInitializer.getGlobalHtmlViewConfiguration();
         if ( globalHtmlViewConfiguration == null || ( globalHtmlViewConfiguration.getLegalNoticeUrl() == null
-                                                      && globalHtmlViewConfiguration.getPrivacyUrl() == null ) )
+                                                      && globalHtmlViewConfiguration.getPrivacyUrl() == null
+                                                      && globalHtmlViewConfiguration.getDocumentationUrl() == null ) )
             return Response.status( Response.Status.NOT_FOUND ).build();
         HtmlPageConfiguration configuration = new HtmlPageConfiguration( globalHtmlViewConfiguration.getLegalNoticeUrl(),
-                                                                  globalHtmlViewConfiguration.getPrivacyUrl() );
+                                                                         globalHtmlViewConfiguration.getPrivacyUrl(),
+                                                                         globalHtmlViewConfiguration.getDocumentationUrl() );
         return Response.ok( configuration, APPLICATION_JSON ).build();
     }
 

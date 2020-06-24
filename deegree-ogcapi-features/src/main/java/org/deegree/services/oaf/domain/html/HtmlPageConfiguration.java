@@ -9,9 +9,12 @@ public class HtmlPageConfiguration {
 
     private final String privacyUrl;
 
-    public HtmlPageConfiguration( String legalNoticeUrl, String privacyUrl ) {
+    private final String documentationUrl;
+
+    public HtmlPageConfiguration( String legalNoticeUrl, String privacyUrl, String documentationUrl ) {
         this.legalNoticeUrl = legalNoticeUrl;
         this.privacyUrl = privacyUrl;
+        this.documentationUrl = documentationUrl;
     }
 
     public String getLegalNoticeUrl() {
@@ -20,5 +23,9 @@ public class HtmlPageConfiguration {
 
     public String getPrivacyUrl() {
         return privacyUrl;
+    }
+
+    public String getDocumentationUrl() {
+        return documentationUrl;
     }
 }

@@ -272,7 +272,7 @@ To configure the HTML encoding a configuration file can be used. The following e
 ----
 <1> optional CSS file used for all HTML views (optional)
 <2> link to page containing publishing, copyright, and legal information
-<2> link to page containing privacy policy
+<3> link to page containing privacy policy
 <4> URL of WMS used for the base map
 <5> layer name of the base map
 <6> CRS configuration of the base map

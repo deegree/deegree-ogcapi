@@ -78,7 +78,8 @@ public class HtmlViewConfigResource implements Resource {
                 crsProj4Definition = map.getCrsProj4Definition().getValue();
             }
         }
-        return new HtmlViewConfiguration( cssFile, config.getLegalNoticeUrl(), config.getPrivacyPolicyUrl(), wmsUrl,
+        return new HtmlViewConfiguration( cssFile, config.getLegalNoticeUrl(), config.getPrivacyPolicyUrl(),
+                                          config.getDocumentationUrl(), wmsUrl,
                                           wmsLayers, crsCode, crsProj4Definition );
     }
 

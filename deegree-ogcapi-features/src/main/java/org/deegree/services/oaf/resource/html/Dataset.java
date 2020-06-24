@@ -65,10 +65,12 @@ public class Dataset {
     public Response getHtmlConfig( @PathParam("datasetId") String datasetId ) {
         HtmlViewConfiguration htmlViewConfiguration = deegreeWorkspaceInitializer.getHtmlViewConfiguration( datasetId );
         if ( htmlViewConfiguration == null || ( htmlViewConfiguration.getLegalNoticeUrl() == null
-                                                && htmlViewConfiguration.getPrivacyUrl() == null ) )
+                                                && htmlViewConfiguration.getPrivacyUrl() == null
+                                                && htmlViewConfiguration.getDocumentationUrl() == null ) )
             return Response.status( Response.Status.NOT_FOUND ).build();
         HtmlPageConfiguration configuration = new HtmlPageConfiguration( htmlViewConfiguration.getLegalNoticeUrl(),
-                                                                         htmlViewConfiguration.getPrivacyUrl() );
+                                                                         htmlViewConfiguration.getPrivacyUrl(),
+                                                                         htmlViewConfiguration.getDocumentationUrl());
         return Response.ok( configuration, APPLICATION_JSON ).build();
     }
 
