@@ -133,7 +133,7 @@ Each dataset is configured in a separate file. The following example shows a min
 </deegreeOAF>
 ----
 <1> Identifier of the feature store configuration, links to file _datasources/feature/streets.xml_.
-<2> Mandatory CRS, first CRS must be http://www.opengis.net/def/crs/OGC/1.3/CRS84 to be conform to OGC API Features Core.
+<2> Mandatory CRS, first CRS must be `http://www.opengis.net/def/crs/OGC/1.3/CRS84` to be conform to OGC API Features Core.
 <3> Additional CRS, to retrieve data in the given CRS the optional query parameter `+{crs}+` needs to be used, see section <<query_parameter>> for more information.
 <4> Identifier of the HTML encoding configuration, links to file _html/streetsview.xml_.
 
@@ -272,9 +272,9 @@ To configure the HTML encoding a configuration file can be used. The following e
 </HtmlView>
 ----
 <1> optional CSS file used for all HTML views (optional)
-<2> link to page containing publishing, copyright, and legal information
-<3> link to page containing privacy policy
-<4> link to page containing documentation, if missing this documentation is referenced
+<2> link to page containing the publishing, copyright, and legal information
+<3> link to page containing the privacy policy
+<4> link to page containing the documentation
 <5> URL of WMS used for the base map
 <6> layer name of the base map
 <7> CRS configuration of the base map
@@ -287,9 +287,20 @@ This configuration file can contains the following elements:
 |===
 |Option |Cardinality |Value |Description
 |CssFile |0..1 |URI |relative path to a CSS file
-|LegalNoticeUrl |0..1 |URL |URL to an existing page
-|PrivacyPolicyUrl |0..1 |URL |URL to an existing page
+|LegalNoticeUrl |0..1 |URL |URL to external page containing the legal notice used for link in footer "Legal Notice"
+|PrivacyPolicyUrl |0..1 |URL |URL to an external page containing the privacy policy for link in footer "Privacy Policy"
+|DocumentationUrl |0..1 |URL |URL to an external page containing the documentation, if not set link in footer "Help" refers to this documentation
 |Map |0..1 |Complex |Configuration for the base map
+|===
+
+The element ```<Map/>``` has the following subelements:
+
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|WMSUrl |1 |URL |WMS service endpoint URL
+|WMSLayers |1 |String |Name of the layer
+|CrsProj4Definition |1 |String |Use the attribute `code` to set the EPSG code, and the value element for the https://proj.org[PROJ] definition as provided by http://epsg.io.
 |===
 
 [[config_metadata]]
