@@ -1,7 +1,7 @@
 [[configuration]]
 == Configuration
 
-This sections describes how to configure the deegree OAF webapp.
+This section describes how to configure the deegree OAF webapp.
 
 IMPORTANT: deegree OAF is under development, and new configuration options may be added in future releases. For the lastest parameters please consult the example workspace provided with the release version!
 
@@ -46,7 +46,7 @@ The directory structure and related files are described by the following example
 <10> optional CSS file (optional)
 <11> configuration file required for database feature stores only (optional)
 <12> subdirectory must contain at least one dataset configuration (mandatory)
-<13> global datasets configuration (optional)
+<13> global dataset configuration (optional)
 <14> dataset configuration for the dataset streets (mandatory)
 <15> dataset configuration for the dataset trees (mandatory)
 <16> metadata configuration for dataset streets (optional)
@@ -55,11 +55,11 @@ The directory structure and related files are described by the following example
 IMPORTANT: The name of the deegree workspace must be *_ogcapi-workspace_*. Using any other directory name different to this will not work with the deegree OAF webapp. This deegree workspace may contain service configuration files for deegree webservices such as WFS and WMS but those services won't be available with deegree OAF webapp!
 
 More information about deegree's workspace concept is available in the https://download.deegree.org/documentation/current/html/#_the_deegree_workspace[deegree webservices handbook].
-There you will find more information about the feature store configuration and the JDBC connection configuration.
+There you will find more information about the feature store configuration and the https://download.deegree.org/documentation/current/html/#anchor-configuration-jdbc[JDBC connection configuration].
 
 === Configuration files
 
-The deegree OAF workspace can contains the following configuration files:
+The deegree OAF workspace can contain the following configuration files:
 
 - *dataset configuration* files in subdirectory _ogcapi/_
 - *HTML encoding configuration* files in subdirectory _html/_
@@ -68,6 +68,7 @@ The deegree OAF workspace can contains the following configuration files:
 - *metadata configuration* in subdirectory _services/_
 - *security configuration* file named _config.apikey_ in the root directory of the workspace
 
+[[config_dataset]]
 ==== Dataset configuration
 
 To provide general information about the dataset provider the following configuration file can be used:
@@ -91,7 +92,7 @@ To provide general information about the dataset provider the following configur
 
 NOTE: The file _datasets.xml_ shall be stored in the subdirectory _ogcapi/_. The file is optional.
 
-This configuration file can contains the following elements:
+This configuration file can contain the following elements:
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
@@ -194,7 +195,7 @@ The next example shows a configuration for a dataset called "trees" with all opt
 
 NOTE: The dataset configuration file must be stored in the subdirectory _ogcapi/_. The file is mandatory.
 
-This configuration file can contains the following elements:
+This configuration file can contain the following elements:
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
@@ -206,7 +207,7 @@ This configuration file can contains the following elements:
 |Metadata |0..1 |Complex |Configuration of the dataset metadata
 |===
 
-The element ```<DateTimeProperties/>``` can contains multiple elements of ```<DateTimeProperty/>``` which has the following subelements:
+The element ```<DateTimeProperties/>``` can contain multiple elements of ```<DateTimeProperty/>``` which has the following subelements:
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
@@ -229,12 +230,12 @@ The element ```<Metadata/>``` has the following subelements:
 [[config_feature_store]]
 ==== Feature store configuration
 
-Currently deegree OAF supports the following feature stores:
+Currently, deegree OAF supports the following feature stores:
 
 - `SQLFeatureStore` - retrieves data from a database supporting an extended mapping.
 - `SimpleSQLFeatureStore` - retrieves data from a database using a single table mapping.
 - `MemoryFeatureStore` - retrieves data from a file in GML file format.
-- `ShapeFeatureStore` - retrieves data from a file in SHAPE file format.
+- `ShapeFeatureStore` - retrieves data from a file in SHAPE file format. The Storage CRS is required when using the ShapeFeatureStore.
 
 The supported databases for `SQLFeatureStore` and `SimpleSQLFeatureStore` are:
 
@@ -244,7 +245,7 @@ The supported databases for `SQLFeatureStore` and `SimpleSQLFeatureStore` are:
 A detailed documentation of the feature store configuration is described in section "Feature Stores"
 of the https://download.deegree.org/documentation/current/html/#anchor-configuration-featurestore[deegree webservices handbook].
 
-NOTE: The _{featureId}_ is defined by the feature store configuration.
+NOTE: The _{featureId}_ is defined by the feature store configuration. Use the element `<FIDMapping/>` to define the mapping of this attribute.
 
 [[config_htmlview]]
 ==== HTML encoding configuration
@@ -281,7 +282,7 @@ To configure the HTML encoding a configuration file can be used. The following e
 
 NOTE: The file _treesview.xml_ must be stored in the subdirectory _html/_. To define a global configuration the file name must be _htmlview.xml_. The file is optional.
 
-This configuration file can contains the following elements:
+This configuration file can contain the following elements:
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
@@ -345,18 +346,10 @@ NOTE: The file _streets_metadata.xml_ must be stored in the subdirectory _servic
 A detailed documentation of the metadata configuration is described in section "Metadata"
 of the https://download.deegree.org/documentation/current/html/#anchor-configuration-service-metadata[deegree webservices handbook].
 
-=== Migration of an existing deegree workspace
-
-Given that an existing deegree workspace contains at least one feature store the following steps
-need to be done to provide the data via deegree OAF:
-
-- Add a dataset configuration file in subdirectory _ogcapi/_, e.g. _streets.xml_
-- Configure the HTML encoding by adding a file in subdirectory _html/_ (optional), e.g. _streetsview.xml_
-
 [[config_restapi]]
 === deegree config REST-API
 
-deegree OAF provides a REST-API for configuration purposes. As in deegree webservices a client can use the REST interface to manage the configuration. The following operations are supported:
+deegree OAF provides a REST-API for configuration purposes. As in https://download.deegree.org/documentation/current/html/#anchor-configuration-restapi[deegree webservices] a client can use the REST interface to manage the configuration. The following operations are supported:
 
 ```
 [HTTP METHOD] [RESOURCE] - [DESCRIPTION]

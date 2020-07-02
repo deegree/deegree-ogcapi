@@ -19,5 +19,12 @@ Professional support is provided by deegree enterprise team. Contact support@dee
 How to update the _bbox_cache.properties_?::
   Use REST-API operation `/config/update/bboxcache` to recalculates the bounding boxes of the feature stores. See section <<config_restapi>> for more information how to use the REST-API.
 
+How to migrate an existing deegree workspace?::
+
+  Given that an existing deegree workspace contains at least one feature store the following steps need to be done to provide the data via deegree OAF:
+
+- Add a dataset configuration file in subdirectory _ogcapi/_, e.g. _streets.xml_ as described in the example workspace in chapter <<config_dataset>>
+- Configure the HTML encoding by adding a file in subdirectory _html/_ (optional), e.g. _streetsview.xml_ as described in the example workspace in chapter <<config_htmlview>>
+
 How to use the same workspace with deegree OAF and deegree webservices?::
   Deploy both webapps for deegree OAF and deegree webservices configured to use the same workspace called _ogcapi-workspace_. Use the file _webapps.properties_ to configure this. Keep in mind that deegree OAF will provide the OGC API - Features and deegree webservices will provide only the legacy service implementations. You may see warnings in the logging messages for both instances that configuration files have been ignored.

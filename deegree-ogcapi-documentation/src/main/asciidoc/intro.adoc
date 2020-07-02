@@ -12,7 +12,7 @@ Read more at http://www.ogcapi.org[www.ogcapi.org] about the new standards and t
 
 === Features
 
-deegree OAF supports the following Conformance Classes:
+deegree OAF supports the following conformance classes:
 
 * Core
 
