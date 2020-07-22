@@ -19,6 +19,7 @@ The deegree OAF webapp is provided as a WAR file with the name *_deegree-ogcapi-
 Both artifacts contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
 Download the WAR file and store it in the local file system of the server.
 
+[[installation_deploy]]
 === Deploy the webapp
 
 Move the WAR file to the deployment folder of the runtime environment. For Apache Tomcat the folder is `$CATALINA_HOME/webapps`.

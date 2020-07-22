@@ -5,11 +5,13 @@ This section describes how to configure the deegree OAF webapp.
 
 IMPORTANT: deegree OAF is under development, and new configuration options may be added in future releases. For the lastest parameters please consult the example workspace provided with the release version!
 
+[[config_workspace]]
 === The OAF workspace
 
 The deegree workspace is the modular, resource-oriented and extensible configuration concept used by deegree. The deegree OAF workspace name must be *_ogcapi-workspace_*.
 
-The directory structure and related files are described by the following example. This example consists out of two datasets called _trees_ and _streets_.:
+The directory structure and related files are described by the following example. This example consists out of two datasets called _trees_ and _streets_ which data
+is stored within a PostgreSQL/PostGIS database. The following directory structure shows the files used in this example:
 
 .ogcapi-workspace/
 ----
@@ -25,7 +27,7 @@ The directory structure and related files are described by the following example
     │   ├── treesview.xml         # <9>
     │   └── default-style.css     # <10>
     ├── jdbc
-    │   └── <connection-id>.xml   # <11>
+    │   └── postgres-db.xml       # <11>
     ├── ogcapi                    # <12>
     │   ├── datasets.xml          # <13>
     │   ├── streets.xml           # <14>
@@ -44,7 +46,7 @@ The directory structure and related files are described by the following example
 <8> HTML encoding configuration for the dataset streets (optional)
 <9> HTML encoding configuration for the dataset trees (optional)
 <10> optional CSS file (optional)
-<11> configuration file required for database feature stores only (optional)
+<11> configuration file required for database feature stores defining a JDBC connection (optional)
 <12> subdirectory must contain at least one dataset configuration (mandatory)
 <13> global dataset configuration (optional)
 <14> dataset configuration for the dataset streets (mandatory)
@@ -59,14 +61,19 @@ There you will find more information about the feature store configuration and t
 
 === Configuration files
 
-The deegree OAF workspace can contain the following configuration files:
+The deegree OAF workspace adds the following directories to a standard deegree workspace:
 
 - *dataset configuration* files in subdirectory _ogcapi/_
 - *HTML encoding configuration* files in subdirectory _html/_
+
+An deegree OAF workspace uses the following directories of a standard deegree workspace:
+
 - *feature store configuration* files in subdirectory _datasources/feature/_
 - *JDBC connection configuration* files in subdirectory _jdbc/_
 - *metadata configuration* in subdirectory _services/_
 - *security configuration* file named _config.apikey_ in the root directory of the workspace
+
+The following chapters describe how to setup a deegree OAF workspace by the given example.
 
 [[config_dataset]]
 ==== Dataset configuration
