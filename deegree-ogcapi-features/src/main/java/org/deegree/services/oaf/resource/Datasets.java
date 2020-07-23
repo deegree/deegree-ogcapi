@@ -81,7 +81,10 @@ public class Datasets {
         Map<String, OafDatasetConfiguration> datasetsConfigurations = oafDatasets.getDatasets();
         datasetsConfigurations.forEach( ( id, oafDatasetConfiguration ) -> {
             List<Link> datasetLinks = linkBuilder.createDatasetLinks( id );
-            Dataset dataset = new Dataset( id, datasetLinks );
+            String title = oafDatasetConfiguration.getServiceMetadata() == null ?
+                           null :
+                           oafDatasetConfiguration.getServiceMetadata().getTitle();
+            Dataset dataset = new Dataset( id, title, datasetLinks );
             datasets.add( dataset );
         } );
         DatasetsConfiguration datasetsConfiguration = deegreeWorkspaceInitializer.getDatasetsConfiguration();

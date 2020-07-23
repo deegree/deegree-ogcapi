@@ -81,7 +81,8 @@
                 <div class="col-md-12">
                     <ul class="list-group">
                         <li v-for="dataset in datasets" class="list-group-item">
-                            <h5 v-cloak>{{dataset.name}}</h5>
+                            <h5 v-if="dataset.title" v-cloak>{{dataset.title}}</h5>
+                            <h5 v-else v-cloak>{{dataset.name}}</h5>
                             <div class="row mt-2">
                                 <div class="col-sm-2">Links</div>
                                 <div class="col-md-10">
