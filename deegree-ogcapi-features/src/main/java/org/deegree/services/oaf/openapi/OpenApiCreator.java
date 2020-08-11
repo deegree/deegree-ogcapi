@@ -64,21 +64,23 @@ public class OpenApiCreator {
                                                                  // .configLocation( this.configLocation )
                                                                  .openApiConfiguration( oasConfig ).ctxId(
                                         ctxId ).buildContext( true );
-        oas = ctx.read();
+        OpenAPI oas2 = ctx.read();
+        // Set info again, otherwise same info values are used in multiple datasets (OAF-270)
+        oas2.info( oas.getInfo() );
 
-        if ( oas != null && ctx.getOpenApiConfiguration() != null
+        if ( oas2 != null && ctx.getOpenApiConfiguration() != null
              && ctx.getOpenApiConfiguration().getFilterClass() != null ) {
             try {
                 OafOpenApiFilter filter = new OafOpenApiFilter( datasetId, deegreeWorkspaceInitializer );
                 SpecFilter f = new SpecFilter();
-                oas = f.filter( oas, filter, getQueryParams( uriInfo.getQueryParameters() ), getCookies( headers ),
+                oas2 = f.filter(oas2, filter, getQueryParams( uriInfo.getQueryParameters() ), getCookies( headers ),
                                 getHeaders( headers ) );
             } catch ( Exception e ) {
                 LOG.error( "failed to load filter", e );
             }
         }
 
-        return oas;
+        return oas2;
     }
 
     private SwaggerConfiguration createSwaggerConfiguration( OpenAPI oas ) {
