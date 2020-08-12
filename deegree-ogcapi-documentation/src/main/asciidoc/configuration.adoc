@@ -311,6 +311,8 @@ The element ```<Map/>``` has the following subelements:
 |CrsProj4Definition |1 |String |Use the attribute `code` to set the EPSG code, and the value element for the https://proj.org[PROJ] definition as provided by http://epsg.io.
 |===
 
+Additional information about the option `CssFile`: The following elements can be configured using a CSS file: the background color of header and footer, images in header and footer, links to help, legal notice, and privacy policy.
+
 [[config_metadata]]
 ==== Metadata configuration
 
