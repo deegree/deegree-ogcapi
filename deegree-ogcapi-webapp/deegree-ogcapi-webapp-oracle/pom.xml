@@ -39,6 +39,17 @@
       <artifactId>deegree-sqldialect-oracle</artifactId>
       <version>${deegree-version}</version>
     </dependency>
+    <dependency>
+      <groupId>de.deegree-enterprise</groupId>
+      <artifactId>deegree-featurestore-simplesql</artifactId>
+      <version>${deegree-version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>de.deegree-enterprise</groupId>
+          <artifactId>deegree-sqldialect-postgis</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
 </project>
