@@ -175,7 +175,10 @@
                             <tbody>
                             <tr v-for="(property, attribute) in properties">
                                 <td v-cloak>{{ attribute }}</td>
-                                <td v-cloak>{{ property }}</td>
+                                    <td v-cloak v-if="(typeof property) == 'string' && property.startsWith('http')" >
+                                        <a v-bind:href="property" target="_blank">Link</a>
+                                    </td>
+                                    <td v-cloak v-else >{{ property }}</td>
                             </tr>
                             </tbody>
                         </table>
