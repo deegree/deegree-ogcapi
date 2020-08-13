@@ -73,8 +73,8 @@ public class OpenApiCreator {
             try {
                 OafOpenApiFilter filter = new OafOpenApiFilter( datasetId, deegreeWorkspaceInitializer );
                 SpecFilter f = new SpecFilter();
-                oas2 = f.filter(oas2, filter, getQueryParams( uriInfo.getQueryParameters() ), getCookies( headers ),
-                                getHeaders( headers ) );
+                oas2 = f.filter( oas2, filter, getQueryParams( uriInfo.getQueryParameters() ), getCookies( headers ),
+                                 getHeaders( headers ) );
             } catch ( Exception e ) {
                 LOG.error( "failed to load filter", e );
             }
