@@ -78,7 +78,7 @@ The following chapters describe how to setup a deegree OAF workspace by the give
 [[config_dataset]]
 ==== Dataset configuration
 
-To provide general information about the dataset provider the following configuration file can be used:
+To provide general information about the datasets provider the following configuration file can be used:
 
 .ogcapi/datasets.xml
 [source,xml]
@@ -234,6 +234,8 @@ The element ```<Metadata/>``` has the following subelements:
 |MetadataURL |0..n |URL |URL of the metadata record describing the dataset, use the attribute `format` to link HTML or XML representation.
 |===
 
+NOTE: The content of this file is returned under the resource _/datasets/{datasetId}_. This resource per dataset is called landing page. Furthermore the content of this file is provided unter the resource _/datasets/{datasetId}/api_.
+
 [[config_feature_store]]
 ==== Feature store configuration
 
@@ -313,11 +315,13 @@ The element ```<Map/>``` has the following subelements:
 
 Additional information about the option `CssFile`: The following elements can be configured using a CSS file: the background color of header and footer, images in header and footer, links to help, legal notice, and privacy policy.
 
+NOTE: The content of this file is returned under the resources _/datasets/{datasetId}_ for HTML encoding only.
+
 [[config_metadata]]
 ==== Metadata configuration
 
 The service metadata can be defined for each dataset. Use a file name ending with _{datasetId}_metadata.xml_ to define the service metadata per dataset.
-Use the dataset identifier as a prefix. For example if you have a dataset configured in _streets.xml_ the related metadata file has the file name _streets_metadata.xml_.
+Use the dataset identifier _{datasetId}_ as a prefix. For example if you have a dataset configured in _streets.xml_ the related metadata file has the file name _streets_metadata.xml_.
 
 The following excerpt of the _streets_metadata.xml_ shows which options are available:
 
@@ -354,6 +358,8 @@ NOTE: The file _streets_metadata.xml_ must be stored in the subdirectory _servic
 
 A detailed documentation of the metadata configuration is described in section "Metadata"
 of the https://download.deegree.org/documentation/current/html/#anchor-configuration-service-metadata[deegree webservices handbook].
+
+NOTE: The content of this file is returned under the resources _/datasets/{datasetId}_ providing information about metadata.
 
 [[config_restapi]]
 === deegree config REST-API

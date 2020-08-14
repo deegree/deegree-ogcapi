@@ -12,9 +12,9 @@ Overview of resources served by deegree OAF accessible from the main entry page:
 |===
 |Resource |Path |HTTP method |Supported Encodings |Description
 |Datasets overview |`/` |GET |`text/html`, `application/json` |The overview page of all datasets available, the main entry page
-|Landing page per dataset |`+/{dataset-id}+` |GET |`text/html`, `application/json` |The API landing page per dataset
-|OpenAPI specification per dataset |`+/{dataset-id}/api+` |GET | `text/html`, `application/json` |The OpenAPI 3.0 document per dataset
-|Feature collections per dataset |`+/{dataset-id}/collections+` |GET | `text/html`, `application/json`, `application/xml` |The overview page for feature collections
+|Landing page per dataset |`+/{datasetId}+` |GET |`text/html`, `application/json` |The API landing page per dataset
+|OpenAPI specification per dataset |`+/{datasetId}/api+` |GET | `text/html`, `application/json` |The OpenAPI 3.0 document per dataset
+|Feature collections per dataset |`+/{datasetId}/collections+` |GET | `text/html`, `application/json`, `application/xml` |The overview page for feature collections
 |===
 
 NOTE: The context for the listed resource is _/datasets_. This resource is not defined by the OGC API - Features standard and is an implementation specific resource.
@@ -54,6 +54,8 @@ The interface is grouped in the sections:
 * Collections - access to feature collections
 * Schemas - access to schemas
 
+.Swagger start page
+[caption="Figure 1: "]
 image::swagger_start.png[Swagger start page]
 
 For all resources listed on the first three sections the following description explains how to send a request and retrieve the response in a given encoding.
@@ -70,11 +72,15 @@ Example request: Get Landing page in `json` encoding.
 . Select the media type `application/json` from the selection list below "Responses"
 . Click on the button "Execute"
 
+.Swagger send request
+[caption="Figure 2: "]
 image::swagger_request.png[Swagger send request]
 
 The page should display the server response in the selected encoding and the HTTP status code. Also the HTTP response header information
 is displayed.
 
+.Swagger response
+[caption="Figure 3: "]
 image::swagger_response.png[Swagger response]
 
 [[use_response]]
@@ -107,7 +113,6 @@ To retrieve the landing page of the dataset streets in `application/xml` encodin
 Example URL: http://localhost:8080/deegree-services-oaf/datasets/streets/?f=xml
 See section <<query_parameter>> for more information about supported query parameters.
 
-
 [[html_encoding]]
 === Using the HTML interface
 
@@ -118,10 +123,14 @@ the HTTP `Accept` header with the value `text/html` and therefore each resource 
 To browse the data open the browser and start at the main entry page available at _datasets/_.
 Example URL: http://localhost:8080/deegree-services-oaf/datasets
 
+.Main entry page in HTML encoding
+[caption="Figure 4: "]
 image::datasets_entry.png[Main entry page]
 
 Navigate to the landing page of dataset _streets_ by clicking on the link "Landing page as HTML".
 
+.Landing page in HTML encoding
+[caption="Figure 5: "]
 image::datasets_landing.png[Landing page]
 
 The landing page provides links to all resources of a dataset.
