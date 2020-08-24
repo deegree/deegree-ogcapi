@@ -80,7 +80,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <ul class="list-group">
-                        <li v-for="dataset in datasets" class="list-group-item">
+                        <li v-for="dataset in sortedDatasets" class="list-group-item">
                             <h5 v-if="dataset.title" v-cloak>{{dataset.title}}</h5>
                             <h5 v-else v-cloak>{{dataset.name}}</h5>
                             <div class="row mt-2">
@@ -136,7 +136,18 @@ var App = new Vue({
     contact: "",
     datasets: ""
   },
-
+  computed: {
+    sortedDatasets: function() {
+      function compare(a, b) {
+        if (a.title < b.title)
+          return -1;
+        if (a.title > b.title)
+          return 1;
+        return 0;
+      }
+      return this.datasets.sort(compare);
+    }
+  },
   created() {
     // create a closure to access component in the callback below
     var self = this;
