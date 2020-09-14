@@ -6,30 +6,36 @@ The main entry point for deegree OAF is provided under the resource path _/datas
 Given that the deegree OAF webapp is deployed under the context path _/deegree-services-oaf_ the resulting example URL for a local server running on port 8080 is: http://localhost:8080/deegree-services-oaf/datasets/
 This resource is called the main entry page in the context of deegree OAF.
 
+=== Main entry page
+
 Overview of resources served by deegree OAF accessible from the main entry page:
 
 [width="100%",cols="20%,20%,10%,20%,30%",options="header",]
 |===
 |Resource |Path |HTTP method |Supported Encodings |Description
-|Datasets overview |`/` |GET |`text/html`, `application/json` |The overview page of all datasets available, the main entry page
-|Landing page per dataset |`+/{datasetId}+` |GET |`text/html`, `application/json` |The API landing page per dataset
-|OpenAPI specification per dataset |`+/{datasetId}/api+` |GET | `text/html`, `application/json` |The OpenAPI 3.0 document per dataset
-|Feature collections per dataset |`+/{datasetId}/collections+` |GET | `text/html`, `application/json`, `application/xml` |The overview page for feature collections
+|Datasets overview |`/` |GET |`text/html`, `application/json` |The main entry page provides an overview of all datasets available
+|Landing page per dataset |`+/{datasetId}+` |GET |`text/html`, `application/json` |The API landing page per dataset (see next section for further information)
 |===
 
 NOTE: The context for the listed resource is _/datasets_. This resource is not defined by the OGC API - Features standard and is an implementation specific resource.
 
-The resources listed above are available in different encodings. To request a resource in a different encoding the client shall use
+All resources are available in different encodings. To request a resource in a different encoding the client shall use
 either the HTTP `Accept` header or the query parameter `f` to retrieve the data in the requested media type. To retrieve the supported media types per resource use the OpenAPI document available under '/api'.
 
+=== Landing page per dataset
+
 Besides the resources listed above for each dataset all resources defined by the OGC API - Features standard are supported.
+The configuration examples described in this document would result to the following addresses for each dataset. The landing page for
+the dataset _trees_ would be served under the address http://localhost:8080/deegree-services-oaf/datasets/trees and the landing page for the dataset _streets_
+would be served under the address http://localhost:8080/deegree-services-oaf/datasets/streets.
 The following table show the resources available per dataset:
+
 [width="100%",cols="20%,30%,10%,20%,20%",options="header",]
 |===
 |Resource |Path |HTTP method |Supported Encodings |Description
-|Landing page |`/` |GET |`text/html`, `application/json` |API landing page
-|OpenAPI |`/api` |GET | `text/html`, `application/json` |API specification document
-|Conformance declaration |`/conformance` |GET |`text/html`, `application/json` |Declaration of conformance classes
+|Landing page |`/` |GET |`text/html`, `application/json` |Landing page is the top-level resource, which serves as an entry point per dataset
+|OpenAPI |`/api` |GET | `text/html`, `application/json` |API specification document provides metadata about the API itself
+|Conformance declaration |`/conformance` |GET |`text/html`, `application/json` |Declaration of conformance classes presents information about the functionality that is implemented by the server
 |Feature collections |`/collections` |GET | `text/html`, `application/json`, `application/xml` |Feature collections overview
 |Feature collection |`+/collections/{collectionId}+` |GET | `text/html`, `application/json`, `application/xml` |Feature collection identified by {collectionId}
 |Features |`+/collections/{collectionId}/items+` |GET | `text/html`, `application/json`, `application/xml` |List of features
@@ -43,7 +49,7 @@ NOTE: The context for the listed resource is _datasets/{datasetId}_. The OGC API
 [[openapi]]
 === OpenAPI
 
-The OpenAPI page is available under the context _/api_.
+The OpenAPI page is available under the context _/api_. The use of _/api_ on the server is optional and the API definition may be hosted on completely separate server.
 If you have deployed the deegree OAF webapp under the context of _deegree-services-oaf_ and you have a dataset configured with the name
 _streets_ the resulting request path would be _/deegree-services-oaf/datasets/streets/api_.
 
@@ -92,13 +98,13 @@ Or use a browser and additional plugins to send the HTTP request directly. Use t
 [width="100%",cols="30%,20%,30%,20%",options="header",]
 |===
 |Media type |Query parameter |`Accept` header |Description
-|`application/json` | `?f=json` | `application/json`, `application/geo+json` | Json/GeoJson encoding
+|`application/json` | `?f=json` | `application/json`, `application/geo+json` | JSON/GeoJSON encoding
 |`application/xml` | `?f=xml` | `application/xml`, `application/gml+xml` | XML/GML encoding
 |`text/html` | - | `text/html` | HTML encoding
 |===
 
 [[json_encoding]]
-=== Accessing data in Json/GeoJson
+=== Accessing data in JSON/GeoJSON
 
 To retrieve a resource in `application/json` encoding use the request parameter _f=json_.
 To retrieve the landing page of the dataset streets in `application/json` encoding use the request URL _datasets/streets/?f=json_.

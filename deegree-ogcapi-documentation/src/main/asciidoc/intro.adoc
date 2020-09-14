@@ -9,6 +9,7 @@ existing workspace concept using the API of deegree webservices. Compared to dee
 The OGC API family of standards are being developed to make it easy for anyone to provide geospatial data to the web. These standards build upon the legacy of the OGC Web Service standards (WMS, WFS, WCS, WPS, etc.), but define resource-centric APIs that take advantage of modern web development practices.
 
 Read more at http://www.ogcapi.org[www.ogcapi.org] about the new standards and their goals.
+The https://opengeospatial.github.io/e-learning/ogcapi-features/text/basic-index.html[OGC E-learning tutorial] provides a chapter about the new standards and explains the basic concepts.
 
 === Features
 
