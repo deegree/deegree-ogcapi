@@ -5,8 +5,8 @@
   <groupId>de.deegree-enterprise</groupId>
   <artifactId>deegree-ogcapi-documentation</artifactId>
   <packaging>pom</packaging>
-  <name>documentation OGC API</name>
-  <description>documentation of the deegree implementation of OGC API</description>
+  <name>deegree OGC API Features documentation</name>
+  <description>documentation of the deegree OGC API Features implementation</description>
 
   <parent>
     <groupId>de.deegree-enterprise</groupId>

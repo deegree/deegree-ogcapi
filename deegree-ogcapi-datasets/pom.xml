@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>deegree-ogcapi-datasets</artifactId>
   <name>deegree-ogcapi-datasets</name>
-  <description>OGC API implementation - Configuration of Datasets</description>
+  <description>OGC API Features (OAF) implementation - Configuration of Datasets</description>
 
   <parent>
     <groupId>de.deegree-enterprise</groupId>
