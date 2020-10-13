@@ -6,9 +6,9 @@
   <artifactId>deegree-ogcapi</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>deegree</name>
-  <description>Framework for OGC API implementation</description>
-  <url>http://www.deegree-enterprise.de/</url>
+  <name>deegree OAF</name>
+  <description>deegree OGC API - Features (OAF) implementation</description>
+  <url>https://www.deegree-enterprise.de/</url>
 
   <scm>
     <connection>scm:git:git@github.com:deegree-enterprise/deegree-core.git</connection>
