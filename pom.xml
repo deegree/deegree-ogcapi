@@ -4,11 +4,23 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.deegree-enterprise</groupId>
   <artifactId>deegree-ogcapi</artifactId>
-  <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
   <name>deegree OAF</name>
   <description>deegree OGC API - Features (OAF) implementation</description>
-  <url>https://www.deegree-enterprise.de/</url>
+  <url>https://oaf.lat-lon.de/</url>
+  <inceptionYear>2019</inceptionYear>
+  <organization>
+    <name>deegree Enterprise</name>
+    <url>https://www.deegree-enterprise.de/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License (LGPL), version 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <scm>
     <connection>scm:git:git@github.com:deegree-enterprise/deegree-core.git</connection>
