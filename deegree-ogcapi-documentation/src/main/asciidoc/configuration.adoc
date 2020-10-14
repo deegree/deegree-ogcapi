@@ -6,7 +6,7 @@ This section describes how to configure the deegree OAF webapp.
 IMPORTANT: deegree OAF is under development, and new configuration options may be added in future releases. For the lastest parameters please consult the example workspace provided with the release version!
 
 [[config_workspace]]
-=== The OAF workspace
+=== OAF workspace
 
 The deegree workspace is the modular, resource-oriented and extensible configuration concept used by deegree. The deegree OAF workspace name must be *_ogcapi-workspace_*.
 

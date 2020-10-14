@@ -2,9 +2,9 @@
 
 The deegree OGC API Feature (OAF) implementation is compliant to the latest OGC Standard called
 http://docs.opengeospatial.org/is/17-069r3/17-069r3.html[OGC API - Features - Part 1: Core]. deegree OAF provides a server implementation that has been developed based on deegree's
-existing workspace concept using the API of deegree webservices. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
+existing workspace concept using the API of https://www.deegree.org[deegree webservices]. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
 
-=== The OGC API family
+=== OGC API family
 
 The OGC API family of standards are being developed to make it easy for anyone to provide geospatial data to the web. These standards build upon the legacy of the OGC Web Service standards (WMS, WFS, WCS, WPS, etc.), but define resource-centric APIs that take advantage of modern web development practices.
 
@@ -28,7 +28,7 @@ The Web API is provided as an Open API 3.0 document implementing the requirement
 
 * OpenAPI Specification 3.0.
 
-deegree OAF was built on the robust API and configuration concept of OSGeo deegree webservices and has the following features:
+deegree OAF was built on top of the robust API and configuration concept of https://www.deegree.org[deegree webservices]. Notable features:
 
 * easy to install: simple deployment in every Java Servlet container
 * easy to configure: uses the deegree workspace configuration concept
@@ -42,7 +42,7 @@ deegree OAF was built on the robust API and configuration concept of OSGeo deegr
 . Create the necessary deegree configuration files stored within a deegree workspace with at least one datasource. Which files are required is described in section <<Configuration>>.
 . Install deegree OAF webapp and start the runtime environment. This is described in section <<start_webapp>>.
 . Start a browser and open the OpenAPI specification. How to use the Web API document is explained in section <<openapi>>.
-. Browse the content using the HTML encoding. How to use the HTML encoding to access the data is described in section <<html_encoding>>.
+. Browse the content using the HTML interface. How to access the data is described in section <<html_encoding>>.
 
 == Terms and Definitions
 

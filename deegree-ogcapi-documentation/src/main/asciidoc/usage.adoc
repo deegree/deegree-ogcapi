@@ -47,7 +47,7 @@ The following table show the resources available per dataset:
 NOTE: The context for the listed resource is _datasets/{datasetId}_. The OGC API - Features standard defines all resources from this base resource.
 
 [[openapi]]
-=== OpenAPI
+=== OpenAPI document
 
 The OpenAPI page is available under the context _/api_. The use of _/api_ on the server is optional and the API definition may be hosted on completely separate server.
 If you have deployed the deegree OAF webapp under the context of _deegree-services-oaf_ and you have a dataset configured with the name
@@ -107,26 +107,28 @@ Or use a browser and additional plugins to send the HTTP request directly. Use t
 === Accessing data in JSON/GeoJSON
 
 To retrieve a resource in `application/json` encoding use the request parameter _f=json_.
-To retrieve the landing page of the dataset streets in `application/json` encoding use the request URL _datasets/streets/?f=json_.
+To retrieve the landing page of the dataset streets in `application/json` encoding use the following request _datasets/streets/?f=json_.
 Example URL: http://localhost:8080/deegree-services-oaf/datasets/streets/?f=json
-See section <<query_parameter>> for more information about supported query parameters.
+
+See section <<query_parameter>> for more information about other supported query parameters.
 
 [[gml_encoding]]
 === Accessing data in XML/GML
 
 To retrieve a resource in `application/xml` encoding use the request parameter _f=xml_.
-To retrieve the landing page of the dataset streets in `application/xml` encoding use the request URL _datasets/streets/?f=xml_.
+To retrieve the landing page of the dataset streets in `application/xml` encoding use the following request _datasets/streets/?f=xml_.
 Example URL: http://localhost:8080/deegree-services-oaf/datasets/streets/?f=xml
-See section <<query_parameter>> for more information about supported query parameters.
+
+See section <<query_parameter>> for more information about supported other query parameters.
 
 [[html_encoding]]
 === Using the HTML interface
 
-The HTML encoding provides easy access to the spatial data using a browser.
+The HTML interface provides easy access to the spatial data using a browser.
 It requires no additional client or browser plugin to browse the data. The browser sends by default
-the HTTP `Accept` header with the value `text/html` and therefore each resource is returned in HTML encoding.
+the HTTP header `Accept` with the value `text/html` and therefore each resource is returned in HTML encoding.
 
-To browse the data open the browser and start at the main entry page available at _datasets/_.
+To browse the data open the browser of your choice and start at the main entry page available at _datasets/_.
 Example URL: http://localhost:8080/deegree-services-oaf/datasets
 
 .Main entry page in HTML encoding
@@ -142,9 +144,9 @@ image::datasets_landing.png[Landing page]
 The landing page provides links to all resources of a dataset.
 
 [[query_parameter]]
-=== Using query parameter
+=== Using query parameters
 
-The following query parameter are supported when using HTTP GET:
+The following query parameters are supported when using HTTP GET:
 
 [width="100%",cols="30%,20%,20%,30%",options="header",]
 |===
@@ -153,8 +155,8 @@ The following query parameter are supported when using HTTP GET:
 |`bbox` |Comma separated floating point values | 567190,5934330,567200,5934360 |List of comma separated floating point values defining a bounding box
 |`bbox-crs` |String | EPSG:4326 |EPSG code defines the CRS of the coordinates of the `bbox` parameter
 |`f` |String |`html`, `json`, `xml` |Requested encoding of a given resource
-|`limit` |integer |10 |Limit the numbers of items
+|`limit` |integer |10 |Limit the numbers of items per page
 |`offset` |integer |0 |Start index of items
 |===
 
-NOTE: Check the OpenAPI document on which resources the listed query parameters are supported. Additional query parameters may be available depending on the resource.
+NOTE: Check the <<openapi>> on which resources the listed query parameters are supported. Additional query parameters may be available depending on the resource.

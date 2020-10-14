@@ -24,10 +24,10 @@ How to migrate an existing deegree workspace?::
 
   Given that an existing deegree workspace contains at least one feature store the following steps need to be done to provide the data via deegree OAF:
 
-- Copy or rename the workspace directory to *_ogcapi-workspace_* as described in chapter <<config_workspace>>
-- Add a dataset configuration file in subdirectory _ogcapi/_, e.g. _streets.xml_ as described in the example workspace in chapter <<config_dataset>>
-- Configure the HTML encoding by adding a file in subdirectory _html/_ (optional), e.g. _streetsview.xml_ as described in the example workspace in chapter <<config_htmlview>>
-- Deploy the deegree OAF webapp as described in chapter <<installation_deploy>>
+- Copy or rename the workspace directory to *_ogcapi-workspace_* as described in chapter <<config_workspace>>.
+- Add a dataset configuration file in subdirectory _ogcapi/_, e.g. _streets.xml_ as described in the example workspace in chapter <<config_dataset>>.
+- Configure the HTML encoding by adding a file in subdirectory _html/_ (optional), e.g. _streetsview.xml_ as described in the example workspace in chapter <<config_htmlview>>.
+- Deploy the deegree OAF webapp as described in chapter <<installation_deploy>>.
 
 How to use the same workspace with deegree OAF and deegree webservices?::
 
