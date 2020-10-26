@@ -21,8 +21,11 @@
  */
 package org.deegree.services.oaf.feature;
 
+import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
+import org.deegree.cs.persistence.CRSManager;
+import org.deegree.cs.refs.coordinatesystem.CRSRef;
 import org.deegree.feature.Feature;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.gml.GMLOutputFactory;
@@ -79,6 +82,7 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
             Map<String, String> prefixToNs = new HashMap<>();
             prefixToNs.putAll( features.getFeatureTypeNsPrefixes() );
             gmlStreamWriter.setNamespaceBindings( prefixToNs );
+            gmlStreamWriter.setOutputCrs( asCrs( features ) );
             GMLFeatureWriter featureWriter = new GMLFeatureWriter( gmlStreamWriter );
 
             xmlStreamWriter.writeStartElement( "sf", "FeatureCollection", XML_SF_NS_URL );
@@ -114,6 +118,16 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
         } finally {
             featureStream.close();
         }
+    }
+
+    private ICRS asCrs( FeatureResponse features )
+                            throws UnknownCRSException {
+        if ( features.getResponseCrsName() != null ) {
+            CRSRef ref = CRSManager.getCRSRef( features.getResponseCrsName() );
+            ref.getReferencedObject(); // test if exists
+            return ref;
+        }
+        return null;
     }
 
 }

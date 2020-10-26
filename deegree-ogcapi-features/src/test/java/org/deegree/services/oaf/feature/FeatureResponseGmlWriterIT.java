@@ -63,25 +63,43 @@ public class FeatureResponseGmlWriterIT {
 
     @Test
     public void testWriteTo()
-                    throws Exception {
+                            throws Exception {
         FeatureResponseGmlWriter featureResponeWriter = new FeatureResponseGmlWriter();
         FeatureResponse featureResponse = createFeatureResponse();
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
-
+        System.out.println( bos.toString() );
         assertThat( the( bos.toString() ),
                     hasXPath( "count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)", nsContext(),
                               XpathReturnType.returningANumber(), is( 5.0 ) ) );
+        assertThat( the( bos.toString() ),
+                    hasXPath( "/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName", nsContext(),
+                              XpathReturnType.returningAString(), is( "urn:ogc:def:crs:EPSG::4258" ) ) );
 
         // TODO: fails with [cvc-complex-type.2.4.a: Invalid content was found starting with element '{"http://www.deegree.org/app":strassenbaumkataster}'. One of '{"http://www.opengis.net/gml/3.2":AbstractFeature}' is expected. (line: -1 , column: -1)
         // Schema schema = w3cXmlSchemaFromUrl( XML_SF_SCHEMA_URL );
         //assertThat( the( bos.toString() ), conformsTo( schema ) );
     }
 
-    private NamespaceContext nsContext() {
-        SimpleNamespaceContext nsContext = new SimpleNamespaceContext().withBinding( "sf", XML_SF_NS_URL ).withBinding(
-                        "app", "http://www.deegree.org/app" );
-        return nsContext;
+    @Test
+    public void testWriteTo_EPSG25832()
+                            throws Exception {
+        String requestCrs = "EPSG:25832";
+        FeatureResponseGmlWriter featureResponeWriter = new FeatureResponseGmlWriter();
+        FeatureResponse featureResponse = createFeatureResponse( requestCrs );
+        OutputStream bos = new ByteArrayOutputStream();
+        featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
+        System.out.println( bos.toString() );
+        assertThat( the( bos.toString() ),
+                    hasXPath( "count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)", nsContext(),
+                              XpathReturnType.returningANumber(), is( 5.0 ) ) );
+        assertThat( the( bos.toString() ),
+                    hasXPath( "/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName",
+                              nsContext(), XpathReturnType.returningAString(), is( requestCrs ) ) );
+
+        // TODO: fails with [cvc-complex-type.2.4.a: Invalid content was found starting with element '{"http://www.deegree.org/app":strassenbaumkataster}'. One of '{"http://www.opengis.net/gml/3.2":AbstractFeature}' is expected. (line: -1 , column: -1)
+        // Schema schema = w3cXmlSchemaFromUrl( XML_SF_SCHEMA_URL );
+        //assertThat( the( bos.toString() ), conformsTo( schema ) );
     }
 
     @Test
@@ -96,21 +114,34 @@ public class FeatureResponseGmlWriterIT {
         assertThat( the( bos.toString() ), conformsTo( schema ) );
     }
 
+    private NamespaceContext nsContext() {
+        SimpleNamespaceContext nsContext = new SimpleNamespaceContext()
+                                .withBinding( "sf", XML_SF_NS_URL )
+                                .withBinding("app", "http://www.deegree.org/app" )
+                                .withBinding("gml", "http://www.opengis.net/gml/3.2" );
+        return nsContext;
+    }
+
     private FeatureResponse createFeatureResponse()
-                    throws Exception {
+                            throws Exception {
+        return createFeatureResponse( null );
+    }
+
+    private FeatureResponse createFeatureResponse( String crs )
+                            throws Exception {
         List<Link> links = java.util.Collections.singletonList(
-                        new Link( "http://self", "self", "application/json", "title" ) );
-        GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32, getClass().getResource(
-                        "strassenbaumkataster.gml" ) );
+                                new Link( "http://self", "self", "application/json", "title" ) );
+        GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32,
+                                                                           getClass().getResource( "strassenbaumkataster.gml" ) );
         FeatureCollection featureCollection = gmlReader.readFeatureCollection();
 
         FeatureInputStream featureStream = new IteratorFeatureInputStream(
-                        new ListCloseableIterator( featureCollection ) );
+                                new ListCloseableIterator( featureCollection ) );
         Map<String, String> featureTypeNsPrefixes = new HashMap<>();
         QName name = featureCollection.getName();
         featureTypeNsPrefixes.put( name.getPrefix(), name.getNamespaceURI() );
-        return new FeatureResponse( featureStream, featureTypeNsPrefixes, featureCollection.size(), featureCollection.size(), 0, links, false,
-                                    null );
+        return new FeatureResponse( featureStream, featureTypeNsPrefixes, featureCollection.size(),
+                                    featureCollection.size(), 0, links, false, crs );
     }
 
     private FeatureResponse createEmptyFeatureResponse() {
