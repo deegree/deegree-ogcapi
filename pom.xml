@@ -756,7 +756,6 @@
     <java.version>1.8</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <deegree-maven-plugin.version>1.20</deegree-maven-plugin.version>
-    <oracle.version>12.2.0.1</oracle.version>
     <jersey-version>2.29.1</jersey-version>
     <swagger-version>2.1.4</swagger-version>
     <swagger-ui-version>3.26.1</swagger-ui-version>
