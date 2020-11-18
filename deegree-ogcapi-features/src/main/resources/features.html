@@ -645,6 +645,7 @@ function createFeaturesUrl( featuresRefWithoutQuery, perPage, currentPage) {
       if( !limitParam ){
         params['limit'] = perPage;
       }
+      delete params['crs']
 
       return createUrlWithQuery(featuresRefWithoutQuery, params);
 }
