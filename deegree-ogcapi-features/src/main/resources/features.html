@@ -291,8 +291,7 @@
             -->
             <div class="row">
                 <div class="col d-flex justify-content-center">
-                    <b-pagination size="md" :total-rows="totalItems" v-model="currentPage"
-                                  :per-page="perPage"></b-pagination>
+                    <b-pagination-nav :kex="paging" :link-gen="linkGen" :number-of-pages="numberOfPages" use-router></b-pagination-nav>
                 </div>
             </div>
             <div class="row">
@@ -329,12 +328,14 @@
                     </b-table>
                 </div>
             </div>
+            <!--
             <div class="row">
                 <div class="col d-flex justify-content-center">
                     <b-pagination size="md" :total-rows="totalItems" v-model="currentPage"
                                   :per-page="perPage"></b-pagination>
                 </div>
             </div>
+            -->
         </div>
         <div class="col-md">
             <div id="map" class="map">
@@ -373,6 +374,11 @@
     </div>
 </footer>
 
+</body>
+</html>
+
+
+
 <script>
 new Vue({
   el: '#app',
@@ -383,9 +389,13 @@ new Vue({
             label: 'Feature'
           }],
       items: '',
+      paging: 0,
       currentPage: 0,
       perPage: 10,
       totalItems: 0,
+      numberOfPages: 0,
+      defaultLimit: 10,
+      defaultOffset: 0,
       isFilterHidden: true,
       propertyFilterQuery: null,
       propertyFilterSelection: null,
@@ -405,16 +415,38 @@ new Vue({
       filterOpenEndChecked: false
     }
   },
-  /*
   created() {
+   /*
     this.calculateBboxFilterValues(),
     this.calculateDatetimeFilterValues()
+    */
+    this.fetchData();
   },
-  */
   methods: {
+    linkGen(pageNum) {
+      var baseUrl = retrieveBaseUrl();
+      var params = parseFeaturesRequestParams();
+      var featuresPerPage = getParamByName(params, 'limit', this.defaultLimit);
+      var featuresSkipped = getParamByName(params, 'offset', this.defaultOffset);
+
+      if (pageNum == 1) {
+        params['offset'] = 0;
+      } else {
+        params['offset'] = featuresPerPage * (pageNum - 1)
+      }
+      params['limit'] = featuresPerPage;
+
+      var requestedPage = Math.floor(featuresSkipped / featuresPerPage) + 1
+      if(pageNum == requestedPage){
+        return window.location.href;
+      }
+
+      var featuresUrl = createUrlWithQuery(baseUrl, params);
+      return featuresUrl;
+    },
     async fetchData() {
       var baseUrl = retrieveBaseUrl();
-      var featuresUrl = createFeaturesUrl(baseUrl, this.perPage, this.currentPage);
+      var featuresUrl = createFeaturesUrl(baseUrl);
       const response = await fetch( featuresUrl, {headers: {'Accept': 'application/geo+json' } } );
       const json = await response.json();
 
@@ -428,8 +460,15 @@ new Vue({
           });
       });
       this.totalItems = json.numberMatched;
-      //this.perPage = json.numberReturned;
+      this.defaultLimit = json.numberReturned;
+      this.limitParam = parseParamFromUrl(featuresUrl, 'limit', this.defaultLimit);
+      this.numberOfPages  = Math.ceil(this.totalItems/this.limitParam);
+
+      this.forceRerenderPaging();
       fetchConfigAndSetFeatures(json);
+    },
+    forceRerenderPaging() {
+      this.paging += 1;
     },
     filterProperty: function( event ) {
       if ( this.propertyFilterSelection == null ){
@@ -534,15 +573,6 @@ new Vue({
         }
       }
     }
-  },
-  watch: {
-    currentPage: {
-      handler: function(value) {
-        this.fetchData().catch(error => {
-          console.error(error)
-        })
-      }
-    }
   }
 })
 
@@ -631,23 +661,28 @@ var footerApp = new Vue({
   }
 })
 
-function createFeaturesUrl( featuresRefWithoutQuery, perPage, currentPage) {
-      var params = parseQueryString(window.location.search);
+function createFeaturesUrl(featuresRefWithoutQuery) {
+  var params = parseFeaturesRequestParams();
+  return createUrlWithQuery(featuresRefWithoutQuery, params);
+}
 
-      var offsetParam = getParameterCaseInsensitive(params, 'offset');
-      if( offsetParam ){
-        params['offset'] = perPage;
-      } else {
-        params['offset'] = perPage * (currentPage -1);
-      }
+function parseFeaturesRequestParams() {
+  var params = parseQueryString(window.location.search);
+  delete params['crs']
+  return params;
+}
 
-      var limitParam = getParameterCaseInsensitive(params, 'limit');
-      if( !limitParam ){
-        params['limit'] = perPage;
-      }
-      delete params['crs']
+function parseParamFromUrl(url, key, defaultValue){
+  var params = parseQueryString(url);
+  return getParamByName(params, key, defaultValue);
+}
 
-      return createUrlWithQuery(featuresRefWithoutQuery, params);
+function getParamByName(params, key, defaultValue){
+  var paramFromUrl = getParameterCaseInsensitive(params, key);
+  if(paramFromUrl) {
+    return paramFromUrl;
+  }
+  return defaultValue;
 }
 
 function getParameterCaseInsensitive(object, key) {
@@ -657,11 +692,17 @@ function getParameterCaseInsensitive(object, key) {
 }
 
 function createUrlWithQuery(url, params) {
-    url = url + '?';
+    var isFirst = true;
     let key;
     for (key in params) {
        if( key != 'f' ) {
-          url = url + key + '=' + params[key] + '&';
+          if(isFirst){
+            url = url + '?';
+          } else {
+            url = url + '&';
+          }
+          url = url + key + '=' + params[key];
+          isFirst = false;
         }
     };
     return url;
@@ -677,12 +718,14 @@ function parseQueryString(queryString) {
     if( queryString.length > 0 ){
         var kvps = queryString.split('&');
         kvps.forEach( kvp => {
-            var keyValuePair = kvp.split('=');
-            var key = keyValuePair[0];
-            var value = keyValuePair[1];
-            value = decodeURIComponent(value);
-            value = value.replace(/\+/g, ' ');
-            params[key] = value;
+            if(kvp){
+              var keyValuePair = kvp.split('=');
+              var key = keyValuePair[0];
+              var value = keyValuePair[1];
+              value = decodeURIComponent(value);
+              value = value.replace(/\+/g, ' ');
+              params[key] = value;
+            }
         });
 	}
 
@@ -895,5 +938,3 @@ function retrieveBaseUrl() {
       return featuresRefWithoutQuery;
 }
 </script>
-</body>
-</html>
