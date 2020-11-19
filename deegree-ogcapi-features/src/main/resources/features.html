@@ -328,14 +328,11 @@
                     </b-table>
                 </div>
             </div>
-            <!--
             <div class="row">
                 <div class="col d-flex justify-content-center">
-                    <b-pagination size="md" :total-rows="totalItems" v-model="currentPage"
-                                  :per-page="perPage"></b-pagination>
+                    <b-pagination-nav :kex="paging" :link-gen="linkGen" :number-of-pages="numberOfPages" use-router></b-pagination-nav>
                 </div>
             </div>
-            -->
         </div>
         <div class="col-md">
             <div id="map" class="map">
