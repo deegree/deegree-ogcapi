@@ -157,7 +157,7 @@ public class LinkBuilder {
 
     public List<Link> createFeaturesLinks( String datasetId, String collectionId, NextLink nextLink ) {
         List<Link> links = new ArrayList<>();
-        String selfUri = getSelfUri();
+        String selfUri = createSelfUriWithQueryParametersWExceptFormat();
         addSelfAndAlternateGeo( links, selfUri );
         String nextUri = nextLink.createUri( uriInfo );
         if ( nextUri != null )
@@ -260,6 +260,11 @@ public class LinkBuilder {
         return uriInfo.getBaseUriBuilder().path(  uriInfo.getPath() ).toString();
     }
 
+    private String createSelfUriWithQueryParametersWExceptFormat() {
+        return uriInfo.getRequestUriBuilder()
+                      .replaceQueryParam( "f", null )
+                      .toString();
+    }
 
     private UriBuilder createBaseUriBuilder( String datasetId ) {
         return uriInfo.getBaseUriBuilder()

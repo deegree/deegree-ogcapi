@@ -93,4 +93,9 @@ public class Link {
         this.title = title;
     }
 
+    @Override
+    public String toString() {
+        return "Link{" + "href='" + href + '\'' + ", rel='" + rel + '\'' + ", type='" + type + '\'' + ", title='"
+               + title + '\'' + '}';
+    }
 }
