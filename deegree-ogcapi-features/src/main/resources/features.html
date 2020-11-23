@@ -139,9 +139,9 @@
 
 <header>
     <nav class="navbar navbar-default">
-        <div class="container-fluid">
+        <div class="container-fluid" id="breadcrump">
             <a class="navbar-brand" href="#"></a>
-            <ul class="nav" id="breadcrump">
+            <ul class="nav">
                 <li class="breadcrumb-item">
                     <a v-bind:href="datasetsLink">Datasets</a>
                 </li>
@@ -158,10 +158,10 @@
             </ul>
             <ul class="nav justify-content-end">
               <li class="nav-item">
-                  <a class="nav-link" href="?f=json" target="_blank">GeoJSON</a>
+                  <a class="nav-link" v-bind:href="selfJsonLink" target="_blank">GeoJSON</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="?f=xml" target="_blank">GML</a>
+                  <a class="nav-link" v-bind:href="selfXmlLink" target="_blank">GML</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link disabled" href="?f=html" tabindex="-1" aria-disabled="true" target="_blank">HTML</a>
@@ -373,8 +373,6 @@
 
 </body>
 </html>
-
-
 
 <script>
 new Vue({
@@ -611,7 +609,9 @@ var AppBreadcrump = new Vue({
     datasetName: '',
     datasetsLink: '',
     collectionsLink: '',
-    collectionLink: ''
+    collectionLink: '',
+    selfJsonLink: '',
+    selfXmlLink: ''
   },
 
   created() {
@@ -622,6 +622,8 @@ var AppBreadcrump = new Vue({
     self.datasetLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
     self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
     self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
+    self.selfJsonLink = window.location.href.indexOf("?") > -1 ? window.location.href + "&f=json" : window.location.href + "?f=json";
+    self.selfXmlLink = window.location.href.indexOf("?") > -1 ? window.location.href + "&f=xml" : window.location.href + "?f=xml";
 
     $.ajax({
       dataType: "json",
