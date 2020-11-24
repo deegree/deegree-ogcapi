@@ -326,6 +326,9 @@
                                                     </li>
                                                 </ul>
                                             </td>
+                                            <td v-cloak v-else-if="(Array.isArray(property) && property.length > 0) || typeof(property) === 'object'" >
+                                                <a v-bind:href="featuresUrl" target="_blank">Complex object, view as json</a>
+                                            </td>
                                             <td v-cloak v-else >{{ property }}</td>
                                         </tr>
                                         </tbody>
@@ -389,6 +392,7 @@ new Vue({
             key: 'id',
             label: 'Feature'
           }],
+      featuresUrl: '',
       items: '',
       currentPage: 0,
       perPage: 10,
@@ -421,8 +425,8 @@ new Vue({
   methods: {
     async fetchData() {
       var baseUrl = retrieveBaseUrl();
-      var featuresUrl = createFeaturesUrl(baseUrl, this.perPage, this.currentPage);
-      const response = await fetch( featuresUrl, {headers: {'Accept': 'application/geo+json' } } );
+      this.featuresUrl = createFeaturesUrl(baseUrl, this.perPage, this.currentPage);
+      const response = await fetch( this.featuresUrl, {headers: {'Accept': 'application/geo+json' } } );
       const json = await response.json();
 
       this.items = [];
