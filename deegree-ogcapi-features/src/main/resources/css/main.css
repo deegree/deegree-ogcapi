@@ -53,6 +53,12 @@ nav .nav-link:hover {
 nav .nav-link:active {
 }
 
+/* Table with data */
+.propertylist {
+  list-style-type:none;
+  padding-left: 0;
+}
+
 /* Footer */
 html {
   height: 100%;
