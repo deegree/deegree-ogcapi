@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -69,8 +69,7 @@ public class TestData {
             when( testFactory.createCollections( any( OafDatasetConfiguration.class ),
                                                  any( LinkBuilder.class ) ) ).thenReturn( testCollection );
             when( testFactory.createCollection( any( OafDatasetConfiguration.class ), eq( "test" ),
-                                                any( LinkBuilder.class ) ) ).thenReturn(
-                            collection );
+                                                any( LinkBuilder.class ) ) ).thenReturn( collection );
         } catch ( UnknownCollectionId e ) {
             e.printStackTrace();
         }
@@ -82,12 +81,7 @@ public class TestData {
         return mockWorkspaceInitializer( featureTypeName );
     }
 
-    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( String collectionId ) {
-        QName featureTypeName = new QName( collectionId );
-        return mockWorkspaceInitializer( featureTypeName );
-    }
-
-    private static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName ) {
+    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName ) {
         OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
         DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
         when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
@@ -96,13 +90,16 @@ public class TestData {
         FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
 
         try {
-            String schemaURL = TestData.class.getResource( "feature/schema/strassenbaumkataster.xsd" ).toString();
-            GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader( GML_32, null, schemaURL );
-            AppSchema schema = xsdAdapter.extractAppSchema();
-            FeatureType featureType = schema.getFeatureType( featureTypeName );
-            if ( featureType != null )
-                ftm.featureType( featureType );
-        } catch ( Exception e ) {
+            FeatureType featureType = getFeatureType( featureTypeName, "feature/schema/strassenbaumkataster.xsd" );
+            if ( featureType == null )
+                featureType = getFeatureType( featureTypeName, "feature/schema/micado_kennzahlen_v1_2.xsd" );
+            if ( featureType == null )
+                featureType = getFeatureType( featureTypeName, "feature/schema/kita.xsd" );
+            if ( featureType == null )
+                throw new IllegalArgumentException( "FeatureType with name " + featureTypeName + " is not known" );
+            ftm.featureType( featureType );
+        } catch ( ClassNotFoundException | InstantiationException | IllegalAccessException e ) {
+            e.printStackTrace();
         }
 
         featureTypeMetadata.put( featureTypeName.getLocalPart(), ftm );
@@ -113,6 +110,14 @@ public class TestData {
         DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
         when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
         return deegreeWorkspaceInitializer;
+    }
+
+    private static FeatureType getFeatureType( QName featureTypeName, String applicationschema )
+                            throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String schemaURL = TestData.class.getResource( applicationschema ).toString();
+        GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader( GML_32, null, schemaURL );
+        AppSchema schema = xsdAdapter.extractAppSchema();
+        return schema.getFeatureType( featureTypeName );
     }
 
     public static FeatureResponse features() {

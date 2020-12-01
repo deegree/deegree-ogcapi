@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,18 +34,31 @@ import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.servers.Server;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.xerces.xs.XSComplexTypeDefinition;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSModelGroup;
+import org.apache.xerces.xs.XSObject;
+import org.apache.xerces.xs.XSObjectList;
+import org.apache.xerces.xs.XSParticle;
+import org.apache.xerces.xs.XSSimpleTypeDefinition;
+import org.apache.xerces.xs.XSTerm;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.deegree.commons.tom.gml.property.PropertyType;
 import org.deegree.commons.tom.primitive.BaseType;
 import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.feature.types.FeatureType;
+import org.deegree.feature.types.property.CustomPropertyType;
 import org.deegree.feature.types.property.GeometryPropertyType;
 import org.deegree.feature.types.property.SimplePropertyType;
+import org.deegree.gml.GMLVersion;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -58,16 +71,24 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static org.apache.xerces.xs.XSConstants.ELEMENT_DECLARATION;
+import static org.apache.xerces.xs.XSConstants.MODEL_GROUP;
+import static org.apache.xerces.xs.XSConstants.WILDCARD;
+import static org.apache.xerces.xs.XSTypeDefinition.SIMPLE_TYPE;
+import static org.apache.xerces.xs.XSTypeDefinition.COMPLEX_TYPE;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 public class OafOpenApiFilter extends AbstractSpecFilter {
+
+    private static final Logger LOG = getLogger( OafOpenApiFilter.class );
 
     private static final String COLLECTIONID = "collectionId";
 
@@ -258,23 +279,95 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
             Map<String, Schema> properties = new HashMap<>();
             Schema typeEnum = new Schema();
             typeEnum.setDescription( "Type of the geometry, one of " + SUPPPORTED_GEOM_TYPES.stream().collect(
-                            Collectors.joining( ", " ) ) );
+                                    Collectors.joining( ", " ) ) );
             typeEnum.setEnum( SUPPPORTED_GEOM_TYPES );
             properties.put( "type", typeEnum );
-            Schema coordinatesSchema = new ArraySchema()
-                            .items( new Schema().type( "number" ) )
-                            .description( "An array of double values or an array of arrays of double values describing the geometry" );
+            Schema coordinatesSchema = new ArraySchema().items( new Schema().type( "number" ) ).description(
+                                    "An array of double values or an array of arrays of double values describing the geometry" );
             properties.put( "coordinates", coordinatesSchema );
-            return new Schema()
-                            .name( propertyType.getName().getLocalPart() )
-                            .description( "Geometry (" + SUPPPORTED_GEOM_TYPES.stream().collect(
-                                            Collectors.joining( ", " ) ) + ") as specified in RFC 7946." )
-                            .type( mapToPropertyType( propertyType ) )
-                            .properties( properties );
+            return new Schema().name( propertyType.getName().getLocalPart() ).description(
+                                    "Geometry (" + SUPPPORTED_GEOM_TYPES.stream().collect( Collectors.joining( ", " ) )
+                                    + ") as specified in RFC 7946." ).type(
+                                    mapToPropertyType( propertyType ) ).properties( properties );
         }
-        return new Schema()
-                        .name( propertyType.getName().getLocalPart() )
-                        .type( mapToPropertyType( propertyType ) );
+        if ( propertyType instanceof SimplePropertyType && propertyType.getMaxOccurs() == -1 ) {
+            return new ArraySchema().items( new Schema().type( mapToPropertyType( propertyType ) ) ).name(
+                                    propertyType.getName().getLocalPart() ).type( "array" );
+        }
+        if ( propertyType instanceof CustomPropertyType && !isGmlProperty( propertyType ) ) {
+            XSComplexTypeDefinition xsdValueType = ( (CustomPropertyType) propertyType ).getXSDValueType();
+            XSParticle particle = xsdValueType.getParticle();
+            Schema propertySchema = new Schema().name( propertyType.getName().getLocalPart() );
+            addParticle( propertySchema, particle );
+            return propertySchema;
+        }
+        return new Schema().name( propertyType.getName().getLocalPart() ).type( mapToPropertyType( propertyType ) );
+    }
+
+    private void addParticle( Schema schema, XSParticle particle ) {
+        if ( particle != null ) {
+            XSTerm term = particle.getTerm();
+            switch ( term.getType() ) {
+            case MODEL_GROUP: {
+                XSModelGroup modelGroup = (XSModelGroup) term;
+                addParticle( schema, modelGroup );
+                break;
+            }
+            case ELEMENT_DECLARATION: {
+                XSElementDeclaration elementDeclaration = (XSElementDeclaration) term;
+                addParticle( schema, particle, elementDeclaration );
+                break;
+            }
+            }
+        }
+    }
+
+    private void addParticle( Schema schema, XSModelGroup modelGroup ) {
+        XSObjectList particles = modelGroup.getParticles();
+        for ( int particleIndex = 0; particleIndex < particles.getLength(); particleIndex++ ) {
+            XSObject item = particles.item( particleIndex );
+            if ( item instanceof XSParticle )
+                addParticle( schema, (XSParticle) item );
+        }
+    }
+
+    private void addParticle( Schema schema, XSParticle particle, XSElementDeclaration elementDeclaration ) {
+        XSTypeDefinition typeDef = elementDeclaration.getTypeDefinition();
+        XSTypeDefinition baseType = typeDef.getBaseType();
+
+        switch ( baseType.getTypeCategory() ) {
+        case SIMPLE_TYPE: {
+            Schema simpleSchema = new Schema().name( elementDeclaration.getName() );
+            simpleSchema.type( mapToPropertyType( (XSSimpleTypeDefinition) baseType ) );
+            schema.addProperties( elementDeclaration.getName(), simpleSchema );
+            break;
+        }
+        case COMPLEX_TYPE: {
+            XSComplexTypeDefinition complexTypeDef = (XSComplexTypeDefinition) typeDef;
+            XSParticle complexParticle = complexTypeDef.getParticle();
+
+            if ( particle.getMaxOccursUnbounded() ) {
+                Schema itemSchema = new Schema();
+                ArraySchema arraySchema = new ArraySchema().items( itemSchema );
+                schema.addProperties( elementDeclaration.getName(), arraySchema );
+                addParticle( itemSchema, complexParticle );
+            } else {
+                Schema newSchema = new Schema().name( elementDeclaration.getName() );
+                schema.addProperties( elementDeclaration.getName(), newSchema );
+                addParticle( newSchema, complexParticle );
+            }
+            break;
+        }
+        }
+    }
+
+    private boolean isGmlProperty( PropertyType propertyType ) {
+        String namespaceURI = propertyType.getName().getNamespaceURI();
+        for ( GMLVersion gmlVersion : GMLVersion.values() ) {
+            if ( gmlVersion.getNamespace().equals( namespaceURI ) )
+                return true;
+        }
+        return false;
     }
 
     private PathItem createNewPathItem( PathItem pathItemToClone, String name, FeatureTypeMetadata metadata ) {
@@ -474,23 +567,38 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         if ( propertyType instanceof SimplePropertyType ) {
             PrimitiveType primitiveType = ( (SimplePropertyType) propertyType ).getPrimitiveType();
             BaseType baseType = primitiveType.getBaseType();
-            switch ( baseType ) {
-            case DOUBLE:
-            case DECIMAL:
-                return "number";
-            case INTEGER:
-                return "integer";
-            case BOOLEAN:
-                return "boolean";
-            case DATE:
-            case DATE_TIME:
-            case TIME:
-            case STRING:
-                return "string";
-            default:
-                return "object";
-            }
+            return mapToPropertyType( baseType );
         }
         return "object";
     }
+
+    private String mapToPropertyType( XSSimpleTypeDefinition typeDef ) {
+        try {
+            BaseType baseType = BaseType.valueOf( typeDef );
+            return mapToPropertyType( baseType );
+        } catch ( IllegalArgumentException e ) {
+            LOG.warn( "Could not find type", e );
+            return "object";
+        }
+    }
+
+    private String mapToPropertyType( BaseType baseType ) {
+        switch ( baseType ) {
+        case DOUBLE:
+        case DECIMAL:
+            return "number";
+        case INTEGER:
+            return "integer";
+        case BOOLEAN:
+            return "boolean";
+        case DATE:
+        case DATE_TIME:
+        case TIME:
+        case STRING:
+            return "string";
+        default:
+            return "object";
+        }
+    }
+
 }

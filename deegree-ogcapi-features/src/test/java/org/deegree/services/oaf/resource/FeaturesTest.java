@@ -80,7 +80,7 @@ public class FeaturesTest extends JerseyTest {
             @Override
             protected void configure() {
                 bind( mockDataAccess() ).to( DataAccess.class );
-                bind( mockWorkspaceInitializer( "strassenbaum" ) ).to( DeegreeWorkspaceInitializer.class );
+                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
                 bindAsContract( OpenApiCreator.class );
             }
         } );

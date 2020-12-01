@@ -46,7 +46,7 @@ public class DatasetsTest extends JerseyTest {
         resourceConfig.register( new AbstractBinder() {
             @Override
             protected void configure() {
-                bind( mockWorkspaceInitializer( "strassenbaum" ) ).to( DeegreeWorkspaceInitializer.class );
+                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
                 bindAsContract( OpenApiCreator.class );
             }
         } );
