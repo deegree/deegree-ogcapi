@@ -443,7 +443,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         clonedResponse.setExtensions( response.getExtensions() );
         clonedResponse.setHeaders( response.getHeaders() );
         clonedResponse.setLinks( response.getLinks() );
-        return response;
+        return clonedResponse;
     }
 
     private Content createNewContent( Content content ) {
@@ -453,7 +453,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         content.forEach( ( s, mediaType ) -> {
             clonedContent.addMediaType( s, createNewMediaType( mediaType ) );
         } );
-        return content;
+        return clonedContent;
     }
 
     private MediaType createNewMediaType( MediaType mediaType ) {
@@ -465,7 +465,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         clonedMediaType.setExample( mediaType.getExample() );
         clonedMediaType.setExamples( mediaType.getExamples() );
         clonedMediaType.setExtensions( mediaType.getExtensions() );
-        return mediaType;
+        return clonedMediaType;
     }
 
     private Schema createNewSchema( Schema schema ) {
