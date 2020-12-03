@@ -318,6 +318,16 @@
                                             <td v-cloak v-if="(typeof property) == 'string' && property.startsWith('http')" >
                                                 <a v-bind:href="property" target="_blank">Link</a>
                                             </td>
+                                            <td v-cloak v-else-if="Array.isArray(property) && property.length > 0 && typeof(property[0]) !== 'object'" >
+                                                <ul class="propertylist">
+                                                    <li v-for="item in property">
+                                                        {{ item }}
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <td v-cloak v-else-if="(Array.isArray(property) && property.length > 0) || typeof(property) === 'object'" >
+                                                <a v-bind:href="data.item.jsonLink" target="_blank">Complex object, view as json</a>
+                                            </td>
                                             <td v-cloak v-else >{{ property }}</td>
                                         </tr>
                                         </tbody>
@@ -450,6 +460,7 @@ new Vue({
         this.items.push({
             id: feature.id,
             link: baseUrl + '/' + feature.id,
+            jsonLink: baseUrl + '/' + feature.id + '?f=json',
             properties: feature.properties,
             _showDetails: true
           });

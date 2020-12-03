@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,9 +24,10 @@ package org.deegree.services.oaf.filter;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.parser.OpenAPIV3Parser;
-import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.openapi.OafOpenApiFilter;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.hamcrest.BaseMatcher;
@@ -34,6 +35,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
+import javax.xml.namespace.QName;
 import java.net.URL;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -46,6 +48,7 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_S
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -56,7 +59,7 @@ public class OafOpenApiFilterTest {
 
     @Test
     public void testFilterOperation()
-                    throws UnknownDatasetId {
+                            throws Exception {
         OpenAPIV3Parser parser = new OpenAPIV3Parser();
         URL resource = OafOpenApiFilterTest.class.getResource( "openapi.json" );
         OpenAPI openAPI = parser.read( resource.toExternalForm() );
@@ -90,6 +93,67 @@ public class OafOpenApiFilterTest {
         assertThat( paths.get( "/collections/strassenbaumkataster/items/{featureId}" ),
                     hasResponseMediaType( APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
                                           APPLICATION_GML_SF2, TEXT_HTML ) );
+    }
+
+    @Test
+    public void testFilterOperation_WithPrimitiveList()
+                            throws Exception {
+        OpenAPIV3Parser parser = new OpenAPIV3Parser();
+        URL resource = OafOpenApiFilterTest.class.getResource( "openapi.json" );
+        OpenAPI openAPI = parser.read( resource.toExternalForm() );
+
+        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
+                                new QName( "http://www.deegree.org/app", "KitaEinrichtungen" ) );
+
+        OafOpenApiFilter filter = new OafOpenApiFilter( "oaf", deegreeWorkspaceInitializer );
+        filter.filterOpenAPI( openAPI, null, null, null );
+
+        Paths paths = openAPI.getPaths();
+        PathItem path = paths.get( "/collections/KitaEinrichtungen/items" );
+        assertThat( path, notNullValue() );
+        Schema schema = path.getGet().getResponses().getDefault().getContent().get(
+                                "application/geo+json" ).getSchema();
+        Schema featuresSchema = (Schema) schema.getProperties().get( "features" );
+        ArraySchema leistungsnameSchema = (ArraySchema) featuresSchema.getProperties().get( "Leistungsname" );
+        assertThat( leistungsnameSchema.getType(), is( "array" ) );
+        assertThat( leistungsnameSchema.getItems().getType(), is( "string" ) );
+    }
+
+    @Test
+    public void testFilterOperation_WithComplexData()
+                            throws Exception {
+        OpenAPIV3Parser parser = new OpenAPIV3Parser();
+        URL resource = OafOpenApiFilterTest.class.getResource( "openapi.json" );
+        OpenAPI openAPI = parser.read( resource.toExternalForm() );
+
+        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
+                                new QName( "http://www.deegree.org/datasource/feature/sql", "Zuwanderung" ) );
+
+        OafOpenApiFilter filter = new OafOpenApiFilter( "oaf", deegreeWorkspaceInitializer );
+        filter.filterOpenAPI( openAPI, null, null, null );
+
+        Paths paths = openAPI.getPaths();
+        PathItem path = paths.get( "/collections/Zuwanderung/items" );
+        assertThat( path, notNullValue() );
+        Schema schema = path.getGet().getResponses().getDefault().getContent().get(
+                                "application/geo+json" ).getSchema();
+        Schema featuresSchema = (Schema) schema.getProperties().get( "features" );
+        Schema wohnungslose_jepSchema = (Schema) featuresSchema.getProperties().get( "wohnungslose_jep" );
+        Schema zeitreiheSchema = (Schema) wohnungslose_jepSchema.getProperties().get( "zeitreihe" );
+
+        ArraySchema zeitreihenElementSchema = (ArraySchema) zeitreiheSchema.getProperties().get( "zeitreihen-element" );
+        assertThat( zeitreihenElementSchema.getType(), is( "array" ) );
+        Schema zeitreihenElementItems = zeitreihenElementSchema.getItems();
+        assertThat( ( (Schema) zeitreihenElementItems.getProperties().get( "wert" ) ).getType(), is( "string" ) );
+        assertThat( ( (Schema) zeitreihenElementItems.getProperties().get( "datum" ) ).getType(), is( "string" ) );
+
+        ArraySchema countryListSchema = (ArraySchema) zeitreihenElementItems.getProperties().get( "country-list" );
+        assertThat( countryListSchema.getType(), is( "array" ) );
+        Schema countryListItems = countryListSchema.getItems();
+        ArraySchema countryComplexSchema = (ArraySchema) countryListItems.getProperties().get( "country-complex" );
+        Schema countryComplexItems = countryComplexSchema.getItems();
+        assertThat( ( (Schema) countryComplexItems.getProperties().get( "name" ) ).getType(), is( "string" ) );
+        assertThat( ( (Schema) countryComplexItems.getProperties().get( "pop" ) ).getType(), is( "number" ) );
     }
 
     private Matcher<PathItem> hasResponseMediaType( String... mediaTypes ) {
