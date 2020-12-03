@@ -62,6 +62,7 @@ import org.slf4j.Logger;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -182,9 +183,7 @@ public class OafResource implements Resource {
 
         List<FeatureStore> featureStores = retrieveFeatureStoreIds();
         for ( FeatureStore featureStore : featureStores ) {
-            AppSchema schema = featureStore.getSchema();
-            FeatureType[] featureTypes = schema.getFeatureTypes();
-            addFeatureTypesOfStore( metadata, featureTypeNames, featureStore, featureTypes );
+            addFeatureTypesOfStore( metadata, featureTypeNames, featureStore );
         }
         return featureTypeNames;
 
@@ -232,22 +231,31 @@ public class OafResource implements Resource {
     }
 
     private void addFeatureTypesOfStore( OWSMetadataProvider metadata,
-                                         Map<String, FeatureTypeMetadata> featureTypeNames, FeatureStore featureStore,
-                                         FeatureType[] featureTypes )
+                                         Map<String, FeatureTypeMetadata> featureTypeNames, FeatureStore featureStore )
                     throws InvalidConfigurationException {
+        AppSchema schema = featureStore.getSchema();
+        FeatureType[] featureTypes = schema.getFeatureTypes();
         for ( FeatureType featureType : featureTypes ) {
             QName name = featureType.getName();
-            if ( !name.getNamespaceURI().equals( GMLNS ) && !name.getNamespaceURI().equals( GML3_2_NS ) ) {
-                try {
-                    QName dateTimeProperty = getDateTimeProperty( name );
-                    org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata =
-                                    metadata != null ? metadata.getDatasetMetadata( name ) : null;
-                    FeatureTypeMetadata ftMetadata = createFeatureTypeMetadata( featureStore, name, dateTimeProperty,
-                                                                                datasetMetadata );
-                    featureTypeNames.put( name.getLocalPart(), ftMetadata );
-                } catch ( FeatureStoreException e ) {
-                    throw new InvalidConfigurationException( "Feature type could not be parsed", e );
-                }
+            if ( featureStore.isMapped( name ) ) {
+                addFeatureType( metadata, featureTypeNames, featureStore, name );
+            }
+        }
+    }
+
+    private void addFeatureType( OWSMetadataProvider metadata, Map<String, FeatureTypeMetadata> featureTypeNames,
+                                 FeatureStore featureStore, QName name )
+                            throws InvalidConfigurationException {
+        if ( !name.getNamespaceURI().equals( GMLNS ) && !name.getNamespaceURI().equals( GML3_2_NS ) ) {
+            try {
+                QName dateTimeProperty = getDateTimeProperty( name );
+                org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata =
+                                        metadata != null ? metadata.getDatasetMetadata( name ) : null;
+                FeatureTypeMetadata ftMetadata = createFeatureTypeMetadata( featureStore, name, dateTimeProperty,
+                                                                            datasetMetadata );
+                featureTypeNames.put( name.getLocalPart(), ftMetadata );
+            } catch ( FeatureStoreException e ) {
+                throw new InvalidConfigurationException( "Feature type could not be parsed", e );
             }
         }
     }
