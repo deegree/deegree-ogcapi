@@ -256,15 +256,23 @@ of the https://download.deegree.org/documentation/current/html/#anchor-configura
 
 NOTE: The _{featureId}_ is defined by the feature store configuration. Use the element `<FIDMapping/>` to define the mapping of this attribute.
 
-===== Using schema-driven FeatureStore configurations
+===== Using schema- or table-driven FeatureStore configurations
 
-When using an GML application schema in the FeatureStore configuration the schema is used in the OpenAPI document for XML and JSON encoding to describe the data types. Is no application schema provided
-the data type description is derived from the FeatureStore mapping (table-driven mode).
+When using an GML application schema in the FeatureStore configuration the schema is used in the OpenAPI document for XML and JSON encoding to describe the data types (schema-driven mode). Is no application schema provided the data type description is derived from the FeatureStore mapping (table-driven mode).
+
+[width="100%",cols="15%,15%,15%,55%",options="header",]
+|===
+| |Table-driven |Schema-driven | Description
+| GML encoding | supported | supported | fully supports GML 3.2 and all deegree mappings
+| JSON encoding | supported | supported | derived from GML encoding without feature references and complex types
+| HTML encoding | limited | limited | derived from JSON encoding, only primitive properties and lists of primitives
+| GML schema | not provided | not provided | not linked in OpenAPI document
+| JSON schema | without GML properties | including GML properties | data type definition is provided in OpenAPI document
+|===
+
 
 More information about table-driven and schema-driven mode is provided in section "Mapping GML application schemas"
 of the https://download.deegree.org/documentation/current/html/#_mapping_gml_application_schemas[deegree webservices handbook].
-
-NOTE: When using the schema-driven mode always copy the GML application schema into the `appschemas/` directory of the workspace and reference the schema in the FeatureStore configuration.
 
 [[config_htmlview]]
 ==== HTML encoding configuration
