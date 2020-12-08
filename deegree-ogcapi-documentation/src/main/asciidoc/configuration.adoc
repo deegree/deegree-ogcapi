@@ -83,10 +83,10 @@ To provide general information about the datasets provider the following configu
 .ogcapi/datasets.xml
 [source,xml]
 ----
-<Datasets configVersion="3.4.0"
-                        xmlns="http://www.deegree.org/ogcapi/datasets"
-                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  http://schemas.deegree.org/ogcapi/datasets/3.4.0/datasets.xsd">
+<Datasets xmlns="http://www.deegree.org/ogcapi/datasets"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  http://schemas.deegree.org/ogcapi/datasets/3.4.0/datasets.xsd"
+          configVersion="3.4.0">
   <Title>Datasets Title</Title>
   <Description>Datasets Description</Description>
   <Contact>
@@ -126,10 +126,10 @@ Each dataset is configured in a separate file. The following example shows a min
 .ogcapi/streets.xml
 [source,xml]
 ----
-<deegreeOAF configVersion="3.4.0"
-            xmlns="http://www.deegree.org/ogcapi/features"
+<deegreeOAF xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/ogcapi/features/3.4.0/features.xsd">
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/ogcapi/features/3.4.0/features.xsd"
+            configVersion="3.4.0">
 
   <FeatureStoreId>streets</FeatureStoreId>  <!--1-->
 
@@ -150,10 +150,10 @@ The next example shows a configuration for a dataset called "trees" with all opt
 .ogcapi/trees.xml
 [source,xml]
 ----
-<deegreeOAF configVersion="3.4.0"
-            xmlns="http://www.deegree.org/ogcapi/features"
+<deegreeOAF xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/ogcapi/features/3.4.0/features.xsd">
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/ogcapi/features/3.4.0/features.xsd"
+            configVersion="3.4.0">
 
   <FeatureStoreId>trees</FeatureStoreId>  <!--1-->
 
@@ -256,6 +256,16 @@ of the https://download.deegree.org/documentation/current/html/#anchor-configura
 
 NOTE: The _{featureId}_ is defined by the feature store configuration. Use the element `<FIDMapping/>` to define the mapping of this attribute.
 
+===== Using schema-driven FeatureStore configurations
+
+When using an GML application schema in the FeatureStore configuration the schema is used in the OpenAPI document for XML and JSON encoding to describe the data types. Is no application schema provided
+the data type description is derived from the FeatureStore mapping (table-driven mode).
+
+More information about table-driven and schema-driven mode is provided in section "Mapping GML application schemas"
+of the https://download.deegree.org/documentation/current/html/#_mapping_gml_application_schemas[deegree webservices handbook].
+
+NOTE: When using the schema-driven mode always copy the GML application schema into the `appschemas/` directory of the workspace and reference the schema in the FeatureStore configuration.
+
 [[config_htmlview]]
 ==== HTML encoding configuration
 
@@ -264,10 +274,10 @@ To configure the HTML encoding a configuration file can be used. The following e
 .html/treesview.xml
 [source,xml]
 ----
-<HtmlView configVersion="3.4.0"
-          xmlns="http://www.deegree.org/ogcapi/htmlview"
+<HtmlView xmlns="http://www.deegree.org/ogcapi/htmlview"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview http://schemas.deegree.org/ogcapi/3.4.0/htmlview.xsd">
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview http://schemas.deegree.org/ogcapi/3.4.0/htmlview.xsd"
+          configVersion="3.4.0">
 
   <CssFile>../html/lgv.css</CssFile>  <!--1-->
   <LegalNoticeUrl>https://www.hamburg.de/legalNotice/</LegalNoticeUrl> <!--2-->
@@ -328,7 +338,10 @@ The following excerpt of the _streets_metadata.xml_ shows which options are avai
 .services/streets_metadata.xml
 [source,xml]
 ----
-<deegreeServicesMetadata>
+<deegreeServicesMetadata xmlns="http://www.deegree.org/services/metadata"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:schemaLocation="http://www.deegree.org/services/metadata http://schemas.deegree.org/services/metadata/3.4.0/metadata.xsd"
+                         configVersion="3.4.0">
 
   <ServiceIdentification> <!--1-->
     <Title>deegree OGC API - Features</Title>
