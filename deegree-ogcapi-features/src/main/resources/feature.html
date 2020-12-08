@@ -178,6 +178,16 @@
                                     <td v-cloak v-if="(typeof property) == 'string' && property.startsWith('http')" >
                                         <a v-bind:href="property" target="_blank">Link</a>
                                     </td>
+                                    <td v-cloak v-else-if="Array.isArray(property) && property.length > 0 && typeof(property[0]) !== 'object'" >
+                                        <ul class="propertylist">
+                                            <li v-for="item in property">
+                                                {{ item }}
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td v-cloak v-else-if="(Array.isArray(property) && property.length > 0) || typeof(property) === 'object'" >
+                                        <a v-bind:href="jsonLink" target="_blank">Complex object, view as json</a>
+                                    </td>
                                     <td v-cloak v-else >{{ property }}</td>
                             </tr>
                             </tbody>
@@ -238,6 +248,7 @@ var App = new Vue({
     featureId: '',
     properties: '',
     links: '',
+    jsonLink: '',
     isItemAvailable: false
   },
 
@@ -258,6 +269,7 @@ var App = new Vue({
         this.featureId = json.features[0].id;
         this.properties = json.features[0].properties;
         this.links = json.links;
+        this.jsonLink: baseUrl + '?f=json',
         fetchConfigAndSetFeature(json);
       } else {
         document.getElementById('map').style.display='none';
