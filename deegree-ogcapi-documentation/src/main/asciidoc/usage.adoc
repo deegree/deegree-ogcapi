@@ -124,7 +124,7 @@ See section <<query_parameter>> for more information about supported other query
 [[html_encoding]]
 === Using the HTML interface
 
-The HTML interface provides easy access to the spatial data using a browser.
+The HTML interface provides easy access to the spatial data using a browser (check the list of <<supported_browser>>).
 It requires no additional client or browser plugin to browse the data. The browser sends by default
 the HTTP header `Accept` with the value `text/html` and therefore each resource is returned in HTML encoding.
 
