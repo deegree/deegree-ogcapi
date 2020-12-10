@@ -64,6 +64,10 @@ The interface is grouped in the sections:
 [caption="Figure 1: "]
 image::swagger_start.png[Swagger start page]
 
+NOTE: For each resource in the data section a schema description is provided derived from
+the underlying feature store configuration. See section <<config_feature_store>> for more information which are supported.
+Schema and example data may vary depending on the selected encoding and the underlying configuration.
+
 For all resources listed on the first three sections the following description explains how to send a request and retrieve the response in a given encoding.
 
 [[use_request]]
