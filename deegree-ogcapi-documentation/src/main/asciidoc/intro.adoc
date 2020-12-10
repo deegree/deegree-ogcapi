@@ -35,6 +35,7 @@ deegree OAF was built on top of the robust API and configuration concept of http
 ** connects to several data sources such as files, and databases
 ** serves a rich HTML output format including a map component based on https://openlayers.org/[OpenLayers]
 ** links to metadata in different formats
+** supports complex data types such as arrays and structured objects
 
 === Quick Start
 
