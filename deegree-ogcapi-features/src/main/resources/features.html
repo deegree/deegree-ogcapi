@@ -107,6 +107,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/vue-router@2.0.0/dist/vue-router.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@2.5.0/dist/bootstrap-vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
@@ -291,7 +292,7 @@
             -->
             <div class="row">
                 <div class="col d-flex justify-content-center">
-                    <b-pagination-nav :kex="paging" :link-gen="linkGen" :number-of-pages="numberOfPages" use-router></b-pagination-nav>
+                    <b-pagination-nav :kex="paging" :link-gen="linkGen" v-model="currentPage" :number-of-pages="numberOfPages" use-router></b-pagination-nav>
                 </div>
             </div>
             <div class="row">
@@ -340,9 +341,10 @@
             </div>
             <div class="row">
                 <div class="col d-flex justify-content-center">
-                    <b-pagination-nav :kex="paging" :link-gen="linkGen" :number-of-pages="numberOfPages" use-router></b-pagination-nav>
+                    <b-pagination-nav :kex="paging" :link-gen="linkGen" v-model="currentPage" :number-of-pages="numberOfPages" use-router></b-pagination-nav>
                 </div>
             </div>
+            <router-view name="router" />
         </div>
         <div class="col-md">
             <div id="map" class="map">
@@ -385,7 +387,12 @@
 </html>
 
 <script>
+const router = new VueRouter({
+  mode: 'history'
+})
+
 new Vue({
+  router,
   el: '#app',
   data() {
     return {
@@ -395,10 +402,10 @@ new Vue({
           }],
       items: '',
       paging: 0,
-      currentPage: 0,
+      currentPage: 1,
       perPage: 10,
       totalItems: 0,
-      numberOfPages: 0,
+      numberOfPages: 1,
       defaultLimit: 10,
       defaultOffset: 0,
       isFilterHidden: true,
@@ -429,10 +436,8 @@ new Vue({
   },
   methods: {
     linkGen(pageNum) {
-      var baseUrl = retrieveBaseUrl();
       var params = parseFeaturesRequestParams();
       var featuresPerPage = getParamByName(params, 'limit', this.defaultLimit);
-      var featuresSkipped = getParamByName(params, 'offset', this.defaultOffset);
 
       if (pageNum == 1) {
         params['offset'] = 0;
@@ -441,13 +446,11 @@ new Vue({
       }
       params['limit'] = featuresPerPage;
 
-      var requestedPage = Math.floor(featuresSkipped / featuresPerPage) + 1
-      if(pageNum == requestedPage){
-        return window.location.href;
-      }
-
-      var featuresUrl = createUrlWithQuery(baseUrl, params);
-      return featuresUrl;
+      return {
+         name: 'router',
+         path: router.currentRoute.path,
+         query: params
+      };
     },
     async fetchData() {
       var baseUrl = retrieveBaseUrl();
@@ -469,6 +472,12 @@ new Vue({
       this.defaultLimit = json.numberReturned;
       this.limitParam = parseParamFromUrl(featuresUrl, 'limit', this.defaultLimit);
       this.numberOfPages  = Math.ceil(this.totalItems/this.limitParam);
+
+
+      var params = parseFeaturesRequestParams();
+      var featuresPerPage = getParamByName(params, 'limit', this.defaultLimit);
+      var featuresSkipped = getParamByName(params, 'offset', this.defaultOffset);
+      this.currentPage = Math.floor(featuresSkipped / featuresPerPage) + 1;
 
       this.forceRerenderPaging();
       fetchConfigAndSetFeatures(json);
@@ -577,6 +586,15 @@ new Vue({
             this.filterTimeEndValue = endDate[1].substring(0,5);
           }
         }
+      }
+    }
+  },
+  watch: {
+    currentPage: {
+      handler: function(value) {
+        this.fetchData().catch(error => {
+          console.error(error)
+        })
       }
     }
   }
