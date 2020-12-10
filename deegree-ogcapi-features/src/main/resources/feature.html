@@ -269,7 +269,7 @@ var App = new Vue({
         this.featureId = json.features[0].id;
         this.properties = json.features[0].properties;
         this.links = json.links;
-        this.jsonLink: baseUrl + '?f=json',
+        this.jsonLink = baseUrl + '?f=json';
         fetchConfigAndSetFeature(json);
       } else {
         document.getElementById('map').style.display='none';
