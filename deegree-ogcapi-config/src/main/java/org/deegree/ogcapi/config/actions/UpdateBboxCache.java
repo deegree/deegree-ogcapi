@@ -100,8 +100,10 @@ public class UpdateBboxCache {
         for ( FeatureType featureType : featureTypes ) {
             QName featureTypeName = featureType.getName();
             try {
-                featureStore.calcEnvelope( featureTypeName );
-                updateLog.addSucceed( featureStoreId, featureTypeName );
+                if ( featureStore.isMapped( featureTypeName ) ) {
+                    featureStore.calcEnvelope( featureTypeName );
+                    updateLog.addSucceed( featureStoreId, featureTypeName );
+                }
             } catch ( FeatureStoreException e ) {
                 updateLog.addFailed( featureStoreId, featureTypeName );
                 LOG.debug( "Update of FeatureType " + featureTypeName + ", from FeatureStore with ID " + featureStoreId
