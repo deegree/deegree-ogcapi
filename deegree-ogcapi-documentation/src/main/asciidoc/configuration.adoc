@@ -244,7 +244,7 @@ Currently, deegree OAF supports the following feature stores:
 - `SQLFeatureStore` - retrieves data from a database supporting an extended mapping.
 - `SimpleSQLFeatureStore` - retrieves data from a database using a single table mapping.
 - `MemoryFeatureStore` - retrieves data from a file in GML file format.
-- `ShapeFeatureStore` - retrieves data from a file in SHAPE file format. The Storage CRS is required when using the ShapeFeatureStore.
+- `ShapeFeatureStore` - retrieves data from a file in SHAPE file format. The Storage CRS is required when using this FeatureStore!
 
 The supported databases for `SQLFeatureStore` and `SimpleSQLFeatureStore` are:
 
@@ -258,16 +258,18 @@ NOTE: The _{featureId}_ is defined by the feature store configuration. Use the e
 
 ===== Using schema- or table-driven FeatureStore configurations
 
-When using an GML application schema in the FeatureStore configuration the schema is used in the OpenAPI document for XML and JSON encoding to describe the data types (schema-driven mode). Is no application schema provided the data type description is derived from the FeatureStore mapping (table-driven mode).
+When using a GML application schema in the feature store configuration the schema is used in the OpenAPI document for XML and JSON encoding to describe the data types (schema-driven mode). If no application schema is provided the data type description is derived from the feature store mapping (table-driven mode).
+
+The following table shows the supported features depending on the feature store configuration.
 
 [width="100%",cols="15%,15%,15%,55%",options="header",]
 |===
 | |Table-driven |Schema-driven | Description
-| GML encoding | supported | supported | fully supports GML 3.2 and all deegree mappings
-| JSON encoding | supported | supported | derived from GML encoding without feature references and complex types
-| HTML encoding | limited | limited | derived from JSON encoding, only primitive properties and lists of primitives
-| GML schema | not provided | not provided | not linked in OpenAPI document
-| JSON schema | without GML properties | including GML properties | data type definition is provided in OpenAPI document
+|GML encoding | supported | supported |fully supports GML 3.2 and all deegree mappings
+|JSON encoding | supported | supported |derived from GML encoding without feature references and complex types
+|HTML encoding | limited | limited |derived from JSON encoding, only primitive properties and lists of primitives
+|GML schema | not provided | not provided |not linked in OpenAPI document
+|JSON schema | without GML properties |including GML properties | data type definition is provided in OpenAPI document
 |===
 
 
