@@ -37,6 +37,7 @@ import org.junit.Test;
 
 import javax.xml.namespace.QName;
 import java.net.URL;
+import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -113,8 +114,23 @@ public class OafOpenApiFilterTest {
         assertThat( path, notNullValue() );
         Schema schema = path.getGet().getResponses().getDefault().getContent().get(
                                 "application/geo+json" ).getSchema();
-        Schema featuresSchema = (Schema) schema.getProperties().get( "features" );
-        ArraySchema leistungsnameSchema = (ArraySchema) featuresSchema.getProperties().get( "Leistungsname" );
+        Map<String, Schema> properties = schema.getProperties();
+        assertThat( properties.get( "type" ).getType(), is( "string" ) );
+        assertThat( properties.get( "numberMatched" ).getType(), is( "integer" ) );
+        assertThat( properties.get( "numberReturned" ).getType(), is( "integer" ) );
+        assertThat( properties.get( "timeStamp" ).getType(), is( "string" ) );
+        assertThat( properties.get( "links" ).getType(), is( "array" ) );
+
+        Schema featuresSchema = (Schema) properties.get( "features" );
+        Map<String, Schema> featuresProperties = featuresSchema.getProperties();
+
+        assertThat( featuresProperties.get( "type" ).getType(), is( "string" ) );
+        assertThat( featuresProperties.get( "id" ).getType(), is( "string" ) );
+        assertThat( featuresProperties.get( "geometry" ).getType(), is( "object" ) );
+        assertThat( featuresProperties.get( "properties" ).getType(), is( "object" ) );
+
+        Schema propertiesSchema = featuresProperties.get( "properties" );
+        ArraySchema leistungsnameSchema = (ArraySchema) propertiesSchema.getProperties().get( "Leistungsname" );
         assertThat( leistungsnameSchema.getType(), is( "array" ) );
         assertThat( leistungsnameSchema.getItems().getType(), is( "string" ) );
     }
@@ -138,7 +154,9 @@ public class OafOpenApiFilterTest {
         Schema schema = path.getGet().getResponses().getDefault().getContent().get(
                                 "application/geo+json" ).getSchema();
         Schema featuresSchema = (Schema) schema.getProperties().get( "features" );
-        Schema wohnungslose_jepSchema = (Schema) featuresSchema.getProperties().get( "wohnungslose_jep" );
+        Schema propertiesSchema = (Schema) featuresSchema.getProperties().get( "properties" );
+
+        Schema wohnungslose_jepSchema = (Schema) propertiesSchema.getProperties().get( "wohnungslose_jep" );
         Schema zeitreiheSchema = (Schema) wohnungslose_jepSchema.getProperties().get( "zeitreihe" );
 
         ArraySchema zeitreihenElementSchema = (ArraySchema) zeitreiheSchema.getProperties().get( "zeitreihen-element" );

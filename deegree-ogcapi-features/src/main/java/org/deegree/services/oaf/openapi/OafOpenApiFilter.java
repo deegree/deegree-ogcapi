@@ -34,7 +34,6 @@ import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.servers.Server;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.xerces.xs.XSComplexTypeDefinition;
 import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSModelGroup;
@@ -73,7 +72,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static org.apache.xerces.xs.XSConstants.ELEMENT_DECLARATION;
 import static org.apache.xerces.xs.XSConstants.MODEL_GROUP;
-import static org.apache.xerces.xs.XSConstants.WILDCARD;
 import static org.apache.xerces.xs.XSTypeDefinition.SIMPLE_TYPE;
 import static org.apache.xerces.xs.XSTypeDefinition.COMPLEX_TYPE;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
@@ -114,6 +112,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     public static final List<String> SUPPPORTED_GEOM_TYPES = Arrays.asList( "Point", "LineString", "Polygon", "MultiPoint", "MultiLineString",
                                                                             "MultiPolygon" );
+
+    public static final String GEOMETRY_PROPERTY_NAME = "geometry";
 
     private final String datasetId;
 
@@ -249,17 +249,28 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     private Schema createFeatureResponseSchema( FeatureType featureType ) {
         Schema schema = new Schema();
+        Schema type = new Schema()
+                        .name( "type" )
+                        .type( "string" );
+        type.addEnumItemObject( "FeatureCollection" );
         Schema numberMatched = new Schema()
                         .name( "numberMatched" )
-                        .type( "integer" );
+                        .type( "integer" )
+                        .example( 178 );
         Schema numberReturned = new Schema()
                         .name( "numberReturned" )
-                        .type( "integer" );
+                        .type( "integer" )
+                        .example( 10 );
+        Schema timeStamp = new Schema()
+                        .name( "timeStamp" )
+                        .type( "string" ).example( "2020-12-14T09:32:42.669Z" );
         Schema links = new ArraySchema()
                         .items( new Schema().$ref( "#/components/schemas/Link" ) )
                         .name( "links" );
+        schema.addProperties( "type", type );
         schema.addProperties( "numberMatched", numberMatched );
         schema.addProperties( "numberReturned", numberReturned );
+        schema.addProperties( "timeStamp", timeStamp );
         schema.addProperties( "links", links );
         schema.addProperties( "features", createFeatureTypeSchema( featureType ) );
         return schema;
@@ -267,28 +278,44 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     private Schema createFeatureTypeSchema( FeatureType featureType ) {
         Schema<Object> schema = new Schema<>();
-        featureType.getPropertyDeclarations().forEach( propertyType -> {
-            Schema propertiesItem = createSchemaForProperty( propertyType );
-            schema.addProperties( propertyType.getName().getLocalPart(), propertiesItem );
-        } );
+        Schema type = new Schema()
+                                .name( "type" )
+                                .type( "string" );
+        type.addEnumItemObject( "Feature" );
+        Schema id = new Schema()
+                                .name( "id" )
+                                .type( "string" )
+                                .example( "ID_1" );
+        schema.addProperties( "type", type );
+        schema.addProperties( "id", id );
+        addGeoemtrySchema( featureType, schema );
+        addPropertiesSchema( featureType, schema );
         return schema;
+    }
+
+    private void addGeoemtrySchema( FeatureType featureType, Schema<Object> schema ) {
+        if ( featureType.getDefaultGeometryPropertyDeclaration() != null ) {
+            Schema geometryPropertySchema = createGeometryPropertySchema();
+            schema.addProperties( GEOMETRY_PROPERTY_NAME, geometryPropertySchema );
+        }
+    }
+
+    private void addPropertiesSchema( FeatureType featureType, Schema<Object> schema ) {
+        Schema properties = new Schema()
+                                .name( "properties" )
+                                .type( "object" );
+        featureType.getPropertyDeclarations().forEach( propertyType -> {
+            Schema propertyItem = createSchemaForProperty( propertyType );
+            if ( propertyItem != null ) {
+                properties.addProperties( propertyType.getName().getLocalPart(), propertyItem );
+            }
+        } );
+        schema.addProperties( "properties", properties );
     }
 
     private Schema createSchemaForProperty( PropertyType propertyType ) {
         if ( propertyType instanceof GeometryPropertyType ) {
-            Map<String, Schema> properties = new HashMap<>();
-            Schema typeEnum = new Schema();
-            typeEnum.setDescription( "Type of the geometry, one of " + SUPPPORTED_GEOM_TYPES.stream().collect(
-                                    Collectors.joining( ", " ) ) );
-            typeEnum.setEnum( SUPPPORTED_GEOM_TYPES );
-            properties.put( "type", typeEnum );
-            Schema coordinatesSchema = new ArraySchema().items( new Schema().type( "number" ) ).description(
-                                    "An array of double values or an array of arrays of double values describing the geometry" );
-            properties.put( "coordinates", coordinatesSchema );
-            return new Schema().name( propertyType.getName().getLocalPart() ).description(
-                                    "Geometry (" + SUPPPORTED_GEOM_TYPES.stream().collect( Collectors.joining( ", " ) )
-                                    + ") as specified in RFC 7946." ).type(
-                                    mapToPropertyType( propertyType ) ).properties( properties );
+            return null;
         }
         if ( propertyType instanceof SimplePropertyType && propertyType.getMaxOccurs() == -1 ) {
             return new ArraySchema().items( new Schema().type( mapToPropertyType( propertyType ) ) ).name(
@@ -297,11 +324,27 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         if ( propertyType instanceof CustomPropertyType && !isGmlProperty( propertyType ) ) {
             XSComplexTypeDefinition xsdValueType = ( (CustomPropertyType) propertyType ).getXSDValueType();
             XSParticle particle = xsdValueType.getParticle();
+
             Schema propertySchema = new Schema().name( propertyType.getName().getLocalPart() );
             addParticle( propertySchema, particle );
             return propertySchema;
         }
         return new Schema().name( propertyType.getName().getLocalPart() ).type( mapToPropertyType( propertyType ) );
+    }
+
+    private Schema createGeometryPropertySchema() {
+        Map<String, Schema> properties = new HashMap<>();
+        Schema typeEnum = new Schema();
+        typeEnum.setDescription( "Type of the geometry, one of " + SUPPPORTED_GEOM_TYPES.stream().collect(
+                                Collectors.joining( ", " ) ) );
+        typeEnum.setEnum( SUPPPORTED_GEOM_TYPES );
+        properties.put( "type", typeEnum );
+        Schema coordinatesSchema = new ArraySchema().items( new Schema().type( "number" ) ).description(
+                                "An array of double values or an array of arrays of double values describing the geometry" );
+        properties.put( "coordinates", coordinatesSchema );
+        return new Schema().name( GEOMETRY_PROPERTY_NAME ).description(
+                                "Geometry (" + SUPPPORTED_GEOM_TYPES.stream().collect( Collectors.joining( ", " ) )
+                                + ") as specified in RFC 7946." ).type( "object" ).properties( properties );
     }
 
     private void addParticle( Schema schema, XSParticle particle ) {
