@@ -317,7 +317,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         if ( propertyType instanceof GeometryPropertyType ) {
             return null;
         }
-        if ( propertyType instanceof SimplePropertyType && propertyType.getMaxOccurs() == -1 ) {
+        if ( propertyType instanceof SimplePropertyType && isMaxOccursGreaterThanOne( propertyType ) ) {
             return new ArraySchema().items( new Schema().type( mapToPropertyType( propertyType ) ) ).name(
                                     propertyType.getName().getLocalPart() ).type( "array" );
         }
@@ -325,9 +325,17 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
             XSComplexTypeDefinition xsdValueType = ( (CustomPropertyType) propertyType ).getXSDValueType();
             XSParticle particle = xsdValueType.getParticle();
 
-            Schema propertySchema = new Schema().name( propertyType.getName().getLocalPart() );
-            addParticle( propertySchema, particle );
-            return propertySchema;
+            if ( isMaxOccursGreaterThanOne( propertyType ) ) {
+                Schema arraySchema = new ArraySchema().items(
+                                        new Schema().type( mapToPropertyType( propertyType ) ) ).name(
+                                        propertyType.getName().getLocalPart() ).type( "array" );
+                addParticle( arraySchema, particle );
+                return arraySchema;
+            } else {
+                Schema propertySchema = new Schema().name( propertyType.getName().getLocalPart() );
+                addParticle( propertySchema, particle );
+                return propertySchema;
+            }
         }
         return new Schema().name( propertyType.getName().getLocalPart() ).type( mapToPropertyType( propertyType ) );
     }
@@ -382,7 +390,12 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         case SIMPLE_TYPE: {
             Schema simpleSchema = new Schema().name( elementDeclaration.getName() );
             simpleSchema.type( mapToPropertyType( (XSSimpleTypeDefinition) baseType ) );
-            schema.addProperties( elementDeclaration.getName(), simpleSchema );
+            if ( particle.getMaxOccursUnbounded() ) {
+                ArraySchema arraySchema = new ArraySchema().items( simpleSchema );
+                schema.addProperties( elementDeclaration.getName(), arraySchema );
+            } else {
+                schema.addProperties( elementDeclaration.getName(), simpleSchema );
+            }
             break;
         }
         case COMPLEX_TYPE: {
@@ -642,6 +655,10 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         default:
             return "object";
         }
+    }
+
+    private boolean isMaxOccursGreaterThanOne( PropertyType propertyType ) {
+        return propertyType.getMaxOccurs() == -1 || propertyType.getMaxOccurs() > 1;
     }
 
 }
