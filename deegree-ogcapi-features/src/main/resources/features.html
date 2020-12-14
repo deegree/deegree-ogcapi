@@ -652,10 +652,8 @@ var AppBreadcrump = new Vue({
     self.datasetLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
     self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
     self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
-    
-    var currentPath = router.currentRoute.fullPath;
-    self.selfJsonLink = currentPath.indexOf("?") > -1 ? currentPath + "&f=json" : currentPath + "?f=json";
-    self.selfXmlLink = currentPath.indexOf("?") > -1 ? currentPath + "&f=xml" : currentPath + "?f=xml";
+
+    this.setJsonAndXmlLinks();
 
     $.ajax({
       dataType: "json",
@@ -665,6 +663,20 @@ var AppBreadcrump = new Vue({
         self.collectionId = data.title;
       }
     });
+  },
+  methods: {
+    setJsonAndXmlLinks(){
+      var currentPath = router.currentRoute.fullPath;
+      this.selfJsonLink = currentPath.indexOf("?") > -1 ? currentPath + "&f=json" : currentPath + "?f=json";
+      this.selfXmlLink = currentPath.indexOf("?") > -1 ? currentPath + "&f=xml" : currentPath + "?f=xml";
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      if(to !== from ) {
+        this.setJsonAndXmlLinks();
+      }
+    }
   }
 })
 
