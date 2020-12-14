@@ -630,6 +630,7 @@ var AppCollection = new Vue({
 })
 
 var AppBreadcrump = new Vue({
+  router,
   el: '#breadcrump',
   data: {
     collectionId: '',
@@ -651,8 +652,10 @@ var AppBreadcrump = new Vue({
     self.datasetLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
     self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
     self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
-    self.selfJsonLink = window.location.href.indexOf("?") > -1 ? window.location.href + "&f=json" : window.location.href + "?f=json";
-    self.selfXmlLink = window.location.href.indexOf("?") > -1 ? window.location.href + "&f=xml" : window.location.href + "?f=xml";
+    
+    var currentPath = router.currentRoute.fullPath;
+    self.selfJsonLink = currentPath.indexOf("?") > -1 ? currentPath + "&f=json" : currentPath + "?f=json";
+    self.selfXmlLink = currentPath.indexOf("?") > -1 ? currentPath + "&f=xml" : currentPath + "?f=xml";
 
     $.ajax({
       dataType: "json",
