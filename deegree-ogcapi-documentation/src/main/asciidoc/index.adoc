@@ -20,7 +20,7 @@ lat/lon - Gesellschaft für raumbezogene Informationssysteme mbH +
 info@lat-lon.de http://www.lat-lon.de/ +
 Aennchenstraße 19, D-53177 Bonn +
 
-(C) Copyright lat/lon 2020
+(C) Copyright lat/lon 2020-2021
 
 include::intro.adoc[]
 
