@@ -171,12 +171,12 @@ The next example shows a configuration for a dataset called "trees" with all opt
 
   <Metadata>
     <ProviderLicense> <!--6-->
-      <Name>ProviderLicense</Name>
-      <Url>https://www.apache.org/licenses/LICENSE-2.0</Url>
+      <Name>Provider license</Name>
+      <Description>no limitations to public access</Description>
     </ProviderLicense>
     <DatasetLicense>  <!--7-->
-      <Name>DatasetLicense</Name>
-      <Url>https://www.apache.org/licenses/LICENSE-2.0</Url>
+      <Name>Dataset license</Name>
+      <Url>https://www.govdata.de/dl-de/by-2-0</Url>
     </DatasetLicense>
     <DatasetCreator> <!--8-->
       <Name>Dataset Creator Name</Name>
@@ -194,8 +194,8 @@ The next example shows a configuration for a dataset called "trees" with all opt
 <3> Additional CRS, to retrieve data in the given CRS the optional query parameter `+{crs}+` needs to be used, see section <<query_parameter>> for more information.
 <4> DateTime property defines a property _app:seedyear_ of the feature type _app:trees_ as a datetime property.
 <5> Identifier of the HTML encoding configuration, links to file _html/treesview.xml_.
-<6> Provider license applicable to the service provider
-<7> Dataset license applicable to the dataset
+<6> Provider license applicable to the service provider with description element
+<7> Dataset license applicable to the dataset using link to license element
 <8> Dataset provider contact details
 <9> Metadata link in format `application/xml` for the dataset
 <10> Metadata link in format `text/html` for the dataset
@@ -211,7 +211,7 @@ This configuration file can contain the following elements:
 |QueryCRS |0..n |String |The CRS codes supported, `CRS84` must be provided as the first element
 |DateTimeProperties |0..1 |Complex |Configuration of date and time properties, see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_parameter_datetime[parameter datetime in the OGC API specification] for more information
 |HtmlViewId |0..1 |String |Identifier of the HTML encoding configuration, see <<config_htmlview>> for more information
-|Metadata |0..1 |Complex |Configuration of the dataset metadata
+|Metadata |0..1 |Complex |Configuration of the dataset metadata provided on the dataset's landing page
 |===
 
 The element ```<DateTimeProperties/>``` can contain multiple elements of ```<DateTimeProperty/>``` which has the following subelements:
@@ -234,7 +234,58 @@ The element ```<Metadata/>``` has the following subelements:
 |MetadataURL |0..n |URL |URL of the metadata record describing the dataset, use the attribute `format` to link HTML or XML representation.
 |===
 
+The elements ```<ProviderLicense/>``` and ```<DatasetLicense/>``` can have either a ```<Name/>``` and ```<Description/>``` element or a ```<Name/>``` and ```<URL/>``` element. The ```<URL/>``` can have an optional attribute `format` specifying the media type such as `application/xml` (default is `text/html`). Same applies to the element ```<MetadataURL/>```.
+
+See the following section <<config_metadata>> for more configuration options for metadata.
+
 NOTE: The content of this file is returned under the resource _/datasets/{datasetId}_. This resource per dataset is called landing page. Furthermore the content of this file is provided unter the resource _/datasets/{datasetId}/api_.
+
+[[config_metadata]]
+==== Metadata configuration
+
+The deegree service metadata configuration can be defined for each dataset. Use a file name ending with _{datasetId}_metadata.xml_ to define the service metadata per dataset.
+Use the dataset identifier _{datasetId}_ as a prefix. For example if you have a dataset configured in _streets.xml_ the related metadata file has the file name _streets_metadata.xml_.
+
+The following excerpt of the _streets_metadata.xml_ shows which options are available:
+
+.services/streets_metadata.xml
+[source,xml]
+----
+<deegreeServicesMetadata xmlns="http://www.deegree.org/services/metadata"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:schemaLocation="http://www.deegree.org/services/metadata http://schemas.deegree.org/services/metadata/3.4.0/metadata.xsd"
+                         configVersion="3.4.0">
+
+  <ServiceIdentification> <!--1-->
+    <Title>deegree OGC API - Features</Title>
+    <Abstract>Streets of the city of Hamburg</Abstract>
+  </ServiceIdentification>
+
+  <DatasetMetadata>
+    <MetadataUrlTemplate>http://example.metadata.org/services/csw?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=${metadataSetId}</MetadataUrlTemplate> <!--2-->
+    <MetadataUrlTemplate format="text/html">http://example.metadata.org/csw/htmlrepaesentation/${metadataSetId}</MetadataUrlTemplate> <!--3-->
+    <Dataset>
+      <Name xmlns:app="http://www.deegree.org/app">app:streets</Name> <!--4-->
+      <Title>Streets</Title> <!--5-->
+      <Abstract>Streets of the city of Hamburg</Abstract>
+      <MetadataSetId>beefcafe-beef-cafe-beef-cafebeefcaf</MetadataSetId>
+    </Dataset>
+  </DatasetMetadata>
+
+</deegreeServicesMetadata>
+----
+<1> Information about the service, in the context of OAF it is used per dataset and is shown on the landing page
+<2> Service metadata link, in the context of OAF this link is used in the collection view link of the metadata
+<3> Service metadata link in format `text/html`, in the context of OAF this link is used in the collection view linking to the HTML representation of the metadata
+<4> Feature collection name which links to the feature type configured, here the {collectionId}
+<5> Title of the feature collection, used in HTML encoding instead of the {collectionId}
+
+NOTE: The file _streets_metadata.xml_ must be stored in the subdirectory _services/_. The file is mandatory.
+
+A detailed documentation of the deegree service metadata configuration is described in section "Metadata"
+of the https://download.deegree.org/documentation/current/html/#anchor-configuration-service-metadata[deegree webservices handbook].
+
+NOTE: The content of this file is returned under the resources _/datasets/{datasetId}_, _/datasets/{datasetId}/collections_ and _/datasets/{datasetId}/collections/{collectionId}_ providing information about metadata.
 
 [[config_feature_store]]
 ==== Feature store configuration
@@ -336,53 +387,6 @@ The element ```<Map/>``` has the following subelements:
 Additional information about the option `CssFile`: The following elements can be configured using a CSS file: the background color of header and footer, images in header and footer, links to help, legal notice, and privacy policy.
 
 NOTE: The content of this file is returned under the resources _/datasets/{datasetId}_ for HTML encoding only.
-
-[[config_metadata]]
-==== Metadata configuration
-
-The service metadata can be defined for each dataset. Use a file name ending with _{datasetId}_metadata.xml_ to define the service metadata per dataset.
-Use the dataset identifier _{datasetId}_ as a prefix. For example if you have a dataset configured in _streets.xml_ the related metadata file has the file name _streets_metadata.xml_.
-
-The following excerpt of the _streets_metadata.xml_ shows which options are available:
-
-.services/streets_metadata.xml
-[source,xml]
-----
-<deegreeServicesMetadata xmlns="http://www.deegree.org/services/metadata"
-                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                         xsi:schemaLocation="http://www.deegree.org/services/metadata http://schemas.deegree.org/services/metadata/3.4.0/metadata.xsd"
-                         configVersion="3.4.0">
-
-  <ServiceIdentification> <!--1-->
-    <Title>deegree OGC API - Features</Title>
-    <Abstract>Streets of the city of Hamburg</Abstract>
-  </ServiceIdentification>
-
-  <DatasetMetadata>
-    <MetadataUrlTemplate>http://example.metadata.org/services/csw?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=${metadataSetId}</MetadataUrlTemplate> <!--2-->
-    <MetadataUrlTemplate format="text/html">http://example.metadata.org/csw/htmlrepaesentation/${metadataSetId}</MetadataUrlTemplate> <!--3-->
-    <Dataset>
-      <Name xmlns:app="http://www.deegree.org/app">app:streets</Name> <!--4-->
-      <Title>Streets</Title> <!--5-->
-      <Abstract>Streets of the city of Hamburg</Abstract>
-      <MetadataSetId>beefcafe-beef-cafe-beef-cafebeefcaf</MetadataSetId>
-    </Dataset>
-  </DatasetMetadata>
-
-</deegreeServicesMetadata>
-----
-<1> Information about the service, in the context of OAF it is used per dataset
-<2> Service metadata link
-<3> Service metadata link in format `text/html`
-<4> Dataset name which links to the feature type configured, here the {collectionId}
-<5> Title of the feature collection, used in HTML encoding instead of the {collectionId}
-
-NOTE: The file _streets_metadata.xml_ must be stored in the subdirectory _services/_. The file is mandatory.
-
-A detailed documentation of the metadata configuration is described in section "Metadata"
-of the https://download.deegree.org/documentation/current/html/#anchor-configuration-service-metadata[deegree webservices handbook].
-
-NOTE: The content of this file is returned under the resources _/datasets/{datasetId}_ providing information about metadata.
 
 [[config_restapi]]
 === deegree config REST-API

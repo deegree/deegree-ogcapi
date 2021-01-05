@@ -2,18 +2,21 @@
 
 This section show how to get help in case of problems.
 
+[[help_knownIssues]]
 === Known Issues
 
-* Mixing legacy service configuration with OGC API configuration is currently not supported by deegree OAF webapp.
+* Mixing legacy service configuration with OGC API configuration is currently not supported by deegree OAF webapp. See the <<help_faq>> how to serve your data with deegree webservices and deegree OAF from the same workspace configuration.
 
 * Startup time of deegree OAF webapp may increase noticeably when the deegree workspace contains many resources (e.g. more than 100 files).
 
-* Using the browser's back button when navigating the HTML view may result in empty pages or switch to JSON encoding. Affected browsers: Google Chrome, Chromium.
+* Using the browser's navigation buttons when using the HTML view may result in empty pages or the switch to JSON encoding. Affected browsers: Google Chrome, Chromium. You can avoid this by enabling the Vary HTTP response header in your HTTP server configuration. Check the HTTP server documentation how to configure this.
 
+[[help_support]]
 === Support
 
 Professional support is provided by deegree enterprise team. Contact support@deegree-enterprise.de in case of any inquiry.
 
+[[help_faq]]
 === FAQ
 [qanda]
 How to update the _bbox_cache.properties_?::
