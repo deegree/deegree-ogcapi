@@ -11,11 +11,11 @@ The installation of these components must be done prior of this installation.
 
 The server hosting the service should have at least 4 GB of free memory and more than 2 CPU cores available.
 
-NOTE: OpenJDK 8 with https://tomcat.apache.org/download-90.cgi[Apache Tomcat 9] is the recommended runtime environment.
+NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 8] with https://tomcat.apache.org/download-90.cgi[Apache Tomcat 9] is the recommended runtime environment.
 
 === Download
 
-The deegree OAF webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database from the deegree Enterprise repository.footnote:[URL is http://buildserver.deegree-enterprise.de/nexus/. Please contact support@deegree-enterprise.de for detailed information how to access the artifacts.].
+The deegree OAF webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database from the deegree Enterprise repository.footnote:[URL is http://buildserver.deegree-enterprise.de/nexus/. Please contact support@deegree-enterprise.de for detailed information how to access the artifacts. Supscription required.].
 Both artifacts contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
 Download the WAR file and store it in the local file system of the server.
 
