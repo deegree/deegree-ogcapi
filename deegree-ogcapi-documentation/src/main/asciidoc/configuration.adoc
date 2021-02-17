@@ -63,15 +63,15 @@ There you will find more information about the feature store configuration and t
 
 The deegree OAF workspace adds the following directories to a standard deegree workspace:
 
-- *dataset configuration* files in subdirectory _ogcapi/_
-- *HTML encoding configuration* files in subdirectory _html/_
+- _ogcapi/_: subdirectory with *dataset configuration* files (required)
+- _html/_: subdirectory with *HTML encoding configuration* files (optional)
 
-An deegree OAF workspace uses the following directories of a standard deegree workspace:
+A deegree OAF workspace uses the following directories of a standard deegree workspace:
 
-- *feature store configuration* files in subdirectory _datasources/feature/_
-- *JDBC connection configuration* files in subdirectory _jdbc/_
-- *metadata configuration* in subdirectory _services/_
-- *security configuration* file named _config.apikey_ in the root directory of the workspace
+- _datasources/feature/_: feature store configuration files
+- _jdbc/_: JDBC connection configuration files
+- _services/_: metadata configuration files
+- _config.apikey_: security configuration file in the root directory of the workspace
 
 The following chapters describe how to setup a deegree OAF workspace by the given example.
 

@@ -35,3 +35,8 @@ How to migrate an existing deegree workspace?::
 How to use the same workspace with deegree OAF and deegree webservices?::
 
   Deploy both webapps for deegree OAF and deegree webservices configured to use the same workspace called _ogcapi-workspace_. Use the file _webapps.properties_ to configure this. Keep in mind that deegree OAF will provide the OGC API - Features and deegree webservices will provide only the legacy service implementations. You may see warnings in the logging messages for both instances that configuration files have been ignored.
+
+How to deploy multiple instances of deegree OAF webapp?::
+
+  Multiple deployments of the webapp are possible. Since each instance of the runtime environment can host one or more webapp. For every deployed webapp there must be a deegree workspace available with the name *_ogcapi-workspace_*. It is possible that multiple instances of the webapp can share one single instance of a deegree workspace, for example a setup serving the same data by multiple instances in a load-balancing scenario. To serve different data configured in different deegree workspace's you need to run multiple instances of the runtime environment.
+Use the environment variable `DEEGREE_WORKSPACE_ROOT` to set the path to the deegree workspace directory. Read further in section <<configuration>> about the deegree workspace and configuration files.
