@@ -37,7 +37,7 @@ is stored within a PostgreSQL/PostGIS database. The following directory structur
         └── trees_metadata.xml    # <17>
 ----
 <1> config file with APIKEY required to access REST-API (optional)
-<2> the workspace root directory, the exact name is required, path can be set with environment variable `DEEGREE_WORKSPACEROOT` (mandatory)
+<2> the workspace root directory, the exact name is required, path can be set with environment variable `DEEGREE_WORKSPACE_ROOT` (mandatory)
 <3> subdirectory must contain at least one feature store configuration
 <4> a feature store with id _streets_
 <5> a feature store with id _trees_
