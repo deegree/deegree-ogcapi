@@ -95,10 +95,10 @@ public class Features {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
+                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
                     @QueryParam("limit")
                                     int limit,
-                    @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
+                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
                     @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
@@ -137,10 +137,10 @@ public class Features {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
+                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
                     @QueryParam("limit")
                                     int limit,
-                    @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
+                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
                     @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
@@ -177,10 +177,10 @@ public class Features {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
+                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
                     @QueryParam("limit")
                                     int limit,
-                    @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
+                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
                     @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
@@ -216,10 +216,10 @@ public class Features {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
+                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
                     @QueryParam("limit")
                                     int limit,
-                    @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
+                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
                     @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
