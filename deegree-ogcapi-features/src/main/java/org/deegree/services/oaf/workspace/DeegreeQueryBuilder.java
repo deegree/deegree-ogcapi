@@ -75,6 +75,10 @@ import static org.deegree.filter.MatchAction.ANY;
  */
 public class DeegreeQueryBuilder {
 
+    public static final int UNLIMITED = -1;
+
+    public static final int FIRST = 0;
+
     private static final SimpleGeometryFactory simpleGeometryFactory = new SimpleGeometryFactory();
 
     private static final String WILD_CARD = "*";
@@ -105,7 +109,9 @@ public class DeegreeQueryBuilder {
         QName name = featureTypeMetadata.getName();
         TypeName[] typeNames = { new TypeName( name, null ) };
         Filter filter = createFilter( featureTypeMetadata, featuresRequest );
-        return new Query( typeNames, filter, null, featuresRequest.getLimit(), featuresRequest.getOffset() );
+        int limit = featuresRequest.isBulkUpload() ? UNLIMITED : featuresRequest.getLimit();
+        int offset = featuresRequest.isBulkUpload() ? FIRST : featuresRequest.getOffset();
+        return new Query( typeNames, filter, null, limit, offset );
     }
 
     /**

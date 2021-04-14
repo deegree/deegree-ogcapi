@@ -155,13 +155,19 @@ public class LinkBuilder {
         return links;
     }
 
+    public List<Link> createFeaturesLinks( String datasetId, String collectionId ) {
+        return createFeaturesLinks( datasetId, collectionId, null );
+    }
+
     public List<Link> createFeaturesLinks( String datasetId, String collectionId, NextLink nextLink ) {
         List<Link> links = new ArrayList<>();
         String selfUri = createSelfUriWithQueryParametersWExceptFormat();
         addSelfAndAlternateGeo( links, selfUri );
-        String nextUri = nextLink.createUri( uriInfo );
-        if ( nextUri != null )
-            links.add( new Link( nextUri, NEXT.getRel(), APPLICATION_GEOJSON, "next page" ) );
+        if ( nextLink != null ) {
+            String nextUri = nextLink.createUri( uriInfo );
+            if ( nextUri != null )
+                links.add( new Link( nextUri, NEXT.getRel(), APPLICATION_GEOJSON, "next page" ) );
+        }
         String collectionUri = createBaseUriBuilder( datasetId )
                         .path( "collections" )
                         .path( collectionId )
