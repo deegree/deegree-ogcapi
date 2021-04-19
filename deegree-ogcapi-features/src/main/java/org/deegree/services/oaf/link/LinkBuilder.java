@@ -45,6 +45,7 @@ import static org.deegree.services.oaf.link.LinkRelation.COLLECTION;
 import static org.deegree.services.oaf.link.LinkRelation.CONFORMANCE;
 import static org.deegree.services.oaf.link.LinkRelation.DATA;
 import static org.deegree.services.oaf.link.LinkRelation.DESCRIBEDBY;
+import static org.deegree.services.oaf.link.LinkRelation.ENCLOSURE;
 import static org.deegree.services.oaf.link.LinkRelation.ITEMS;
 import static org.deegree.services.oaf.link.LinkRelation.LICENSE;
 import static org.deegree.services.oaf.link.LinkRelation.NEXT;
@@ -148,7 +149,13 @@ public class LinkBuilder {
                         .path( "items" )
                         .toString();
         addItems( links, itemsHref );
-
+        String enclosureHref = createBaseUriBuilder( datasetId )
+                                .path( "collections" )
+                                .path( collectionId )
+                                .path( "items" )
+                                .queryParam( "bulk", true )
+                                .toString();
+        addEnclosureLinks( links, enclosureHref );
         metadataUrls.forEach( metadataUrl -> {
             links.add( createMetadataLink( metadataUrl, "Metadata describing this Collection" ) );
         } );
@@ -201,6 +208,11 @@ public class LinkBuilder {
         links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_32, "this document as GML" ) );
         links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_SF0, "this document as GML" ) );
         links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_SF2, "this document as GML" ) );
+    }
+
+    private void addEnclosureLinks( List<Link> links, String uri ) {
+        links.add( new Link( uri, ENCLOSURE.getRel(), APPLICATION_JSON, "this document as JSON" ) );
+        links.add( new Link( uri, ENCLOSURE.getRel(), APPLICATION_XML, "this document as XML" ) );
     }
 
     private void addConformance( List<Link> links, String conformanceHref ) {
