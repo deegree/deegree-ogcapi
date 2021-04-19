@@ -98,6 +98,8 @@
                 <div class="col-md-9">
                     <div v-for="link in links">
                         <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href" >{{ link.title }}</a>
+                        <a v-cloak v-else-if="link.type == 'application/json' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=json'" v-bind:download="collectionId + '.json'">{{ link.title }}</a>
+                        <a v-cloak v-else-if="link.type == 'application/xml' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=xml'" v-bind:download="collectionId + '.xml'">{{ link.title }}</a>
                     </div>
                 </div>
             </div>
@@ -149,6 +151,7 @@
 var App = new Vue({
   el: '#content',
   data: {
+    collectionId: '',
     title: '',
     description: '',
     links: '',
@@ -165,6 +168,7 @@ var App = new Vue({
       var baseUrl = retrieveBaseUrl();
       const response = await fetch( baseUrl, {headers: {'Accept': 'application/json' } } );
       const json = await response.json();
+      this.collectionId = json.id;
       this.title = json.title;
       this.description = json.description;
       this.links = json.links;

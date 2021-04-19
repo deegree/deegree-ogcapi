@@ -96,6 +96,8 @@
                                 <div class="col-md-10">
                                   <div v-for="link in collection.links">
                                       <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href">{{ link.title }}</a>
+                                      <a v-cloak v-else-if="link.type == 'application/json' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=json'" v-bind:download="collection.id + '.json'">{{ link.title }}</a>
+                                      <a v-cloak v-else-if="link.type == 'application/xml' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=xml'" v-bind:download="collection.id + '.xml'">{{ link.title }}</a>
                                   </div>
                                 </div>
                             </div>

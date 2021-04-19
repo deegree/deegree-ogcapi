@@ -211,8 +211,8 @@ public class LinkBuilder {
     }
 
     private void addEnclosureLinks( List<Link> links, String uri ) {
-        links.add( new Link( uri, ENCLOSURE.getRel(), APPLICATION_JSON, "this document as JSON" ) );
-        links.add( new Link( uri, ENCLOSURE.getRel(), APPLICATION_XML, "this document as XML" ) );
+        links.add( new Link( uri, ENCLOSURE.getRel(), APPLICATION_JSON, "Download all features as GeoJSON" ) );
+        links.add( new Link( uri, ENCLOSURE.getRel(), APPLICATION_XML, "Download all features as GML" ) );
     }
 
     private void addConformance( List<Link> links, String conformanceHref ) {
