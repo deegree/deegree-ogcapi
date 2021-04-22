@@ -140,7 +140,7 @@
 
 <header>
     <nav class="navbar navbar-default">
-        <div class="container-fluid">
+        <div class="container-fluid" id="breadcrumpContainer">
             <a class="navbar-brand" href="#"></a>
             <ul class="nav" id="breadcrump">
                 <li class="breadcrumb-item">
@@ -631,7 +631,7 @@ var AppCollection = new Vue({
 
 var AppBreadcrump = new Vue({
   router,
-  el: '#breadcrump',
+  el: '#breadcrumpContainer',
   data: {
     collectionId: '',
     featureId: '',
