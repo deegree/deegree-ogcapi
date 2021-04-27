@@ -82,6 +82,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
+    <script src="https://unpkg.com/vue-meta/dist/vue-meta.min.js"></script>
     <script>
         function loadCss(relativePath){
             var url = asAbsoluteUrl(relativePath);
@@ -241,6 +242,13 @@
 <script>
 var App = new Vue({
   el: '#content',
+  metaInfo() {
+    const title = this.featureId
+    return {
+      title: title,
+      titleTemplate: '%s',
+    }
+  },
   data: {
     featureId: '',
     properties: '',
