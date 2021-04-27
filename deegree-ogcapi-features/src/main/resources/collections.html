@@ -89,7 +89,7 @@
                     <ul class="list-group">
                         <li v-for="collection in collections" class="list-group-item">
                             <h5 v-cloak>{{ collection.title }}</h5>
-                            <div v-cloak>{{collection.description}}</div>
+                            <div v-cloak v-html="replaceLinks(collection.description)"></div>
 
                             <div class="row mt-2">
                                 <div class="col-sm-2">Links</div>
@@ -238,6 +238,14 @@ function retrieveBaseUrl() {
         featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
       }
       return featuresRefWithoutQuery;
+}
+
+function replaceLinks(text){
+   if ( text == null ) {
+     return text;
+   }
+    const URLMatcher = /(?:(?:https?):\/\/)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm
+    return text.replace(URLMatcher, match => `<a href="${match}" target="_blank">${match}</a>`)
 }
 </script>
 </body>

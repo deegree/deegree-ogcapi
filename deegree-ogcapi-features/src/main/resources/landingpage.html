@@ -84,7 +84,7 @@
     <div class="row">
         <div class="col-lg-12" id="content">
             <h1 v-cloak class="mt-5">{{ title }}</h1>
-            <p v-cloak class="lead">{{ description }}</p>
+            <p v-cloak class="lead" v-html="description"></p>
             <div class="row">
                 <div class="col-sm-3">Collections</div>
                 <div class="col-md-9">
@@ -262,6 +262,14 @@ function retrieveBaseUrl() {
         featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
       }
   return featuresRefWithoutQuery;
+}
+
+function replaceLinks(text){
+   if ( text == null ) {
+     return text;
+   }
+    const URLMatcher = /(?:(?:https?):\/\/)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm
+    return text.replace(URLMatcher, match => `<a href="${match}" target="_blank">${match}</a>`)
 }
 </script>
 </body>
