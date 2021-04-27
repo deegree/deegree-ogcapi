@@ -106,6 +106,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     private static final String COLLECTION_PATH = "/datasets/{datasetId}/collections/{collectionId}";
 
+    private static final String SCHEMA_PATH = "/datasets/{datasetId}/collections/{collectionId}/appschema";
+
     private static final String FEATURES_PATH = "/datasets/{datasetId}/collections/{collectionId}/items";
 
     private static final String FEATURE_PATH = "/datasets/{datasetId}/collections/{collectionId}/items/{featureId}";
@@ -158,6 +160,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         PathItem conformance = paths.get( CONFORMANCE_PATH );
         PathItem collections = paths.get( COLLECTIONS_PATH );
         PathItem collection = paths.get( COLLECTION_PATH );
+        PathItem schema = paths.get( SCHEMA_PATH );
         PathItem features = paths.get( FEATURES_PATH );
         PathItem feature = paths.get( FEATURE_PATH );
 
@@ -178,6 +181,9 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
             PathItem newCollectionPathItem = createNewPathItem( collection, key, metadata );
             paths.addPathItem( replaceCollectionId( COLLECTION_PATH, key ), newCollectionPathItem );
 
+            PathItem newSchemaPathItem = createNewPathItem( schema, key, metadata );
+            paths.addPathItem( replaceCollectionId( SCHEMA_PATH, key ), newSchemaPathItem );
+
             PathItem newFeaturesPathItem = createNewPathItem( features, key, metadata );
             addSchema( newFeaturesPathItem, metadata.getFeatureType() );
             addFilterProperties( newFeaturesPathItem, metadata.getFilterProperties() );
@@ -189,6 +195,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         } );
 
         paths.remove( COLLECTION_PATH );
+        paths.remove( SCHEMA_PATH );
         paths.remove( FEATURES_PATH );
         paths.remove( FEATURE_PATH );
 
