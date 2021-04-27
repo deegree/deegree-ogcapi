@@ -118,7 +118,6 @@ public class OpenApi {
                 path = path.substring( 4 );
             String base = servletContext.getRealPath( "/swagger-ui/" );
             File f = new File( String.format( "%s/%s", base, path ) );
-            System.out.println( f.exists()  );
             return Response.ok(new FileInputStream( f ), mimeType).build();
         } catch ( FileNotFoundException e ) {
             LOG.warn( "Could not find requested file ", e );
