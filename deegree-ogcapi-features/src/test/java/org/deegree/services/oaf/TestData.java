@@ -21,6 +21,7 @@
  */
 package org.deegree.services.oaf;
 
+import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.stream.EmptyFeatureInputStream;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
@@ -41,6 +42,7 @@ import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.joda.time.DateTime;
+import org.mockito.Mockito;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -82,14 +84,14 @@ public class TestData {
     }
 
     public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName ) {
-        OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
-        DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
-        when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
-
-        Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
-        FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
-
         try {
+            OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
+            DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
+            when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
+
+            Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
+            FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
+
             FeatureType featureType = getFeatureType( featureTypeName, "feature/schema/strassenbaumkataster.xsd" );
             if ( featureType == null )
                 featureType = getFeatureType( featureTypeName, "feature/schema/micado_kennzahlen_v1_2.xsd" );
@@ -98,22 +100,28 @@ public class TestData {
             if ( featureType == null )
                 throw new IllegalArgumentException( "FeatureType with name " + featureTypeName + " is not known" );
             ftm.featureType( featureType );
-        } catch ( ClassNotFoundException | InstantiationException | IllegalAccessException e ) {
+
+            featureTypeMetadata.put( featureTypeName.getLocalPart(), ftm );
+            when( oafConfiguration.getFeatureTypeMetadata() ).thenReturn( featureTypeMetadata );
+            when( oafConfiguration.getFeatureTypeMetadata( eq( featureTypeName.getLocalPart() ) ) ).thenReturn( ftm );
+            FeatureStore featureStore = mock( FeatureStore.class );
+            when( featureStore.getSchema() ).thenReturn( featureType.getSchema() );
+            when( oafConfiguration.getFeatureStore( eq( featureTypeName ),
+                                                    eq( featureTypeName.getLocalPart() ) ) ).thenReturn( featureStore );
+
+            OafDatasets oafDatasets = new OafDatasets();
+            oafDatasets.addDataset( "oaf", oafConfiguration );
+            DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
+            when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
+            return deegreeWorkspaceInitializer;
+        } catch ( Exception e ) {
             e.printStackTrace();
+            return null;
         }
-
-        featureTypeMetadata.put( featureTypeName.getLocalPart(), ftm );
-        when( oafConfiguration.getFeatureTypeMetadata() ).thenReturn( featureTypeMetadata );
-
-        OafDatasets oafDatasets = new OafDatasets();
-        oafDatasets.addDataset( "oaf", oafConfiguration );
-        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
-        when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
-        return deegreeWorkspaceInitializer;
     }
 
     private static FeatureType getFeatureType( QName featureTypeName, String applicationschema )
-                            throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+                    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         String schemaURL = TestData.class.getResource( applicationschema ).toString();
         GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader( GML_32, null, schemaURL );
         AppSchema schema = xsdAdapter.extractAppSchema();

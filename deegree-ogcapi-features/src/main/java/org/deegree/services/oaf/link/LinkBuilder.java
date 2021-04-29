@@ -155,6 +155,14 @@ public class LinkBuilder {
         return links;
     }
 
+    public String createSchemaLink( String datasetId, String collectionId ) {
+        return createBaseUriBuilder( datasetId )
+                        .path( "collections" )
+                        .path( collectionId )
+                        .path( "appschema" )
+                        .toString();
+    }
+
     public List<Link> createFeaturesLinks( String datasetId, String collectionId, NextLink nextLink ) {
         List<Link> links = new ArrayList<>();
         String selfUri = createSelfUriWithQueryParametersWExceptFormat();
