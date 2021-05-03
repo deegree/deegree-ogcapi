@@ -48,6 +48,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_SCHEMA_LOCATION;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 
@@ -88,10 +89,8 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
             xmlStreamWriter.writeStartElement( "sf", "FeatureCollection", XML_SF_NS_URL );
             xmlStreamWriter.writeNamespace( "sf", XML_SF_NS_URL );
             xmlStreamWriter.writeNamespace( "xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-            if ( features.getSchemaLocation() != null ) {
-                xmlStreamWriter.writeAttribute( "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
-                                                features.getSchemaLocation().asXmlSchemaLocation() );
-            }
+            xmlStreamWriter.writeAttribute( "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
+                                            createSchemaLocation( features ) );
 
             writeFeatures( features.getFeatures(), xmlStreamWriter, featureWriter );
 
@@ -132,6 +131,15 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
             return ref;
         }
         return null;
+    }
+
+    private String createSchemaLocation( FeatureResponse features ) {
+        StringBuilder schemaLocation = new StringBuilder();
+        schemaLocation.append( XML_SF_NS_URL ).append( " " ).append( XML_SF_NS_SCHEMA_LOCATION );
+        if ( features.getSchemaLocation() != null ) {
+            schemaLocation.append( " " ).append( features.getSchemaLocation().asXmlSchemaLocation() );
+        }
+        return schemaLocation.toString();
     }
 
 }

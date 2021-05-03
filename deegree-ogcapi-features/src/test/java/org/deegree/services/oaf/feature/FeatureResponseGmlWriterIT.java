@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.deegree.gml.GMLVersion.GML_32;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_SCHEMA_LOCATION;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_SCHEMA_URL;
 import static org.hamcrest.CoreMatchers.is;
@@ -62,6 +63,7 @@ import static org.xmlmatchers.validation.SchemaFactory.w3cXmlSchemaFromUrl;
 public class FeatureResponseGmlWriterIT {
 
     private static final String NAMESPACE_URI = "http://deegree.org/app";
+
     private static final String SCHEMA_LOCATION = "http://schemalocation/datasets/dataset/collections/collection/appschema";
 
     @Test
@@ -80,7 +82,7 @@ public class FeatureResponseGmlWriterIT {
         assertThat( the( bos.toString() ),
                     hasXPath( "/sf:FeatureCollection/@xsi:schemaLocation", nsContext(),
                               XpathReturnType.returningAString(),
-                              is( String.format( "%s %s", NAMESPACE_URI, SCHEMA_LOCATION ) ) ) );
+                              is( String.format( "%s %s %s %s", XML_SF_NS_URL, XML_SF_NS_SCHEMA_LOCATION, NAMESPACE_URI, SCHEMA_LOCATION ) ) ) );
 
         // TODO: fails with [cvc-complex-type.2.4.a: Invalid content was found starting with element '{"http://www.deegree.org/app":strassenbaumkataster}'. One of '{"http://www.opengis.net/gml/3.2":AbstractFeature}' is expected. (line: -1 , column: -1)
         // Schema schema = w3cXmlSchemaFromUrl( XML_SF_SCHEMA_URL );
