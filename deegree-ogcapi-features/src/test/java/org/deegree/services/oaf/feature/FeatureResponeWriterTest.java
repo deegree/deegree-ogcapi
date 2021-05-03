@@ -68,11 +68,13 @@ public class FeatureResponeWriterTest {
     private FeatureResponse createFeatureResponse() {
         List<Link> links = java.util.Collections.singletonList(
                         new Link( "http://self", "self", "application/json", "title" ) );
-        Collection<Feature> features = new ArrayList<>();
-        final FeatureCollection featureCollection = new GenericFeatureCollection( "COL_1", features );
         FeatureInputStream featureStream = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeatureResponse( featureStream, featureTypeNsPrefixes, 10, 100, 0, links, false, null );
+        return new FeatureResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
+                        100 ).withStartIndex( 0 ).withLinks(
+                        links ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).build();
     }
 
 }

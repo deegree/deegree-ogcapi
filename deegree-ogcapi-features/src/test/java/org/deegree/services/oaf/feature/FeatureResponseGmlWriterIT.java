@@ -61,6 +61,9 @@ import static org.xmlmatchers.validation.SchemaFactory.w3cXmlSchemaFromUrl;
  */
 public class FeatureResponseGmlWriterIT {
 
+    private static final String NAMESPACE_URI = "http://deegree.org/app";
+    private static final String SCHEMA_LOCATION = "http://schemalocation/datasets/dataset/collections/collection/appschema";
+
     @Test
     public void testWriteTo()
                             throws Exception {
@@ -68,13 +71,16 @@ public class FeatureResponseGmlWriterIT {
         FeatureResponse featureResponse = createFeatureResponse();
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
-        System.out.println( bos.toString() );
         assertThat( the( bos.toString() ),
                     hasXPath( "count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)", nsContext(),
                               XpathReturnType.returningANumber(), is( 5.0 ) ) );
         assertThat( the( bos.toString() ),
                     hasXPath( "/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName", nsContext(),
                               XpathReturnType.returningAString(), is( "urn:ogc:def:crs:EPSG::4258" ) ) );
+        assertThat( the( bos.toString() ),
+                    hasXPath( "/sf:FeatureCollection/@xsi:schemaLocation", nsContext(),
+                              XpathReturnType.returningAString(),
+                              is( String.format( "%s %s", NAMESPACE_URI, SCHEMA_LOCATION ) ) ) );
 
         // TODO: fails with [cvc-complex-type.2.4.a: Invalid content was found starting with element '{"http://www.deegree.org/app":strassenbaumkataster}'. One of '{"http://www.opengis.net/gml/3.2":AbstractFeature}' is expected. (line: -1 , column: -1)
         // Schema schema = w3cXmlSchemaFromUrl( XML_SF_SCHEMA_URL );
@@ -89,7 +95,6 @@ public class FeatureResponseGmlWriterIT {
         FeatureResponse featureResponse = createFeatureResponse( requestCrs );
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
-        System.out.println( bos.toString() );
         assertThat( the( bos.toString() ),
                     hasXPath( "count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)", nsContext(),
                               XpathReturnType.returningANumber(), is( 5.0 ) ) );
@@ -118,7 +123,8 @@ public class FeatureResponseGmlWriterIT {
         SimpleNamespaceContext nsContext = new SimpleNamespaceContext()
                                 .withBinding( "sf", XML_SF_NS_URL )
                                 .withBinding("app", "http://www.deegree.org/app" )
-                                .withBinding("gml", "http://www.opengis.net/gml/3.2" );
+                                .withBinding("gml", "http://www.opengis.net/gml/3.2" )
+                                .withBinding("xsi", "http://www.w3.org/2001/XMLSchema-instance" );
         return nsContext;
     }
 
@@ -140,8 +146,12 @@ public class FeatureResponseGmlWriterIT {
         Map<String, String> featureTypeNsPrefixes = new HashMap<>();
         QName name = featureCollection.getName();
         featureTypeNsPrefixes.put( name.getPrefix(), name.getNamespaceURI() );
-        return new FeatureResponse( featureStream, featureTypeNsPrefixes, featureCollection.size(),
-                                    featureCollection.size(), 0, links, false, crs );
+        return new FeatureResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures(
+                        featureCollection.size() ).withNumberOfFeaturesMatched(
+                        featureCollection.size() ).withStartIndex( 0 ).withLinks(
+                        links ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).withResponseCrsName( crs ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).build();
     }
 
     private FeatureResponse createEmptyFeatureResponse() {
@@ -149,7 +159,11 @@ public class FeatureResponseGmlWriterIT {
                         new Link( "http://self", "self", "application/json", "title" ) );
         FeatureInputStream featureStream = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeatureResponse( featureStream, featureTypeNsPrefixes, 10, 100, 0, links, false, null );
+        return new FeatureResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
+                        100 ).withStartIndex( 0 ).withLinks(
+                        links ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).build();
     }
 
     private class ListCloseableIterator implements CloseableIterator<Feature> {

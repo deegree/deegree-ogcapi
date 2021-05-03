@@ -88,6 +88,10 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
             xmlStreamWriter.writeStartElement( "sf", "FeatureCollection", XML_SF_NS_URL );
             xmlStreamWriter.writeNamespace( "sf", XML_SF_NS_URL );
             xmlStreamWriter.writeNamespace( "xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+            if ( features.getSchemaLocation() != null ) {
+                xmlStreamWriter.writeAttribute( "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
+                                                features.getSchemaLocation().asXmlSchemaLocation() );
+            }
 
             writeFeatures( features.getFeatures(), xmlStreamWriter, featureWriter );
 

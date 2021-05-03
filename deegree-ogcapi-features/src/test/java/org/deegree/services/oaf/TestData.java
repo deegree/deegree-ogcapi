@@ -33,6 +33,7 @@ import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.feature.FeatureResponse;
+import org.deegree.services.oaf.feature.FeatureResponseBuilder;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
@@ -42,7 +43,6 @@ import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.joda.time.DateTime;
-import org.mockito.Mockito;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -132,16 +132,22 @@ public class TestData {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeatureResponse( features, featureTypeNsPrefixes, 10, 100, 0,
-                                    java.util.Collections.singletonList( link ), false, null );
+        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
+                        100 ).withStartIndex( 0 ).withLinks(
+                        java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).build();
     }
 
     public static FeatureResponse feature() {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeatureResponse( features, featureTypeNsPrefixes, 1, 1, 0,
-                                    java.util.Collections.singletonList( link ), false, null );
+        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
+                        1 ).withStartIndex( 0 ).withLinks(
+                        java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).build();
     }
 
     public static Collections createCollections() {
