@@ -26,9 +26,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
+import org.deegree.gml.schema.GMLSchemaInfoSet;
+import org.deegree.services.oaf.exceptions.UnknownAppschema;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.link.LinkBuilder;
+import org.deegree.services.oaf.schema.ExistingSchemaResponse;
+import org.deegree.services.oaf.schema.GeneratedSchemaResponse;
 import org.deegree.services.oaf.schema.SchemaResponse;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
@@ -45,10 +49,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toMap;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -79,12 +85,14 @@ public class Appschema {
         OafDatasetConfiguration dataset = oafDatasets.getDataset( datasetId );
         FeatureTypeMetadata featureTypeMetadata = dataset.getFeatureTypeMetadata( collectionId );
         FeatureStore featureStore = dataset.getFeatureStore( featureTypeMetadata.getName(), collectionId );
-        SchemaResponse schemaResponse = createSchemaResponse( featureStore, featureTypeMetadata, datasetId,
+        SchemaResponse schemaResponse = createSchemaResponse( dataset.isUseExistingGMLSchema(), featureStore,
+                                                              featureTypeMetadata, datasetId,
                                                               linkBuilder );
         return Response.ok( schemaResponse ).build();
     }
 
-    private SchemaResponse createSchemaResponse( FeatureStore featureStore, FeatureTypeMetadata featureTypeMetadata,
+    private SchemaResponse createSchemaResponse( boolean useExistingGMLSchema, FeatureStore featureStore,
+                                                 FeatureTypeMetadata featureTypeMetadata,
                                                  String datasetId,
                                                  LinkBuilder linkBuilder ) {
         AppSchema schema = featureStore.getSchema();
@@ -92,9 +100,15 @@ public class Appschema {
         String featureTypeNamespaceURI = featureType.getName().getNamespaceURI();
         Map<String, String> nsToSchemaLocation = buildNsToSchemaLocations( schema, featureTypeNamespaceURI,
                                                                            datasetId, linkBuilder );
+        if ( useExistingGMLSchema ) {
+            GMLSchemaInfoSet gmlSchema = findGmlSchema( featureStore, nsToSchemaLocation.keySet() );
+            if ( gmlSchema != null ) {
+                return new ExistingSchemaResponse( featureType, gmlSchema );
+            }
+        }
         Map<String, String> prefixToNs = schema.getNamespaceBindings().entrySet().stream().collect(
                         toMap( e -> e.getKey(), e -> e.getValue() ) );
-        return new SchemaResponse( featureType, nsToSchemaLocation, prefixToNs );
+        return new GeneratedSchemaResponse( featureType, nsToSchemaLocation, prefixToNs );
     }
 
     private Map<String, String> buildNsToSchemaLocations( AppSchema schema, String featureTypeNamespaceURI,
@@ -111,6 +125,15 @@ public class Appschema {
             }
         }
         return nsToSchemaLocation;
+    }
+
+    private GMLSchemaInfoSet findGmlSchema( FeatureStore store, Collection<String> namespaces ) {
+        Set<String> appNamespaces = store.getSchema().getAppNamespaces();
+        boolean storeSupportsAllRequestedNamespaces = appNamespaces.containsAll( namespaces );
+        if ( storeSupportsAllRequestedNamespaces ) {
+            return store.getSchema().getGMLSchema();
+        }
+        return null;
     }
 
     private Optional<QName> findFeatureTypeNameByNamespace( AppSchema schema, String namespaceUrl ) {

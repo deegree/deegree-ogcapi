@@ -163,6 +163,13 @@ public class LinkBuilder {
                         .toString();
     }
 
+    public String createSchemaLink( String path ) {
+        return uriInfo.getBaseUriBuilder()
+                        .path( "appschemas" )
+                        .path( path )
+                        .toString();
+    }
+
     public List<Link> createFeaturesLinks( String datasetId, String collectionId, NextLink nextLink ) {
         List<Link> links = new ArrayList<>();
         String selfUri = createSelfUriWithQueryParametersWExceptFormat();
@@ -284,5 +291,4 @@ public class LinkBuilder {
         String type = metadataUrl.getFormat() != null ? metadataUrl.getFormat() : APPLICATION_XML;
         return new Link( metadataUrl.getUrl(), DESCRIBEDBY.getRel(), type, title );
     }
-
 }

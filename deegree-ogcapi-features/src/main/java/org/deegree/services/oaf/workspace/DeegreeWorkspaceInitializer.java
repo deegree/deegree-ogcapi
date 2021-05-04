@@ -31,6 +31,8 @@ import org.deegree.services.oaf.config.datasets.OgcApiDatasetsProvider;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.config.htmlview.OgcApiConfigProvider;
+import org.deegree.services.oaf.exceptions.UnknownAppschema;
+import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.deegree.workspace.Resource;
@@ -38,6 +40,12 @@ import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
 import org.slf4j.Logger;
 
+import javax.ws.rs.core.UriInfo;
+import java.io.File;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +63,10 @@ public class DeegreeWorkspaceInitializer {
 
     public static final String DEEGREE_WORKSPACE_NAME = "ogcapi-workspace";
 
+    private static final String APPSCHEMAS_PATH = "appschemas";
+
+    private static Path pathToAppschemas;
+
     private static DatasetsConfiguration datasetsConfiguration;
 
     private static OafDatasets oafConfiguration = new OafDatasets();
@@ -68,6 +80,7 @@ public class DeegreeWorkspaceInitializer {
         try {
             workspace.initAll();
             initConfiguration( workspace.getNewWorkspace() );
+            pathToAppschemas = resolveAppschemasPath( workspace );
         } catch ( ResourceInitException e ) {
             LOG.error( "Workspace could not be initialised", e );
             throw new WorkspaceInitException( e );
@@ -79,6 +92,7 @@ public class DeegreeWorkspaceInitializer {
         clearConfigs();
         DeegreeWorkspace workspace = DeegreeWorkspace.getInstance( DEEGREE_WORKSPACE_NAME );
         initConfiguration( workspace.getNewWorkspace() );
+        pathToAppschemas = resolveAppschemasPath( workspace );
     }
 
     public OafDatasets getOafDatasets() {
@@ -108,6 +122,31 @@ public class DeegreeWorkspaceInitializer {
      */
     public DatasetsConfiguration getDatasetsConfiguration() {
         return datasetsConfiguration;
+    }
+
+    /**
+     * @param path
+     *                 th erelative path to the appschema (relative to CURRENT_WORKSPCAE/appschemas)
+     * @return the path to the appschema, never <code>null</code>
+     * @throws UnknownAppschema
+     *                 if the path does not address an existing appschema relative to CURRENT_WORKSPCAE/appschemas
+     */
+    public Path getAppschemaFile( String path )
+                    throws UnknownAppschema {
+        Path appschema = pathToAppschemas.resolve( path );
+        if ( !Files.exists( appschema ) || !Files.isReadable( appschema ) )
+            throw new UnknownAppschema( path );
+        return appschema;
+    }
+
+    public String createAppschemaUrl( UriInfo uriInfo, String uri ) {
+        Path uriPath = Paths.get( URI.create( uri ) );
+        if ( uriPath.startsWith( pathToAppschemas ) ) {
+            Path relativizeUriPath = pathToAppschemas.relativize( uriPath );
+            LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
+            return linkBuilder.createSchemaLink( relativizeUriPath.toString() );
+        }
+        return null;
     }
 
     private void initConfiguration( Workspace newWorkspace ) {
@@ -158,4 +197,8 @@ public class DeegreeWorkspaceInitializer {
         datasetsConfiguration = null;
     }
 
+    private Path resolveAppschemasPath(DeegreeWorkspace workspace) {
+        File workspaceLocation = workspace.getLocation();
+        return Paths.get( workspaceLocation.toURI() ).resolve( APPSCHEMAS_PATH );
+    }
 }

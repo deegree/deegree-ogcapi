@@ -45,14 +45,17 @@ public class OafDatasetConfiguration {
 
     private Map<QName, FeatureStore> featureStores;
 
-    public OafDatasetConfiguration( String id, Map<String, FeatureTypeMetadata> featureTypeMetadata,
-                                    DatasetMetadata serviceMetadata, List<String> suppportedCrs,
-                                    Map<QName, FeatureStore> featureStores ) {
+    private final boolean useExistingGMLSchema;
+
+    public OafDatasetConfiguration(String id, Map<String, FeatureTypeMetadata> featureTypeMetadata,
+                                   DatasetMetadata serviceMetadata, List<String> suppportedCrs,
+                                   Map<QName, FeatureStore> featureStores, boolean useExistingGMLSchema) {
         this.id = id;
         this.featureTypeMetadata = featureTypeMetadata;
         this.serviceMetadata = serviceMetadata;
         this.suppportedCrs = suppportedCrs;
         this.featureStores = featureStores;
+        this.useExistingGMLSchema = useExistingGMLSchema;
     }
 
     /**
@@ -126,5 +129,12 @@ public class OafDatasetConfiguration {
         if ( !featureTypeMetadata.containsKey( collectionId ) ) {
             throw new UnknownCollectionId( collectionId );
         }
+    }
+
+    /**
+     * @return <code>true</code> if the existing GML applicationschema should be returned (if exists), <code>false</code> if the schema should be (re)generated.
+     */
+    public boolean isUseExistingGMLSchema() {
+        return useExistingGMLSchema;
     }
 }
