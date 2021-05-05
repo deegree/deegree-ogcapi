@@ -29,18 +29,17 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
-import org.xmlmatchers.namespace.SimpleNamespaceContext;
 
 import javax.ws.rs.core.Application;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.junit.Assert.assertThat;
-import static org.xmlmatchers.XmlMatchers.hasXPath;
-import static org.xmlmatchers.transform.XmlConverters.the;
+import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 public class AppSchemaTest extends JerseyTest {
 
@@ -65,14 +64,14 @@ public class AppSchemaTest extends JerseyTest {
                         APPLICATION_XML ).get(
                         String.class );
 
-        assertThat( the( xml ),
-                    hasXPath( "//xs:schema/xs:import[@namespace = 'http://www.opengis.net/gml/3.2' and @schemaLocation='http://schemas.opengis.net/gml/3.2.1/gml.xsd']",
-                              nsContext() ) );
+        assertThat( xml,
+                    hasXPath( "//xs:schema/xs:import[@namespace = 'http://www.opengis.net/gml/3.2' and @schemaLocation='http://schemas.opengis.net/gml/3.2.1/gml.xsd']" ).withNamespaceContext(
+                                    nsContext() ) );
     }
 
-    private NamespaceContext nsContext() {
-        SimpleNamespaceContext nsContext = new SimpleNamespaceContext()
-                        .withBinding( "xs", "http://www.w3.org/2001/XMLSchema" );
+    private Map<String, String> nsContext() {
+        Map<String, String> nsContext = new HashMap<>();
+        nsContext.put( "xs", "http://www.w3.org/2001/XMLSchema" );
         return nsContext;
     }
 
