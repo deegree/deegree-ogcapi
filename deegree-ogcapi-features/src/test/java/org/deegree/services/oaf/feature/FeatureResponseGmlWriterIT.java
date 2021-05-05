@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -31,14 +31,13 @@ import org.deegree.gml.GMLInputFactory;
 import org.deegree.gml.GMLStreamReader;
 import org.deegree.services.oaf.link.Link;
 import org.junit.Test;
-import org.xmlmatchers.namespace.SimpleNamespaceContext;
-import org.xmlmatchers.xpath.XpathReturnType;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import javax.xml.validation.Schema;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,10 +51,8 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_SCHEMA_URL;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.xmlmatchers.XmlMatchers.conformsTo;
-import static org.xmlmatchers.XmlMatchers.hasXPath;
-import static org.xmlmatchers.transform.XmlConverters.the;
-import static org.xmlmatchers.validation.SchemaFactory.w3cXmlSchemaFromUrl;
+import static org.xmlunit.matchers.EvaluateXPathMatcher.hasXPath;
+import static org.xmlunit.matchers.ValidationMatcher.valid;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -68,45 +65,40 @@ public class FeatureResponseGmlWriterIT {
 
     @Test
     public void testWriteTo()
-                            throws Exception {
+                    throws Exception {
         FeatureResponseGmlWriter featureResponeWriter = new FeatureResponseGmlWriter();
         FeatureResponse featureResponse = createFeatureResponse();
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
-        assertThat( the( bos.toString() ),
-                    hasXPath( "count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)", nsContext(),
-                              XpathReturnType.returningANumber(), is( 5.0 ) ) );
-        assertThat( the( bos.toString() ),
-                    hasXPath( "/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName", nsContext(),
-                              XpathReturnType.returningAString(), is( "urn:ogc:def:crs:EPSG::4258" ) ) );
-        assertThat( the( bos.toString() ),
-                    hasXPath( "/sf:FeatureCollection/@xsi:schemaLocation", nsContext(),
-                              XpathReturnType.returningAString(),
-                              is( String.format( "%s %s %s %s", XML_SF_NS_URL, XML_SF_NS_SCHEMA_LOCATION, NAMESPACE_URI, SCHEMA_LOCATION ) ) ) );
+
+        assertThat( bos.toString(),
+                    hasXPath( "count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)",
+                              is( "5" ) ).withNamespaceContext( nsContext() ) );
+        assertThat( bos.toString(),
+                    hasXPath( "/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName",
+                              is( "urn:ogc:def:crs:EPSG::4258" ) ).withNamespaceContext( nsContext() ) );
 
         // TODO: fails with [cvc-complex-type.2.4.a: Invalid content was found starting with element '{"http://www.deegree.org/app":strassenbaumkataster}'. One of '{"http://www.opengis.net/gml/3.2":AbstractFeature}' is expected. (line: -1 , column: -1)
-        // Schema schema = w3cXmlSchemaFromUrl( XML_SF_SCHEMA_URL );
-        //assertThat( the( bos.toString() ), conformsTo( schema ) );
+        //assertThat( bos.toString(), valid( schemaFrom( XML_SF_SCHEMA_URL ) ) );
     }
 
     @Test
     public void testWriteTo_EPSG25832()
-                            throws Exception {
+                    throws Exception {
         String requestCrs = "EPSG:25832";
         FeatureResponseGmlWriter featureResponeWriter = new FeatureResponseGmlWriter();
         FeatureResponse featureResponse = createFeatureResponse( requestCrs );
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
-        assertThat( the( bos.toString() ),
-                    hasXPath( "count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)", nsContext(),
-                              XpathReturnType.returningANumber(), is( 5.0 ) ) );
-        assertThat( the( bos.toString() ),
-                    hasXPath( "/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName",
-                              nsContext(), XpathReturnType.returningAString(), is( requestCrs ) ) );
+
+        assertThat( bos.toString(), hasXPath( "count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)",
+                                              is( "5" ) ).withNamespaceContext( nsContext() ) );
+        assertThat( bos.toString(),
+                    hasXPath( "/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName"
+                                    , is( requestCrs ) ).withNamespaceContext( nsContext() ) );
 
         // TODO: fails with [cvc-complex-type.2.4.a: Invalid content was found starting with element '{"http://www.deegree.org/app":strassenbaumkataster}'. One of '{"http://www.opengis.net/gml/3.2":AbstractFeature}' is expected. (line: -1 , column: -1)
-        // Schema schema = w3cXmlSchemaFromUrl( XML_SF_SCHEMA_URL );
-        //assertThat( the( bos.toString() ), conformsTo( schema ) );
+        //assertThat( bos.toString(), valid( schemaFrom( XML_SF_SCHEMA_URL ) ) );
     }
 
     @Test
@@ -117,34 +109,39 @@ public class FeatureResponseGmlWriterIT {
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
 
-        Schema schema = w3cXmlSchemaFromUrl( XML_SF_SCHEMA_URL );
-        assertThat( the( bos.toString() ), conformsTo( schema ) );
+        assertThat( bos.toString(), valid( schemaFrom( XML_SF_SCHEMA_URL ) ) );
     }
 
-    private NamespaceContext nsContext() {
-        SimpleNamespaceContext nsContext = new SimpleNamespaceContext()
-                                .withBinding( "sf", XML_SF_NS_URL )
-                                .withBinding("app", "http://www.deegree.org/app" )
-                                .withBinding("gml", "http://www.opengis.net/gml/3.2" )
-                                .withBinding("xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+    private Map<String, String> nsContext() {
+        Map<String, String> nsContext = new HashMap<>();
+        nsContext.put( "sf", XML_SF_NS_URL );
+        nsContext.put( "app", "http://www.deegree.org/app" );
+        nsContext.put( "gml", "http://www.opengis.net/gml/3.2" );
+        nsContext.put( "xsi", "http://www.w3.org/2001/XMLSchema-instance" );
         return nsContext;
     }
 
+    private StreamSource schemaFrom( String url )
+                    throws IOException {
+        return new StreamSource( new URL( url ).openStream() );
+    }
+
     private FeatureResponse createFeatureResponse()
-                            throws Exception {
+                    throws Exception {
         return createFeatureResponse( null );
     }
 
     private FeatureResponse createFeatureResponse( String crs )
-                            throws Exception {
+                    throws Exception {
         List<Link> links = java.util.Collections.singletonList(
-                                new Link( "http://self", "self", "application/json", "title" ) );
+                        new Link( "http://self", "self", "application/json", "title" ) );
         GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32,
-                                                                           getClass().getResource( "strassenbaumkataster.gml" ) );
+                                                                           getClass().getResource(
+                                                                                           "strassenbaumkataster.gml" ) );
         FeatureCollection featureCollection = gmlReader.readFeatureCollection();
 
         FeatureInputStream featureStream = new IteratorFeatureInputStream(
-                                new ListCloseableIterator( featureCollection ) );
+                        new ListCloseableIterator( featureCollection ) );
         Map<String, String> featureTypeNsPrefixes = new HashMap<>();
         QName name = featureCollection.getName();
         featureTypeNsPrefixes.put( name.getPrefix(), name.getNamespaceURI() );

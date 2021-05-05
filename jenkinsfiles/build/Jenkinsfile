@@ -1,0 +1,34 @@
+pipeline {
+  agent any
+  tools {
+    maven 'maven-3.6'
+    jdk 'corretto-jdk8'
+  }
+  parameters {
+    string(defaultValue: "ogcapi/master", description: 'Set git branch', name: 'BRANCH')
+  }
+  stages {
+    stage('Preparation') {
+      steps{
+        deleteDir()
+        git credentialsId: 'f9068550-1061-49f2-bc02-dfe02b2eefce', url: 'git@github.com:deegree-enterprise/deegree-core.git', branch: '${BRANCH}'
+        sh 'mvn --version'
+      }
+    }
+    stage('Build') {
+      steps{
+        sh 'mvn -Djava.awt.headless=true -fae clean install -U'
+      }
+      post {
+        always {
+          junit '**/target/surefire-reports/*.xml'
+        }
+      }
+    }
+    stage('Deploy') {
+      steps{
+        sh 'mvn deploy -Dskip.unit.tests=true'
+      }
+    }
+  }
+}
