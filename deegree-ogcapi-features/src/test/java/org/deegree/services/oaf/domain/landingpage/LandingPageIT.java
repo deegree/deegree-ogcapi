@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -25,10 +25,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.deegree.services.oaf.link.Link;
 import org.junit.Test;
+import org.xmlunit.matchers.ValidationMatcher;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import javax.xml.validation.Schema;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -39,9 +40,6 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_U
 import static org.junit.Assert.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
-import static org.xmlmatchers.XmlMatchers.conformsTo;
-import static org.xmlmatchers.transform.XmlConverters.the;
-import static org.xmlmatchers.validation.SchemaFactory.w3cXmlSchemaFrom;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -60,8 +58,7 @@ public class LandingPageIT {
         LandingPage landingPage = createLandingPage();
         marshaller.marshal( landingPage, bos );
 
-        Schema schema = w3cXmlSchemaFrom( new URL( XML_CORE_SCHEMA_URL ) );
-        assertThat( the( bos.toString() ), conformsTo( schema ) );
+        assertThat( bos.toString(), ValidationMatcher.valid( schemaFrom( XML_CORE_SCHEMA_URL ) ) );
     }
 
     @Test
@@ -83,6 +80,11 @@ public class LandingPageIT {
     private String expected( String resource )
                     throws IOException {
         return IOUtils.toString( getClass().getResourceAsStream( resource ), StandardCharsets.UTF_8 );
+    }
+
+    private StreamSource schemaFrom( String url )
+                    throws IOException {
+        return new StreamSource( new URL( url ).openStream() );
     }
 
 }

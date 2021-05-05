@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -25,10 +25,10 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
-import org.xmlmatchers.namespace.SimpleNamespaceContext;
 
 import javax.ws.rs.core.Application;
-import javax.xml.namespace.NamespaceContext;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
@@ -39,8 +39,7 @@ import static org.deegree.services.oaf.domain.conformance.ConformanceClass.CORE;
 import static org.deegree.services.oaf.domain.conformance.ConformanceClass.OPENAPI30;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
-import static org.xmlmatchers.XmlMatchers.hasXPath;
-import static org.xmlmatchers.transform.XmlConverters.the;
+import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 public class ConformanceTest extends JerseyTest {
 
@@ -62,14 +61,17 @@ public class ConformanceTest extends JerseyTest {
     public void test_ConformanceDeclaration_Xml_ShouldBeAvailable() {
         final String xml = target( "/datasets/oaf/conformance" ).request( APPLICATION_XML ).get( String.class );
 
-        assertThat( the( xml ), hasXPath( "//c:ConformsTo/atom:link[@href = '" +CORE.getConformanceClass()+ "']" , nsContext() ) );
-        assertThat( the( xml ), hasXPath( "//c:ConformsTo/atom:link[@href = '" +OPENAPI30.getConformanceClass()+ "']" , nsContext() ) );
+        assertThat( xml,
+                    hasXPath( "//core:ConformsTo/atom:link[@href = '" + CORE.getConformanceClass()
+                              + "']" ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( "//core:ConformsTo/atom:link[@href = '" + OPENAPI30.getConformanceClass()
+                                   + "']" ).withNamespaceContext( nsContext() ) );
     }
 
-    private NamespaceContext nsContext() {
-        SimpleNamespaceContext nsContext = new SimpleNamespaceContext()
-                        .withBinding( "c", XML_CORE_NS_URL )
-                        .withBinding( "atom", XML_ATOM_NS_URL );
+    private Map<String, String> nsContext() {
+        Map<String, String> nsContext = new HashMap<>();
+        nsContext.put( "core", XML_CORE_NS_URL );
+        nsContext.put( "atom", XML_ATOM_NS_URL );
         return nsContext;
     }
 
