@@ -3,7 +3,9 @@ package org.deegree.services.oaf.schema;
 import org.deegree.feature.types.FeatureType;
 import org.deegree.gml.schema.GMLAppSchemaWriter;
 import org.deegree.gml.schema.GMLSchemaInfoSet;
+import org.deegree.services.oaf.OgcApiFeatures;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Produces;
@@ -25,6 +27,7 @@ import java.util.Collections;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.gml.GMLVersion.GML_32;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -32,6 +35,8 @@ import static org.deegree.gml.GMLVersion.GML_32;
 @Provider
 @Produces({ APPLICATION_XML })
 public class SchemaResponseGmlWriter implements MessageBodyWriter<SchemaResponse> {
+
+    private static final Logger LOG = getLogger( SchemaResponseGmlWriter.class );
 
     @Inject
     private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
@@ -62,6 +67,7 @@ public class SchemaResponseGmlWriter implements MessageBodyWriter<SchemaResponse
             FeatureType featureType = schemaResponse.getFeatureType();
             write( schemaResponse, writer, featureType );
         } catch ( Exception ex ) {
+            LOG.error( "Schema could not be written", ex );
             throw new WebApplicationException( ex );
         } finally {
             if ( writer != null ) {

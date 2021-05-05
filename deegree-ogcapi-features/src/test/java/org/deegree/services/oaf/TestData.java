@@ -45,6 +45,7 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.joda.time.DateTime;
 
 import javax.xml.namespace.QName;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ import java.util.Map;
 import static org.deegree.gml.GMLVersion.GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -84,6 +86,10 @@ public class TestData {
     }
 
     public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName ) {
+        return mockWorkspaceInitializer( featureTypeName, null );
+    }
+
+    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName, Path pathToXsd ) {
         try {
             OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
             DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
@@ -112,6 +118,7 @@ public class TestData {
             OafDatasets oafDatasets = new OafDatasets();
             oafDatasets.addDataset( "oaf", oafConfiguration );
             DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
+            when( deegreeWorkspaceInitializer.getAppschemaFile( anyString() ) ).thenReturn( pathToXsd );
             when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
             return deegreeWorkspaceInitializer;
         } catch ( Exception e ) {
