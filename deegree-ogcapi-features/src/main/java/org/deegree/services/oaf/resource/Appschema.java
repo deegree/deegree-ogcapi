@@ -72,8 +72,8 @@ public class Appschema {
     @GET
     @Produces({ APPLICATION_XML })
     @Operation(operationId = "appschema",
-                    summary = "retrieve application schema of collection {collectionId}",
-                    description = "Retrieves the application schema of the collection with the id {collectionId}")
+                    summary = "retrieve GML application schema of collection {collectionId}",
+                    description = "Retrieves the GML application schema of the collection with the id {collectionId}. The GML application schema describes the structure of the XML representation of the features.")
     @Tag(name = "Schema")
     public Response appschema(
                     @Context UriInfo uriInfo,
