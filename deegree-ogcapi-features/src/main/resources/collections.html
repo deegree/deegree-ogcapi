@@ -166,16 +166,17 @@ var App = new Vue({
 var AppBreadcrump = new Vue({
   el: '#breadcrump',
   metaInfo() {
-    const title = this.datasetName
+    const title = this.datasetTitle
     return {
       title: title,
-      titleTemplate: '%s',
+      titleTemplate: 'Collections - %s',
     }
   },
   data: {
     datasetLink: '',
     datasetName: '',
-    datasetsLink: ''
+    datasetsLink: '',
+    datasetTitle: ''
   },
 
   created() {
@@ -184,6 +185,16 @@ var AppBreadcrump = new Vue({
     self.datasetLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
     self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
     self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
+    this.fetchData().catch(error => {
+      console.error(error)
+    })
+  },
+  methods: {
+    async fetchData() {
+      const response = await fetch( this.datasetLink, {headers: {'Accept': 'application/json' } } );
+      const json = await response.json();
+      this.datasetTitle = json.title;
+    }
   }
 })
 
