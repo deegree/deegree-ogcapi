@@ -23,6 +23,7 @@ package org.deegree.services.oaf.workspace;
 
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.commons.config.ResourceInitException;
+import org.deegree.services.controller.OGCFrontController;
 import org.deegree.services.oaf.OafResource;
 import org.deegree.services.oaf.OgcApiProvider;
 import org.deegree.services.oaf.config.datasets.DatasetsConfigResource;
@@ -53,8 +54,6 @@ public class DeegreeWorkspaceInitializer {
 
     private static final Logger LOG = getLogger( DeegreeWorkspaceInitializer.class );
 
-    public static final String DEEGREE_WORKSPACE_NAME = "ogcapi-workspace";
-
     private static DatasetsConfiguration datasetsConfiguration;
 
     private static OafDatasets oafConfiguration = new OafDatasets();
@@ -64,20 +63,14 @@ public class DeegreeWorkspaceInitializer {
     private static HtmlViewConfiguration globalHtmlViewConfiguration;
 
     public void initialize() {
-        DeegreeWorkspace workspace = DeegreeWorkspace.getInstance( DEEGREE_WORKSPACE_NAME );
-        try {
-            workspace.initAll();
-            initConfiguration( workspace.getNewWorkspace() );
-        } catch ( ResourceInitException e ) {
-            LOG.error( "Workspace could not be initialised", e );
-            throw new WorkspaceInitException( e );
-        }
+        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+        initConfiguration( workspace.getNewWorkspace() );
     }
 
     public void reinitialize() {
         LOG.info( "Reinitialize workspace" );
         clearConfigs();
-        DeegreeWorkspace workspace = DeegreeWorkspace.getInstance( DEEGREE_WORKSPACE_NAME );
+        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
         initConfiguration( workspace.getNewWorkspace() );
     }
 
