@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -57,13 +57,10 @@
 package org.deegree.ogcapi.config.actions;
 
 import org.deegree.commons.config.DeegreeWorkspace;
-import org.deegree.commons.utils.Pair;
 import org.deegree.ogcapi.config.exceptions.InvalidPathException;
-import org.deegree.ogcapi.config.exceptions.InvalidWorkspaceException;
+import org.deegree.services.controller.OGCFrontController;
 
 import java.io.File;
-
-import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 
 /**
  * @author <a href="mailto:schmitz@lat-lon.de">Andreas Schmitz</a>
@@ -72,20 +69,25 @@ import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
  */
 public class List {
 
-    public static String list( Pair<DeegreeWorkspace, String> p )
-                    throws InvalidPathException, InvalidWorkspaceException {
-        DeegreeWorkspace workspace = p.first;
+    public static String list()
+                    throws InvalidPathException {
+        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
         File dir = workspace.getLocation();
-        dir = p.second == null ? dir : new File( dir, p.second );
+        return list( dir );
+    }
 
+    public static String list( String path )
+                    throws InvalidPathException {
+        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+        File dir = workspace.getLocation();
+        dir = new File( dir, path );
         if ( !dir.exists() ) {
-            if ( p.second == null ) {
-                throw new InvalidWorkspaceException( workspace.getName() );
-            } else {
-                throw new InvalidPathException( workspace.getName(), p.second );
-            }
+            throw new InvalidPathException( workspace.getName(), path );
         }
+        return list( dir );
+    }
 
+    private static String list( File dir ) {
         StringBuilder sb = new StringBuilder();
         File[] ls = dir.listFiles();
         if ( ls != null ) {
