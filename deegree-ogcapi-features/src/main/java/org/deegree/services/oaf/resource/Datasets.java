@@ -49,7 +49,6 @@ import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.RequestFormat.HTML;
 import static org.deegree.services.oaf.RequestFormat.JSON;
 import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
@@ -113,7 +112,7 @@ public class Datasets {
                         .withLinks( links )
                         .withDatasets( datasets )
                         .withDatasetsConfiguration( datasetsConfiguration );
-        return Response.ok( allDatasets, APPLICATION_GEOJSON ).build();
+        return Response.ok( allDatasets, APPLICATION_JSON ).build();
     }
 
 }
