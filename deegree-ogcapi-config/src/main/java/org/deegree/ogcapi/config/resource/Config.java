@@ -22,6 +22,8 @@
 package org.deegree.ogcapi.config.resource;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.deegree.commons.config.DeegreeWorkspace;
+import org.deegree.commons.utils.Pair;
 import org.deegree.ogcapi.config.actions.Delete;
 import org.deegree.ogcapi.config.actions.List;
 import org.deegree.ogcapi.config.actions.Restart;
@@ -62,6 +64,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.deegree.ogcapi.config.actions.Download.downloadFile;
 import static org.deegree.ogcapi.config.actions.Download.downloadWorkspace;
+import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -122,13 +125,15 @@ public class Config {
     }
 
     @GET
-    @Operation(description = "/config/restart/<path> - restarts all resources connected to the specified one")
-    @Path("/restart/{path : (.+)?}")
+    @Operation(description = "/config/restart/[path] - restarts all resources connected to the specified one\n"
+                             + "/config/restart/wsname - restart with workspace <wsname>")
+    @Path("/restart{path : (.+)?}")
     public Response restart( @Context HttpServletRequest request,
                              @PathParam("path") String path )
                     throws RestartException {
         token.validate( request );
-        String restart = Restart.restart( path );
+        Pair<DeegreeWorkspace, String> workspaceAndPath = getWorkspaceAndPath( path );
+        String restart = Restart.restart( workspaceAndPath.getFirst(), workspaceAndPath.getSecond() );
         afterRestartOrUpdate();
         return Response.ok( restart, APPLICATION_OCTET_STREAM_TYPE ).build();
     }

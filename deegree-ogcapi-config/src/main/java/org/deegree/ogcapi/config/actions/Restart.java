@@ -63,6 +63,9 @@ import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
 import org.deegree.workspace.WorkspaceUtils;
 
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,14 +87,24 @@ public class Restart {
         }
     }
 
-    public static String restart( String path )
+    public static String restart( DeegreeWorkspace workspace, String path )
                     throws RestartException {
         try {
-            DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+            if ( path == null ) {
+                return restartWorkspace( workspace.getName() );
+            }
             return restartResource( workspace, path );
         } catch ( Exception e ) {
             throw new RestartException( e );
         }
+    }
+
+    private static String restartWorkspace( String workspaceName )
+                    throws IOException, URISyntaxException, ServletException {
+        OGCFrontController fc = OGCFrontController.getInstance();
+        fc.setActiveWorkspaceName( workspaceName );
+        fc.reload();
+        return "Restart of workspace " + workspaceName + " completed.";
     }
 
     private static String restartResource( DeegreeWorkspace workspace, String path ) {
