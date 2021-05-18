@@ -36,6 +36,7 @@ import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.feature.FeatureResponse;
+import org.deegree.services.oaf.feature.FeatureResponseBuilder;
 import org.deegree.services.oaf.feature.FeaturesRequest;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
@@ -91,9 +92,15 @@ public class DeegreeDataAccess implements DataAccess {
             NextLink nextLink = new NextLink( numberOfFeaturesMatched, limit, offset );
             String datasetId = oafConfiguration.getId();
             List<Link> links = linkBuilder.createFeaturesLinks( datasetId, collectionId, nextLink );
+            String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId);
+            String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
             Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
-            return new FeatureResponse( features, featureTypeNsPrefixes, limit, numberOfFeaturesMatched, offset, links,
-                                        isMaxFeaturesAndStartIndexApplicable, crs );
+            return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+                            featureTypeNsPrefixes ).withNumberOfFeatures( limit ).withNumberOfFeaturesMatched(
+                            numberOfFeaturesMatched ).withStartIndex( offset ).withLinks(
+                            links ).withMaxFeaturesAndStartIndexApplicable(
+                            isMaxFeaturesAndStartIndexApplicable ).withResponseCrsName( crs ).withSchemaLocation(
+                            namespaceURI, schemaLocation ).build();
         } catch ( FeatureStoreException | FilterEvaluationException | InvalidConfigurationException e ) {
             throw new InternalQueryException( e );
         }
@@ -112,9 +119,16 @@ public class DeegreeDataAccess implements DataAccess {
             Query queryById = queryBuilder.createQueryById( featureTypeMetadata.getName(), featureId );
             FeatureInputStream feature = featureStore.query( queryById );
             String datasetId = oafConfiguration.getId();
-            List<Link> inks = linkBuilder.createFeatureLinks( datasetId, collectionId, featureId );
+            List<Link> links = linkBuilder.createFeatureLinks( datasetId, collectionId, featureId );
+            String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId);
             Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
-            return new FeatureResponse( feature, featureTypeNsPrefixes, 1, 1, 0, inks, true, crs );
+            String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
+            return new FeatureResponseBuilder( feature ).withFeatureTypeNsPrefixes(
+                            featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
+                            1 ).withStartIndex( 0 ).withLinks(
+                            links ).withMaxFeaturesAndStartIndexApplicable(
+                            true ).withResponseCrsName( crs ).withSchemaLocation(
+                            namespaceURI, schemaLocation ).build();
         } catch ( FeatureStoreException | FilterEvaluationException e ) {
             throw new InternalQueryException( e );
         }

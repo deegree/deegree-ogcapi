@@ -114,8 +114,10 @@ public class OafResource implements Resource {
             List<String> supportedCrs = parseQueryCrs( config );
             Map<QName, FeatureStore> featureStores = parseFeatureStores( workspace, featureTypeMetadata );
             String id = metadata.getIdentifier().getId();
+            boolean useExistingGMLSchema =
+                            config.isUseExistingGMLSchema() != null ? config.isUseExistingGMLSchema() : true;
             this.oafConfiguration = new OafDatasetConfiguration( id, featureTypeMetadata, datasetMetadata, supportedCrs,
-                                                                 featureStores );
+                                                                 featureStores, useExistingGMLSchema );
             this.htmlViewConfiguration = getHtmlViewConfig( workspace );
         } catch ( InvalidConfigurationException e ) {
             throw new ResourceInitException( "OAF Configuration could not be parsed", e );

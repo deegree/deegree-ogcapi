@@ -81,7 +81,20 @@ public class LinkBuilderTest {
         assertThat( featuresLinks, hasLinkWith( "collection", TEXT_HTML, collectionUri ) );
     }
 
-    private UriInfo uriInfo( String uri, String path )
+    @Test
+    public void test_createSchemaLink()
+                    throws URISyntaxException {
+        String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/appschema";
+        String path = "datasets/oaf/collections/strassenbaumkataster/appschema";
+
+        LinkBuilder linkBuilder = new LinkBuilder( uriInfo( uri, path ) );
+        String schemaLink = linkBuilder.createSchemaLink( "oaf", "otherFeatureType" );
+
+        assertThat( schemaLink, is("http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/otherFeatureType/appschema") );
+    }
+
+
+        private UriInfo uriInfo( String uri, String path )
                             throws URISyntaxException {
         UriInfo uriInfo = mock( UriInfo.class );
         when( uriInfo.getPath() ).thenReturn( path );

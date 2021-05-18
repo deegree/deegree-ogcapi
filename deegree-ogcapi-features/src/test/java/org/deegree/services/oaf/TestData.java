@@ -21,6 +21,7 @@
  */
 package org.deegree.services.oaf;
 
+import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.stream.EmptyFeatureInputStream;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
@@ -32,6 +33,7 @@ import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.feature.FeatureResponse;
+import org.deegree.services.oaf.feature.FeatureResponseBuilder;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
@@ -43,6 +45,7 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.joda.time.DateTime;
 
 import javax.xml.namespace.QName;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,6 +55,7 @@ import java.util.Map;
 import static org.deegree.gml.GMLVersion.GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -82,14 +86,18 @@ public class TestData {
     }
 
     public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName ) {
-        OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
-        DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
-        when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
+        return mockWorkspaceInitializer( featureTypeName, null );
+    }
 
-        Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
-        FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
-
+    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName, Path pathToXsd ) {
         try {
+            OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
+            DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
+            when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
+
+            Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
+            FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
+
             FeatureType featureType = getFeatureType( featureTypeName, "feature/schema/strassenbaumkataster.xsd" );
             if ( featureType == null )
                 featureType = getFeatureType( featureTypeName, "feature/schema/micado_kennzahlen_v1_2.xsd" );
@@ -98,22 +106,29 @@ public class TestData {
             if ( featureType == null )
                 throw new IllegalArgumentException( "FeatureType with name " + featureTypeName + " is not known" );
             ftm.featureType( featureType );
-        } catch ( ClassNotFoundException | InstantiationException | IllegalAccessException e ) {
+
+            featureTypeMetadata.put( featureTypeName.getLocalPart(), ftm );
+            when( oafConfiguration.getFeatureTypeMetadata() ).thenReturn( featureTypeMetadata );
+            when( oafConfiguration.getFeatureTypeMetadata( eq( featureTypeName.getLocalPart() ) ) ).thenReturn( ftm );
+            FeatureStore featureStore = mock( FeatureStore.class );
+            when( featureStore.getSchema() ).thenReturn( featureType.getSchema() );
+            when( oafConfiguration.getFeatureStore( eq( featureTypeName ),
+                                                    eq( featureTypeName.getLocalPart() ) ) ).thenReturn( featureStore );
+
+            OafDatasets oafDatasets = new OafDatasets();
+            oafDatasets.addDataset( "oaf", oafConfiguration );
+            DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
+            when( deegreeWorkspaceInitializer.getAppschemaFile( anyString() ) ).thenReturn( pathToXsd );
+            when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
+            return deegreeWorkspaceInitializer;
+        } catch ( Exception e ) {
             e.printStackTrace();
+            return null;
         }
-
-        featureTypeMetadata.put( featureTypeName.getLocalPart(), ftm );
-        when( oafConfiguration.getFeatureTypeMetadata() ).thenReturn( featureTypeMetadata );
-
-        OafDatasets oafDatasets = new OafDatasets();
-        oafDatasets.addDataset( "oaf", oafConfiguration );
-        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
-        when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
-        return deegreeWorkspaceInitializer;
     }
 
     private static FeatureType getFeatureType( QName featureTypeName, String applicationschema )
-                            throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+                    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         String schemaURL = TestData.class.getResource( applicationschema ).toString();
         GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader( GML_32, null, schemaURL );
         AppSchema schema = xsdAdapter.extractAppSchema();
@@ -124,16 +139,22 @@ public class TestData {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeatureResponse( features, featureTypeNsPrefixes, 10, 100, 0,
-                                    java.util.Collections.singletonList( link ), false, null );
+        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
+                        100 ).withStartIndex( 0 ).withLinks(
+                        java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).build();
     }
 
     public static FeatureResponse feature() {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeatureResponse( features, featureTypeNsPrefixes, 1, 1, 0,
-                                    java.util.Collections.singletonList( link ), false, null );
+        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
+                        1 ).withStartIndex( 0 ).withLinks(
+                        java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).build();
     }
 
     public static Collections createCollections() {

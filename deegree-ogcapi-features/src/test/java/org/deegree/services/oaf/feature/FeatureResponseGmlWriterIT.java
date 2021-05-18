@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.deegree.gml.GMLVersion.GML_32;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_SCHEMA_LOCATION;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_SCHEMA_URL;
 import static org.hamcrest.CoreMatchers.is;
@@ -57,6 +58,10 @@ import static org.xmlunit.matchers.ValidationMatcher.valid;
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 public class FeatureResponseGmlWriterIT {
+
+    private static final String NAMESPACE_URI = "http://deegree.org/app";
+
+    private static final String SCHEMA_LOCATION = "http://schemalocation/datasets/dataset/collections/collection/appschema";
 
     @Test
     public void testWriteTo()
@@ -112,6 +117,7 @@ public class FeatureResponseGmlWriterIT {
         nsContext.put( "sf", XML_SF_NS_URL );
         nsContext.put( "app", "http://www.deegree.org/app" );
         nsContext.put( "gml", "http://www.opengis.net/gml/3.2" );
+        nsContext.put( "xsi", "http://www.w3.org/2001/XMLSchema-instance" );
         return nsContext;
     }
 
@@ -139,8 +145,12 @@ public class FeatureResponseGmlWriterIT {
         Map<String, String> featureTypeNsPrefixes = new HashMap<>();
         QName name = featureCollection.getName();
         featureTypeNsPrefixes.put( name.getPrefix(), name.getNamespaceURI() );
-        return new FeatureResponse( featureStream, featureTypeNsPrefixes, featureCollection.size(),
-                                    featureCollection.size(), 0, links, false, crs );
+        return new FeatureResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures(
+                        featureCollection.size() ).withNumberOfFeaturesMatched(
+                        featureCollection.size() ).withStartIndex( 0 ).withLinks(
+                        links ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).withResponseCrsName( crs ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).build();
     }
 
     private FeatureResponse createEmptyFeatureResponse() {
@@ -148,7 +158,11 @@ public class FeatureResponseGmlWriterIT {
                         new Link( "http://self", "self", "application/json", "title" ) );
         FeatureInputStream featureStream = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeatureResponse( featureStream, featureTypeNsPrefixes, 10, 100, 0, links, false, null );
+        return new FeatureResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
+                        100 ).withStartIndex( 0 ).withLinks(
+                        links ).withMaxFeaturesAndStartIndexApplicable(
+                        false ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).build();
     }
 
     private class ListCloseableIterator implements CloseableIterator<Feature> {

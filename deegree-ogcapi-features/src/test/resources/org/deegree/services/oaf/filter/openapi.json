@@ -83,6 +83,20 @@
         }
       }
     },
+    "/datasets/{datasetId}/collections/{collectionId}/appschema":{
+      "get" : {
+        "operationId": "appschema-Zuzuege_Auszuege_oerU",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/xml": {}
+            }
+          }
+        }
+      }
+    },
     "/datasets/{datasetId}/collections/{collectionId}/items" : {
       "get" : {
         "operationId" : "features",

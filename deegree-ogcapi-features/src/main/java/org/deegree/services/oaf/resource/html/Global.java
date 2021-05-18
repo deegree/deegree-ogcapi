@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -60,6 +61,12 @@ public class Global {
         if ( globalHtmlViewConfiguration != null && globalHtmlViewConfiguration.getCssFile() != null )
             return new FileInputStream( globalHtmlViewConfiguration.getCssFile() );
         return getClass().getResourceAsStream( "/css/main.css" );
+    }
+
+    @Operation(hidden = true) @Path("/js/{path: .+\\.js$}") @GET public Response getVueFile(
+                            @PathParam("path") String path ) {
+        return Response.ok( getClass().getResourceAsStream( String.format( "/js/%s", path ) ),
+                            "text/javascript" ).build();
     }
 
     @Operation(hidden = true)

@@ -14,6 +14,7 @@
     <complexType>
       <sequence>
         <element name="FeatureStoreId" minOccurs="0" maxOccurs="unbounded" type="string"/>
+        <element name="UseExistingGMLSchema" minOccurs="0" type="boolean" default="true"/>
         <element name="QueryCRS" type="string" minOccurs="0" maxOccurs="unbounded"/>
         <element name="DateTimeProperties" minOccurs="0">
           <complexType>
