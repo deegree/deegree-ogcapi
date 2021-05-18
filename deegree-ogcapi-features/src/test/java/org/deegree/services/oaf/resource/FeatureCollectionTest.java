@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,20 +28,20 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
-import org.xmlmatchers.namespace.SimpleNamespaceContext;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
-import javax.xml.namespace.NamespaceContext;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.xmlmatchers.XmlMatchers.hasXPath;
-import static org.xmlmatchers.transform.XmlConverters.the;
+import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -73,11 +73,13 @@ public class FeatureCollectionTest extends JerseyTest {
         Response response = target( "/datasets/oaf/collections/test" ).request( APPLICATION_XML ).get();
         assertThat( response.getStatus(), is( 200 ) );
         String xml = response.readEntity( String.class );
-        assertThat( the( xml ), hasXPath( "/core:Collections/core:Collection", nsContext() ) );
+        assertThat( xml, hasXPath( "/core:Collections/core:Collection" ).withNamespaceContext( nsContext() ) );
     }
 
-    private NamespaceContext nsContext() {
-        return new SimpleNamespaceContext().withBinding( "core", "http://www.opengis.net/ogcapi-features-1/1.0" );
+    private Map<String, String> nsContext() {
+        Map<String, String> nsContext = new HashMap<>();
+        nsContext.put( "core", XML_CORE_NS_URL );
+        return nsContext;
     }
 
 }

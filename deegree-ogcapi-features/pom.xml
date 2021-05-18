@@ -161,8 +161,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.xmlmatchers</groupId>
-      <artifactId>xml-matchers</artifactId>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-matchers</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.swagger.parser.v3</groupId>

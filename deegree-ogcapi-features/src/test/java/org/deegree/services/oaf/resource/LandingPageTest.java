@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,10 +30,11 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
-import org.xmlmatchers.namespace.SimpleNamespaceContext;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -56,8 +57,7 @@ import static org.deegree.services.oaf.link.LinkRelation.SELF;
 import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DESC;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.xmlmatchers.XmlMatchers.hasXPath;
-import static org.xmlmatchers.transform.XmlConverters.the;
+import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -93,7 +93,7 @@ public class LandingPageTest extends JerseyTest {
         assertThat( response.getStatus(), is( 200 ) );
         assertThat( response.getMediaType(), is( APPLICATION_XML_TYPE ) );
         String xml = response.readEntity( String.class );
-        assertThat( the( xml ), hasXPath( "/core:LandingPage", nsContext() ) );
+        assertThat( xml, hasXPath( "/core:LandingPage" ).withNamespaceContext( nsContext() ) );
     }
 
     @Test
@@ -110,7 +110,7 @@ public class LandingPageTest extends JerseyTest {
         assertThat( response.getStatus(), is( 200 ) );
         assertThat( response.getMediaType(), is( APPLICATION_XML_TYPE ) );
         String xml = response.readEntity( String.class );
-        assertThat( the( xml ), hasXPath( "/core:LandingPage", nsContext() ) );
+        assertThat( xml, hasXPath( "/core:LandingPage" ).withNamespaceContext( nsContext() ) );
     }
 
     @Test
@@ -164,7 +164,7 @@ public class LandingPageTest extends JerseyTest {
         assertThat( response.getStatus(), is( 404 ) );
         assertThat( response.getMediaType(), is( APPLICATION_XML_TYPE ) );
         String xml = response.readEntity( String.class );
-        assertThat( the( xml ), hasXPath( "/core:ExceptionReport", nsContext() ) );
+        assertThat( xml, hasXPath( "/core:ExceptionReport" ).withNamespaceContext( nsContext() ) );
     }
 
     @Test
@@ -180,17 +180,18 @@ public class LandingPageTest extends JerseyTest {
     public void test_LandingPage_Links() {
         Response response = target( "/datasets/oaf" ).request( APPLICATION_XML ).get();
         String xml = response.readEntity( String.class );
-        assertThat( the( xml ), hasXPath( linkWith( SELF, APPLICATION_JSON ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( ALTERNATE, TEXT_HTML ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( ALTERNATE, APPLICATION_XML ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( SERVICE_DESC, APPLICATION_OPENAPI ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( SERVICE_DESC, TEXT_HTML ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( CONFORMANCE, APPLICATION_JSON ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( CONFORMANCE, TEXT_HTML ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( CONFORMANCE, APPLICATION_XML ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( DATA, APPLICATION_JSON ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( DATA, TEXT_HTML ), nsContext() ) );
-        assertThat( the( xml ), hasXPath( linkWith( DATA, APPLICATION_XML ), nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( SELF, APPLICATION_JSON ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( ALTERNATE, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( ALTERNATE, APPLICATION_XML ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml,
+                    hasXPath( linkWith( SERVICE_DESC, APPLICATION_OPENAPI ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( SERVICE_DESC, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( CONFORMANCE, APPLICATION_JSON ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( CONFORMANCE, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( CONFORMANCE, APPLICATION_XML ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( DATA, APPLICATION_JSON ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( DATA, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( DATA, APPLICATION_XML ) ).withNamespaceContext( nsContext() ) );
     }
 
     private String linkWith( LinkRelation self, String applicationJson ) {
@@ -198,10 +199,11 @@ public class LandingPageTest extends JerseyTest {
                "' and @type='" + applicationJson + "']";
     }
 
-    private SimpleNamespaceContext nsContext() {
-        return new SimpleNamespaceContext()
-                        .withBinding( "core", XML_CORE_NS_URL )
-                        .withBinding( "atom", XML_ATOM_NS_URL );
+    private Map<String, String> nsContext() {
+        Map<String, String> nsContext = new HashMap<>();
+        nsContext.put( "core", XML_CORE_NS_URL );
+        nsContext.put( "atom", XML_ATOM_NS_URL );
+        return nsContext;
     }
 
 }

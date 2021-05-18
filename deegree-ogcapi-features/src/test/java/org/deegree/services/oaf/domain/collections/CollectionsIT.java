@@ -23,32 +23,24 @@ package org.deegree.services.oaf.domain.collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
-import org.deegree.services.oaf.TestData;
-import org.deegree.services.oaf.link.Link;
-import org.joda.time.DateTime;
 import org.junit.Test;
+import org.xmlunit.matchers.ValidationMatcher;
+import org.xmlunit.validation.Validator;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import javax.xml.validation.Schema;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_URL;
 import static org.deegree.services.oaf.TestData.createCollection;
 import static org.deegree.services.oaf.TestData.createCollections;
 import static org.junit.Assert.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
-import static org.xmlmatchers.XmlMatchers.conformsTo;
-import static org.xmlmatchers.transform.XmlConverters.the;
-import static org.xmlmatchers.validation.SchemaFactory.w3cXmlSchemaFrom;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -67,8 +59,7 @@ public class CollectionsIT {
         Collections collections = createCollections();
         marshaller.marshal( collections, bos );
 
-        Schema schema = w3cXmlSchemaFrom( new URL( XML_CORE_SCHEMA_URL ) );
-        assertThat( the( bos.toString() ), conformsTo( schema ) );
+        assertThat( bos.toString(), ValidationMatcher.valid( schemaFrom( XML_CORE_SCHEMA_URL ) ) );
     }
 
     @Test
@@ -96,4 +87,8 @@ public class CollectionsIT {
         return IOUtils.toString( getClass().getResourceAsStream( s2 ), StandardCharsets.UTF_8 );
     }
 
+    private StreamSource schemaFrom( String url )
+                    throws IOException {
+        return new StreamSource( new URL( url ).openStream() );
+    }
 }

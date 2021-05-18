@@ -705,9 +705,15 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.xmlmatchers</groupId>
-        <artifactId>xml-matchers</artifactId>
-        <version>1.0-RC1</version>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>2.8.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-matchers</artifactId>
+        <version>2.8.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
