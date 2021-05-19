@@ -39,10 +39,8 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.util.TimeZone;
 
-import static org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer.DEEGREE_WORKSPACE_NAME;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -88,8 +86,7 @@ public class OgcApiFeatures extends ResourceConfig {
         try {
             OGCFrontController ogcFrontController = new OGCFrontController();
             ogcFrontController.init( servletConfig );
-            ogcFrontController.setActiveWorkspaceName( DEEGREE_WORKSPACE_NAME );
-        } catch ( ServletException | IOException e ) {
+        } catch ( ServletException e ) {
             LOG.error( "Initialization of the OGCFrontController failed. Config REST API is not available", e );
         }
     }

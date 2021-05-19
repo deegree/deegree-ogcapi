@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,6 +30,7 @@ import org.deegree.feature.persistence.FeatureStoreException;
 import org.deegree.feature.persistence.FeatureStoreProvider;
 import org.deegree.feature.types.FeatureType;
 import org.deegree.ogcapi.config.exceptions.BboxCacheUpdateException;
+import org.deegree.services.controller.OGCFrontController;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
 import org.slf4j.Logger;
@@ -60,24 +61,22 @@ public class UpdateBboxCache {
     /**
      * Updates the bounding boxes of all feature types in all feature stores.
      *
-     * @param p
-     *                 identifying the resource to validate, never <code>null</code>
      * @param queryString
      * @return
      * @throws IOException
      *                 if the OutputStream of the response could not be requested
      */
-    public static String updateBboxCache( Pair<DeegreeWorkspace, String> p, String queryString )
+    public static String updateBboxCache( String queryString )
                     throws BboxCacheUpdateException {
-        DeegreeWorkspace ws = p.first;
+        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
         try {
-            ws.initAll();
+            workspace.initAll();
         } catch ( ResourceInitException e ) {
             throw new BboxCacheUpdateException( e );
         }
         try {
             List<String> featureStoreIds = parseFeatureStoreIds( queryString );
-            return updateBboxCache( ws.getNewWorkspace(), featureStoreIds );
+            return updateBboxCache( workspace.getNewWorkspace(), featureStoreIds );
         } catch ( Exception e ) {
             throw new BboxCacheUpdateException( e );
         }

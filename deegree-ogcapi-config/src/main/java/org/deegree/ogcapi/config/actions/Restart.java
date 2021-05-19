@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -57,7 +57,6 @@
 package org.deegree.ogcapi.config.actions;
 
 import org.deegree.commons.config.DeegreeWorkspace;
-import org.deegree.commons.utils.Pair;
 import org.deegree.ogcapi.config.exceptions.RestartException;
 import org.deegree.services.controller.OGCFrontController;
 import org.deegree.workspace.ResourceIdentifier;
@@ -77,15 +76,24 @@ import java.util.List;
  */
 public class Restart {
 
-    public static String restart( Pair<DeegreeWorkspace, String> p )
+    public static String restart()
                     throws RestartException {
         try {
-            DeegreeWorkspace workspace = p.first;
-            if ( p.second == null ) {
+            OGCFrontController fc = OGCFrontController.getInstance();
+            fc.reload();
+            return "Restart of workspace " + OGCFrontController.getServiceWorkspace().getName() + " completed.";
+        } catch ( Exception e ) {
+            throw new RestartException( e );
+        }
+    }
+
+    public static String restart( DeegreeWorkspace workspace, String path )
+                    throws RestartException {
+        try {
+            if ( path == null ) {
                 return restartWorkspace( workspace.getName() );
             }
-            String resourcePath = p.second;
-            return restartResource( workspace, resourcePath );
+            return restartResource( workspace, path );
         } catch ( Exception e ) {
             throw new RestartException( e );
         }

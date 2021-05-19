@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,6 +26,7 @@ import org.deegree.commons.config.ResourceInitException;
 import org.deegree.commons.utils.Pair;
 import org.deegree.ogcapi.config.exceptions.InvalidPathException;
 import org.deegree.ogcapi.config.exceptions.ValidationException;
+import org.deegree.services.controller.OGCFrontController;
 import org.deegree.workspace.ErrorHandler;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceIdentifier;
@@ -57,28 +58,37 @@ public class Validate {
     private static final Logger LOG = getLogger( Validate.class );
 
     /**
-     * @param p
-     *                 identifying the resource to validate, never <code>null</code>
      * @return
      * @throws IOException
      */
-    public static String validate( Pair<DeegreeWorkspace, String> p )
-                    throws ValidationException, InvalidPathException {
+    public static String validate()
+                    throws ValidationException {
+        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
         try {
-            DeegreeWorkspace workspace = p.getFirst();
             workspace.destroyAll();
             workspace.initAll();
         } catch ( ResourceInitException e ) {
             throw new ValidationException( e );
         }
+        return validate( workspace );
+    }
 
-        DeegreeWorkspace workspace = p.first;
-        String file = p.second;
-        if ( file == null ) {
-            return validate( workspace );
-        } else {
-            return validate( workspace, file );
+    /**
+     * @param path
+     *                 identifying the resource to validate, never <code>null</code>
+     * @return
+     * @throws IOException
+     */
+    public static String validate( String path )
+                    throws ValidationException, InvalidPathException {
+        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+        try {
+            workspace.destroyAll();
+            workspace.initAll();
+        } catch ( ResourceInitException e ) {
+            throw new ValidationException( e );
         }
+        return validate( workspace, path );
     }
 
     private static String validate( DeegreeWorkspace ws, String file )
