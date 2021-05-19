@@ -23,6 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/vue-meta/dist/vue-meta.min.js"></script>
     <script>
         function loadCss(relativePath){
             var url = asAbsoluteUrl(relativePath);
@@ -164,10 +165,18 @@ var App = new Vue({
 
 var AppBreadcrump = new Vue({
   el: '#breadcrump',
+  metaInfo() {
+    const title = this.datasetTitle
+    return {
+      title: title,
+      titleTemplate: 'Collections - %s',
+    }
+  },
   data: {
     datasetLink: '',
     datasetName: '',
-    datasetsLink: ''
+    datasetsLink: '',
+    datasetTitle: ''
   },
 
   created() {
@@ -176,6 +185,16 @@ var AppBreadcrump = new Vue({
     self.datasetLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
     self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
     self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
+    this.fetchData().catch(error => {
+      console.error(error)
+    })
+  },
+  methods: {
+    async fetchData() {
+      const response = await fetch( this.datasetLink, {headers: {'Accept': 'application/json' } } );
+      const json = await response.json();
+      this.datasetTitle = json.title;
+    }
   }
 })
 

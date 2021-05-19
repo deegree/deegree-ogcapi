@@ -111,6 +111,7 @@
     <script src="https://unpkg.com/bootstrap-vue@2.5.0/dist/bootstrap-vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
+    <script src="https://unpkg.com/vue-meta/dist/vue-meta.min.js"></script>
     <script>
         function loadCss(relativePath){
             var url = asAbsoluteUrl(relativePath);
@@ -602,6 +603,13 @@ new Vue({
 
 var AppCollection = new Vue({
   el: '#collection',
+  metaInfo() {
+    const title = this.title
+    return {
+      title: title,
+      titleTemplate: 'Items - %s',
+    }
+  },
   data: {
     title: '',
     description: '',
