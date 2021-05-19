@@ -50,6 +50,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.FIRST;
+import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.UNLIMITED;
+
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
@@ -83,24 +86,9 @@ public class DeegreeDataAccess implements DataAccess {
         try {
             DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder( oafConfiguration );
             Query query = queryBuilder.createQuery( featureTypeMetadata, featuresRequest );
-            int numberOfFeaturesMatched = featureStore.queryHits( query );
-            FeatureInputStream features = featureStore.query( query );
-            boolean isMaxFeaturesAndStartIndexApplicable = featureStore.isMaxFeaturesAndStartIndexApplicable(
-                            new Query[] { query } );
-            int limit = featuresRequest.getLimit();
-            int offset = featuresRequest.getOffset();
-            NextLink nextLink = new NextLink( numberOfFeaturesMatched, limit, offset );
-            String datasetId = oafConfiguration.getId();
-            List<Link> links = linkBuilder.createFeaturesLinks( datasetId, collectionId, nextLink );
-            String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId);
-            String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
-            Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
-            return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
-                            featureTypeNsPrefixes ).withNumberOfFeatures( limit ).withNumberOfFeaturesMatched(
-                            numberOfFeaturesMatched ).withStartIndex( offset ).withLinks(
-                            links ).withMaxFeaturesAndStartIndexApplicable(
-                            isMaxFeaturesAndStartIndexApplicable ).withResponseCrsName( crs ).withSchemaLocation(
-                            namespaceURI, schemaLocation ).build();
+            return retrieveFeatures( oafConfiguration, featureTypeMetadata, collectionId, featuresRequest, linkBuilder,
+                                     crs, featureStore,
+                                     query );
         } catch ( FeatureStoreException | FilterEvaluationException | InvalidConfigurationException e ) {
             throw new InternalQueryException( e );
         }
@@ -144,6 +132,69 @@ public class DeegreeDataAccess implements DataAccess {
             throw new InvalidParameterValue( "crs", "Unknown CRS " + crs );
         }
         return crs;
+    }
+
+    private FeatureResponse retrieveFeatures( OafDatasetConfiguration oafConfiguration,
+                                              FeatureTypeMetadata featureTypeMetadata, String collectionId,
+                                              FeaturesRequest featuresRequest, LinkBuilder linkBuilder, String crs,
+                                              FeatureStore featureStore, Query query )
+                    throws FeatureStoreException, FilterEvaluationException {
+        int numberOfFeaturesMatched = featureStore.queryHits( query );
+        FeatureInputStream features = featureStore.query( query );
+        boolean isMaxFeaturesAndStartIndexApplicable = featureStore.isMaxFeaturesAndStartIndexApplicable(
+                        new Query[] { query } );
+        if ( featuresRequest.isBulkUpload() ) {
+            return retrieveFeaturesBulk( oafConfiguration, featureTypeMetadata, collectionId, linkBuilder, crs,
+                                         featureStore,
+                                         numberOfFeaturesMatched, features, isMaxFeaturesAndStartIndexApplicable );
+        }
+        return retrieveFeaturesLimitedNumber( oafConfiguration, featureTypeMetadata, collectionId, featuresRequest,
+                                              linkBuilder, crs,
+                                              featureStore, numberOfFeaturesMatched, features,
+                                              isMaxFeaturesAndStartIndexApplicable );
+    }
+
+    private FeatureResponse retrieveFeaturesBulk( OafDatasetConfiguration oafConfiguration,
+                                                  FeatureTypeMetadata featureTypeMetadata, String collectionId,
+                                                  LinkBuilder linkBuilder, String crs, FeatureStore featureStore,
+                                                  int numberOfFeaturesMatched, FeatureInputStream features,
+                                                  boolean isMaxFeaturesAndStartIndexApplicable ) {
+        int limit = UNLIMITED;
+        int offset = FIRST;
+        String datasetId = oafConfiguration.getId();
+        List<Link> links = linkBuilder.createFeaturesLinks( datasetId, collectionId );
+        Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
+        String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId );
+        String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
+        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( limit ).withNumberOfFeaturesMatched(
+                        numberOfFeaturesMatched ).withStartIndex( offset ).withLinks(
+                        links ).withMaxFeaturesAndStartIndexApplicable(
+                        isMaxFeaturesAndStartIndexApplicable ).withResponseCrsName( crs ).withSchemaLocation(
+                        namespaceURI, schemaLocation ).build();
+    }
+
+    private FeatureResponse retrieveFeaturesLimitedNumber( OafDatasetConfiguration oafConfiguration,
+                                                           FeatureTypeMetadata featureTypeMetadata,
+                                                           String collectionId, FeaturesRequest featuresRequest,
+                                                           LinkBuilder linkBuilder, String crs,
+                                                           FeatureStore featureStore, int numberOfFeaturesMatched,
+                                                           FeatureInputStream features,
+                                                           boolean isMaxFeaturesAndStartIndexApplicable ) {
+        int limit = featuresRequest.getLimit();
+        int offset = featuresRequest.getOffset();
+        NextLink nextLink = new NextLink( numberOfFeaturesMatched, limit, offset );
+        String datasetId = oafConfiguration.getId();
+        List<Link> links = linkBuilder.createFeaturesLinks( datasetId, collectionId, nextLink );
+        Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
+        String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId );
+        String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
+        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withNumberOfFeatures( limit ).withNumberOfFeaturesMatched(
+                        numberOfFeaturesMatched ).withStartIndex( offset ).withLinks(
+                        links ).withMaxFeaturesAndStartIndexApplicable(
+                        isMaxFeaturesAndStartIndexApplicable ).withResponseCrsName( crs ).withSchemaLocation(
+                        namespaceURI, schemaLocation ).build();
     }
 
     private List<Collection> createCollectionList( OafDatasetConfiguration oafConfiguration, String datasetId,

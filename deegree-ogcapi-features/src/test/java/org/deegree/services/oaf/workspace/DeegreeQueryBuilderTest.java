@@ -57,6 +57,8 @@ import static org.deegree.filter.Operator.Type.COMPARISON;
 import static org.deegree.filter.Operator.Type.LOGICAL;
 import static org.deegree.filter.Operator.Type.TEMPORAL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
+import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.FIRST;
+import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.UNLIMITED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -89,6 +91,17 @@ public class DeegreeQueryBuilderTest {
 
         assertThat( query.getTypeNames()[0].getFeatureTypeName(), is( FT_NAME ) );
         assertThat( filter, is( nullValue() ) );
+    }
+
+    @Test public void test_CreateQueryWithBulkOverridingLimitAndOffset()
+                            throws Exception {
+        DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder( mockOafConfiguration() );
+        FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID ).withLimit( 10 ).withOffset(
+                                10 ).withBulkUpload( true ).build();
+        Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
+
+        assertThat( query.getMaxFeatures(), is( UNLIMITED ) );
+        assertThat( query.getStartIndex(), is( FIRST ) );
     }
 
     @Test

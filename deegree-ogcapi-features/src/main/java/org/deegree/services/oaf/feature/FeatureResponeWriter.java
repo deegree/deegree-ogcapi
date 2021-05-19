@@ -31,6 +31,7 @@ import org.deegree.feature.Feature;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.geojson.GeoJsonWriter;
 import org.deegree.services.oaf.link.Link;
+import org.slf4j.Logger;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -44,12 +45,10 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
-import static org.deegree.cs.persistence.CRSManager.lookup;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -57,6 +56,8 @@ import static org.deegree.cs.persistence.CRSManager.lookup;
 @Provider
 @Produces("application/geo+json")
 public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> {
+
+    private static final Logger LOG = getLogger( FeatureResponeWriter.class );
 
     @Override
     public boolean isWriteable( Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType ) {
@@ -88,6 +89,7 @@ public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> 
             // geoJsonStreamWriter.endFeatureCollection();
             geoJsonStreamWriter.endObject();
         } catch ( Exception e ) {
+            LOG.error( "Writing response failed", e );
             throw new WebApplicationException( e );
         }
     }

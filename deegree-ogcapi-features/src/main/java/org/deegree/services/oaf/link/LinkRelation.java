@@ -28,7 +28,7 @@ public enum LinkRelation {
 
     ALTERNATE( "alternate" ), SELF( "self" ), SERVICE_DESC( "service-desc" ), SERVICE_DOC( "service-doc" ), CONFORMANCE(
                     "conformance" ), DATA( "data" ), COLLECTION( "collection" ), ITEMS( "items" ), NEXT(
-                    "next" ), DESCRIBEDBY( "describedBy" ), LICENSE( "license" );
+                    "next" ), DESCRIBEDBY( "describedBy" ), LICENSE( "license" ), ENCLOSURE ("enclosure");
 
     private final String rel;
 

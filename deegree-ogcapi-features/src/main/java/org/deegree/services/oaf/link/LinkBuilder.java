@@ -45,6 +45,7 @@ import static org.deegree.services.oaf.link.LinkRelation.COLLECTION;
 import static org.deegree.services.oaf.link.LinkRelation.CONFORMANCE;
 import static org.deegree.services.oaf.link.LinkRelation.DATA;
 import static org.deegree.services.oaf.link.LinkRelation.DESCRIBEDBY;
+import static org.deegree.services.oaf.link.LinkRelation.ENCLOSURE;
 import static org.deegree.services.oaf.link.LinkRelation.ITEMS;
 import static org.deegree.services.oaf.link.LinkRelation.LICENSE;
 import static org.deegree.services.oaf.link.LinkRelation.NEXT;
@@ -148,11 +149,21 @@ public class LinkBuilder {
                         .path( "items" )
                         .toString();
         addItems( links, itemsHref );
-
+        String enclosureHref = createBaseUriBuilder( datasetId )
+                                .path( "collections" )
+                                .path( collectionId )
+                                .path( "items" )
+                                .queryParam( "bulk", true )
+                                .toString();
+        addEnclosureLinks( links, enclosureHref );
         metadataUrls.forEach( metadataUrl -> {
             links.add( createMetadataLink( metadataUrl, "Metadata describing this Collection" ) );
         } );
         return links;
+    }
+
+    public List<Link> createFeaturesLinks( String datasetId, String collectionId ) {
+        return createFeaturesLinks( datasetId, collectionId, null );
     }
 
     public String createSchemaLink( String datasetId, String collectionId ) {
@@ -165,18 +176,21 @@ public class LinkBuilder {
 
     public String createSchemaLink( String path ) {
         return uriInfo.getBaseUriBuilder()
-                        .path( "appschemas" )
-                        .path( path )
-                        .toString();
+                      .path( "appschemas" )
+                      .path( path )
+                      .toString();
     }
+
 
     public List<Link> createFeaturesLinks( String datasetId, String collectionId, NextLink nextLink ) {
         List<Link> links = new ArrayList<>();
         String selfUri = createSelfUriWithQueryParametersWExceptFormat();
         addSelfAndAlternateGeo( links, selfUri );
-        String nextUri = nextLink.createUri( uriInfo );
-        if ( nextUri != null )
-            links.add( new Link( nextUri, NEXT.getRel(), APPLICATION_GEOJSON, "next page" ) );
+        if ( nextLink != null ) {
+            String nextUri = nextLink.createUri( uriInfo );
+            if ( nextUri != null )
+                links.add( new Link( nextUri, NEXT.getRel(), APPLICATION_GEOJSON, "next page" ) );
+        }
         String collectionUri = createBaseUriBuilder( datasetId )
                         .path( "collections" )
                         .path( collectionId )
@@ -210,6 +224,11 @@ public class LinkBuilder {
         links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_32, "this document as GML" ) );
         links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_SF0, "this document as GML" ) );
         links.add( new Link( uri, ALTERNATE.getRel(), APPLICATION_GML_SF2, "this document as GML" ) );
+    }
+
+    private void addEnclosureLinks( List<Link> links, String uri ) {
+        links.add( new Link( uri, ENCLOSURE.getRel(), APPLICATION_JSON, "Download all features as GeoJSON" ) );
+        links.add( new Link( uri, ENCLOSURE.getRel(), APPLICATION_XML, "Download all features as GML" ) );
     }
 
     private void addConformance( List<Link> links, String conformanceHref ) {

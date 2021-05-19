@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -95,12 +95,15 @@ public class Features {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
+                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
                     @QueryParam("limit")
                                     int limit,
-                    @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
+                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
+                    @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
+                    @QueryParam("bulk")
+                                     boolean bulk,
                     @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset [minx, miny, maxx, maxy]. Example: '567190,5934330,567200,5934360'", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
                     @QueryParam("bbox")
                                     List<Double> bbox,
@@ -119,7 +122,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format, JSON );
+        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, crs, format,
+                         JSON );
     }
 
     @GET
@@ -133,12 +137,15 @@ public class Features {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
+                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
                     @QueryParam("limit")
                                     int limit,
-                    @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
+                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
+                    @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
+                    @QueryParam("bulk")
+                                    boolean bulk,
                     @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
                     @QueryParam("bbox")
                                     List<Double> bbox,
@@ -156,8 +163,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format, XML,
-                         acceptHeader );
+        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, crs, format,
+                         XML, acceptHeader );
     }
 
     @GET
@@ -170,12 +177,15 @@ public class Features {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
+                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
                     @QueryParam("limit")
                                     int limit,
-                    @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
+                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
+                    @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
+                    @QueryParam("bulk")
+                                     boolean bulk,
                     @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
                     @QueryParam("bbox")
                                     List<Double> bbox,
@@ -193,7 +203,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format, HTML );
+        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, crs, format,
+                         HTML );
     }
 
     @GET
@@ -205,12 +216,15 @@ public class Features {
                                     String datasetId,
                     @PathParam("collectionId")
                                     String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
+                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
                     @QueryParam("limit")
                                     int limit,
-                    @Parameter(description = "The start index of the items presented in the response document", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
+                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
                     @QueryParam("offset")
                                     int offset,
+                    @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
+                    @QueryParam("bulk")
+                                    boolean bulk,
                     @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
                     @QueryParam("bbox")
                                     List<Double> bbox,
@@ -228,20 +242,21 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format, JSON );
+        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, crs, format,
+                         JSON );
     }
 
     private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-                               List<Double> bbox, String bboxCrs, String datetime, String crs, String format,
-                               RequestFormat defaultFormat )
+                               boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String crs,
+                               String format, RequestFormat defaultFormat )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bbox, bboxCrs, datetime, crs, format,
-                         defaultFormat, null );
+        return features( uriInfo, datasetId, collectionId, limit, offset, isBulkUpload, bbox, bboxCrs, datetime, crs,
+                         format, defaultFormat, null );
     }
 
     private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-                               List<Double> bbox, String bboxCrs, String datetime, String crs, String formatParamValue,
-                               RequestFormat defaultFormat, String acceptHeader )
+                               boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String crs,
+                               String formatParamValue, RequestFormat defaultFormat, String acceptHeader )
                     throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
         OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
@@ -256,6 +271,7 @@ public class Features {
         FeaturesRequest featuresRequest = new FeaturesRequestBuilder( collectionId )
                         .withLimit( limit )
                         .withOffset( offset )
+                        .withBulkUpload( isBulkUpload )
                         .withBbox( bbox, bboxCrs )
                         .withDatetime( datetime )
                         .withResponseCrs( crs )
