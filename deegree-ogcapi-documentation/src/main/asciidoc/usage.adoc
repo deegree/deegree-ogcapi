@@ -26,8 +26,8 @@ either the HTTP `Accept` header or the query parameter `f` to retrieve the data 
 
 Besides the resources listed above for each dataset all resources defined by the OGC API - Features standard are supported.
 The configuration examples described in this document would result to the following addresses for each dataset. The landing page for
-the dataset _trees_ would be served under the address http://localhost:8080/deegree-services-oaf/datasets/trees and the landing page for the dataset _streets_
-would be served under the address http://localhost:8080/deegree-services-oaf/datasets/streets.
+the dataset _trees_ would be served under the address http://localhost:8080/deegree-services-oaf/datasets/trees and the landing page for the dataset _streets_ would be served under the address http://localhost:8080/deegree-services-oaf/datasets/streets.
+
 The following table show the resources available per dataset:
 
 [width="100%",cols="20%,30%,10%,20%,20%",options="header",]
@@ -86,7 +86,7 @@ Example request: Get Landing page in `json` encoding.
 [caption="Figure 2: "]
 image::swagger_request.png[Swagger send request]
 
-The page should display the server response in the selected encoding and the HTTP status code. Also the HTTP response header information
+The page should display the server response in the selected encoding and the HTTP status code. In addition the HTTP response header information
 is displayed.
 
 .Swagger response
@@ -147,6 +147,13 @@ image::datasets_landing.png[Landing page]
 
 The landing page provides links to all resources of a dataset.
 
+When navigating to the feature collections and feature collection resource links to access the referenced metadata and bulk download in GeoJson and GML encoding are provided.
+
+.Feature collections page in HTML encoding
+[caption="Figure 6: "]
+image::feature_collections.png[Feature collections page]
+
+
 [[query_parameter]]
 === Using query parameters
 
@@ -161,6 +168,7 @@ The following query parameters are supported when using HTTP GET:
 |`f` |String |`html`, `json`, `xml` |Requested encoding of a given resource
 |`limit` |integer |10 |Limit the numbers of items per page
 |`offset` |integer |0 |Start index of items
+|`bulk` |boolean|true, false|Applicable for features resource only, can be combined with parameter `f`
 |===
 
 NOTE: Check the <<openapi>> on which resources the listed query parameters are supported. Additional query parameters may be available depending on the resource.

@@ -32,10 +32,11 @@ deegree OAF was built on top of the robust API and configuration concept of http
 
 * easy to install: simple deployment in every Java Servlet container
 * easy to configure: uses the deegree workspace configuration concept
-** connects to several data sources such as files, and databases
-** serves a rich HTML output format including a map component based on https://openlayers.org/[OpenLayers]
-** links to metadata in different formats
-** supports data types such as arrays and structured objects
+* connects to several data sources such as files, and databases
+* serves a rich HTML output format including a map component based on https://openlayers.org/[OpenLayers]
+* links to metadata in different formats
+* supports data types such as arrays and structured objects
+* supports a bulk download for datasets as specified by https://github.com/INSPIRE-MIF/gp-ogc-api-features/blob/master/spec/oapif-inspire-download.md#req-bulk-download[requirements class "INSPIRE-bulk-download"]
 
 === Quick Start
 
