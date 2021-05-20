@@ -154,6 +154,10 @@ When navigating to the feature collections and feature collection resource links
 image::feature_collections.png[Feature collections page]
 
 
+.Feature collection page in HTML encoding
+[caption="Figure 7: "]
+image::feature_collection.png[Feature collection page]
+
 [[query_parameter]]
 === Using query parameters
 
