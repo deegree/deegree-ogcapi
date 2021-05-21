@@ -3,17 +3,17 @@
 This section describes how to access the data in the different encodings and how to use the HTML encoding to browse the data.
 
 The main entry point for deegree OAF is provided under the resource path _/datasets_.
-Given that the deegree OAF webapp is deployed under the context path _/deegree-services-oaf_ the resulting example URL for a local server running on port 8080 is: http://localhost:8080/deegree-services-oaf/datasets/
-This resource is called the main entry page in the context of deegree OAF.
+Given that the deegree OAF webapp is deployed under the context path _/deegree-services-oaf_ the resulting example URL for a local server running on port 8080 is: http://localhost:8080/deegree-services-oaf/datasets
 
-=== Main entry page
+[[usage_datasets]]
+=== Datasets overview
 
-Overview of resources served by deegree OAF accessible from the main entry page:
+This resource provides an overview of all datasets served by deegree OAF:
 
 [width="100%",cols="20%,20%,10%,20%,30%",options="header",]
 |===
 |Resource |Path |HTTP method |Supported Encodings |Description
-|Datasets overview |`/` |GET |`text/html`, `application/json` |The main entry page provides an overview of all datasets available
+|Datasets overview |`/` |GET |`text/html`, `application/json` |The resource provides an overview of all datasets available
 |Landing page per dataset |`+/{datasetId}+` |GET |`text/html`, `application/json` |The API landing page per dataset (see next section for further information)
 |===
 
@@ -125,6 +125,9 @@ Example URL: http://localhost:8080/deegree-services-oaf/datasets/streets/?f=xml
 
 See section <<query_parameter>> for more information about supported other query parameters.
 
+The corresponding GML schema file is provided under the resource of each Feature collection _datasets/{datasetId}/collections/{collectionId}/appschema_.
+Example URL: https://localhost:8080/deegree-services-oaf/datasets/streets/collections/streets/appschema
+
 [[html_encoding]]
 === Using the HTML interface
 
@@ -132,14 +135,14 @@ The HTML interface provides easy access to the spatial data using a browser (che
 It requires no additional client or browser plugin to browse the data. The browser sends by default
 the HTTP header `Accept` with the value `text/html` and therefore each resource is returned in HTML encoding.
 
-To browse the data open the browser of your choice and start at the main entry page available at _datasets/_.
+To browse the data open the browser of your choice and start at the datasets overview available at _datasets/_.
 Example URL: http://localhost:8080/deegree-services-oaf/datasets
 
-.Main entry page in HTML encoding
+.Datasets overview in HTML encoding
 [caption="Figure 4: "]
-image::datasets_entry.png[Main entry page]
+image::datasets_entry.png[Datasets overview page]
 
-Navigate to the landing page of dataset _streets_ by clicking on the link "Landing page as HTML".
+Navigate to the landing page of the dataset _streets_ by clicking on the link "Landing page as HTML".
 
 .Landing page in HTML encoding
 [caption="Figure 5: "]
