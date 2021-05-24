@@ -25,10 +25,9 @@
           xsi:schemaLocation="http://www.deegree.org/services/oaf/htmlviewconfig htmlviewconfig.xsd">
 
   <Map>
-    <WMSUrl>htpp:/wmsurl.de</WMSUrl>
+    <WMSUrl version="1.3.0">https://wms.url.net/</WMSUrl>
     <WMSLayers>test</WMSLayers>
-    <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
-    </CrsProj4Definition>
+    <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</CrsProj4Definition>
   </Map>
 
 </HtmlView>

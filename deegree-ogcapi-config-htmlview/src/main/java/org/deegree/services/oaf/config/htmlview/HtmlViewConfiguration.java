@@ -40,6 +40,8 @@ public class HtmlViewConfiguration {
 
     private final String wmsUrl;
 
+    private final String wmsVersion;
+
     private final String wmsLayers;
 
     private final String crsCode;
@@ -57,6 +59,8 @@ public class HtmlViewConfiguration {
      *                 the URL to retrieve the documentation, may be <code>null</code>
      * @param wmsUrl
      *                 the URL of the WMS, may be <code>null</code>
+     * @param wmsVersion
+     *                 the WMS Version to use, may be <code>null</code>
      * @param wmsLayers
      *                 the layers of the WMS, may be <code>null</code>
      * @param crsCode
@@ -64,12 +68,13 @@ public class HtmlViewConfiguration {
      * @param crsProj4Definition
      */
     public HtmlViewConfiguration( File cssFile, String legalNoticeUrl, String privacyUrl, String documentationUrl,
-                                  String wmsUrl, String wmsLayers, String crsCode, String crsProj4Definition ) {
+                                  String wmsUrl, String wmsVersion, String wmsLayers, String crsCode, String crsProj4Definition ) {
         this.cssFile = cssFile;
         this.legalNoticeUrl = legalNoticeUrl;
         this.privacyUrl = privacyUrl;
         this.documentationUrl = documentationUrl;
         this.wmsUrl = wmsUrl;
+        this.wmsVersion = wmsVersion;
         this.wmsLayers = wmsLayers;
         this.crsCode = crsCode;
         this.crsProj4Definition = crsProj4Definition;
@@ -87,6 +92,13 @@ public class HtmlViewConfiguration {
      */
     public String getWmsUrl() {
         return wmsUrl;
+    }
+
+    /**
+     * @return the WMS Version to use, may be <code>null</code>
+     */
+    public String getWmsVersion() {
+        return wmsVersion;
     }
 
     /**

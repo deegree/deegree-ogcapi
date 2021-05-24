@@ -810,13 +810,13 @@ async function fetchConfigAndSetFeatures(featuresJson) {
   const response = await fetch( configUrl, {headers: {'Accept': 'application/json' } } );
   if( response.status == 200 ){
     const json = await response.json();
-    setMapBackgroundAndFeatures(json.wmsUrl, json.wmsLayers, json.crsCode, json.crsProj4Definition, featuresJson);
+    setMapBackgroundAndExtent(json.wmsUrl, json.wmsVersion, json.wmsLayers, json.crsCode, json.crsProj4Definition, featuresJson);
   } else {
-    setMapBackgroundAndFeatures('http://sg.geodatenzentrum.de/wms_dtk250', 'dtk250', null, null, featuresJson);
+    setMapBackgroundAndExtent('http://sg.geodatenzentrum.de/wms_dtk250', '1.1.1', 'dtk250', null, null, featuresJson);
   }
 }
 
-function setMapBackgroundAndFeatures(wmsUrl, wmsLayers, crsCode, projDef, featuresJson){
+function setMapBackgroundAndExtent(wmsUrl, wmsVersion, wmsLayers, crsCode, projDef, featuresJson){
     var crsCodeRegistered = registerCrs(crsCode, projDef);
     if( crsCodeRegistered ){
         var userConfig = ol.proj.get(crsCode);
@@ -831,7 +831,7 @@ function setMapBackgroundAndFeatures(wmsUrl, wmsLayers, crsCode, projDef, featur
     var wmsLayer = new ol.layer.Tile({
       source: new ol.source.TileWMS({
         url: wmsUrl,
-        params: {'VERSION': '1.1.1', 'LAYERS': wmsLayers, 'TILED': true}
+        params: {'VERSION': wmsVersion, 'LAYERS': wmsLayers}
       })
     });
     map.getLayers().insertAt(0, wmsLayer);

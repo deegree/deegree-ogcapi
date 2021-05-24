@@ -353,7 +353,7 @@ To configure the HTML encoding a configuration file can be used. The following e
   <PrivacyPolicyUrl>https://www.hamburg.de/datenschutz/</PrivacyPolicyUrl> <!--3-->
   <DocumentationUrl>https://www.hamburg.de/</DocumentationUrl> <!--4-->
   <Map>
-    <WMSUrl>https://geodienste.hamburg.de/HH_WMS_Cache_Stadtplan</WMSUrl> <!--5-->
+    <WMSUrl version="1.3.0">https://geodienste.hamburg.de/HH_WMS_Cache_Stadtplan</WMSUrl> <!--5-->
     <WMSLayers>stadtplan</WMSLayers> <!--6-->
     <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</CrsProj4Definition> <!--7-->
   </Map>
@@ -387,8 +387,8 @@ The element ```<Map/>``` has the following subelements:
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
 |Option |Cardinality |Value |Description
-|WMSUrl |1 |URL |WMS service endpoint URL
-|WMSLayers |1 |String |Name of the layer
+|WMSUrl |1 |URL |WMS service endpoint URL, default: http://sg.geodatenzentrum.de/wms_dtk250. Use the attribute `version` to specify the WMS version
+|WMSLayers |1 |String |Name of the layer, default: dtk250
 |CrsProj4Definition |1 |String |Use the attribute `code` to set the EPSG code, and the value element for the https://proj.org[PROJ] definition as provided by http://epsg.io.
 |===
 
