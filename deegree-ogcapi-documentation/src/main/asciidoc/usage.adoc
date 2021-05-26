@@ -142,7 +142,7 @@ Example URL: http://localhost:8080/deegree-services-oaf/datasets
 [caption="Figure 4: "]
 image::datasets_entry.png[Datasets overview page]
 
-Navigate to the landing page of the dataset _streets_ by clicking on the link "Landing page as HTML".
+Navigate to the landing page of the dataset _trees_ by clicking on the link "Landing page as HTML".
 
 .Landing page in HTML encoding
 [caption="Figure 5: "]
