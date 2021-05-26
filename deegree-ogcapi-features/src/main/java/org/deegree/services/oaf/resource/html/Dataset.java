@@ -73,6 +73,7 @@ public class Dataset {
         if ( htmlViewConfiguration == null || htmlViewConfiguration.getWmsUrl() == null )
             return Response.status( Response.Status.NOT_FOUND ).build();
         MapConfiguration mapConfiguration = new MapConfiguration( htmlViewConfiguration.getWmsUrl(),
+                                                                  htmlViewConfiguration.getWmsVersion(),
                                                                   htmlViewConfiguration.getWmsLayers(),
                                                                   htmlViewConfiguration.getCrsCode(),
                                                                   htmlViewConfiguration.getCrsProj4Definition() );

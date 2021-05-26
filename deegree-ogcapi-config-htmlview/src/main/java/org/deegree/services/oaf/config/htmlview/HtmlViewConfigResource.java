@@ -86,13 +86,15 @@ public class HtmlViewConfigResource implements Resource {
             }
         }
         String wmsUrl = null;
+        String wmsVersion = null;
         String wmsLayers = null;
         String crsCode = null;
         String crsProj4Definition = null;
 
         HtmlView.Map map = config.getMap();
         if ( map != null ) {
-            wmsUrl = map.getWMSUrl();
+            wmsUrl = map.getWMSUrl().getValue();
+            wmsVersion= map.getWMSUrl().getVersion();
             wmsLayers = map.getWMSLayers();
             if ( map.getCrsProj4Definition() != null ) {
                 crsCode = map.getCrsProj4Definition().getCode();
@@ -100,7 +102,7 @@ public class HtmlViewConfigResource implements Resource {
             }
         }
         return new HtmlViewConfiguration( cssFile, config.getLegalNoticeUrl(), config.getPrivacyPolicyUrl(),
-                                          config.getDocumentationUrl(), wmsUrl,
+                                          config.getDocumentationUrl(), wmsUrl, wmsVersion,
                                           wmsLayers, crsCode, crsProj4Definition );
     }
 

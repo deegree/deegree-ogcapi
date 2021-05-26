@@ -20,7 +20,22 @@
           <complexType>
             <sequence>
               <sequence minOccurs="0">
-                <element name="WMSUrl" minOccurs="1" type="string"/>
+                <element name="WMSUrl" minOccurs="1">
+                  <complexType>
+                    <simpleContent>
+                      <extension base="string">
+                        <attribute name="version" use="optional" default="1.3.0">
+                          <simpleType>
+                            <restriction base="string">
+                              <enumeration value="1.1.1"/>
+                              <enumeration value="1.3.0"/>
+                            </restriction>
+                          </simpleType>
+                        </attribute>
+                      </extension>
+                    </simpleContent>
+                  </complexType>
+                </element>
                 <element name="WMSLayers" minOccurs="1" type="string"/>
               </sequence>
               <element name="CrsProj4Definition" minOccurs="0">
@@ -45,5 +60,4 @@
       </attribute>
     </complexType>
   </element>
-
 </schema>

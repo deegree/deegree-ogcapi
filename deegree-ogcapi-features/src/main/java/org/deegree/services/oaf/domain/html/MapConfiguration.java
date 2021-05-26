@@ -22,11 +22,13 @@
 package org.deegree.services.oaf.domain.html;
 
 /**
- * Encapsulates zhe configuration of the map
+ * Encapsulates the configuration of the map
  */
 public class MapConfiguration {
 
     private final String wmsUrl;
+
+    private final String wmsVersion;
 
     private final String wmsLayers;
 
@@ -34,8 +36,9 @@ public class MapConfiguration {
 
     private final String crsProj4Definition;
 
-    public MapConfiguration( String wmsUrl, String wmsLayers, String crsCode, String crsProj4Definition ) {
+    public MapConfiguration( String wmsUrl, String wmsVersion, String wmsLayers, String crsCode, String crsProj4Definition ) {
         this.wmsUrl = wmsUrl;
+        this.wmsVersion = wmsVersion;
         this.wmsLayers = wmsLayers;
         this.crsCode = crsCode;
         this.crsProj4Definition = crsProj4Definition;
@@ -43,6 +46,10 @@ public class MapConfiguration {
 
     public String getWmsUrl() {
         return wmsUrl;
+    }
+
+    public String getWmsVersion() {
+        return wmsVersion;
     }
 
     public String getWmsLayers() {
