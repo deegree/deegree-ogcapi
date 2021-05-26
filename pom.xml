@@ -39,17 +39,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <!-- Required to retrieve the following dependencies: deegree-jaxb-resolver, deegree-ogcschemas, utah-demodata, inspire-demodata -->
-    <repository>
-      <id>deegree-repo</id>
-      <url>http://repo.deegree.org/content/groups/public/</url>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
   </repositories>
 
   <distributionManagement>
@@ -69,6 +58,17 @@
       <url>http://buildserver.deegree-enterprise.de/nexus/content/groups/dee/</url>
       <releases>
         <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <!-- Required to retrieve the following dependencies: deegree-jaxb-resolver -->
+    <pluginRepository>
+      <id>deegree-repo</id>
+      <url>http://repo.deegree.org/content/groups/public/</url>
+      <releases>
         <updatePolicy>never</updatePolicy>
       </releases>
       <snapshots>
