@@ -90,7 +90,7 @@
                     <ul class="list-group">
                         <li v-for="collection in collections" class="list-group-item">
                             <h5 v-cloak>{{ collection.title }}</h5>
-                            <div v-cloak>{{collection.description}}</div>
+                            <div v-cloak v-html="collection.description"></div>
 
                             <div class="row mt-2">
                                 <div class="col-sm-2">Links</div>
