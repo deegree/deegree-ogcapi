@@ -122,6 +122,14 @@
                 </div>
                 <div v-else class="col-md-9">-</div>
             </div>
+            <div class="row mt-2" v-if="crs">
+                <div class="col-md-3">Coordinate referencesystems</div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div v-cloak class="col-md-12" v-for="crsitem in crs">{{ crsitem }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -163,7 +171,8 @@ var App = new Vue({
     title: '',
     description: '',
     links: '',
-    extent: ''
+    extent: '',
+    crs: ''
   },
 
   created() {
@@ -181,6 +190,7 @@ var App = new Vue({
       this.description = json.description;
       this.links = json.links;
       this.extent = json.extent;
+      this.crs = json.crs;
       fetchConfigAndSetExtent(this.extent.spatial.bbox);
     }
   }
