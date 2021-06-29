@@ -187,7 +187,7 @@ public class TestData {
         bbox.add( 48.4 );
         bbox.add( 10.5 );
         bbox.add( 48.6 );
-        return new Spatial( bbox, DEFAULT_CRS );
+        return new Spatial( java.util.Collections.singletonList( bbox ), DEFAULT_CRS );
     }
 
     private static Temporal createTemporal() {
