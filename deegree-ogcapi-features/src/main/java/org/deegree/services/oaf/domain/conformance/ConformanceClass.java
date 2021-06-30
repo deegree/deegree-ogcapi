@@ -42,7 +42,10 @@ public enum ConformanceClass {
     GMLSF0("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/gmlsf0"),
 
     /* GML Simple Features Level 2 */
-    GMLSF2("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/gmlsf2");
+    GMLSF2("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/gmlsf2"),
+
+    /* Part 2 - CRS */
+    CRS("http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs");
 
     private final String conformanceClass;
 
