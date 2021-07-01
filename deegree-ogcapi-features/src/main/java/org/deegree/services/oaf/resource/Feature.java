@@ -189,7 +189,7 @@ public class Feature {
         if ( XML.equals( requestFormat ) ) {
             return featureResponseCreator.createGmlResponseWithHeaders( featureResponse, acceptHeader );
         }
-        return Response.ok( featureResponse, APPLICATION_GEOJSON ).build();
+        return featureResponseCreator.createJsonResponseWithHeaders( featureResponse );
     }
 
 }

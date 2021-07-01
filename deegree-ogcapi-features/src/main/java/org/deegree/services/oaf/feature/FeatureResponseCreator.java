@@ -28,10 +28,12 @@ import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.Map;
 
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_CONTENT_CRS;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_Link;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_MATCHED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RETURNED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_TIMESTAMP;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
@@ -49,18 +51,31 @@ public class FeatureResponseCreator {
      *
      * @param featureResponse
      *                 never <code>null</code>
+     * @return never <code>null</code>
+     */
+    public Response createJsonResponseWithHeaders( FeatureResponse featureResponse ) {
+        Response.ResponseBuilder response = Response.ok( featureResponse, APPLICATION_GEOJSON );
+        response.header( HEADER_CONTENT_CRS, asContentCrsHeader( featureResponse ) );
+        return response.build();
+    }
+
+    /**
+     * Creates a response with the expected HTTP Headers
+     *
+     * @param featureResponse
+     *                 never <code>null</code>
      * @param acceptHeader
      *                 of the request, may be <code>null</code>
      * @return never <code>null</code>
      */
     public Response createGmlResponseWithHeaders( FeatureResponse featureResponse,
                                                   String acceptHeader ) {
-
         String mediaType = detectMediaType( acceptHeader );
         Response.ResponseBuilder response = Response.ok( featureResponse, mediaType );
         response.header( HEADER_TIMESTAMP, new Date() );
         response.header( HEADER_NUMBER_RETURNED, featureResponse.getNumberOfFeatures() );
         response.header( HEADER_NUMBER_MATCHED, featureResponse.getNumberOfFeaturesMatched() );
+        response.header( HEADER_CONTENT_CRS, asContentCrsHeader( featureResponse ) );
         featureResponse.getLinks().forEach( link -> {
             response.header( HEADER_Link, asString( link ) );
         } );
@@ -82,6 +97,13 @@ public class FeatureResponseCreator {
                 return APPLICATION_GML_SF2;
         }
         return APPLICATION_GML_32;
+    }
+
+    private String asContentCrsHeader( FeatureResponse featureResponse ) {
+        String crsName = featureResponse.getResponseCrsName();
+        if ( crsName == null )
+            return null;
+        return "<" + crsName + ">";
     }
 
     private String asString( Link link ) {

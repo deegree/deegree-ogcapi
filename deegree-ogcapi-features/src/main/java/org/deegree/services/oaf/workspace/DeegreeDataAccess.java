@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.FIRST;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.UNLIMITED;
 
@@ -125,7 +126,7 @@ public class DeegreeDataAccess implements DataAccess {
     private String validateAndRetrieveCrs( String crs )
                     throws InvalidParameterValue {
         if ( crs == null || crs.isEmpty() )
-            return null;
+            return DEFAULT_CRS;
         try {
             CRSManager.lookup( crs );
         } catch ( UnknownCRSException e ) {
