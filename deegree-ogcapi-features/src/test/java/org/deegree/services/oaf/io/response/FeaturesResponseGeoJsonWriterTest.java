@@ -23,6 +23,7 @@ package org.deegree.services.oaf.io.response;
 
 import org.deegree.feature.stream.EmptyFeatureInputStream;
 import org.deegree.feature.stream.FeatureInputStream;
+import org.deegree.services.oaf.io.response.geojson.FeaturesResponseGeoJsonWriter;
 import org.deegree.services.oaf.link.Link;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -69,7 +70,7 @@ public class FeaturesResponseGeoJsonWriterTest {
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).build();
+                        false ).buildFeaturesResponse();
     }
 
 }

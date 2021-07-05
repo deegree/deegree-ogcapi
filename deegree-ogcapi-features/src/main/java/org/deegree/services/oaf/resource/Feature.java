@@ -31,6 +31,7 @@ import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.io.response.FeatureResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponseCreator;
 import org.deegree.services.oaf.link.LinkBuilder;
@@ -184,8 +185,8 @@ public class Feature {
         }
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        FeaturesResponse featureResponse = dataAccess.retrieveFeature( oafConfiguration, collectionId, featureId, crs,
-                                                                       linkBuilder );
+        FeatureResponse featureResponse = dataAccess.retrieveFeature( oafConfiguration, collectionId, featureId, crs,
+                                                                      linkBuilder );
         if ( XML.equals( requestFormat ) ) {
             return featureResponseCreator.createGmlResponseWithHeaders( featureResponse, acceptHeader );
         }

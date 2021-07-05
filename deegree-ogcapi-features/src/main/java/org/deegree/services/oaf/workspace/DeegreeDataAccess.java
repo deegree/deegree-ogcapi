@@ -35,6 +35,7 @@ import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
+import org.deegree.services.oaf.io.response.FeatureResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponseBuilder;
 import org.deegree.services.oaf.io.request.FeaturesRequest;
@@ -95,9 +96,9 @@ public class DeegreeDataAccess implements DataAccess {
     }
 
     @Override
-    public FeaturesResponse retrieveFeature( OafDatasetConfiguration oafConfiguration, String collectionId,
-                                             String featureId, String responseCrs,
-                                             LinkBuilder linkBuilder )
+    public FeatureResponse retrieveFeature( OafDatasetConfiguration oafConfiguration, String collectionId,
+                                            String featureId, String responseCrs,
+                                            LinkBuilder linkBuilder )
                     throws InternalQueryException, InvalidParameterValue, UnknownCollectionId {
         FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         String crs = validateAndRetrieveCrs( responseCrs );
@@ -111,12 +112,9 @@ public class DeegreeDataAccess implements DataAccess {
             String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId);
             Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
             String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
-            return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes(
-                            featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
-                            1 ).withStartIndex( 0 ).withLinks(
-                            links ).withMaxFeaturesAndStartIndexApplicable(
-                            true ).withResponseCrsName( crs ).withSchemaLocation(
-                            namespaceURI, schemaLocation ).build();
+            return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes( featureTypeNsPrefixes ).withLinks(
+                            links ).withResponseCrsName( crs ).withSchemaLocation( namespaceURI,
+                                                                                   schemaLocation ).buildFeatureResponse();
         } catch ( FeatureStoreException | FilterEvaluationException e ) {
             throw new InternalQueryException( e );
         }
@@ -171,7 +169,7 @@ public class DeegreeDataAccess implements DataAccess {
                         numberOfFeaturesMatched ).withStartIndex( offset ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(
                         isMaxFeaturesAndStartIndexApplicable ).withResponseCrsName( crs ).withSchemaLocation(
-                        namespaceURI, schemaLocation ).build();
+                        namespaceURI, schemaLocation ).buildFeaturesResponse();
     }
 
     private FeaturesResponse retrieveFeaturesLimitedNumber( OafDatasetConfiguration oafConfiguration,
@@ -194,7 +192,7 @@ public class DeegreeDataAccess implements DataAccess {
                         numberOfFeaturesMatched ).withStartIndex( offset ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(
                         isMaxFeaturesAndStartIndexApplicable ).withResponseCrsName( crs ).withSchemaLocation(
-                        namespaceURI, schemaLocation ).build();
+                        namespaceURI, schemaLocation ).buildFeaturesResponse();
     }
 
     private List<Collection> createCollectionList( OafDatasetConfiguration oafConfiguration, String datasetId,

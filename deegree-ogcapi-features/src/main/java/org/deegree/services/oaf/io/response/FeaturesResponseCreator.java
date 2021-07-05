@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.Map;
 
-import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_Link;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_LINK;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_MATCHED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RETURNED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_TIMESTAMP;
@@ -47,24 +47,46 @@ public class FeaturesResponseCreator {
     /**
      * Creates a response with the expected HTTP Headers
      *
+     * @param featuresResponse
+     *                 never <code>null</code>
+     * @param acceptHeader
+     *                 of the request, may be <code>null</code>
+     * @return never <code>null</code>
+     */
+    public Response createGmlResponseWithHeaders( FeaturesResponse featuresResponse,
+                                                  String acceptHeader ) {
+
+        String mediaType = detectMediaType( acceptHeader );
+        Response.ResponseBuilder response = Response.ok( featuresResponse, mediaType );
+        response.header( HEADER_NUMBER_RETURNED, featuresResponse.getNumberOfFeatures() );
+        response.header( HEADER_NUMBER_MATCHED, featuresResponse.getNumberOfFeaturesMatched() );
+        addCommonHeader( featuresResponse, response );
+        return response.build();
+    }
+
+    /**
+     * Creates a response with the expected HTTP Headers
+     *
      * @param featureResponse
      *                 never <code>null</code>
      * @param acceptHeader
      *                 of the request, may be <code>null</code>
      * @return never <code>null</code>
      */
-    public Response createGmlResponseWithHeaders( FeaturesResponse featureResponse,
+    public Response createGmlResponseWithHeaders( FeatureResponse featureResponse,
                                                   String acceptHeader ) {
 
         String mediaType = detectMediaType( acceptHeader );
         Response.ResponseBuilder response = Response.ok( featureResponse, mediaType );
-        response.header( HEADER_TIMESTAMP, new Date() );
-        response.header( HEADER_NUMBER_RETURNED, featureResponse.getNumberOfFeatures() );
-        response.header( HEADER_NUMBER_MATCHED, featureResponse.getNumberOfFeaturesMatched() );
-        featureResponse.getLinks().forEach( link -> {
-            response.header( HEADER_Link, asString( link ) );
-        } );
+        addCommonHeader( featureResponse, response );
         return response.build();
+    }
+
+    private void addCommonHeader( AbstractFeatureResponse featureResponse, Response.ResponseBuilder response ) {
+        response.header( HEADER_TIMESTAMP, new Date() );
+        featureResponse.getLinks().forEach( link -> {
+            response.header( HEADER_LINK, asString( link ) );
+        } );
     }
 
     private String detectMediaType( String acceptHeader ) {

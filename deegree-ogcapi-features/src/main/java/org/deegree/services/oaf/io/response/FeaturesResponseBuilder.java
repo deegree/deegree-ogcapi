@@ -99,10 +99,15 @@ public class FeaturesResponseBuilder {
         return this;
     }
 
-    public FeaturesResponse build() {
+    public FeaturesResponse buildFeaturesResponse() {
         return new FeaturesResponse( features, featureTypeNsPrefixes, numberOfFeatures, numberOfFeaturesMatched,
                                      startIndex, links,
                                      isMaxFeaturesAndStartIndexApplicable, responseCrsName, schemaLocation );
+    }
+
+    public FeatureResponse buildFeatureResponse() {
+        return new FeatureResponse( features, featureTypeNsPrefixes, links,
+                                    responseCrsName, schemaLocation );
     }
 
 }

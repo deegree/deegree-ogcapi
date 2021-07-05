@@ -29,6 +29,7 @@ import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.feature.stream.IteratorFeatureInputStream;
 import org.deegree.gml.GMLInputFactory;
 import org.deegree.gml.GMLStreamReader;
+import org.deegree.services.oaf.io.response.gml.FeaturesResponseGmlWriter;
 import org.deegree.services.oaf.link.Link;
 import org.junit.Test;
 
@@ -149,7 +150,7 @@ public class FeaturesResponseGmlWriterIT {
                         featureCollection.size() ).withNumberOfFeaturesMatched(
                         featureCollection.size() ).withStartIndex( 0 ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).withResponseCrsName( crs ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).build();
+                        false ).withResponseCrsName( crs ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).buildFeaturesResponse();
     }
 
     private FeaturesResponse createEmptyFeatureResponse() {
@@ -161,7 +162,7 @@ public class FeaturesResponseGmlWriterIT {
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).build();
+                        false ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).buildFeaturesResponse();
     }
 
     private class ListCloseableIterator implements CloseableIterator<Feature> {

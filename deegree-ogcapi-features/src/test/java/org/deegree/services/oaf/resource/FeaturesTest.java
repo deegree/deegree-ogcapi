@@ -23,7 +23,7 @@ package org.deegree.services.oaf.resource;
 
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
-import org.deegree.services.oaf.io.response.FeaturesResponseGmlWriter;
+import org.deegree.services.oaf.io.response.gml.FeaturesResponseGmlWriter;
 import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
@@ -41,7 +41,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_Link;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_LINK;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_MATCHED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RETURNED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_TIMESTAMP;
@@ -103,7 +103,7 @@ public class FeaturesTest extends JerseyTest {
         assertThat( headers.get( HEADER_TIMESTAMP ).get( 0 ), is( notNullValue() ) );
         assertThat( headers.get( HEADER_NUMBER_RETURNED ).get( 0 ), is( "10" ) );
         assertThat( headers.get( HEADER_NUMBER_MATCHED ).get( 0 ), is( "100" ) );
-        assertThat( headers.get( HEADER_Link ).size(), is( 1 ) );
+        assertThat( headers.get( HEADER_LINK ).size(), is( 1 ) );
     }
 
     @Test

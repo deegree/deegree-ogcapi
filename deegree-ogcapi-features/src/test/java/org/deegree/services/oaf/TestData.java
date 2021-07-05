@@ -32,6 +32,7 @@ import org.deegree.services.oaf.domain.collections.Extent;
 import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
+import org.deegree.services.oaf.io.response.FeatureResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponseBuilder;
 import org.deegree.services.oaf.link.Link;
@@ -143,18 +144,16 @@ public class TestData {
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).build();
+                        false ).buildFeaturesResponse();
     }
 
-    public static FeaturesResponse feature() {
+    public static FeatureResponse feature() {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
         return new FeaturesResponseBuilder( features ).withFeatureTypeNsPrefixes(
-                        featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
-                        1 ).withStartIndex( 0 ).withLinks(
-                        java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).build();
+                        featureTypeNsPrefixes ).withLinks(
+                        java.util.Collections.singletonList( link ) ).buildFeatureResponse();
     }
 
     public static Collections createCollections() {
