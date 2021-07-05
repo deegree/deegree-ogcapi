@@ -19,9 +19,10 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response;
 
 import org.deegree.feature.stream.FeatureInputStream;
+import org.deegree.services.oaf.io.SchemaLocation;
 import org.deegree.services.oaf.link.Link;
 
 import java.util.Collections;
@@ -31,7 +32,7 @@ import java.util.Map;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeatureResponse {
+public class FeaturesResponse {
 
     private final FeatureInputStream features;
 
@@ -51,11 +52,11 @@ public class FeatureResponse {
 
     private final SchemaLocation schemaLocation;
 
-    FeatureResponse( FeatureInputStream features,
-                            Map<String, String> featureTypeNsPrefixes,
-                            int numberOfFeatures, int numberOfFeaturesMatched,
-                            int startIndex, List<Link> links, boolean isMaxFeaturesAndStartIndexApplicable,
-                            String responseCrsName, SchemaLocation schemaLocation ) {
+    FeaturesResponse( FeatureInputStream features,
+                      Map<String, String> featureTypeNsPrefixes,
+                      int numberOfFeatures, int numberOfFeaturesMatched,
+                      int startIndex, List<Link> links, boolean isMaxFeaturesAndStartIndexApplicable,
+                      String responseCrsName, SchemaLocation schemaLocation ) {
         this.features = features;
         this.featureTypeNsPrefixes = featureTypeNsPrefixes;
         this.numberOfFeatures = numberOfFeatures;

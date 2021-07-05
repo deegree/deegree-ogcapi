@@ -31,8 +31,8 @@ import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
-import org.deegree.services.oaf.feature.FeatureResponse;
-import org.deegree.services.oaf.feature.FeatureResponseCreator;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponseCreator;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
@@ -72,7 +72,7 @@ public class Feature {
     @Inject
     private DataAccess dataAccess;
 
-    private final FeatureResponseCreator featureResponseCreator = new FeatureResponseCreator();
+    private final FeaturesResponseCreator featureResponseCreator = new FeaturesResponseCreator();
 
     @GET
     @Produces({ APPLICATION_GEOJSON })
@@ -184,8 +184,8 @@ public class Feature {
         }
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        FeatureResponse featureResponse = dataAccess.retrieveFeature( oafConfiguration, collectionId, featureId, crs,
-                                                                      linkBuilder );
+        FeaturesResponse featureResponse = dataAccess.retrieveFeature( oafConfiguration, collectionId, featureId, crs,
+                                                                       linkBuilder );
         if ( XML.equals( requestFormat ) ) {
             return featureResponseCreator.createGmlResponseWithHeaders( featureResponse, acceptHeader );
         }

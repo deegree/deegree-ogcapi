@@ -35,9 +35,9 @@ import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
-import org.deegree.services.oaf.feature.FeatureResponse;
-import org.deegree.services.oaf.feature.FeatureResponseBuilder;
-import org.deegree.services.oaf.feature.FeaturesRequest;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponseBuilder;
+import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.link.NextLink;
@@ -76,9 +76,9 @@ public class DeegreeDataAccess implements DataAccess {
     }
 
     @Override
-    public FeatureResponse retrieveFeatures( OafDatasetConfiguration oafConfiguration, String collectionId,
-                                             FeaturesRequest featuresRequest,
-                                             LinkBuilder linkBuilder )
+    public FeaturesResponse retrieveFeatures( OafDatasetConfiguration oafConfiguration, String collectionId,
+                                              FeaturesRequest featuresRequest,
+                                              LinkBuilder linkBuilder )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue {
         FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         String crs = validateAndRetrieveCrs( featuresRequest.getResponseCrs() );
@@ -95,9 +95,9 @@ public class DeegreeDataAccess implements DataAccess {
     }
 
     @Override
-    public FeatureResponse retrieveFeature( OafDatasetConfiguration oafConfiguration, String collectionId,
-                                            String featureId, String responseCrs,
-                                            LinkBuilder linkBuilder )
+    public FeaturesResponse retrieveFeature( OafDatasetConfiguration oafConfiguration, String collectionId,
+                                             String featureId, String responseCrs,
+                                             LinkBuilder linkBuilder )
                     throws InternalQueryException, InvalidParameterValue, UnknownCollectionId {
         FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         String crs = validateAndRetrieveCrs( responseCrs );
@@ -111,7 +111,7 @@ public class DeegreeDataAccess implements DataAccess {
             String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId);
             Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
             String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
-            return new FeatureResponseBuilder( feature ).withFeatureTypeNsPrefixes(
+            return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes(
                             featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
                             1 ).withStartIndex( 0 ).withLinks(
                             links ).withMaxFeaturesAndStartIndexApplicable(
@@ -134,10 +134,10 @@ public class DeegreeDataAccess implements DataAccess {
         return crs;
     }
 
-    private FeatureResponse retrieveFeatures( OafDatasetConfiguration oafConfiguration,
-                                              FeatureTypeMetadata featureTypeMetadata, String collectionId,
-                                              FeaturesRequest featuresRequest, LinkBuilder linkBuilder, String crs,
-                                              FeatureStore featureStore, Query query )
+    private FeaturesResponse retrieveFeatures( OafDatasetConfiguration oafConfiguration,
+                                               FeatureTypeMetadata featureTypeMetadata, String collectionId,
+                                               FeaturesRequest featuresRequest, LinkBuilder linkBuilder, String crs,
+                                               FeatureStore featureStore, Query query )
                     throws FeatureStoreException, FilterEvaluationException {
         int numberOfFeaturesMatched = featureStore.queryHits( query );
         FeatureInputStream features = featureStore.query( query );
@@ -154,11 +154,11 @@ public class DeegreeDataAccess implements DataAccess {
                                               isMaxFeaturesAndStartIndexApplicable );
     }
 
-    private FeatureResponse retrieveFeaturesBulk( OafDatasetConfiguration oafConfiguration,
-                                                  FeatureTypeMetadata featureTypeMetadata, String collectionId,
-                                                  LinkBuilder linkBuilder, String crs, FeatureStore featureStore,
-                                                  int numberOfFeaturesMatched, FeatureInputStream features,
-                                                  boolean isMaxFeaturesAndStartIndexApplicable ) {
+    private FeaturesResponse retrieveFeaturesBulk( OafDatasetConfiguration oafConfiguration,
+                                                   FeatureTypeMetadata featureTypeMetadata, String collectionId,
+                                                   LinkBuilder linkBuilder, String crs, FeatureStore featureStore,
+                                                   int numberOfFeaturesMatched, FeatureInputStream features,
+                                                   boolean isMaxFeaturesAndStartIndexApplicable ) {
         int limit = UNLIMITED;
         int offset = FIRST;
         String datasetId = oafConfiguration.getId();
@@ -166,7 +166,7 @@ public class DeegreeDataAccess implements DataAccess {
         Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
         String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId );
         String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
-        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( features ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withNumberOfFeatures( limit ).withNumberOfFeaturesMatched(
                         numberOfFeaturesMatched ).withStartIndex( offset ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(
@@ -174,13 +174,13 @@ public class DeegreeDataAccess implements DataAccess {
                         namespaceURI, schemaLocation ).build();
     }
 
-    private FeatureResponse retrieveFeaturesLimitedNumber( OafDatasetConfiguration oafConfiguration,
-                                                           FeatureTypeMetadata featureTypeMetadata,
-                                                           String collectionId, FeaturesRequest featuresRequest,
-                                                           LinkBuilder linkBuilder, String crs,
-                                                           FeatureStore featureStore, int numberOfFeaturesMatched,
-                                                           FeatureInputStream features,
-                                                           boolean isMaxFeaturesAndStartIndexApplicable ) {
+    private FeaturesResponse retrieveFeaturesLimitedNumber( OafDatasetConfiguration oafConfiguration,
+                                                            FeatureTypeMetadata featureTypeMetadata,
+                                                            String collectionId, FeaturesRequest featuresRequest,
+                                                            LinkBuilder linkBuilder, String crs,
+                                                            FeatureStore featureStore, int numberOfFeaturesMatched,
+                                                            FeatureInputStream features,
+                                                            boolean isMaxFeaturesAndStartIndexApplicable ) {
         int limit = featuresRequest.getLimit();
         int offset = featuresRequest.getOffset();
         NextLink nextLink = new NextLink( numberOfFeaturesMatched, limit, offset );
@@ -189,7 +189,7 @@ public class DeegreeDataAccess implements DataAccess {
         Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
         String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId );
         String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
-        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( features ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withNumberOfFeatures( limit ).withNumberOfFeaturesMatched(
                         numberOfFeaturesMatched ).withStartIndex( offset ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(

@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>

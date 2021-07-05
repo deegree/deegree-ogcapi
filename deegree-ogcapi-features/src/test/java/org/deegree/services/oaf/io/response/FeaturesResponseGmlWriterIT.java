@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response;
 
 import org.deegree.commons.utils.CloseableIterator;
 import org.deegree.feature.Feature;
@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.deegree.gml.GMLVersion.GML_32;
-import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_SCHEMA_LOCATION;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_SCHEMA_URL;
 import static org.hamcrest.CoreMatchers.is;
@@ -57,7 +56,7 @@ import static org.xmlunit.matchers.ValidationMatcher.valid;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeatureResponseGmlWriterIT {
+public class FeaturesResponseGmlWriterIT {
 
     private static final String NAMESPACE_URI = "http://deegree.org/app";
 
@@ -66,8 +65,8 @@ public class FeatureResponseGmlWriterIT {
     @Test
     public void testWriteTo()
                     throws Exception {
-        FeatureResponseGmlWriter featureResponeWriter = new FeatureResponseGmlWriter();
-        FeatureResponse featureResponse = createFeatureResponse();
+        FeaturesResponseGmlWriter featureResponeWriter = new FeaturesResponseGmlWriter();
+        FeaturesResponse featureResponse = createFeatureResponse();
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
 
@@ -86,8 +85,8 @@ public class FeatureResponseGmlWriterIT {
     public void testWriteTo_EPSG25832()
                     throws Exception {
         String requestCrs = "EPSG:25832";
-        FeatureResponseGmlWriter featureResponeWriter = new FeatureResponseGmlWriter();
-        FeatureResponse featureResponse = createFeatureResponse( requestCrs );
+        FeaturesResponseGmlWriter featureResponeWriter = new FeaturesResponseGmlWriter();
+        FeaturesResponse featureResponse = createFeatureResponse( requestCrs );
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
 
@@ -104,8 +103,8 @@ public class FeatureResponseGmlWriterIT {
     @Test
     public void testWriteTo_EmptyFeatureResponse()
                     throws Exception {
-        FeatureResponseGmlWriter featureResponeWriter = new FeatureResponseGmlWriter();
-        FeatureResponse featureResponse = createEmptyFeatureResponse();
+        FeaturesResponseGmlWriter featureResponeWriter = new FeaturesResponseGmlWriter();
+        FeaturesResponse featureResponse = createEmptyFeatureResponse();
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
 
@@ -126,18 +125,18 @@ public class FeatureResponseGmlWriterIT {
         return new StreamSource( new URL( url ).openStream() );
     }
 
-    private FeatureResponse createFeatureResponse()
+    private FeaturesResponse createFeatureResponse()
                     throws Exception {
         return createFeatureResponse( null );
     }
 
-    private FeatureResponse createFeatureResponse( String crs )
+    private FeaturesResponse createFeatureResponse( String crs )
                     throws Exception {
         List<Link> links = java.util.Collections.singletonList(
                         new Link( "http://self", "self", "application/json", "title" ) );
         GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32,
                                                                            getClass().getResource(
-                                                                                           "strassenbaumkataster.gml" ) );
+                                                                                           "../strassenbaumkataster.gml" ) );
         FeatureCollection featureCollection = gmlReader.readFeatureCollection();
 
         FeatureInputStream featureStream = new IteratorFeatureInputStream(
@@ -145,7 +144,7 @@ public class FeatureResponseGmlWriterIT {
         Map<String, String> featureTypeNsPrefixes = new HashMap<>();
         QName name = featureCollection.getName();
         featureTypeNsPrefixes.put( name.getPrefix(), name.getNamespaceURI() );
-        return new FeatureResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withNumberOfFeatures(
                         featureCollection.size() ).withNumberOfFeaturesMatched(
                         featureCollection.size() ).withStartIndex( 0 ).withLinks(
@@ -153,12 +152,12 @@ public class FeatureResponseGmlWriterIT {
                         false ).withResponseCrsName( crs ).withSchemaLocation( NAMESPACE_URI, SCHEMA_LOCATION ).build();
     }
 
-    private FeatureResponse createEmptyFeatureResponse() {
+    private FeaturesResponse createEmptyFeatureResponse() {
         List<Link> links = java.util.Collections.singletonList(
                         new Link( "http://self", "self", "application/json", "title" ) );
         FeatureInputStream featureStream = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeatureResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(

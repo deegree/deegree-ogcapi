@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response;
 
 import org.deegree.commons.tom.datetime.ISO8601Converter;
 import org.deegree.cs.coordinatesystems.ICRS;
@@ -55,24 +55,24 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @Provider
 @Produces("application/geo+json")
-public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> {
+public class FeaturesResponseGeoJsonWriter implements MessageBodyWriter<FeaturesResponse> {
 
-    private static final Logger LOG = getLogger( FeatureResponeWriter.class );
+    private static final Logger LOG = getLogger( FeaturesResponseGeoJsonWriter.class );
 
     @Override
     public boolean isWriteable( Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType ) {
-        return FeatureResponse.class == type;
+        return FeaturesResponse.class == type;
     }
 
     @Override
-    public long getSize( FeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
+    public long getSize( FeaturesResponse features, Class<?> type, Type genericType, Annotation[] annotations,
                          MediaType mediaType ) {
         // deprecated by JAX-RS 2.0 and ignored by Jersey runtime
         return 0;
     }
 
     @Override
-    public void writeTo( FeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
+    public void writeTo( FeaturesResponse features, Class<?> type, Type genericType, Annotation[] annotations,
                          MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream out )
                     throws WebApplicationException {
         try (
@@ -94,7 +94,7 @@ public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> 
         }
     }
 
-    private ICRS asCrs( FeatureResponse features )
+    private ICRS asCrs( FeaturesResponse features )
                     throws UnknownCRSException {
         if ( features.getResponseCrsName() != null ) {
             CRSRef ref = CRSManager.getCRSRef( features.getResponseCrsName() );
@@ -104,7 +104,7 @@ public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> 
         return null;
     }
 
-    private int writeFeatures( FeatureResponse features, GeoJsonWriter writer )
+    private int writeFeatures( FeaturesResponse features, GeoJsonWriter writer )
                     throws IOException, TransformationException, UnknownCRSException {
         if ( features.isMaxFeaturesAndStartIndexApplicable() ) {
             return writeAllReturnedFeatures( features, writer );
@@ -113,7 +113,7 @@ public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> 
         }
     }
 
-    private int writeAllReturnedFeatures( FeatureResponse features, GeoJsonWriter writer )
+    private int writeAllReturnedFeatures( FeaturesResponse features, GeoJsonWriter writer )
                     throws IOException, TransformationException, UnknownCRSException {
         int writtenFeatures = 0;
         FeatureInputStream featureInputStream = features.getFeatures();
@@ -130,7 +130,7 @@ public class FeatureResponeWriter implements MessageBodyWriter<FeatureResponse> 
         }
     }
 
-    private int writeFeaturesAndApplyMaxFeaturesAndStartIndex( FeatureResponse features, GeoJsonWriter writer )
+    private int writeFeaturesAndApplyMaxFeaturesAndStartIndex( FeaturesResponse features, GeoJsonWriter writer )
                     throws IOException, TransformationException, UnknownCRSException {
         int maxFeatures = features.getNumberOfFeatures();
         int startIndex = features.getStartIndex();

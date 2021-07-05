@@ -32,8 +32,8 @@ import org.deegree.services.oaf.domain.collections.Extent;
 import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
-import org.deegree.services.oaf.feature.FeatureResponse;
-import org.deegree.services.oaf.feature.FeatureResponseBuilder;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponseBuilder;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
@@ -98,11 +98,11 @@ public class TestData {
             Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
             FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
 
-            FeatureType featureType = getFeatureType( featureTypeName, "feature/schema/strassenbaumkataster.xsd" );
+            FeatureType featureType = getFeatureType( featureTypeName, "io/schema/strassenbaumkataster.xsd" );
             if ( featureType == null )
-                featureType = getFeatureType( featureTypeName, "feature/schema/micado_kennzahlen_v1_2.xsd" );
+                featureType = getFeatureType( featureTypeName, "io/schema/micado_kennzahlen_v1_2.xsd" );
             if ( featureType == null )
-                featureType = getFeatureType( featureTypeName, "feature/schema/kita.xsd" );
+                featureType = getFeatureType( featureTypeName, "io/schema/kita.xsd" );
             if ( featureType == null )
                 throw new IllegalArgumentException( "FeatureType with name " + featureTypeName + " is not known" );
             ftm.featureType( featureType );
@@ -135,22 +135,22 @@ public class TestData {
         return schema.getFeatureType( featureTypeName );
     }
 
-    public static FeatureResponse features() {
+    public static FeaturesResponse features() {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( features ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
                         false ).build();
     }
 
-    public static FeatureResponse feature() {
+    public static FeaturesResponse feature() {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( features ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
                         1 ).withStartIndex( 0 ).withLinks(
                         java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(

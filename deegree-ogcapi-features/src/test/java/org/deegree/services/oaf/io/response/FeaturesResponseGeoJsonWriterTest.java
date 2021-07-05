@@ -19,11 +19,8 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response;
 
-import org.deegree.feature.Feature;
-import org.deegree.feature.FeatureCollection;
-import org.deegree.feature.GenericFeatureCollection;
 import org.deegree.feature.stream.EmptyFeatureInputStream;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.services.oaf.link.Link;
@@ -32,8 +29,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,12 +42,12 @@ import static org.junit.Assert.assertThat;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeatureResponeWriterTest {
+public class FeaturesResponseGeoJsonWriterTest {
 
     @Test
     public void testWriteTo_EmptyFeatureResponse() {
-        FeatureResponeWriter featureResponeWriter = new FeatureResponeWriter();
-        FeatureResponse featureResponse = createFeatureResponse();
+        FeaturesResponseGeoJsonWriter featureResponeWriter = new FeaturesResponseGeoJsonWriter();
+        FeaturesResponse featureResponse = createFeatureResponse();
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
 
@@ -65,12 +60,12 @@ public class FeatureResponeWriterTest {
         assertThat( json, hasNoJsonPath( "$.crs" ) );
     }
 
-    private FeatureResponse createFeatureResponse() {
+    private FeaturesResponse createFeatureResponse() {
         List<Link> links = java.util.Collections.singletonList(
                         new Link( "http://self", "self", "application/json", "title" ) );
         FeatureInputStream featureStream = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeatureResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         links ).withMaxFeaturesAndStartIndexApplicable(

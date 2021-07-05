@@ -23,8 +23,8 @@ package org.deegree.services.oaf.resource;
 
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
-import org.deegree.services.oaf.feature.FeatureResponseGmlWriter;
-import org.deegree.services.oaf.feature.FeaturesRequest;
+import org.deegree.services.oaf.io.response.FeaturesResponseGmlWriter;
+import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.deegree.services.oaf.workspace.DataAccess;
@@ -75,7 +75,7 @@ public class FeaturesTest extends JerseyTest {
     @Override
     protected Application configure() {
         enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( Features.class, FeatureResponseGmlWriter.class );
+        ResourceConfig resourceConfig = new ResourceConfig( Features.class, FeaturesResponseGmlWriter.class );
         resourceConfig.register( new AbstractBinder() {
             @Override
             protected void configure() {

@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response;
 
 import org.deegree.services.oaf.link.Link;
 
@@ -42,7 +42,7 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_S
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeatureResponseCreator {
+public class FeaturesResponseCreator {
 
     /**
      * Creates a response with the expected HTTP Headers
@@ -53,7 +53,7 @@ public class FeatureResponseCreator {
      *                 of the request, may be <code>null</code>
      * @return never <code>null</code>
      */
-    public Response createGmlResponseWithHeaders( FeatureResponse featureResponse,
+    public Response createGmlResponseWithHeaders( FeaturesResponse featureResponse,
                                                   String acceptHeader ) {
 
         String mediaType = detectMediaType( acceptHeader );
