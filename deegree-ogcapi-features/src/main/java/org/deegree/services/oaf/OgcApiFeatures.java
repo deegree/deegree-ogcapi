@@ -63,7 +63,7 @@ public class OgcApiFeatures extends ResourceConfig {
 
         packages( "com.fasterxml.jackson.jaxrs.json" );
         packages( "org.deegree.services.oaf.resource" );
-        packages( "org.deegree.services.oaf.feature" );
+        packages( "org.deegree.services.oaf.io" );
         packages( "org.deegree.services.oaf.schema" );
         packages( "org.deegree.services.oaf.converter" );
         packages( "org.deegree.services.oaf.exceptions" );
