@@ -151,16 +151,22 @@
 <div class="container" id="content">
     <div>
         <div class="row">
-            <div class="col" v-if="!isItemAvailable">
+            <div class="col" v-if="status == 0">
+                <h3 v-cloak class="mt-5">Loading feature with ID {{ featureId }}</h3>
+            </div>
+            <div class="col" v-else-if="status == 404">
                 <h3 v-cloak class="mt-5">Feature with ID {{ featureId }} is not known</h3>
             </div>
-            <div class="col" v-else>
+            <div class="col" v-else-if="status == 200">
                 <h3 v-cloak class="mt-5">{{ featureId }}</h3>
+            </div>
+            <div class="col" v-else>
+                <h3 v-cloak class="mt-5">Error retrieving feature with ID {{ featureId }}</h3>
             </div>
         </div>
         <hr/>
         <div class="row justify-content-between">
-            <div class="col-md" v-if="isItemAvailable" >
+            <div class="col-md" v-if="status == 200" >
                 <div class="row mt-2">
                     <div class="col">
                         <table class="table table-striped">
@@ -206,7 +212,7 @@
             </div>
         </div>
 
-        <div class="row" v-if="isItemAvailable">
+        <div class="row" v-if="status == 200">
                 <div class="col-sm-2">Links</div>
                 <div class="col-md-10">
                     <div v-for="link in links">
@@ -254,7 +260,7 @@ var App = new Vue({
     properties: '',
     links: '',
     jsonLink: '',
-    isItemAvailable: false
+    status: 0
   },
 
   created() {
@@ -266,11 +272,9 @@ var App = new Vue({
     async fetchData() {
       var baseUrl = retrieveBaseUrl();
       const response = await fetch( baseUrl, {headers: {'Accept': 'application/geo+json' } } );
-      const json = await response.json();
-
-      this.isItemAvailable = json;
-
-      if( this.isItemAvailable ){
+      this.status = response.status;
+      if ( this.status == 200 ){
+        const json = await response.json();
         this.featureId = json.id;
         this.properties = json.properties;
         this.links = json.links;
