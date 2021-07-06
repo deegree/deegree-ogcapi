@@ -19,30 +19,30 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.io.response;
+package org.deegree.services.oaf.exceptions;
 
-import org.deegree.feature.Feature;
-import org.deegree.services.oaf.io.SchemaLocation;
-import org.deegree.services.oaf.link.Link;
+import javax.ws.rs.core.Response;
 
-import java.util.List;
-import java.util.Map;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeatureResponse extends AbstractFeatureResponse {
+public class UnknownFeatureId extends OgcApiFeaturesException {
 
-    private final Feature feature;
+    private static final String EXCEPTION_MSG = "A feature with id '%s' is not available.";
 
-    FeatureResponse( Feature feature, Map<String, String> featureTypeNsPrefixes, List<Link> links,
-                     String responseCrsName, SchemaLocation schemaLocation ) {
-        super( featureTypeNsPrefixes, responseCrsName, schemaLocation, links );
-        this.feature = feature;
+    public UnknownFeatureId() {
+        super();
     }
 
-    public Feature getFeature() {
-        return feature;
+    public UnknownFeatureId( String featureId ) {
+        super( String.format( EXCEPTION_MSG, featureId ) );
+    }
+
+    @Override
+    public Response.Status getStatusCode() {
+        return NOT_FOUND;
     }
 
 }

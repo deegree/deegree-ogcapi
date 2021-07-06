@@ -96,7 +96,7 @@ public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeat
                                             createSchemaLocation( features ) );
 
             if ( features instanceof FeatureResponse )
-                writeFeatures( ( (FeatureResponse) features ).getFeature(), xmlStreamWriter, featureWriter );
+                writeFeature( ( (FeatureResponse) features ).getFeature(), xmlStreamWriter, featureWriter );
             else if ( features instanceof FeaturesResponse )
                 writeFeatures( ( (FeaturesResponse) features ).getFeatures(), xmlStreamWriter, featureWriter );
 
@@ -120,13 +120,19 @@ public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeat
                     throws XMLStreamException, UnknownCRSException, TransformationException {
         try {
             for ( Feature feature : featureStream ) {
-                xmlStreamWriter.writeStartElement( "sf", "featureMember", XML_SF_NS_URL );
-                featureWriter.export( feature );
-                xmlStreamWriter.writeEndElement();
+                writeFeature( feature, xmlStreamWriter, featureWriter );
             }
         } finally {
             featureStream.close();
         }
+    }
+
+    private void writeFeature( Feature feature, XMLStreamWriter xmlStreamWriter,
+                               GMLFeatureWriter featureWriter )
+                    throws XMLStreamException, UnknownCRSException, TransformationException {
+        xmlStreamWriter.writeStartElement( "sf", "featureMember", XML_SF_NS_URL );
+        featureWriter.export( feature );
+        xmlStreamWriter.writeEndElement();
     }
 
     private ICRS asCrs( AbstractFeatureResponse features ) {

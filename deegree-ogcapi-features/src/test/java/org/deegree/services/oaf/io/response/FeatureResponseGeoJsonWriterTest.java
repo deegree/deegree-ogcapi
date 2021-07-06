@@ -22,13 +22,12 @@
 package org.deegree.services.oaf.io.response;
 
 import org.deegree.feature.FeatureCollection;
-import org.deegree.feature.stream.EmptyFeatureInputStream;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.feature.stream.MemoryFeatureInputStream;
 import org.deegree.gml.GMLInputFactory;
 import org.deegree.gml.GMLStreamReader;
 import org.deegree.services.oaf.OgcApiFeaturesConstants;
-import org.deegree.services.oaf.io.response.geojson.FeaturesResponseGeoJsonWriter;
+import org.deegree.services.oaf.io.response.geojson.FeatureResponseGeoJsonWriter;
 import org.deegree.services.oaf.link.Link;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -49,67 +48,40 @@ import static org.junit.Assert.assertThat;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeaturesResponseGeoJsonWriterTest {
+public class FeatureResponseGeoJsonWriterTest {
 
     @Test
     public void testWriteTo()
                     throws Exception {
-        FeaturesResponseGeoJsonWriter featureResponeWriter = new FeaturesResponseGeoJsonWriter();
-        FeaturesResponse featureResponse = createFeatureResponse();
+        FeatureResponseGeoJsonWriter featureResponeWriter = new FeatureResponseGeoJsonWriter();
+        FeatureResponse featureResponse = createFeatureResponse();
         OutputStream bos = new ByteArrayOutputStream();
         featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
 
         String json = bos.toString();
 
         assertThat( json, isJson() );
-        assertThat( json, hasJsonPath( "$.type", equalTo( "FeatureCollection" ) ) );
-        assertThat( json, hasJsonPath( "$.features" ) );
+        assertThat( json, hasJsonPath( "$.type", equalTo( "Feature" ) ) );
+        assertThat( json, hasJsonPath( "$.geometry" ) );
+        assertThat( json, hasJsonPath( "$.properties" ) );
         assertThat( json, hasJsonPath( "$.links", Matchers.hasSize( 1 ) ) );
         assertThat( json, hasJsonPath( "$.crs", equalTo( OgcApiFeaturesConstants.DEFAULT_CRS ) ) );
     }
 
-    @Test
-    public void testWriteTo_EmptyFeatureResponse() {
-        FeaturesResponseGeoJsonWriter featureResponeWriter = new FeaturesResponseGeoJsonWriter();
-        FeaturesResponse featureResponse = createEmptyFeaturesResponse();
-        OutputStream bos = new ByteArrayOutputStream();
-        featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
-
-        String json = bos.toString();
-
-        assertThat( json, isJson() );
-        assertThat( json, hasJsonPath( "$.type", equalTo( "FeatureCollection" ) ) );
-        assertThat( json, hasNoJsonPath( "$.features" ) );
-        assertThat( json, hasJsonPath( "$.links", Matchers.hasSize( 1 ) ) );
-        assertThat( json, hasNoJsonPath( "$.crs" ) );
-    }
-
-    private FeaturesResponse createEmptyFeaturesResponse() {
-        List<Link> links = java.util.Collections.singletonList(
-                        new Link( "http://self", "self", "application/json", "title" ) );
-        FeatureInputStream featureStream = new EmptyFeatureInputStream();
-        Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeaturesResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
-                        featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
-                        100 ).withStartIndex( 0 ).withLinks(
-                        links ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).buildFeaturesResponse();
-    }
-
-    private FeaturesResponse createFeatureResponse()
+    private FeatureResponse createFeatureResponse()
                     throws Exception {
-        List<Link> links = java.util.Collections.singletonList(
+        List<Link> links = Collections.singletonList(
                         new Link( "http://self", "self", "application/json", "title" ) );
+
         GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32,
                                                                            getClass().getResource(
-                                                                                           "../strassenbaumkataster.gml" ) );
+                                                                                           "../strassenbaumkataster-oneFeature.gml" ) );
         FeatureCollection featureCollection = gmlReader.readFeatureCollection();
         FeatureInputStream featureStream = new MemoryFeatureInputStream( featureCollection );
         Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
         return new FeaturesResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
-                        featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
-                        100 ).withStartIndex( 0 ).withLinks( links ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).withResponseCrsName( OgcApiFeaturesConstants.DEFAULT_CRS ).buildFeaturesResponse();
+                        featureTypeNsPrefixes ).withLinks( links ).withResponseCrsName(
+                        OgcApiFeaturesConstants.DEFAULT_CRS ).buildFeatureResponse();
     }
 
 }

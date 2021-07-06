@@ -21,6 +21,7 @@
  */
 package org.deegree.services.oaf.io.response;
 
+import org.deegree.feature.Feature;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.services.oaf.io.SchemaLocation;
 import org.deegree.services.oaf.link.Link;
@@ -33,7 +34,9 @@ import java.util.Map;
  */
 public class FeaturesResponseBuilder {
 
-    private final FeatureInputStream features;
+    private FeatureInputStream features;
+
+    private Feature feature;
 
     private int numberOfFeaturesMatched;
 
@@ -53,8 +56,14 @@ public class FeaturesResponseBuilder {
 
     private SchemaLocation schemaLocation;
 
+    private String featureId;
+
     public FeaturesResponseBuilder( FeatureInputStream features ) {
         this.features = features;
+    }
+
+    public FeaturesResponseBuilder( Feature feature ) {
+        this.feature = feature;
     }
 
     public FeaturesResponseBuilder withFeatureTypeNsPrefixes( Map<String, String> featureTypeNsPrefixes ) {
@@ -82,7 +91,8 @@ public class FeaturesResponseBuilder {
         return this;
     }
 
-    public FeaturesResponseBuilder withMaxFeaturesAndStartIndexApplicable( boolean maxFeaturesAndStartIndexApplicable ) {
+    public FeaturesResponseBuilder withMaxFeaturesAndStartIndexApplicable(
+                    boolean maxFeaturesAndStartIndexApplicable ) {
         isMaxFeaturesAndStartIndexApplicable = maxFeaturesAndStartIndexApplicable;
         return this;
     }
@@ -99,6 +109,11 @@ public class FeaturesResponseBuilder {
         return this;
     }
 
+    public FeaturesResponseBuilder withFeatureId( String featureId ) {
+        this.featureId = featureId;
+        return this;
+    }
+
     public FeaturesResponse buildFeaturesResponse() {
         return new FeaturesResponse( features, featureTypeNsPrefixes, numberOfFeatures, numberOfFeaturesMatched,
                                      startIndex, links,
@@ -106,8 +121,7 @@ public class FeaturesResponseBuilder {
     }
 
     public FeatureResponse buildFeatureResponse() {
-        return new FeatureResponse( features, featureTypeNsPrefixes, links,
+        return new FeatureResponse( feature, featureTypeNsPrefixes, links,
                                     responseCrsName, schemaLocation );
     }
-
 }

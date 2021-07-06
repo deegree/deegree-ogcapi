@@ -6,6 +6,7 @@ import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
 import org.deegree.cs.refs.coordinatesystem.CRSRef;
 import org.deegree.geojson.GeoJsonWriter;
+import org.deegree.services.oaf.exceptions.UnknownFeatureId;
 import org.deegree.services.oaf.io.response.AbstractFeatureResponse;
 import org.deegree.services.oaf.link.Link;
 import org.slf4j.Logger;
@@ -46,12 +47,7 @@ public abstract class AbstractFeatureResponseGeoJsonWriter<T extends AbstractFea
         try (
                         Writer writer = new PrintWriter( out );
                         GeoJsonWriter geoJsonStreamWriter = new GeoJsonWriter( writer, asCrs( feature ) ) ) {
-            geoJsonStreamWriter.startFeatureCollection();
             writeContent( feature, geoJsonStreamWriter );
-            writeCrs( feature.getResponseCrsName(), geoJsonStreamWriter );
-            // Closes the feature array as well as the object. Links could not be written later.
-            // geoJsonStreamWriter.endFeatureCollection();
-            geoJsonStreamWriter.endObject();
         } catch ( Exception e ) {
             LOG.error( "Writing response failed", e );
             throw new WebApplicationException( e );
@@ -60,7 +56,7 @@ public abstract class AbstractFeatureResponseGeoJsonWriter<T extends AbstractFea
 
     protected abstract void writeContent( T feature, GeoJsonWriter geoJsonStreamWriter )
                     throws IOException,
-                    TransformationException, UnknownCRSException;
+                    TransformationException, UnknownCRSException, UnknownFeatureId;
 
     protected ICRS asCrs( T feature ) {
         if ( feature.getResponseCrsName() != null ) {

@@ -23,11 +23,9 @@ package org.deegree.services.oaf.io.response.geojson;
 
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
-import org.deegree.feature.Feature;
-import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.geojson.GeoJsonWriter;
+import org.deegree.services.oaf.exceptions.UnknownFeatureId;
 import org.deegree.services.oaf.io.response.FeatureResponse;
-import org.slf4j.Logger;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -36,16 +34,12 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 @Provider
 @Produces("application/geo+json")
 public class FeatureResponseGeoJsonWriter extends AbstractFeatureResponseGeoJsonWriter<FeatureResponse> {
-
-    private static final Logger LOG = getLogger( FeatureResponseGeoJsonWriter.class );
 
     @Override
     public boolean isWriteable( Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType ) {
@@ -54,27 +48,12 @@ public class FeatureResponseGeoJsonWriter extends AbstractFeatureResponseGeoJson
 
     @Override
     protected void writeContent( FeatureResponse feature, GeoJsonWriter geoJsonStreamWriter )
-                    throws IOException, TransformationException, UnknownCRSException {
-        writeFeature( feature, geoJsonStreamWriter );
+                    throws IOException, TransformationException, UnknownCRSException, UnknownFeatureId {
+        geoJsonStreamWriter.startSingleFeature();
+        geoJsonStreamWriter.writeSingleFeature( feature.getFeature() );
         writeLinks( feature.getLinks(), geoJsonStreamWriter );
         writeCrs( feature.getResponseCrsName(), geoJsonStreamWriter );
-    }
-
-    private int writeFeature( FeatureResponse feature, GeoJsonWriter writer )
-                    throws IOException, TransformationException, UnknownCRSException {
-        int writtenFeatures = 0;
-        FeatureInputStream featureInputStream = feature.getFeature();
-        try {
-            for ( Feature featureItem : featureInputStream ) {
-                writer.write( featureItem );
-                writtenFeatures++;
-            }
-            if ( writtenFeatures > 0 )
-                writer.endArray();
-            return writtenFeatures;
-        } finally {
-            featureInputStream.close();
-        }
+        geoJsonStreamWriter.endSingleFeature();
     }
 
 }

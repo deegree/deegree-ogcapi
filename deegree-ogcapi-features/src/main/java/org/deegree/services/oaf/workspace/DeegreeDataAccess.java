@@ -23,6 +23,8 @@ package org.deegree.services.oaf.workspace;
 
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
+import org.deegree.feature.Feature;
+import org.deegree.feature.FeatureCollection;
 import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.persistence.FeatureStoreException;
 import org.deegree.feature.persistence.query.Query;
@@ -35,6 +37,7 @@ import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
+import org.deegree.services.oaf.exceptions.UnknownFeatureId;
 import org.deegree.services.oaf.io.response.FeatureResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponseBuilder;
@@ -50,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.FIRST;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.UNLIMITED;
@@ -99,25 +103,38 @@ public class DeegreeDataAccess implements DataAccess {
     public FeatureResponse retrieveFeature( OafDatasetConfiguration oafConfiguration, String collectionId,
                                             String featureId, String responseCrs,
                                             LinkBuilder linkBuilder )
-                    throws InternalQueryException, InvalidParameterValue, UnknownCollectionId {
+                    throws InternalQueryException, InvalidParameterValue, UnknownCollectionId, UnknownFeatureId {
         FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         String crs = validateAndRetrieveCrs( responseCrs );
         FeatureStore featureStore = oafConfiguration.getFeatureStore( featureTypeMetadata.getName(), collectionId );
         try {
             DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder( oafConfiguration );
             Query queryById = queryBuilder.createQueryById( featureTypeMetadata.getName(), featureId );
-            FeatureInputStream feature = featureStore.query( queryById );
+            Feature firstFeature = retrieveRequestedFeature( featureId, featureStore, queryById );
+
             String datasetId = oafConfiguration.getId();
             List<Link> links = linkBuilder.createFeatureLinks( datasetId, collectionId, featureId );
-            String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId);
+            String schemaLocation = linkBuilder.createSchemaLink( datasetId, collectionId );
             Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes( featureStore );
             String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
-            return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes( featureTypeNsPrefixes ).withLinks(
-                            links ).withResponseCrsName( crs ).withSchemaLocation( namespaceURI,
-                                                                                   schemaLocation ).buildFeatureResponse();
+            return new FeaturesResponseBuilder( firstFeature ).withFeatureTypeNsPrefixes(
+                            featureTypeNsPrefixes ).withLinks(
+                            links ).withResponseCrsName( crs ).withSchemaLocation( namespaceURI, schemaLocation )
+                                                              .withFeatureId( featureId ).buildFeatureResponse();
         } catch ( FeatureStoreException | FilterEvaluationException e ) {
             throw new InternalQueryException( e );
         }
+    }
+
+    private Feature retrieveRequestedFeature( String featureId, FeatureStore featureStore, Query queryById )
+                    throws FeatureStoreException, FilterEvaluationException, UnknownFeatureId {
+        FeatureInputStream feature = featureStore.query( queryById );
+
+        FeatureCollection features = feature.toCollection();
+        Optional<Feature> firstFeature = features.stream().findFirst();
+        if ( !firstFeature.isPresent() )
+            throw new UnknownFeatureId( featureId );
+        return firstFeature.get();
     }
 
     private String validateAndRetrieveCrs( String crs )

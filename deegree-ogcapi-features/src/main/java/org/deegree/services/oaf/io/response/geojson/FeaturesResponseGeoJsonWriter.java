@@ -27,6 +27,7 @@ import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.Feature;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.geojson.GeoJsonWriter;
+import org.deegree.services.oaf.exceptions.UnknownFeatureId;
 import org.deegree.services.oaf.io.response.FeaturesResponse;
 
 import javax.ws.rs.Produces;
@@ -50,13 +51,17 @@ public class FeaturesResponseGeoJsonWriter extends AbstractFeatureResponseGeoJso
     }
 
     protected void writeContent( FeaturesResponse features, GeoJsonWriter geoJsonStreamWriter )
-                    throws IOException, TransformationException, UnknownCRSException {
+                    throws IOException, TransformationException, UnknownCRSException, UnknownFeatureId {
+        geoJsonStreamWriter.startFeatureCollection();
         int numberReturned = writeFeatures( features, geoJsonStreamWriter );
         writeLinks( features.getLinks(), geoJsonStreamWriter );
         writeNumberMatched( features.getNumberOfFeaturesMatched(), geoJsonStreamWriter );
         writeNumberReturned( numberReturned, geoJsonStreamWriter );
         writeTimeStamp( geoJsonStreamWriter );
         writeCrs( features.getResponseCrsName(), geoJsonStreamWriter );
+        // Closes the feature array as well as the object. Links could not be written later.
+        // geoJsonStreamWriter.endFeatureCollection();
+        geoJsonStreamWriter.endObject();
     }
 
     private int writeFeatures( FeaturesResponse features, GeoJsonWriter writer )
