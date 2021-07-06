@@ -109,3 +109,7 @@ body {
 }
 .privacy:active {
 }
+
+.table {
+  table-layout: fixed;
+}
