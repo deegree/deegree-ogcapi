@@ -92,7 +92,7 @@ public class FeatureTest extends JerseyTest {
         Response response = target( "/datasets/oaf/collections/test/items/42" ).request(
                         APPLICATION_GEOJSON ).get();
         assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaders().get( HEADER_CONTENT_CRS ).get( 0 ), is( DEFAULT_CRS ) );
+        assertThat( response.getHeaders().get( HEADER_CONTENT_CRS ).get( 0 ), is( "<" + DEFAULT_CRS + ">" ) );
     }
 
     @Test
@@ -126,7 +126,6 @@ public class FeatureTest extends JerseyTest {
     public void test_FeatureDeclaration_Gml32ProfileSF2_ShouldBeAvailable() {
         Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML_SF2 ).get();
         assertThat( response.getStatus(), is( 200 ) );
-        MultivaluedMap<String, Object> headers = response.getHeaders();
         assertThat( response.getMediaType(), is( APPLICATION_GML_SF2_TYPE ) );
     }
 
@@ -144,6 +143,8 @@ public class FeatureTest extends JerseyTest {
                                                 any( LinkBuilder.class ) ) ).thenReturn( features() );
             when( testFactory.retrieveFeature( any( OafDatasetConfiguration.class ), eq( "test" ), eq( "42" ),
                                                eq( DEFAULT_CRS ), any( LinkBuilder.class ) ) ).thenReturn( feature() );
+            when( testFactory.retrieveFeature( any( OafDatasetConfiguration.class ), eq( "test" ), eq( "42" ),
+                                               isNull(), any( LinkBuilder.class ) ) ).thenReturn( feature() );
         } catch ( Exception e ) {
             e.printStackTrace();
         }

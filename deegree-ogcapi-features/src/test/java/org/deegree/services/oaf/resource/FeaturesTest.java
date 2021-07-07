@@ -94,7 +94,7 @@ public class FeaturesTest extends JerseyTest {
         Response response = target( "/datasets/oaf/collections/test/items" ).request(
                         APPLICATION_GEOJSON ).get();
         assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaders().get( HEADER_CONTENT_CRS ).size(), is( DEFAULT_CRS ) );
+        assertThat( response.getHeaders().get( HEADER_CONTENT_CRS ).get( 0 ), is( "<" + DEFAULT_CRS + ">" ) );
     }
 
     @Test
@@ -107,7 +107,7 @@ public class FeaturesTest extends JerseyTest {
         assertThat( headers.get( HEADER_NUMBER_RETURNED ).get( 0 ), is( "10" ) );
         assertThat( headers.get( HEADER_NUMBER_MATCHED ).get( 0 ), is( "100" ) );
         assertThat( headers.get( HEADER_Link ).size(), is( 1 ) );
-        assertThat( headers.get( HEADER_CONTENT_CRS ).size(), is( "<" + DEFAULT_CRS + ">" ) );
+        assertThat( headers.get( HEADER_CONTENT_CRS ).get( 0 ), is( "<" + DEFAULT_CRS + ">" ) );
     }
 
     @Test
