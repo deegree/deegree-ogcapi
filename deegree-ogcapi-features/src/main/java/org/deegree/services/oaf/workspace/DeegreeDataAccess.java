@@ -216,7 +216,8 @@ public class DeegreeDataAccess implements DataAccess {
         String title = featureType.getTitle();
         String description = featureType.getDescription();
         List<String> suppportedCrs = oafConfiguration.getSuppportedCrs();
-        return new Collection( featureTypeId, title, description, links, featureType.getExtent(), suppportedCrs );
+        return new Collection( featureTypeId, title, description, links, featureType.getExtent(), suppportedCrs,
+                               featureType.getStorageCrs() );
     }
 
     private Map<String, String> getFeatureTypeNsPrefixes( FeatureStore featureStore ) {

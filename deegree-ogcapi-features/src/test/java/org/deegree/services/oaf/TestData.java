@@ -178,7 +178,7 @@ public class TestData {
         extent.setTemporal( createTemporal() );
         List<Link> links = java.util.Collections.singletonList( collectionLink );
         List<String> crs = java.util.Collections.singletonList( "EPSG:4326" );
-        return new Collection( "testId", "testTitle", "testDesc", links, extent, crs );
+        return new Collection( "testId", "testTitle", "testDesc", links, extent, crs, DEFAULT_CRS );
     }
 
     private static Spatial createSpatial() {
