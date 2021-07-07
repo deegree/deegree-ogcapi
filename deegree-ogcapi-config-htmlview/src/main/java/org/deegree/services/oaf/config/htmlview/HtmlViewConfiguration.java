@@ -48,6 +48,8 @@ public class HtmlViewConfiguration {
 
     private final String crsProj4Definition;
 
+    private final String source;
+
     /**
      * @param cssFile
      *                 must be an file and must exist, may be <code>null</code>
@@ -66,9 +68,12 @@ public class HtmlViewConfiguration {
      * @param crsCode
      *                 the crs code of the map, may be <code>null</code>
      * @param crsProj4Definition
+     *                 the proj4 definition of the crs of the map, may be <code>null</code>
+     * @param  source
+     *                 source of the map, may be <code>null</code>
      */
     public HtmlViewConfiguration( File cssFile, String legalNoticeUrl, String privacyUrl, String documentationUrl,
-                                  String wmsUrl, String wmsVersion, String wmsLayers, String crsCode, String crsProj4Definition ) {
+                                  String wmsUrl, String wmsVersion, String wmsLayers, String crsCode, String crsProj4Definition, String source ) {
         this.cssFile = cssFile;
         this.legalNoticeUrl = legalNoticeUrl;
         this.privacyUrl = privacyUrl;
@@ -78,6 +83,7 @@ public class HtmlViewConfiguration {
         this.wmsLayers = wmsLayers;
         this.crsCode = crsCode;
         this.crsProj4Definition = crsProj4Definition;
+        this.source = source;
     }
 
     /**
@@ -116,10 +122,17 @@ public class HtmlViewConfiguration {
     }
 
     /**
-     * @return the proj4 definion of the crs of the map, may be <code>null</code>
+     * @return the proj4 definition of the crs of the map, may be <code>null</code>
      */
     public String getCrsProj4Definition() {
         return crsProj4Definition;
+    }
+
+    /**
+     * @return source of the map, may be <code>null</code>
+     */
+    public String getSource() {
+        return source;
     }
 
     /**
@@ -142,5 +155,4 @@ public class HtmlViewConfiguration {
     public String getDocumentationUrl() {
         return documentationUrl;
     }
-
 }

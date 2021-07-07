@@ -28,6 +28,7 @@
     <WMSUrl version="1.3.0">https://wms.url.net/</WMSUrl>
     <WMSLayers>test</WMSLayers>
     <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</CrsProj4Definition>
+    <Source><![CDATA[© <a href="https://www.source.de" class="link0" target="_new">Source</a>]]></Source>
   </Map>
 
 </HtmlView>

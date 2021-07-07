@@ -76,7 +76,8 @@ public class Dataset {
                                                                   htmlViewConfiguration.getWmsVersion(),
                                                                   htmlViewConfiguration.getWmsLayers(),
                                                                   htmlViewConfiguration.getCrsCode(),
-                                                                  htmlViewConfiguration.getCrsProj4Definition() );
+                                                                  htmlViewConfiguration.getCrsProj4Definition(),
+                                                                  htmlViewConfiguration.getSource() );
         return Response.ok( mapConfiguration, APPLICATION_JSON ).build();
     }
 
