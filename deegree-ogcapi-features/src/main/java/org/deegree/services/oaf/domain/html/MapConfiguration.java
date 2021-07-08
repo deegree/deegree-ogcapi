@@ -36,12 +36,16 @@ public class MapConfiguration {
 
     private final String crsProj4Definition;
 
-    public MapConfiguration( String wmsUrl, String wmsVersion, String wmsLayers, String crsCode, String crsProj4Definition ) {
+    private final String source;
+
+    public MapConfiguration( String wmsUrl, String wmsVersion, String wmsLayers, String crsCode,
+                             String crsProj4Definition, String source ) {
         this.wmsUrl = wmsUrl;
         this.wmsVersion = wmsVersion;
         this.wmsLayers = wmsLayers;
         this.crsCode = crsCode;
         this.crsProj4Definition = crsProj4Definition;
+        this.source = source;
     }
 
     public String getWmsUrl() {
@@ -62,5 +66,9 @@ public class MapConfiguration {
 
     public String getCrsProj4Definition() {
         return crsProj4Definition;
+    }
+
+    public String getSource() {
+        return source;
     }
 }

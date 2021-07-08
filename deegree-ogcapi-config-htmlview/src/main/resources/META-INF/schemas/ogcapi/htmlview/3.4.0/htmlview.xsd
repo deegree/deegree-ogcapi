@@ -47,6 +47,7 @@
                   </simpleContent>
                 </complexType>
               </element>
+              <element name="Source" minOccurs="0" type="string"/>
             </sequence>
           </complexType>
         </element>
