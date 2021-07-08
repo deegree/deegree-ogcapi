@@ -283,7 +283,7 @@ public class Features {
             return featureResponseCreator.createGmlResponseWithHeaders( featureResponse,
                                                                         acceptHeader );
         }
-        return Response.ok( featureResponse, APPLICATION_GEOJSON ).build();
+        return featureResponseCreator.createJsonResponseWithHeaders( featureResponse );
     }
 
     private Map<FilterProperty, List<String>> findFilterParameters( String datasetId, String collectionId,

@@ -27,6 +27,7 @@ import org.deegree.commons.tom.ows.LanguageString;
 import org.deegree.commons.tom.primitive.BaseType;
 import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.commons.utils.Pair;
+import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
@@ -274,6 +275,7 @@ public class OafResource implements Resource {
         List<MetadataUrl> metadataUrls = datasetMetadata != null && !datasetMetadata.getMetadataUrls().isEmpty() ?
                                          datasetMetadata.getMetadataUrls() :
                                          Collections.emptyList();
+        String storageCrs = featureStore.getStorageCrs() != null ? featureStore.getStorageCrs().getName() : null;
         return new FeatureTypeMetadata( name )
                         .dateTimeProperty( dateTimeProperty )
                         .extent( extent )
@@ -281,7 +283,8 @@ public class OafResource implements Resource {
                         .description( description )
                         .metadataUrls( metadataUrls )
                         .filterProperties( filterProperties )
-                        .featureType( featureType );
+                        .featureType( featureType )
+                        .storageCrs( storageCrs );
     }
 
     private List<FilterProperty> parseFilterProperties( FeatureType featureType ) {

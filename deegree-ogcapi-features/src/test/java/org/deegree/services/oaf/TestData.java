@@ -143,7 +143,7 @@ public class TestData {
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).build();
+                        false ).withResponseCrsName( DEFAULT_CRS ).build();
     }
 
     public static FeatureResponse feature() {
@@ -154,7 +154,7 @@ public class TestData {
                         featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
                         1 ).withStartIndex( 0 ).withLinks(
                         java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).build();
+                        false ).withResponseCrsName( DEFAULT_CRS ).build();
     }
 
     public static Collections createCollections() {
@@ -178,7 +178,7 @@ public class TestData {
         extent.setTemporal( createTemporal() );
         List<Link> links = java.util.Collections.singletonList( collectionLink );
         List<String> crs = java.util.Collections.singletonList( "EPSG:4326" );
-        return new Collection( "testId", "testTitle", "testDesc", links, extent, crs );
+        return new Collection( "testId", "testTitle", "testDesc", links, extent, crs, DEFAULT_CRS );
     }
 
     private static Spatial createSpatial() {

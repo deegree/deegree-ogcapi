@@ -40,6 +40,8 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_CONTENT_CRS;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_Link;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_MATCHED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RETURNED;
@@ -87,9 +89,10 @@ public class FeatureTest extends JerseyTest {
 
     @Test
     public void test_FeatureDeclaration_Json_ShouldBeAvailable() {
-        int statusCode = target( "/datasets/oaf/collections/test/items/42" ).request(
-                        APPLICATION_GEOJSON ).get().getStatus();
-        assertThat( statusCode, is( 200 ) );
+        Response response = target( "/datasets/oaf/collections/test/items/42" ).request(
+                        APPLICATION_GEOJSON ).get();
+        assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getHeaders().get( HEADER_CONTENT_CRS ).get( 0 ), is( "<" + DEFAULT_CRS + ">" ) );
     }
 
     @Test
@@ -102,6 +105,7 @@ public class FeatureTest extends JerseyTest {
         assertThat( headers.get( HEADER_NUMBER_RETURNED ).get( 0 ), is( "1" ) );
         assertThat( headers.get( HEADER_NUMBER_MATCHED ).get( 0 ), is( "1" ) );
         assertThat( headers.get( HEADER_Link ).size(), is( 1 ) );
+        assertThat( headers.get( HEADER_CONTENT_CRS ).get( 0 ), is( "<" + DEFAULT_CRS + ">" ) );
     }
 
     @Test
@@ -122,7 +126,6 @@ public class FeatureTest extends JerseyTest {
     public void test_FeatureDeclaration_Gml32ProfileSF2_ShouldBeAvailable() {
         Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML_SF2 ).get();
         assertThat( response.getStatus(), is( 200 ) );
-        MultivaluedMap<String, Object> headers = response.getHeaders();
         assertThat( response.getMediaType(), is( APPLICATION_GML_SF2_TYPE ) );
     }
 
@@ -138,8 +141,10 @@ public class FeatureTest extends JerseyTest {
             when( testFactory.retrieveFeatures( any( OafDatasetConfiguration.class ), eq( "test" ),
                                                 any( FeaturesRequest.class ),
                                                 any( LinkBuilder.class ) ) ).thenReturn( features() );
-            when( testFactory.retrieveFeature( any( OafDatasetConfiguration.class ), eq( "test" ), eq( "42" ), isNull(),
-                                               any( LinkBuilder.class ) ) ).thenReturn( feature() );
+            when( testFactory.retrieveFeature( any( OafDatasetConfiguration.class ), eq( "test" ), eq( "42" ),
+                                               eq( DEFAULT_CRS ), any( LinkBuilder.class ) ) ).thenReturn( feature() );
+            when( testFactory.retrieveFeature( any( OafDatasetConfiguration.class ), eq( "test" ), eq( "42" ),
+                                               isNull(), any( LinkBuilder.class ) ) ).thenReturn( feature() );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
