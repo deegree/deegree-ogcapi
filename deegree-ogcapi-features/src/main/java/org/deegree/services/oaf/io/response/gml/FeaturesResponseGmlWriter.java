@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response.gml;
 
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.TransformationException;
@@ -32,6 +32,9 @@ import org.deegree.gml.GMLOutputFactory;
 import org.deegree.gml.GMLStreamWriter;
 import org.deegree.gml.GMLVersion;
 import org.deegree.gml.feature.GMLFeatureWriter;
+import org.deegree.services.oaf.io.response.AbstractFeatureResponse;
+import org.deegree.services.oaf.io.response.FeatureResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -57,22 +60,22 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
  */
 @Provider
 @Produces({ APPLICATION_GML })
-public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureResponse> {
+public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeatureResponse> {
 
     @Override
     public boolean isWriteable( Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType ) {
-        return FeatureResponse.class == type;
+        return FeaturesResponse.class == type || FeatureResponse.class == type;
     }
 
     @Override
-    public long getSize( FeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
+    public long getSize( AbstractFeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
                          MediaType mediaType ) {
         // deprecated by JAX-RS 2.0 and ignored by Jersey runtime
         return 0;
     }
 
     @Override
-    public void writeTo( FeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
+    public void writeTo( AbstractFeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
                          MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream out )
                     throws WebApplicationException {
         GMLStreamWriter gmlStreamWriter = null;
@@ -92,7 +95,11 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
             xmlStreamWriter.writeAttribute( "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
                                             createSchemaLocation( features ) );
 
-            writeFeatures( features.getFeatures(), xmlStreamWriter, featureWriter );
+            if ( features instanceof FeatureResponse && ( (FeatureResponse) features ).getFeature() != null ) {
+                writeFeature( ( (FeatureResponse) features ).getFeature(), xmlStreamWriter, featureWriter );
+            } else if ( features instanceof FeaturesResponse ) {
+                writeFeatures( ( (FeaturesResponse) features ).getFeatures(), xmlStreamWriter, featureWriter );
+            }
 
             xmlStreamWriter.writeEndElement();
 
@@ -114,17 +121,22 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
                     throws XMLStreamException, UnknownCRSException, TransformationException {
         try {
             for ( Feature feature : featureStream ) {
-                xmlStreamWriter.writeStartElement( "sf", "featureMember", XML_SF_NS_URL );
-                featureWriter.export( feature );
-                xmlStreamWriter.writeEndElement();
+                writeFeature( feature, xmlStreamWriter, featureWriter );
             }
         } finally {
             featureStream.close();
         }
     }
 
-    private ICRS asCrs( FeatureResponse features )
-                            throws UnknownCRSException {
+    private void writeFeature( Feature feature, XMLStreamWriter xmlStreamWriter,
+                               GMLFeatureWriter featureWriter )
+                    throws XMLStreamException, UnknownCRSException, TransformationException {
+        xmlStreamWriter.writeStartElement( "sf", "featureMember", XML_SF_NS_URL );
+        featureWriter.export( feature );
+        xmlStreamWriter.writeEndElement();
+    }
+
+    private ICRS asCrs( AbstractFeatureResponse features ) {
         if ( features.getResponseCrsName() != null ) {
             CRSRef ref = CRSManager.getCRSRef( features.getResponseCrsName() );
             ref.getReferencedObject(); // test if exists
@@ -133,7 +145,7 @@ public class FeatureResponseGmlWriter implements MessageBodyWriter<FeatureRespon
         return null;
     }
 
-    private String createSchemaLocation( FeatureResponse features ) {
+    private String createSchemaLocation( AbstractFeatureResponse features ) {
         StringBuilder schemaLocation = new StringBuilder();
         schemaLocation.append( XML_SF_NS_URL ).append( " " ).append( XML_SF_NS_SCHEMA_LOCATION );
         if ( features.getSchemaLocation() != null ) {

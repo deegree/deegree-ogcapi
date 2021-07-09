@@ -31,8 +31,10 @@ import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
-import org.deegree.services.oaf.feature.FeatureResponse;
-import org.deegree.services.oaf.feature.FeatureResponseCreator;
+import org.deegree.services.oaf.exceptions.UnknownFeatureId;
+import org.deegree.services.oaf.io.response.FeatureResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponseCreator;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
@@ -72,7 +74,7 @@ public class Feature {
     @Inject
     private DataAccess dataAccess;
 
-    private final FeatureResponseCreator featureResponseCreator = new FeatureResponseCreator();
+    private final FeaturesResponseCreator featureResponseCreator = new FeaturesResponseCreator();
 
     @GET
     @Produces({ APPLICATION_GEOJSON })
@@ -94,7 +96,7 @@ public class Feature {
                                     schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
-                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
+                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId, UnknownFeatureId {
         return feature( uriInfo, datasetId, collectionId, featureId, crs, format, JSON );
     }
 
@@ -118,7 +120,7 @@ public class Feature {
                                     schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
-                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
+                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId, UnknownFeatureId {
         return feature( uriInfo, datasetId, collectionId, featureId, crs, format, XML, acceptHeader );
     }
 
@@ -141,7 +143,7 @@ public class Feature {
                                     schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
-                    throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
+                    throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException, UnknownFeatureId {
         return feature( uriInfo, datasetId, collectionId, featureId, crs, format, HTML );
     }
 
@@ -163,19 +165,20 @@ public class Feature {
                                     schema = @Schema(allowableValues = { "json", "html", "xml" }))
                     @QueryParam("f")
                                     String format )
-                    throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
+                    throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException, UnknownFeatureId {
         return feature( uriInfo, datasetId, collectionId, featureId, crs, format, HTML );
     }
 
     private Response feature( UriInfo uriInfo, String datasetId, String collectionId, String featureId, String crs,
                               String formatParamValue, RequestFormat defaultFormat )
-                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
+                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId, UnknownFeatureId {
         return feature( uriInfo, datasetId, collectionId, featureId, crs, formatParamValue, defaultFormat, null );
     }
 
     private Response feature( UriInfo uriInfo, String datasetId, String collectionId, String featureId, String crs,
                               String formatParamValue, RequestFormat defaultFormat, String acceptHeader )
-                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
+                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId,
+                    UnknownFeatureId {
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
         OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         oafConfiguration.checkCollection( collectionId );

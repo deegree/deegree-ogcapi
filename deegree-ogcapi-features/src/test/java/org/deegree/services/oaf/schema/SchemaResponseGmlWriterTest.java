@@ -38,11 +38,11 @@ import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 @RunWith(MockitoJUnitRunner.class)
 public class SchemaResponseGmlWriterTest {
 
-    private static final String KITA_XSD = "../feature/schema/kita.xsd";
+    private static final String KITA_XSD = "../io/schema/kita.xsd";
 
     private static final QName KITA_FT = new QName( "http://www.deegree.org/app", "KitaEinrichtungen" );
 
-    private static final String ZUZUEGE_XSD = "../feature/schema/micado_kennzahlen_v1_2.xsd";
+    private static final String ZUZUEGE_XSD = "../io/schema/micado_kennzahlen_v1_2.xsd";
 
     private static final QName ZUZUEGE_FT = new QName( "http://www.deegree.org/datasource/feature/sql", "Zuzuege" );
 

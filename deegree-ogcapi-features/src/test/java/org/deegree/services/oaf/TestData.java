@@ -21,10 +21,17 @@
  */
 package org.deegree.services.oaf;
 
+import org.deegree.cs.exceptions.UnknownCRSException;
+import org.deegree.feature.Feature;
+import org.deegree.feature.FeatureCollection;
 import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.stream.EmptyFeatureInputStream;
+import org.deegree.feature.stream.FeatureInputStream;
+import org.deegree.feature.stream.MemoryFeatureInputStream;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
+import org.deegree.gml.GMLInputFactory;
+import org.deegree.gml.GMLStreamReader;
 import org.deegree.gml.schema.GMLAppSchemaReader;
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
@@ -32,8 +39,9 @@ import org.deegree.services.oaf.domain.collections.Extent;
 import org.deegree.services.oaf.domain.collections.Spatial;
 import org.deegree.services.oaf.domain.collections.Temporal;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
-import org.deegree.services.oaf.feature.FeatureResponse;
-import org.deegree.services.oaf.feature.FeatureResponseBuilder;
+import org.deegree.services.oaf.io.response.FeatureResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponseBuilder;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
@@ -45,6 +53,8 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.joda.time.DateTime;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,11 +108,11 @@ public class TestData {
             Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
             FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
 
-            FeatureType featureType = getFeatureType( featureTypeName, "feature/schema/strassenbaumkataster.xsd" );
+            FeatureType featureType = getFeatureType( featureTypeName, "io/schema/strassenbaumkataster.xsd" );
             if ( featureType == null )
-                featureType = getFeatureType( featureTypeName, "feature/schema/micado_kennzahlen_v1_2.xsd" );
+                featureType = getFeatureType( featureTypeName, "io/schema/micado_kennzahlen_v1_2.xsd" );
             if ( featureType == null )
-                featureType = getFeatureType( featureTypeName, "feature/schema/kita.xsd" );
+                featureType = getFeatureType( featureTypeName, "io/schema/kita.xsd" );
             if ( featureType == null )
                 throw new IllegalArgumentException( "FeatureType with name " + featureTypeName + " is not known" );
             ftm.featureType( featureType );
@@ -135,26 +145,26 @@ public class TestData {
         return schema.getFeatureType( featureTypeName );
     }
 
-    public static FeatureResponse features() {
+    public static FeaturesResponse features() {
         Link link = new Link( "http://self", "self", "application/json", "title" );
         EmptyFeatureInputStream features = new EmptyFeatureInputStream();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( features ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).withResponseCrsName( DEFAULT_CRS ).build();
+                        false ).withResponseCrsName( DEFAULT_CRS ).buildFeaturesResponse();
     }
 
-    public static FeatureResponse feature() {
+    public static FeatureResponse feature()
+                    throws XMLStreamException, IOException, UnknownCRSException {
         Link link = new Link( "http://self", "self", "application/json", "title" );
-        EmptyFeatureInputStream features = new EmptyFeatureInputStream();
+        Feature feature = readFeature();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeatureResponseBuilder( features ).withFeatureTypeNsPrefixes(
-                        featureTypeNsPrefixes ).withNumberOfFeatures( 1 ).withNumberOfFeaturesMatched(
-                        1 ).withStartIndex( 0 ).withLinks(
-                        java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).withResponseCrsName( DEFAULT_CRS ).build();
+        return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes(
+                        featureTypeNsPrefixes ).withLinks(
+                        java.util.Collections.singletonList( link ) ).withResponseCrsName(
+                        DEFAULT_CRS ).buildFeatureResponse();
     }
 
     public static Collections createCollections() {
@@ -199,4 +209,14 @@ public class TestData {
         return new Temporal( interval, null );
     }
 
+    public static Feature readFeature()
+                    throws XMLStreamException, IOException, UnknownCRSException {
+        GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32,
+                                                                           TestData.class.getResource(
+                                                                                           "io/strassenbaumkataster-oneFeature.gml" ) );
+        FeatureCollection featureCollection = gmlReader.readFeatureCollection();
+        FeatureInputStream featureStream = new MemoryFeatureInputStream( featureCollection );
+        Feature feature = featureStream.iterator().next();
+        return feature;
+    }
 }

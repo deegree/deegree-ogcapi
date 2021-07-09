@@ -19,9 +19,11 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response;
 
+import org.deegree.feature.Feature;
 import org.deegree.feature.stream.FeatureInputStream;
+import org.deegree.services.oaf.io.SchemaLocation;
 import org.deegree.services.oaf.link.Link;
 
 import java.util.List;
@@ -30,9 +32,11 @@ import java.util.Map;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeatureResponseBuilder {
+public class FeaturesResponseBuilder {
 
-    private final FeatureInputStream features;
+    private FeatureInputStream features;
+
+    private Feature feature;
 
     private int numberOfFeaturesMatched;
 
@@ -52,56 +56,72 @@ public class FeatureResponseBuilder {
 
     private SchemaLocation schemaLocation;
 
-    public FeatureResponseBuilder( FeatureInputStream features ) {
+    private String featureId;
+
+    public FeaturesResponseBuilder( FeatureInputStream features ) {
         this.features = features;
     }
 
-    public FeatureResponseBuilder withFeatureTypeNsPrefixes( Map<String, String> featureTypeNsPrefixes ) {
+    public FeaturesResponseBuilder( Feature feature ) {
+        this.feature = feature;
+    }
+
+    public FeaturesResponseBuilder withFeatureTypeNsPrefixes( Map<String, String> featureTypeNsPrefixes ) {
         this.featureTypeNsPrefixes = featureTypeNsPrefixes;
         return this;
     }
 
-    public FeatureResponseBuilder withNumberOfFeatures( int numberOfFeatures ) {
+    public FeaturesResponseBuilder withNumberOfFeatures( int numberOfFeatures ) {
         this.numberOfFeatures = numberOfFeatures;
         return this;
     }
 
-    public FeatureResponseBuilder withNumberOfFeaturesMatched( int numberOfFeaturesMatched ) {
+    public FeaturesResponseBuilder withNumberOfFeaturesMatched( int numberOfFeaturesMatched ) {
         this.numberOfFeaturesMatched = numberOfFeaturesMatched;
         return this;
     }
 
-    public FeatureResponseBuilder withStartIndex( int startIndex ) {
+    public FeaturesResponseBuilder withStartIndex( int startIndex ) {
         this.startIndex = startIndex;
         return this;
     }
 
-    public FeatureResponseBuilder withLinks( List<Link> links ) {
+    public FeaturesResponseBuilder withLinks( List<Link> links ) {
         this.links = links;
         return this;
     }
 
-    public FeatureResponseBuilder withMaxFeaturesAndStartIndexApplicable( boolean maxFeaturesAndStartIndexApplicable ) {
+    public FeaturesResponseBuilder withMaxFeaturesAndStartIndexApplicable(
+                    boolean maxFeaturesAndStartIndexApplicable ) {
         isMaxFeaturesAndStartIndexApplicable = maxFeaturesAndStartIndexApplicable;
         return this;
     }
 
-    public FeatureResponseBuilder withResponseCrsName( String responseCrsName ) {
+    public FeaturesResponseBuilder withResponseCrsName( String responseCrsName ) {
         this.responseCrsName = responseCrsName;
         return this;
     }
 
-    public FeatureResponseBuilder withSchemaLocation( String namespaceURI, String schemaLocation ) {
+    public FeaturesResponseBuilder withSchemaLocation( String namespaceURI, String schemaLocation ) {
         if ( namespaceURI == null || schemaLocation == null )
             throw new IllegalArgumentException( "namespacesURI and schemaLocation must be set" );
         this.schemaLocation = new SchemaLocation( namespaceURI, schemaLocation );
         return this;
     }
 
-    public FeatureResponse build() {
-        return new FeatureResponse( features, featureTypeNsPrefixes, numberOfFeatures, numberOfFeaturesMatched,
-                                    startIndex, links,
-                                    isMaxFeaturesAndStartIndexApplicable, responseCrsName, schemaLocation );
+    public FeaturesResponseBuilder withFeatureId( String featureId ) {
+        this.featureId = featureId;
+        return this;
     }
 
+    public FeaturesResponse buildFeaturesResponse() {
+        return new FeaturesResponse( features, featureTypeNsPrefixes, numberOfFeatures, numberOfFeaturesMatched,
+                                     startIndex, links,
+                                     isMaxFeaturesAndStartIndexApplicable, responseCrsName, schemaLocation );
+    }
+
+    public FeatureResponse buildFeatureResponse() {
+        return new FeatureResponse( feature, featureTypeNsPrefixes, links,
+                                    responseCrsName, schemaLocation );
+    }
 }

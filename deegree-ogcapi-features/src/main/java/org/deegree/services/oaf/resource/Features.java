@@ -33,10 +33,10 @@ import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
-import org.deegree.services.oaf.feature.FeatureResponse;
-import org.deegree.services.oaf.feature.FeatureResponseCreator;
-import org.deegree.services.oaf.feature.FeaturesRequest;
-import org.deegree.services.oaf.feature.FeaturesRequestBuilder;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponseCreator;
+import org.deegree.services.oaf.io.request.FeaturesRequest;
+import org.deegree.services.oaf.io.request.FeaturesRequestBuilder;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
@@ -76,7 +76,7 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets/{datasetId}/collections/{collectionId}/items")
 public class Features {
 
-    private final FeatureResponseCreator featureResponseCreator = new FeatureResponseCreator();
+    private final FeaturesResponseCreator featureResponseCreator = new FeaturesResponseCreator();
 
     @Inject
     private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
@@ -277,8 +277,8 @@ public class Features {
                         .withResponseCrs( crs )
                         .withFilterParameters( filterParameters ).build();
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        FeatureResponse featureResponse = dataAccess.retrieveFeatures( oafConfiguration, collectionId, featuresRequest,
-                                                                       linkBuilder );
+        FeaturesResponse featureResponse = dataAccess.retrieveFeatures( oafConfiguration, collectionId, featuresRequest,
+                                                                        linkBuilder );
         if ( XML.equals( requestFormat ) ) {
             return featureResponseCreator.createGmlResponseWithHeaders( featureResponse,
                                                                         acceptHeader );

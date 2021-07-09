@@ -268,11 +268,11 @@ var App = new Vue({
       const response = await fetch( baseUrl, {headers: {'Accept': 'application/geo+json' } } );
       const json = await response.json();
 
-      this.isItemAvailable = json.features;
+      this.isItemAvailable = json;
 
       if( this.isItemAvailable ){
-        this.featureId = json.features[0].id;
-        this.properties = json.features[0].properties;
+        this.featureId = json.id;
+        this.properties = json.properties;
         this.links = json.links;
         this.jsonLink = baseUrl + '?f=json';
         fetchConfigAndSetFeature(json);

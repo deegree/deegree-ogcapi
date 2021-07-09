@@ -54,7 +54,7 @@ import org.deegree.protocol.wfs.getfeature.TypeName;
 import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
-import org.deegree.services.oaf.feature.FeaturesRequest;
+import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;

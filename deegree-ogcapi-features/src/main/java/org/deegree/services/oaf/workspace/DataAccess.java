@@ -26,8 +26,10 @@ import org.deegree.services.oaf.domain.collections.Collections;
 import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
-import org.deegree.services.oaf.feature.FeatureResponse;
-import org.deegree.services.oaf.feature.FeaturesRequest;
+import org.deegree.services.oaf.exceptions.UnknownFeatureId;
+import org.deegree.services.oaf.io.response.FeatureResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
+import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
@@ -42,13 +44,13 @@ public interface DataAccess {
                                  LinkBuilder linkBuilder )
                     throws UnknownCollectionId;
 
-    FeatureResponse retrieveFeatures( OafDatasetConfiguration oafConfiguration, String collectionId,
-                                      FeaturesRequest featuresRequest,
-                                      LinkBuilder linkBuilder )
+    FeaturesResponse retrieveFeatures( OafDatasetConfiguration oafConfiguration, String collectionId,
+                                       FeaturesRequest featuresRequest,
+                                       LinkBuilder linkBuilder )
                     throws InternalQueryException, InvalidParameterValue, UnknownCollectionId;
 
     FeatureResponse retrieveFeature( OafDatasetConfiguration oafConfiguration, String collectionId, String featureId,
                                      String crs,
                                      LinkBuilder linkBuilder )
-                    throws InternalQueryException, InvalidParameterValue, UnknownCollectionId;
+                    throws InternalQueryException, InvalidParameterValue, UnknownCollectionId, UnknownFeatureId;
 }

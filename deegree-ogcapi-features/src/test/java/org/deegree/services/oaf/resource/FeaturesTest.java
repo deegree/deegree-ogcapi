@@ -23,8 +23,8 @@ package org.deegree.services.oaf.resource;
 
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
-import org.deegree.services.oaf.feature.FeatureResponseGmlWriter;
-import org.deegree.services.oaf.feature.FeaturesRequest;
+import org.deegree.services.oaf.io.response.gml.FeaturesResponseGmlWriter;
+import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.deegree.services.oaf.workspace.DataAccess;
@@ -43,7 +43,7 @@ import javax.ws.rs.core.Response;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_CONTENT_CRS;
-import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_Link;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_LINK;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_MATCHED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RETURNED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_TIMESTAMP;
@@ -77,7 +77,7 @@ public class FeaturesTest extends JerseyTest {
     @Override
     protected Application configure() {
         enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( Features.class, FeatureResponseGmlWriter.class );
+        ResourceConfig resourceConfig = new ResourceConfig( Features.class, FeaturesResponseGmlWriter.class );
         resourceConfig.register( new AbstractBinder() {
             @Override
             protected void configure() {
@@ -106,7 +106,7 @@ public class FeaturesTest extends JerseyTest {
         assertThat( headers.get( HEADER_TIMESTAMP ).get( 0 ), is( notNullValue() ) );
         assertThat( headers.get( HEADER_NUMBER_RETURNED ).get( 0 ), is( "10" ) );
         assertThat( headers.get( HEADER_NUMBER_MATCHED ).get( 0 ), is( "100" ) );
-        assertThat( headers.get( HEADER_Link ).size(), is( 1 ) );
+        assertThat( headers.get( HEADER_LINK ).size(), is( 1 ) );
         assertThat( headers.get( HEADER_CONTENT_CRS ).get( 0 ), is( "<" + DEFAULT_CRS + ">" ) );
     }
 

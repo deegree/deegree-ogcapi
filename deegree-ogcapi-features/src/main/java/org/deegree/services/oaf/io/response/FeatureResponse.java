@@ -19,31 +19,30 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response;
+
+import org.deegree.feature.Feature;
+import org.deegree.services.oaf.io.SchemaLocation;
+import org.deegree.services.oaf.link.Link;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class SchemaLocation {
+public class FeatureResponse extends AbstractFeatureResponse {
 
-    private final String namespaceURI;
+    private final Feature feature;
 
-    private final String schemaLocation;
-
-    public SchemaLocation( String namespaceURI, String schemaLocation ) {
-        this.namespaceURI = namespaceURI;
-        this.schemaLocation = schemaLocation;
+    FeatureResponse( Feature feature, Map<String, String> featureTypeNsPrefixes, List<Link> links,
+                     String responseCrsName, SchemaLocation schemaLocation ) {
+        super( featureTypeNsPrefixes, responseCrsName, schemaLocation, links );
+        this.feature = feature;
     }
 
-    public String getNamespaceURI() {
-        return namespaceURI;
+    public Feature getFeature() {
+        return feature;
     }
 
-    public String getSchemaLocation() {
-        return schemaLocation;
-    }
-
-    public String asXmlSchemaLocation() {
-        return String.format( "%s %s", namespaceURI, schemaLocation );
-    }
 }

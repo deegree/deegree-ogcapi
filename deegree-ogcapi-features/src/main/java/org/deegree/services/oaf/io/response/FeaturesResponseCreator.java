@@ -8,18 +8,18 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package org.deegree.services.oaf.feature;
+package org.deegree.services.oaf.io.response;
 
 import org.deegree.services.oaf.link.Link;
 
@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.Map;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_CONTENT_CRS;
-import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_Link;
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_LINK;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_MATCHED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RETURNED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_TIMESTAMP;
@@ -44,7 +44,7 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_S
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeatureResponseCreator {
+public class FeaturesResponseCreator {
 
     /**
      * Creates a response with the expected HTTP Headers
@@ -53,9 +53,29 @@ public class FeatureResponseCreator {
      *                 never <code>null</code>
      * @return never <code>null</code>
      */
-    public Response createJsonResponseWithHeaders( FeatureResponse featureResponse ) {
+    public Response createJsonResponseWithHeaders( AbstractFeatureResponse featureResponse ) {
         Response.ResponseBuilder response = Response.ok( featureResponse, APPLICATION_GEOJSON );
         response.header( HEADER_CONTENT_CRS, asContentCrsHeader( featureResponse ) );
+        return response.build();
+    }
+
+    /**
+     * Creates a response with the expected HTTP Headers
+     *
+     * @param featuresResponse
+     *                 never <code>null</code>
+     * @param acceptHeader
+     *                 of the request, may be <code>null</code>
+     * @return never <code>null</code>
+     */
+    public Response createGmlResponseWithHeaders( FeaturesResponse featuresResponse,
+                                                  String acceptHeader ) {
+
+        String mediaType = detectMediaType( acceptHeader );
+        Response.ResponseBuilder response = Response.ok( featuresResponse, mediaType );
+        response.header( HEADER_NUMBER_RETURNED, featuresResponse.getNumberOfFeatures() );
+        response.header( HEADER_NUMBER_MATCHED, featuresResponse.getNumberOfFeaturesMatched() );
+        addCommonHeader( featuresResponse, response );
         return response.build();
     }
 
@@ -72,14 +92,16 @@ public class FeatureResponseCreator {
                                                   String acceptHeader ) {
         String mediaType = detectMediaType( acceptHeader );
         Response.ResponseBuilder response = Response.ok( featureResponse, mediaType );
+        addCommonHeader( featureResponse, response );
+        return response.build();
+    }
+
+    private void addCommonHeader( AbstractFeatureResponse featureResponse, Response.ResponseBuilder response ) {
         response.header( HEADER_TIMESTAMP, new Date() );
-        response.header( HEADER_NUMBER_RETURNED, featureResponse.getNumberOfFeatures() );
-        response.header( HEADER_NUMBER_MATCHED, featureResponse.getNumberOfFeaturesMatched() );
         response.header( HEADER_CONTENT_CRS, asContentCrsHeader( featureResponse ) );
         featureResponse.getLinks().forEach( link -> {
-            response.header( HEADER_Link, asString( link ) );
+            response.header( HEADER_LINK, asString( link ) );
         } );
-        return response.build();
     }
 
     private String detectMediaType( String acceptHeader ) {
@@ -99,7 +121,7 @@ public class FeatureResponseCreator {
         return APPLICATION_GML_32;
     }
 
-    private String asContentCrsHeader( FeatureResponse featureResponse ) {
+    private String asContentCrsHeader( AbstractFeatureResponse featureResponse ) {
         String crsName = featureResponse.getResponseCrsName();
         if ( crsName == null )
             return null;
