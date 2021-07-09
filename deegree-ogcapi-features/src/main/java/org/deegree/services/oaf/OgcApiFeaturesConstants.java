@@ -44,6 +44,8 @@ public final class OgcApiFeaturesConstants {
 
     public static final String HEADER_NUMBER_MATCHED ="OGC-NumberMatched";
 
+    public static final String HEADER_CONTENT_CRS ="Content-Crs";
+
     public static final String HEADER_LINK ="Link";
 
     public static final String XML_SF_NS_SCHEMA_LOCATION = "http://schemas.opengis.net/ogcapi/features/part1/1.0/xml/core-sf.xsd";

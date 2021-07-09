@@ -21,6 +21,8 @@
  */
 package org.deegree.services.oaf.io.response;
 
+import org.deegree.cs.exceptions.UnknownCRSException;
+import org.deegree.feature.Feature;
 import org.deegree.feature.FeatureCollection;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.feature.stream.MemoryFeatureInputStream;
@@ -32,7 +34,9 @@ import org.deegree.services.oaf.link.Link;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +46,7 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasNoJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static org.deegree.gml.GMLVersion.GML_32;
+import static org.deegree.services.oaf.TestData.readFeature;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -73,13 +78,9 @@ public class FeatureResponseGeoJsonWriterTest {
         List<Link> links = Collections.singletonList(
                         new Link( "http://self", "self", "application/json", "title" ) );
 
-        GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32,
-                                                                           getClass().getResource(
-                                                                                           "../strassenbaumkataster-oneFeature.gml" ) );
-        FeatureCollection featureCollection = gmlReader.readFeatureCollection();
-        FeatureInputStream featureStream = new MemoryFeatureInputStream( featureCollection );
+        Feature feature = readFeature();
         Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeaturesResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withLinks( links ).withResponseCrsName(
                         OgcApiFeaturesConstants.DEFAULT_CRS ).buildFeatureResponse();
     }

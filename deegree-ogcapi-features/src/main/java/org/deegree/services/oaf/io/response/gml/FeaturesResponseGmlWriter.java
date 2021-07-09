@@ -95,10 +95,11 @@ public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeat
             xmlStreamWriter.writeAttribute( "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
                                             createSchemaLocation( features ) );
 
-            if ( features instanceof FeatureResponse )
+            if ( features instanceof FeatureResponse && ( (FeatureResponse) features ).getFeature() != null ) {
                 writeFeature( ( (FeatureResponse) features ).getFeature(), xmlStreamWriter, featureWriter );
-            else if ( features instanceof FeaturesResponse )
+            } else if ( features instanceof FeaturesResponse ) {
                 writeFeatures( ( (FeaturesResponse) features ).getFeatures(), xmlStreamWriter, featureWriter );
+            }
 
             xmlStreamWriter.writeEndElement();
 

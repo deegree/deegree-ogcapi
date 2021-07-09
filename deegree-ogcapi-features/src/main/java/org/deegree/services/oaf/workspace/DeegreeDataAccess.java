@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.FIRST;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.UNLIMITED;
 
@@ -140,7 +141,7 @@ public class DeegreeDataAccess implements DataAccess {
     private String validateAndRetrieveCrs( String crs )
                     throws InvalidParameterValue {
         if ( crs == null || crs.isEmpty() )
-            return null;
+            return DEFAULT_CRS;
         try {
             CRSManager.lookup( crs );
         } catch ( UnknownCRSException e ) {
@@ -230,7 +231,8 @@ public class DeegreeDataAccess implements DataAccess {
         String title = featureType.getTitle();
         String description = featureType.getDescription();
         List<String> suppportedCrs = oafConfiguration.getSuppportedCrs();
-        return new Collection( featureTypeId, title, description, links, featureType.getExtent(), suppportedCrs );
+        return new Collection( featureTypeId, title, description, links, featureType.getExtent(), suppportedCrs,
+                               featureType.getStorageCrs() );
     }
 
     private Map<String, String> getFeatureTypeNsPrefixes( FeatureStore featureStore ) {

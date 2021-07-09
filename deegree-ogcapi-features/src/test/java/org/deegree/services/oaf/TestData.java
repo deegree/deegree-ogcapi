@@ -21,10 +21,17 @@
  */
 package org.deegree.services.oaf;
 
+import org.deegree.cs.exceptions.UnknownCRSException;
+import org.deegree.feature.Feature;
+import org.deegree.feature.FeatureCollection;
 import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.stream.EmptyFeatureInputStream;
+import org.deegree.feature.stream.FeatureInputStream;
+import org.deegree.feature.stream.MemoryFeatureInputStream;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
+import org.deegree.gml.GMLInputFactory;
+import org.deegree.gml.GMLStreamReader;
 import org.deegree.gml.schema.GMLAppSchemaReader;
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
@@ -46,6 +53,8 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.joda.time.DateTime;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
@@ -144,16 +153,18 @@ public class TestData {
                         featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
                         100 ).withStartIndex( 0 ).withLinks(
                         java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).buildFeaturesResponse();
+                        false ).withResponseCrsName( DEFAULT_CRS ).buildFeaturesResponse();
     }
 
-    public static FeatureResponse feature() {
+    public static FeatureResponse feature()
+                    throws XMLStreamException, IOException, UnknownCRSException {
         Link link = new Link( "http://self", "self", "application/json", "title" );
-        EmptyFeatureInputStream features = new EmptyFeatureInputStream();
+        Feature feature = readFeature();
         Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeaturesResponseBuilder( features ).withFeatureTypeNsPrefixes(
+        return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes(
                         featureTypeNsPrefixes ).withLinks(
-                        java.util.Collections.singletonList( link ) ).buildFeatureResponse();
+                        java.util.Collections.singletonList( link ) ).withResponseCrsName(
+                        DEFAULT_CRS ).buildFeatureResponse();
     }
 
     public static Collections createCollections() {
@@ -177,7 +188,7 @@ public class TestData {
         extent.setTemporal( createTemporal() );
         List<Link> links = java.util.Collections.singletonList( collectionLink );
         List<String> crs = java.util.Collections.singletonList( "EPSG:4326" );
-        return new Collection( "testId", "testTitle", "testDesc", links, extent, crs );
+        return new Collection( "testId", "testTitle", "testDesc", links, extent, crs, DEFAULT_CRS );
     }
 
     private static Spatial createSpatial() {
@@ -198,4 +209,14 @@ public class TestData {
         return new Temporal( interval, null );
     }
 
+    public static Feature readFeature()
+                    throws XMLStreamException, IOException, UnknownCRSException {
+        GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32,
+                                                                           TestData.class.getResource(
+                                                                                           "io/strassenbaumkataster-oneFeature.gml" ) );
+        FeatureCollection featureCollection = gmlReader.readFeatureCollection();
+        FeatureInputStream featureStream = new MemoryFeatureInputStream( featureCollection );
+        Feature feature = featureStream.iterator().next();
+        return feature;
+    }
 }

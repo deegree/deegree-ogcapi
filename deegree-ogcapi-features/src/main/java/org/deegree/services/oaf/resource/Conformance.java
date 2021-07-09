@@ -47,6 +47,7 @@ import static org.deegree.services.oaf.RequestFormat.JSON;
 import static org.deegree.services.oaf.RequestFormat.XML;
 import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 import static org.deegree.services.oaf.domain.conformance.ConformanceClass.CORE;
+import static org.deegree.services.oaf.domain.conformance.ConformanceClass.CRS;
 import static org.deegree.services.oaf.domain.conformance.ConformanceClass.GEOJSON;
 import static org.deegree.services.oaf.domain.conformance.ConformanceClass.GMLSF0;
 import static org.deegree.services.oaf.domain.conformance.ConformanceClass.GMLSF2;
@@ -132,6 +133,7 @@ public class Conformance {
         conformsTo.add( new Link( GEOJSON.getConformanceClass() ) );
         conformsTo.add( new Link( GMLSF0.getConformanceClass() ) );
         conformsTo.add( new Link( GMLSF2.getConformanceClass() ) );
+        conformsTo.add( new Link( CRS.getConformanceClass() ) );
         return conformsTo;
     }
 

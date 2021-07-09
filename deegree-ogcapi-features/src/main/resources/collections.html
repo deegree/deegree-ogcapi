@@ -108,8 +108,16 @@
                                 <div class="row">
                                     <div v-cloak class="col-md-12" v-for="crsitem in collection.crs">{{ crsitem }}</div>
                                 </div>
+                              </div>
                             </div>
-                          </div>
+                            <div class="row mt-2" v-if="collection.storageCrs">
+                                <div class="col-sm-2">Storage CRS</div>
+                                <div class="col-md-10">
+                                  <div class="row">
+                                      <div v-cloak class="col-md-12" >{{ collection.storageCrs }}</div>
+                                  </div>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>

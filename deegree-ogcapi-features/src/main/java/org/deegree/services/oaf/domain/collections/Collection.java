@@ -76,16 +76,23 @@ public class Collection {
     @XmlTransient
     private List<String> crs;
 
+    @JsonInclude(NON_NULL)
+    @JsonProperty("storageCrs")
+    @XmlTransient
+    private String storageCrs;
+
     public Collection() {
     }
 
-    public Collection( String id, String title, String description, List<Link> links, Extent extent, List<String> crs ) {
+    public Collection( String id, String title, String description, List<Link> links, Extent extent, List<String> crs,
+                       String storageCrs ) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.links = links;
         this.extent = extent;
         this.crs = crs;
+        this.storageCrs = storageCrs;
     }
 
     public String getId() {
@@ -142,5 +149,13 @@ public class Collection {
 
     public void setCrs( List<String> crs ) {
         this.crs = crs;
+    }
+
+    public String getStorageCrs() {
+        return storageCrs;
+    }
+
+    public void setStorageCrs( String storageCrs ) {
+        this.storageCrs = storageCrs;
     }
 }

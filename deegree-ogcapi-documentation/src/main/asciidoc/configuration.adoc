@@ -356,6 +356,7 @@ To configure the HTML encoding a configuration file can be used. The following e
     <WMSUrl version="1.3.0">https://geodienste.hamburg.de/HH_WMS_Cache_Stadtplan</WMSUrl> <!--5-->
     <WMSLayers>stadtplan</WMSLayers> <!--6-->
     <CrsProj4Definition code="EPSG:25832">+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</CrsProj4Definition> <!--7-->
+    <Source><![CDATA[© <a href="https://www.hamburg.de/" target="_new">Datenquelle</a>]]></Source> <!--8-->
   </Map>
 
 </HtmlView>
@@ -367,6 +368,7 @@ To configure the HTML encoding a configuration file can be used. The following e
 <5> URL of WMS used for the base map
 <6> layer name of the base map
 <7> CRS configuration of the base map
+<8> source of the map, can contain HTML in a CDATA tag
 
 NOTE: The file _treesview.xml_ must be stored in the subdirectory _html/_. To define a global configuration the file name must be _htmlview.xml_. The file is optional.
 
