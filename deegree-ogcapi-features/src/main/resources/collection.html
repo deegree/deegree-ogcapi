@@ -201,7 +201,7 @@ var App = new Vue({
       this.extent = json.extent;
       this.crs = json.crs;
       this.storageCrs = json.storageCrs;
-      fetchConfigAndSetExtent(this.extent.spatial.bbox);
+      fetchConfigAndSetExtent(this.extent.spatial.bbox[0]);
     }
   }
 })

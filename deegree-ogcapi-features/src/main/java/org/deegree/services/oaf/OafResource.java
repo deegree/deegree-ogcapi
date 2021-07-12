@@ -357,7 +357,7 @@ public class OafResource implements Resource {
         bbox.add( envelope.getMin().get1() );
         bbox.add( envelope.getMax().get0() );
         bbox.add( envelope.getMax().get1() );
-        return new Spatial( bbox, "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
+        return new Spatial( Collections.singletonList( bbox ), "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
     }
 
     private Envelope transformIfRequired( Envelope envelope )

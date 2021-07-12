@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
@@ -42,7 +43,7 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
 public class Spatial {
 
     @XmlTransient
-    private List<Double> bbox;
+    private List<List<Double>> bbox = new ArrayList<List<Double>>();
 
     @XmlAttribute
     private String crs;
@@ -50,16 +51,16 @@ public class Spatial {
     public Spatial() {
     }
 
-    public Spatial( List<Double> bbox, String crs ) {
+    public Spatial( List<List<Double>> bbox, String crs ) {
         this.bbox = bbox;
         this.crs = crs;
     }
 
-    public List<Double> getBbox() {
+    public List<List<Double>> getBbox() {
         return bbox;
     }
 
-    public void setBbox( List<Double> bbox ) {
+    public void setBbox( List<List<Double>> bbox ) {
         this.bbox = bbox;
     }
 
@@ -75,17 +76,17 @@ public class Spatial {
     @XmlList
     @XmlElement(name = "LowerCorner", namespace = XML_CORE_NS_URL)
     public List<Double> getLowerCorner() {
-        if ( bbox == null || bbox.size() < 4 )
+        if ( bbox == null || bbox.size() < 1 || bbox.get( 0 ).size() < 4 )
             return null;
-        return bbox.subList( 0, 2 );
+        return bbox.get( 0 ).subList( 0, 2 );
     }
 
     @JsonIgnore
     @XmlList
     @XmlElement(name = "UpperCorner", namespace = XML_CORE_NS_URL)
     public List<Double> getUpperCorner() {
-        if ( bbox == null || bbox.size() < 4 )
+        if ( bbox == null || bbox.size() < 1 || bbox.get( 0 ).size() < 4 )
             return null;
-        return bbox.subList( 2, 4 );
+        return bbox.get( 0 ).subList( 2, 4 );
     }
 }
