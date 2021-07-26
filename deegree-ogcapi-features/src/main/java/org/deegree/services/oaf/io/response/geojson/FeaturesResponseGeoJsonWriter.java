@@ -59,11 +59,11 @@ public class FeaturesResponseGeoJsonWriter extends AbstractFeatureResponseGeoJso
         writeNumberReturned( numberReturned, geoJsonStreamWriter );
         writeTimeStamp( geoJsonStreamWriter );
         writeCrs( features.getResponseCrsName(), geoJsonStreamWriter );
-        // Closes the feature array as well as the object. Links could not be written later.
-        // geoJsonStreamWriter.endFeatureCollection();
         if ( numberReturned == 0 ) {
             geoJsonStreamWriter.name( "features" ).beginArray().endArray();
         }
+        // Closes the feature collection. Used instead of geoJsonStreamWriter.endFeatureCollection().
+        // The features array is already closed as links could not be written later.
         geoJsonStreamWriter.endObject();
     }
 
