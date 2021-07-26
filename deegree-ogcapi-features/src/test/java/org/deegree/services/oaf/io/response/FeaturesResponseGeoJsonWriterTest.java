@@ -79,7 +79,7 @@ public class FeaturesResponseGeoJsonWriterTest {
 
         assertThat( json, isJson() );
         assertThat( json, hasJsonPath( "$.type", equalTo( "FeatureCollection" ) ) );
-        assertThat( json, hasNoJsonPath( "$.features" ) );
+        assertThat( json, hasJsonPath( "$.features", Matchers.hasSize( 0 ) ) );
         assertThat( json, hasJsonPath( "$.links", Matchers.hasSize( 1 ) ) );
         assertThat( json, hasNoJsonPath( "$.crs" ) );
     }
