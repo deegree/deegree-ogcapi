@@ -1,8 +1,7 @@
 == Introduction
 
-The deegree OGC API Feature (OAF) implementation is compliant to the latest OGC Standards called
-http://docs.opengeospatial.org/is/17-069r3/17-069r3.html[OGC API - Features - Part 1: Core] and http://docs.opengeospatial.org/is/18-058/18-058.html[Part 2: CRS]. deegree OAF provides a server implementation that has been developed based on deegree's
-existing workspace concept using the API of https://www.deegree.org[deegree webservices]. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
+The deegree OGC API Features (OAF) implementation is compliant to the latest OGC Standards called
+http://docs.opengeospatial.org/is/17-069r3/17-069r3.html[OGC API - Features - Part 1: Core] and http://docs.opengeospatial.org/is/18-058/18-058.html[Part 2: CRS]. deegree OAF provides a server implementation that has been developed based on deegree's existing workspace concept using the API of https://www.deegree.org[deegree webservices]. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
 
 === OGC API family
 
@@ -53,9 +52,9 @@ For simplicity, this document consistently uses:
 
 - "OGC API" to refer to the family of standards for geospatial Web APIs.
 
-- "OGC API - Features" to refer to the standard Part 1: Core for features.
+- "OGC API - Features" to refer to the standard OGC API - Features.
 
-- deegree OAF - to refer to the deegree implementation of "OGC API - Features - Part 1: Core".
+- "deegree OAF" to refer to the implementation of "OGC API - Features" based on deegree.
 
 Furthermore the following terms are used in this document:
 

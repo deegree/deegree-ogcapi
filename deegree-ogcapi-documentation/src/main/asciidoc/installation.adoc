@@ -15,7 +15,7 @@ NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 8] with https://tomcat.apache.org/d
 
 === Download
 
-The deegree OAF webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database from the deegree Enterprise repository.footnote:[URL is http://buildserver.deegree-enterprise.de/nexus/. Please contact support@deegree-enterprise.de for detailed information how to access the artifacts. Supscription required.].
+The deegree OAF webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database from the deegree Enterprise repository.footnote:[URL is http://buildserver.deegree-enterprise.de/nexus/. Please contact support@deegree-enterprise.de for detailed information how to access the artifacts. Subscription required.].
 Both artifacts contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
 Download the WAR file and store it in the local file system of the server.
 
@@ -62,5 +62,4 @@ The following browsers are supported:
 If you are *not* using one of the browser above, you should be able to access all resources provided
 by deegree OAF and use the HTML pages but it might not display the site as designed, nor provide you with the best user experience.
 
-Some browsers, particularly earlier versions, either do not or only partly support W3C standards and JavaScript. These browsers might not display the
-HTML pages properly. See the https://cli.vuejs.org/guide/browser-compatibility.html[list of supported browsers by the Vue.js framework] for more information.
+Some browsers, particularly earlier versions, either do not or only partly support W3C standards and JavaScript. These browsers might not display the HTML pages properly. See the list of supported browsers by the https://vuejs.org/[Vue.js framework] for more information.
