@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>de.deegree-enterprise</groupId>
-  <artifactId>deegree-ogcapi</artifactId>
+  <groupId>org.deegree</groupId>
+  <artifactId>deegree</artifactId>
   <version>1.3-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>deegree OAF</name>
-  <description>deegree OGC API - Features (OAF) implementation</description>
+  <name>deegree OGC API</name>
+  <description>deegree OGC API implementation</description>
   <url>https://oaf.lat-lon.de/</url>
   <inceptionYear>2019</inceptionYear>
   <organization>
-    <name>deegree Enterprise</name>
-    <url>https://www.deegree-enterprise.de/</url>
+    <name>OSGeo deegree project</name>
+    <url>https://www.deegree.org</url>
   </organization>
   <licenses>
     <license>
@@ -22,16 +22,16 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:deegree-enterprise/deegree-core.git</connection>
-    <developerConnection>scm:git:git@github.com:deegree-enterprise/deegree-core.git</developerConnection>
-    <url>https://github.com/deegree-enterprise/deegree-core</url>
+    <connection>scm:git:git@github.com:deegree/deegree-ogcapi.git</connection>
+    <developerConnection>scm:git:git@github.com:deegree/deegree-ogcapi.git</developerConnection>
+    <url>https://github.com/deegree/deegree3</url>
     <tag>HEAD</tag>
   </scm>
 
   <repositories>
     <repository>
-      <id>dee</id>
-      <url>http://buildserver.deegree-enterprise.de/nexus/content/groups/dee/</url>
+      <id>deegree-repo</id>
+      <url>https://repo.deegree.org/content/groups/public/</url>
       <releases>
         <updatePolicy>never</updatePolicy>
       </releases>
@@ -43,32 +43,21 @@
 
   <distributionManagement>
     <repository>
-      <id>dee-releases</id>
-      <url>http://buildserver.deegree-enterprise.de/nexus/content/repositories/dee-releases/</url>
+      <id>deegree-releases</id>
+      <url>https://repo.deegree.org/content/repositories/releases/</url>
     </repository>
     <snapshotRepository>
-      <id>dee-snapshots</id>
-      <url>http://buildserver.deegree-enterprise.de/nexus/content/repositories/dee-snapshots/</url>
+      <id>deegree-snapshots</id>
+      <url>https://repo.deegree.org/content/repositories/snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
   <pluginRepositories>
     <pluginRepository>
-      <id>dee</id>
-      <url>http://buildserver.deegree-enterprise.de/nexus/content/groups/dee/</url>
+      <id>deegree-plugin-repo</id>
+      <url>https://repo.deegree.org/content/groups/public/</url>
       <releases>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-    <!-- Required to retrieve the following dependencies: deegree-jaxb-resolver -->
-    <pluginRepository>
-      <id>deegree-repo</id>
-      <url>http://repo.deegree.org/content/groups/public/</url>
-      <releases>
         <updatePolicy>never</updatePolicy>
       </releases>
       <snapshots>
@@ -887,7 +876,7 @@
 
   <issueManagement>
     <system>github</system>
-    <url>https://github.com/deegree-enterprise/deegree-core/issues/</url>
+    <url>https://github.com/deegree/deegree-ogcapi/issues</url>
   </issueManagement>
 
   <developers>
@@ -903,6 +892,6 @@
 
   <ciManagement>
     <system>Jenkins CI</system>
-    <url>http://buildserver.deegree-enterprise.de/jenkins</url>
+    <url>https://buildserver.deegree.org</url>
   </ciManagement>
 </project>
