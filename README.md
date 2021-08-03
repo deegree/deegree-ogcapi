@@ -1,2 +1,2 @@
-# About deegree OAF 
-This repository contains the deegree OGC API Features (OAF) implementation. 
+# deegree-ogcapi
+OGC API implementations based on deegree
