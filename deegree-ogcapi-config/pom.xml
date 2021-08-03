@@ -5,7 +5,7 @@
   <description>OGC API Config implementation</description>
 
   <parent>
-    <groupId>de.deegree-enterprise</groupId>
+    <groupId>org.deegree</groupId>
     <artifactId>deegree-ogcapi</artifactId>
     <version>1.3-SNAPSHOT</version>
   </parent>
