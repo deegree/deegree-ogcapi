@@ -185,22 +185,22 @@
     </dependency>
     <!-- deegree-core -->
     <dependency>
-      <groupId>de.deegree-enterprise</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>deegree-featurestore-sql</artifactId>
       <version>${deegree-version}</version>
     </dependency>
     <dependency>
-      <groupId>de.deegree-enterprise</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>deegree-featurestore-simplesql</artifactId>
       <version>${deegree-version}</version>
     </dependency>
     <dependency>
-      <groupId>de.deegree-enterprise</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>deegree-featurestore-memory</artifactId>
       <version>${deegree-version}</version>
     </dependency>
     <dependency>
-      <groupId>de.deegree-enterprise</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>deegree-featurestore-shape</artifactId>
       <version>${deegree-version}</version>
     </dependency>

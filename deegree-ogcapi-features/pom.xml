@@ -50,7 +50,7 @@
     </dependency>
     <!-- deegree-core -->
     <dependency>
-      <groupId>de.deegree-enterprise</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>deegree-services-commons</artifactId>
       <exclusions>
         <exclusion>
@@ -64,7 +64,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>de.deegree-enterprise</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>deegree-connectionprovider-datasource</artifactId>
     </dependency>
     <!-- servlet -->

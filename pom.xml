@@ -30,6 +30,16 @@
 
   <repositories>
     <repository>
+      <id>deegree-ogcapi-repo</id>
+      <url>https://repo.deegree.org/content/repositories/deegree-ogcapi-snapshots/</url>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>deegree-repo</id>
       <url>https://repo.deegree.org/content/groups/public/</url>
       <releases>
@@ -498,7 +508,7 @@
     <dependencies>
       <!-- deegree-core -->
       <dependency>
-        <groupId>de.deegree-enterprise</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>deegree-featurestore-sql</artifactId>
         <version>${deegree-version}</version>
         <!--
@@ -511,7 +521,7 @@
         -->
       </dependency>
       <dependency>
-        <groupId>de.deegree-enterprise</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>deegree-services-commons</artifactId>
         <version>${deegree-version}</version>
         <scope>compile</scope>
@@ -527,27 +537,27 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>de.deegree-enterprise</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>deegree-sqldialect-postgis</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>de.deegree-enterprise</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>deegree-connectionprovider-datasource</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>de.deegree-enterprise</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>deegree-core-base</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>de.deegree-enterprise</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>deegree-core-workspace</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>de.deegree-enterprise</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>deegree-services-config</artifactId>
         <version>${deegree-version}</version>
       </dependency>
@@ -777,7 +787,7 @@
     <swagger-version>2.1.7</swagger-version>
     <swagger-ui-version>3.49.0</swagger-ui-version>
     <jackson-version>2.12.3</jackson-version>
-    <deegree-version>1.9</deegree-version>
+    <deegree-version>3.4.17-SNAPSHOT</deegree-version>
     <slf4j.version>1.7.30</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
   </properties>
