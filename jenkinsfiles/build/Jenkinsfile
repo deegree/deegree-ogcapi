@@ -11,7 +11,7 @@ pipeline {
     stage('Preparation') {
       steps{
         deleteDir()
-        git credentialsId: 'f9068550-1061-49f2-bc02-dfe02b2eefce', url: 'git@github.com:deegree-enterprise/deegree-core.git', branch: '${BRANCH}'
+        git credentialsId: 'f9068550-1061-49f2-bc02-dfe02b2eefce', url: 'git@github.com:lat-lon/deegree-ogcapi.git', branch: '${BRANCH}'
         sh 'mvn --version'
       }
     }
