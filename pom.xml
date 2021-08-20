@@ -39,6 +39,7 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <!--
     <repository>
       <id>deegree-repo</id>
       <url>https://repo.deegree.org/content/groups/public/</url>
@@ -49,6 +50,7 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+  -->
   </repositories>
 
   <distributionManagement>
@@ -519,6 +521,11 @@
           </exclusion>
         </exclusions>
         -->
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>deegree-featurestore-commons</artifactId>
+        <version>${deegree-version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>

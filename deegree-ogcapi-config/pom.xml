@@ -16,6 +16,10 @@
       <artifactId>deegree-services-config</artifactId>
     </dependency>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>deegree-featurestore-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
@@ -39,4 +43,3 @@
   </dependencies>
 
 </project>
-

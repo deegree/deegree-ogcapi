@@ -29,3 +29,4 @@ target
 .metadata
 .idea
 *.iml
+mvn_local_repo
