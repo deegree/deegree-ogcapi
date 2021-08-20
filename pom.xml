@@ -560,6 +560,16 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>deegree-core-commons</artifactId>
+        <version>${deegree-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>deegree-core-geometry</artifactId>
+        <version>${deegree-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>deegree-core-workspace</artifactId>
         <version>${deegree-version}</version>
       </dependency>
@@ -567,6 +577,11 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>deegree-services-config</artifactId>
         <version>${deegree-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>4.3</version>
       </dependency>
       <!-- servlet -->
       <dependency>

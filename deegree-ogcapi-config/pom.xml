@@ -13,6 +13,14 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>deegree-core-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>deegree-core-geometry</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>deegree-services-config</artifactId>
     </dependency>
     <dependency>
