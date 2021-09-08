@@ -67,6 +67,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>deegree-connectionprovider-datasource</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+    </dependency>
     <!-- servlet -->
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -181,4 +185,3 @@
   </dependencies>
 
 </project>
-

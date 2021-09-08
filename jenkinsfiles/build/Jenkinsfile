@@ -13,11 +13,12 @@ pipeline {
         deleteDir()
         git url: 'git@github.com:lat-lon/deegree-ogcapi.git', branch: '${BRANCH}'
         sh 'mvn --version'
+        sh 'mkdir ./mvn_local_repo'
       }
     }
     stage('Build') {
       steps{
-        sh 'mvn -Djava.awt.headless=true -fae clean install -U'
+        sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
       }
       post {
         always {
