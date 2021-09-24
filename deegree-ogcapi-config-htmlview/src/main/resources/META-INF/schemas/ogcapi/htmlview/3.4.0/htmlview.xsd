@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.deegree.org/ogcapi/htmlview"
+        elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+  <annotation>
+    <appinfo>
+      <jaxb:schemaBindings>
+        <jaxb:package name="org.deegree.services.jaxb.ogcapi.htmlview"/>
+      </jaxb:schemaBindings>
+    </appinfo>
+  </annotation>
+
+  <element name="HtmlView">
+    <complexType>
+      <sequence>
+        <element name="CssFile" minOccurs="0" type="string"/>
+        <element name="LegalNoticeUrl" minOccurs="0" type="anyURI"/>
+        <element name="PrivacyPolicyUrl" minOccurs="0" type="anyURI"/>
+        <element name="DocumentationUrl" minOccurs="0" type="anyURI"/>
+        <element name="Map" minOccurs="0">
+          <complexType>
+            <sequence>
+              <sequence minOccurs="0">
+                <element name="WMSUrl" minOccurs="1">
+                  <complexType>
+                    <simpleContent>
+                      <extension base="string">
+                        <attribute name="version" use="optional" default="1.3.0">
+                          <simpleType>
+                            <restriction base="string">
+                              <enumeration value="1.1.1"/>
+                              <enumeration value="1.3.0"/>
+                            </restriction>
+                          </simpleType>
+                        </attribute>
+                      </extension>
+                    </simpleContent>
+                  </complexType>
+                </element>
+                <element name="WMSLayers" minOccurs="1" type="string"/>
+              </sequence>
+              <element name="CrsProj4Definition" minOccurs="0">
+                <complexType>
+                  <simpleContent>
+                    <extension base="string">
+                      <attribute name="code" type="string" use="required"/>
+                    </extension>
+                  </simpleContent>
+                </complexType>
+              </element>
+              <element name="Source" minOccurs="0" type="string"/>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+      <attribute name="configVersion" use="required">
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="3.4.0"/>
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+</schema>

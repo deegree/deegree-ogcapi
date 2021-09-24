@@ -1,0 +1,86 @@
+== Introduction
+
+The deegree OGC API Features (OAF) implementation is compliant to the latest OGC Standards called
+http://docs.opengeospatial.org/is/17-069r3/17-069r3.html[OGC API - Features - Part 1: Core] and http://docs.opengeospatial.org/is/18-058/18-058.html[Part 2: CRS]. deegree OAF provides a server implementation that has been developed based on deegree's existing workspace concept using the API of https://www.deegree.org[deegree webservices]. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
+
+=== OGC API family
+
+The OGC API family of standards are being developed to make it easy for anyone to provide geospatial data to the web. These standards build upon the legacy of the OGC Web Service standards (WMS, WFS, WCS, WPS, etc.), but define resource-centric APIs that take advantage of modern web development practices.
+
+Read more at http://www.ogcapi.org[www.ogcapi.org] about the new standards and their goals.
+The https://opengeospatial.github.io/e-learning/ogcapi-features/text/basic-index.html[OGC E-learning tutorial] provides a chapter about the new standards and explains the basic concepts.
+
+=== Features
+
+deegree OAF supports the following conformance classes:
+
+* Core (Part 1)
+* Coordinate Reference Systems by Reference (Part 2)
+
+Based on that requirements class deegree OAF provides implementations of representations for spatial data using encodings such as:
+
+* HTML,
+* GeoJSON,
+* Geography Markup Language (GML), Simple Features Profile, Level 0, and
+* Geography Markup Language (GML), Simple Features Profile, Level 2.
+
+The Web API is provided as an Open API 3.0 document implementing the requirements class:
+
+* OpenAPI Specification 3.0.
+
+deegree OAF was built on top of the robust API and configuration concept of https://www.deegree.org[deegree webservices]. Notable features:
+
+* easy to install: simple deployment in every Java Servlet container
+* easy to configure: uses the deegree workspace configuration concept
+* connects to several data sources such as files, and databases
+* serves a rich HTML output format including a map component based on https://openlayers.org/[OpenLayers]
+* links to metadata in different formats
+* supports data types such as arrays and structured objects
+* supports a bulk download for datasets as specified by https://github.com/INSPIRE-MIF/gp-ogc-api-features/blob/master/spec/oapif-inspire-download.md#req-bulk-download[requirements class "INSPIRE-bulk-download"]
+
+=== Quick Start
+
+. Install the deegree OAF webapp on your preferred Java Servlet container (the runtime environment). See section <<installation>> for more information.
+. Create the necessary deegree configuration files stored within a deegree workspace with at least one datasource. Which files are required is described in section <<Configuration>>.
+. Install deegree OAF webapp and start the runtime environment. This is described in section <<start_webapp>>.
+. Start a browser and open the OpenAPI specification. How to use the Web API document is explained in section <<openapi>>.
+. Browse the content using the HTML interface. How to access the data is described in section <<html_encoding>>.
+
+== Terms and Definitions
+
+For simplicity, this document consistently uses:
+
+- "OGC API" to refer to the family of standards for geospatial Web APIs.
+
+- "OGC API - Features" to refer to the standard OGC API - Features.
+
+- "deegree OAF" to refer to the implementation of "OGC API - Features" based on deegree.
+
+Furthermore the following terms are used in this document:
+
+=== dataset
+Is a collection of data. In the context of deegree OAF a dataset is the set of feature types provided by a feature store. It is identified by it's _{datasetId}_.
+
+=== datasource
+Is a source containing data retrieved from a file or a database. In the context of deegree OAF a datasource can be a feature store implementation. Which feature store implementations are supported is explaind in section <<config_feature_store>>.
+
+=== feature
+Is an abstraction of real world phenomena. In the context of deegree OAF it is a spatial entity stored in a datasource. It is identified by it's _{featureId}_.
+
+=== feature collection
+Is a set of features from a dataset. It is identified by it's _{collectionId}_.
+
+=== feature store
+Is a ressource within the deegree workspace providing access to stored features. In the context of deegree OAF a feature store provides access to datasource such as SHAPE file or a database.
+
+=== metadata
+Is a description of the dataset. In the context of deegree OAF metadata can be linked per dataset.
+
+=== WebAPI
+An API using an architectural style that is based upon open standards and best practices such as https://spec.openapis.org/oas/v3.0.3[OpenAPI Specification] and it's implementation https://swagger.io/[Swagger].
+
+=== webapp
+Is a deployable instance of a web application. In the context of deegree OAF it is a Web application ARchive (WAR) containing all resources that together constitute the deegree OAF application.
+
+=== workspace
+Is a directory structure containing configuration files. Most configuration files are in XML format. Read more in <<configuration>> how to configure deegree OAF.

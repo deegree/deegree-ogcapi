@@ -1,0 +1,65 @@
+[[installation]]
+== Installation
+
+There are many ways to install deegree OAF on a server. This section will describe the various installation paths available.
+
+[[requirements]]
+=== Requirements
+
+deegree OAF works on every Java Servlet container implementing the Java Servlet API 3.1 using an OpenJDK or Oracle JRE 8. The JRE and Java Servlet container constitute the runtime environment.
+The installation of these components must be done prior of this installation.
+
+The server hosting the service should have at least 4 GB of free memory and more than 2 CPU cores available.
+
+NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 8] with https://tomcat.apache.org/download-90.cgi[Apache Tomcat 9] is the recommended runtime environment.
+
+=== Download
+
+The deegree OAF webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database from the deegree Enterprise repository.footnote:[URL is http://buildserver.deegree-enterprise.de/nexus/. Please contact support@deegree-enterprise.de for detailed information how to access the artifacts. Subscription required.].
+Both artifacts contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
+Download the WAR file and store it in the local file system of the server.
+
+[[installation_deploy]]
+=== Deploy the webapp
+
+Move the WAR file to the deployment folder of the runtime environment. For Apache Tomcat the folder is `$CATALINA_HOME/webapps`.
+
+NOTE: Within this document the context path _deegree-services-oaf_ for the deegree OAF webapp is used. Rename the WAR file to _deegree-services-oaf.war_ to follow this convention.
+
+NOTE: Deploying one single webapp per runtime instance is recommended. See <<help_faq>> for more information about deployment of deegree OAF.
+
+[[start_webapp]]
+=== Start the webapp
+
+To start the webapp the runtime environment needs to be started. For Apache Tomcat use the start script `$CATALINA/bin/startup.sh`.
+
+[[stop_webapp]]
+=== Stop the webapp
+
+To stop the webapp the runtime environment needs to be stopped. For Apache Tomcat use the start script `$CATALINA/bin/shutdown.sh`.
+
+=== Uninstallation
+
+To uninstall the webapp:
+
+1. Stop the runtime environment (if it is running).
+2. Delete the webapp and the directory in which the deegree OAF webapp is installed.
+
+=== Docker
+
+With deegree Enterprise a Docker Image with deegree OAF is available.footnote:[Please contact support@deegree-enterprise.de for more information.]. When using the Docker image the installation of Docker is required. Check the https://docs.docker.com/get-docker/[Docker Documentation] for requirements and installation instructions.
+The docker image provides all software components and no additional software installations are necessary.
+
+[[supported_browser]]
+=== Supported Browser
+
+deegree OAF has been tested across a wide range of browsers, and operating systems.
+
+The following browsers are supported:
+
+- Mozilla Firefox (80.0+), Google Chrome (85.0+), Microsoft Edge (79.0+)
+
+If you are *not* using one of the browser above, you should be able to access all resources provided
+by deegree OAF and use the HTML pages but it might not display the site as designed, nor provide you with the best user experience.
+
+Some browsers, particularly earlier versions, either do not or only partly support W3C standards and JavaScript. These browsers might not display the HTML pages properly. See the list of supported browsers by the https://vuejs.org/[Vue.js framework] for more information.

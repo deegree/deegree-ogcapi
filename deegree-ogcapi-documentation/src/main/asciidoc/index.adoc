@@ -1,0 +1,33 @@
+:doctype: book
+:encoding: utf-8
+:toc: macro
+:toclevels: 5
+:numbered:
+:imagesdir: images
+:source-highlighter: coderay
+:title-logo-image: images/Logo_deegree.png
+
+= deegree OGC API - Features Implementation
+lat/lon Gesellschaft für raumbezogene Informationssysteme mbH
+
+toc::[]
+
+== Preambel
+
+List of Authors: Jens Fitzke, Torsten Friebe, Lyn Goltz, Sabine Schmitz, Dirk Stenger.
+
+lat/lon - Gesellschaft für raumbezogene Informationssysteme mbH +
+info@lat-lon.de, http://www.lat-lon.de/ +
+Aennchenstraße 19, D-53177 Bonn, Germany +
+
+(C) Copyright 2020-2021 lat/lon GmbH, Bonn, Germany.
+
+include::intro.adoc[]
+
+include::installation.adoc[]
+
+include::configuration.adoc[]
+
+include::usage.adoc[]
+
+include::help.adoc[]

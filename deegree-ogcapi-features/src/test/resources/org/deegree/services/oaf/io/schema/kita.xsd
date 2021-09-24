@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Freie und Hansestadt Hamburg, Behörde für Arbeit, Soziales, Familie und Integration (Sozialbehörde) -->
+<!-- https://geodienste.hamburg.de/HH_WFS_KitaEinrichtung?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetCapabilities -->
+<!-- updated to GML 3.2 -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:app="http://www.deegree.org/app" xmlns:xlink="http://www.w3.org/1999/xlink" targetNamespace="http://www.deegree.org/app" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <element name="KitaEinrichtungen" substitutionGroup="gml:AbstractFeature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="Name" minOccurs="0" type="string"/>
+            <element name="Name_normalisiert" minOccurs="0" type="string"/>
+            <element name="Einrichtungsnummer" minOccurs="0" type="integer"/>
+            <element name="Telefon" minOccurs="0" type="string"/>
+            <element name="Fax" minOccurs="0" type="string"/>
+            <element name="Strasse" minOccurs="0" type="string"/>
+            <element name="Hausnr" minOccurs="0" type="integer"/>
+            <element name="Hausnr_alpha" minOccurs="0" type="string"/>
+            <element name="PLZ" minOccurs="0" type="integer"/>
+            <element name="Ort" minOccurs="0" type="string"/>
+            <element name="Stadtteil" minOccurs="0" maxOccurs="unbounded" type="string"/>
+            <element name="Bezirk" minOccurs="0" maxOccurs="unbounded" type="string"/>
+            <element name="Traeger" minOccurs="0" maxOccurs="unbounded" type="string"/>
+            <element name="Spitzenverband" minOccurs="0" maxOccurs="unbounded" type="string"/>
+            <element name="Ansprechpartner" minOccurs="0" type="string"/>
+            <element name="Leistungsname" minOccurs="0" maxOccurs="unbounded" type="string"/>
+            <element name="Zusatztextleistung" minOccurs="0" type="string"/>
+            <element name="Zusatztextkita" minOccurs="0" type="string"/>
+            <element name="Informationen" minOccurs="0" maxOccurs="unbounded" type="string"/>
+            <element name="E-Mail" minOccurs="0" maxOccurs="unbounded" type="string"/>
+            <element name="Leistungsarten" minOccurs="0" type="string"/>
+            <element name="geom" minOccurs="0" type="gml:PointPropertyType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+</schema>

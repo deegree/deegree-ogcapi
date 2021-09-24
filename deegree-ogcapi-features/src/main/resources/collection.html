@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css" type="text/css">
+
+    <title>deegree - OGC API Features 1.0 - Collection</title>
+
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+      .map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
+    <script src="https://unpkg.com/vue-meta/dist/vue-meta.min.js"></script>
+    <script>
+        function loadCss(relativePath){
+            var url = asAbsoluteUrl(relativePath);
+
+            var link = document.createElement("link");
+            link.setAttribute("rel", "stylesheet");
+            link.setAttribute("type", "text/css");
+            link.setAttribute("href", url);
+
+            document.getElementsByTagName("head")[0].appendChild( link );
+        }
+
+        function asAbsoluteUrl(relativePath ) {
+            var url = window.location.href;
+            if ( url.indexOf('?') >= 0 ) {
+              url = url.substr(0, url.indexOf('?'));
+            }
+            if( !url.endsWith("/") )
+              url = url + "/";
+
+            url = url + relativePath;
+            return url;
+        }
+        loadCss( "../../css/main.css" );
+    </script>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <ul class="nav" id ="breadcrump">
+                <li class="breadcrumb-item">
+                    <a v-bind:href="datasetsLink">Datasets</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-cloak v-bind:href="datasetLink">{{ datasetName }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="collectionsLink">Collections</a>
+                </li>
+                <li v-cloak class="breadcrumb-item active" aria-current="page" >{{ collectionId }}</li>
+            </ul>
+            <ul class="nav justify-content-end">
+              <li class="nav-item">
+                  <a class="nav-link" href="?f=json" target="_blank">JSON</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="?f=xml" target="_blank">XML</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link disabled" href="?f=html" tabindex="-1" aria-disabled="true" target="_blank">HTML</a>
+              </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="row" id="content">
+        <div class="col-lg-12" >
+            <h1 v-cloak class="mt-5">{{ title }}</h1>
+            <div v-cloak v-html="description"></div>
+            <div class="row mt-2">
+                <div class="col-sm-3">Links</div>
+                <div class="col-md-9">
+                    <div v-for="link in links">
+                        <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href" >{{ link.title }}</a>
+                        <a v-cloak v-else-if="link.type == 'application/json' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=json'" v-bind:download="collectionId + '.json'">{{ link.title }}</a>
+                        <a v-cloak v-else-if="link.type == 'application/xml' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=xml'" v-bind:download="collectionId + '.xml'">{{ link.title }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3">Spatial Extent</div>
+                <div class="col-md-9">
+                    <div id="map" class="map" ></div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3">Temporal Extent</div>
+                <div v-if="extent.temporal" class="col-md-9">
+                    <div class="row">
+                        <div v-cloak class="col-md-12">Begin: {{ extent.temporal.interval[0] }}</div>
+                    </div>
+                    <div class="row">
+                        <div v-cloak class="col-md-12">End: {{ extent.temporal.interval[1] }}</div>
+                    </div>
+                </div>
+                <div v-else class="col-md-9">-</div>
+            </div>
+            <div class="row mt-2" v-if="crs">
+                <div class="col-md-3">Coordinate Reference Systems</div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div v-cloak class="col-md-12" v-for="crsitem in crs">{{ crsitem }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2" v-if="storageCrs">
+                <div class="col-md-3">Storage CRS</div>
+                <div class="col-md-9">
+                  <div class="row">
+                    <div v-cloak class="col-md-12" >{{ storageCrs }}</div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="footer">
+    <div class="footer-brand-left"></div>
+    <div class="d-flex row justify-content-between">
+        <div class="px-md-5">
+            <a v-cloak v-bind:href="helpUrl" target="_blank" class="help"> Help</a>
+        </div>
+        <div class="px-md-5">
+            <span v-if="legalNoticeUrl && legalNoticeUrl.length > 0">
+                <a v-cloak v-bind:href="legalNoticeUrl" target="_blank" class="legalNotice"> Legal Notice</a>
+            </span>
+            <span v-else>
+                <a href="https://deegree-enterprise.de" target="_blank" class="legalNotice"> deegree Enterprise Edition</a>
+            </span>
+            <span v-if="privacyUrl && privacyUrl.length > 0">
+               <span> | </span>
+               <a v-cloak v-bind:href="privacyUrl" target="_blank" class="privacy"> Privacy Policy</a>
+            </span>
+            <span class="footer-brand-right"></span>
+        </div>
+    </div>
+</footer>
+
+<script>
+var App = new Vue({
+  el: '#content',
+  metaInfo() {
+    const title = this.title
+    return {
+      title: title,
+      titleTemplate: '%s',
+    }
+  },
+  data: {
+    collectionId: '',
+    title: '',
+    description: '',
+    links: '',
+    extent: '',
+    crs: '',
+    storageCrs: ''
+  },
+
+  created() {
+    this.fetchData().catch(error => {
+      console.error(error)
+    })
+  },
+  methods: {
+    async fetchData() {
+      var baseUrl = retrieveBaseUrl();
+      const response = await fetch( baseUrl, {headers: {'Accept': 'application/json' } } );
+      const json = await response.json();
+      this.collectionId = json.id;
+      this.title = json.title;
+      this.description = json.description;
+      this.links = json.links;
+      this.extent = json.extent;
+      this.crs = json.crs;
+      this.storageCrs = json.storageCrs;
+      fetchConfigAndSetExtent(this.extent.spatial.bbox[0]);
+    }
+  }
+})
+
+var AppBreadcrump = new Vue({
+  el: '#breadcrump',
+  data: {
+    collectionId: '',
+    datasetLink: '',
+    datasetName: '',
+    datasetsLink: '',
+    collectionsLink: ''
+  },
+
+  created() {
+    var self = this;
+    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+    self.collectionsLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.datasetLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
+    self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
+    self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
+
+    $.ajax({
+      dataType: "json",
+      //url: "http://localhost:8002/collections/strassenbaumkataster",
+      url: thisLink,
+      success: function(data) {
+        self.collectionId = data.title;
+      }
+    });
+  }
+})
+
+var footerApp = new Vue({
+  el: '#footer',
+  data: {
+    helpUrl: '',
+    legalNoticeUrl: '',
+    privacyUrl: ''
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+
+    $.ajax({
+      dataType: "json",
+      url: createHtmlConfigUrl(),
+      success: function(data) {
+        self.helpUrl = data.documentationUrl ? data.documentationUrl : createDocumentationUrl();
+        self.legalNoticeUrl = data.legalNoticeUrl;
+        self.privacyUrl = data.privacyUrl;
+      }
+    });
+  }
+})
+
+async function fetchConfigAndSetExtent(bbox) {
+  var configUrl = createMapConfigUrl();
+
+  const response = await fetch( configUrl, {headers: {'Accept': 'application/json' } } );
+  if( response.status == 200 ){
+    const json = await response.json();
+    setMapBackgroundAndExtent(json.wmsUrl, json.wmsVersion, json.wmsLayers, json.crsCode, json.crsProj4Definition, json.source, bbox);
+  } else {
+    setMapBackgroundAndExtent('http://sg.geodatenzentrum.de/wms_dtk250', '1.1.1', 'dtk250', null, null, null, bbox);
+  }
+}
+
+function setMapBackgroundAndExtent(wmsUrl, wmsVersion, wmsLayers, crsCode, projDef, source, bbox){
+    var crsCodeRegistered = registerCrs(crsCode, projDef);
+    if( crsCodeRegistered ){
+        var userConfig = ol.proj.get(crsCode);
+        map.setView(
+            new ol.View({
+                projection: userConfig,
+                constrainResolution: true
+            })
+        );
+    }
+
+    var wmsLayer = new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: wmsUrl,
+        params: {'VERSION': wmsVersion, 'LAYERS': wmsLayers},
+        attributions: source
+      })
+    });
+    map.getLayers().insertAt(0, wmsLayer);
+    setExtent(bbox, crsCodeRegistered, crsCode);
+}
+
+function setExtent(bbox, crsCodeRegistered, crsCode){
+    var boundingExtent = ol.extent.boundingExtent([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+    if( crsCodeRegistered ) {
+        boundingExtent = ol.proj.transformExtent(boundingExtent, 'EPSG:4326', crsCode);
+    }
+
+    var extentFeature = new ol.Feature({
+        geometry: ol.geom.Polygon.fromExtent(boundingExtent),
+        name: 'Extent'
+    })
+    extentSource.addFeature(extentFeature);
+
+    var extentGeom = ol.geom.Polygon.fromExtent(boundingExtent)
+    extentGeom.scale(1.2);
+    map.getView().fit(extentGeom.getExtent(), {'maxZoom':20, 'nearest': true} );
+}
+
+var extentSource = new ol.source.Vector({
+  format: new ol.format.GeoJSON(),
+   strategy: ol.loadingstrategy.all
+});
+
+var extentLayer = new ol.layer.Vector({
+   source: extentSource,
+   style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'blue',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(0, 0, 255, 0.1)'
+    })
+  })
+});
+
+var attribution = new ol.control.Attribution({
+  collapsible: false,
+});
+
+var map = new ol.Map({
+  target: 'map',
+  controls: ol.control.defaults({attribution: false}).extend([attribution]),
+  layers: [
+    extentLayer
+  ],
+  view: new ol.View({
+    projection: 'EPSG:4326',
+    center: [10.0143, 53.5537],
+    zoom: 14,
+    constrainResolution: true
+  })
+});
+
+function registerCrs(crsCode, projDef){
+   if( crsCode != null &&  projDef != null ) {
+       proj4.defs('EPSG:25832', '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+       ol.proj.proj4.register(proj4);
+       return true;
+   }
+   return false;
+}
+
+function createHtmlConfigUrl(){
+  return retrieveThisDatasetUrl() + "/config/html";
+}
+
+function createMapConfigUrl(){
+  return retrieveThisDatasetUrl() + "/config/map";
+}
+
+function createDocumentationUrl(){
+  var baseUrl = retrieveThisDatasetUrl();
+  var indexOfDataset = (baseUrl.lastIndexOf("dataset"))
+  return baseUrl.substring ( 0, indexOfDataset ) + "documentation/index.html#_usage";
+}
+
+function retrieveThisDatasetUrl(){
+  var baseUrl = retrieveBaseUrl();
+  var indexIncludeDataset = (baseUrl.lastIndexOf("dataset") + 9)
+  var indexOfDatasetId = baseUrl.substring(indexIncludeDataset, baseUrl.length ).indexOf( "/" ) + indexIncludeDataset;
+  return baseUrl.substring ( 0, indexOfDatasetId );
+}
+
+function retrieveBaseUrl() {
+      var featuresRefWithoutQuery = window.location.href;
+      if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+      }
+      if ( featuresRefWithoutQuery.endsWith("/") ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
+      }
+      return featuresRefWithoutQuery;
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css" type="text/css">
+
+    <title>deegree - OGC API Features 1.0 - Feature</title>
+
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+      .map {
+        height: 480px;
+        width: 540px;
+      }
+      #info {
+        position: absolute;
+        z-index: 100;
+      }
+      .tooltip-inner {
+        max-width: 100%;
+      }
+      #popup-content {
+        font-size: smaller;
+      }
+      .ol-popup {
+        position: absolute;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+        min-width: 280px;
+      }
+      .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+      .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+      }
+      .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+      }
+      .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+      }
+      .ol-popup-closer:after {
+        content: "✖";
+      }
+    </style>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
+    <script src="https://unpkg.com/vue-meta/dist/vue-meta.min.js"></script>
+    <script>
+        function loadCss(relativePath){
+            var url = asAbsoluteUrl(relativePath);
+
+            var link = document.createElement("link");
+            link.setAttribute("rel", "stylesheet");
+            link.setAttribute("type", "text/css");
+            link.setAttribute("href", url);
+
+            document.getElementsByTagName("head")[0].appendChild( link );
+        }
+
+        function asAbsoluteUrl(relativePath ) {
+            var url = window.location.href;
+            if ( url.indexOf('?') >= 0 ) {
+              url = url.substr(0, url.indexOf('?'));
+            }
+            if( !url.endsWith("/") )
+              url = url + "/";
+
+            url = url + relativePath;
+            return url;
+        }
+        loadCss( "../../../../css/main.css" );
+    </script>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <ul class="nav" id="breadcrump">
+                <li class="breadcrumb-item">
+                    <a v-bind:href="datasetsLink">Datasets</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-cloak v-bind:href="datasetLink">{{ datasetName }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="collectionsLink">Collections</a>
+                </li>
+                <li v-cloak class="breadcrumb-item">
+                    <a v-bind:href="collectionLink">{{ collectionId }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="itemsLink">Features</a>
+                </li>
+                <li v-cloak class="breadcrumb-item active" aria-current="page">{{ featureId }}</li>
+            </ul>
+            <ul class="nav justify-content-end">
+              <li class="nav-item">
+                  <a class="nav-link" href="?f=json" target="_blank">GeoJSON</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="?f=xml" target="_blank">GML</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link disabled" href="?f=html" tabindex="-1" aria-disabled="true" target="_blank">HTML</a>
+              </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container" id="content">
+    <div>
+        <div class="row">
+            <div class="col" v-if="status == 0">
+                <h3 v-cloak class="mt-5">Loading feature with ID {{ featureId }}</h3>
+            </div>
+            <div class="col" v-else-if="status == 404">
+                <h3 v-cloak class="mt-5">Feature with ID {{ featureId }} is not known</h3>
+            </div>
+            <div class="col" v-else-if="status == 200">
+                <h3 v-cloak class="mt-5">{{ featureId }}</h3>
+            </div>
+            <div class="col" v-else>
+                <h3 v-cloak class="mt-5">Error retrieving feature with ID {{ featureId }}</h3>
+            </div>
+        </div>
+        <hr/>
+        <div class="row justify-content-between">
+            <div class="col-md" v-if="status == 200" >
+                <div class="row mt-2">
+                    <div class="col">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">Attribute</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(property, attribute) in properties">
+                                <td v-cloak>{{ attribute }}</td>
+                                    <td v-cloak v-if="(typeof property) == 'string' && property.startsWith('http')" >
+                                        <a v-bind:href="property" target="_blank">Link</a>
+                                    </td>
+                                    <td v-cloak v-else-if="Array.isArray(property) && property.length > 0 && typeof(property[0]) !== 'object'" >
+                                        <ul class="propertylist">
+                                            <li v-for="item in property">
+                                                {{ item }}
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td v-cloak v-else-if="(Array.isArray(property) && property.length > 0) || typeof(property) === 'object'" >
+                                        <a v-bind:href="jsonLink" target="_blank">Complex object, view as json</a>
+                                    </td>
+                                    <td v-cloak v-else >{{ property }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div id="map" class="map">
+                    <div id="info"></div>
+                    <!--
+                    <div id="popup" class="ol-popup">
+                        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                        <div id="popup-content"></div>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </div>
+
+        <div class="row" v-if="status == 200">
+                <div class="col-sm-2">Links</div>
+                <div class="col-md-10">
+                    <div v-for="link in links">
+                        <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href" >{{ link.title }}</a>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="footer">
+    <div class="footer-brand-left"></div>
+    <div class="d-flex row justify-content-between">
+        <div class="px-md-5">
+            <a v-cloak v-bind:href="helpUrl" target="_blank" class="help"> Help</a>
+        </div>
+        <div class="px-md-5">
+            <span v-if="legalNoticeUrl && legalNoticeUrl.length > 0">
+                <a v-cloak v-bind:href="legalNoticeUrl" target="_blank" class="legalNotice"> Legal Notice</a>
+            </span>
+            <span v-else>
+                <a href="https://deegree-enterprise.de" target="_blank" class="legalNotice"> deegree Enterprise Edition</a>
+            </span>
+            <span v-if="privacyUrl && privacyUrl.length > 0">
+               <span> | </span>
+               <a v-cloak v-bind:href="privacyUrl" target="_blank" class="privacy"> Privacy Policy</a>
+            </span>
+            <span class="footer-brand-right"></span>
+        </div>
+    </div>
+</footer>
+
+<script>
+var App = new Vue({
+  el: '#content',
+  metaInfo() {
+    const title = this.featureId
+    return {
+      title: title,
+      titleTemplate: '%s',
+    }
+  },
+  data: {
+    featureId: '',
+    properties: '',
+    links: '',
+    jsonLink: '',
+    status: 0
+  },
+
+  created() {
+    this.fetchData().catch(error => {
+      console.error(error)
+    })
+  },
+  methods: {
+    async fetchData() {
+      var baseUrl = retrieveBaseUrl();
+      const response = await fetch( baseUrl, {headers: {'Accept': 'application/geo+json' } } );
+      this.status = response.status;
+      if ( this.status == 200 ){
+        const json = await response.json();
+        this.featureId = json.id;
+        this.properties = json.properties;
+        this.links = json.links;
+        this.jsonLink = baseUrl + '?f=json';
+        fetchConfigAndSetFeature(json);
+      } else {
+        document.getElementById('map').style.display='none';
+        this.featureId = baseUrl.substring(baseUrl.lastIndexOf("/") + 1);
+      }
+    }
+  }
+})
+
+var AppBreadcrump = new Vue({
+  el: '#breadcrump',
+  data: {
+    collectionId: '',
+    featureId: '',
+    datasetLink: '',
+    datasetName: '',
+    datasetsLink: '',
+    collectionsLink: '',
+    collectionLink: '',
+    itemsLink: ''
+  },
+
+  created() {
+    var self = this;
+    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+    self.itemsLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.featureId = thisLink.substring(thisLink.lastIndexOf("/") + 1);
+    self.collectionLink = self.itemsLink.substring(0, self.itemsLink.lastIndexOf("/"));
+    self.collectionsLink = self.collectionLink.substring(0, self.collectionLink.lastIndexOf("/"));
+    self.datasetLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
+    self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
+    self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
+
+
+    $.ajax({
+      dataType: "json",
+      //url: "http://localhost:8002/collections/strassenbaumkataster",
+      url: self.collectionLink,
+      success: function(data) {
+        self.collectionId = data.title;
+      }
+    });
+  }
+})
+
+var footerApp = new Vue({
+  el: '#footer',
+  data: {
+    helpUrl: '',
+    legalNoticeUrl: '',
+    privacyUrl: ''
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+
+    $.ajax({
+      dataType: "json",
+      url: createHtmlConfigUrl(),
+      success: function(data) {
+        self.helpUrl = data.documentationUrl ? data.documentationUrl : createDocumentationUrl();
+        self.legalNoticeUrl = data.legalNoticeUrl;
+        self.privacyUrl = data.privacyUrl;
+      }
+    });
+  }
+})
+
+var styles = [
+  new ol.style.Style({
+    image: new ol.style.Circle({
+      radius: 6,
+      fill: new ol.style.Fill({
+        color: 'rgba(0,0,255, 0.1)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: 'rgba(0,0,255, 1)',
+        width: 2
+      })
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(0,0,255, 1)',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(0, 0, 255, 0.1)'
+    })
+  })
+];
+
+async function fetchConfigAndSetFeature(featureJson) {
+  var configUrl = createMapConfigUrl();
+
+  const response = await fetch( configUrl, {headers: {'Accept': 'application/json' } } );
+  if( response.status == 200 ){
+    const json = await response.json();
+    setMapBackgroundAndExtent(json.wmsUrl, json.wmsVersion, json.wmsLayers, json.crsCode, json.crsProj4Definition, json.source, featureJson);
+  } else {
+    setMapBackgroundAndExtent('http://sg.geodatenzentrum.de/wms_dtk250', '1.1.1', 'dtk250', null, null, null, featureJson);
+  }
+}
+
+function setMapBackgroundAndExtent(wmsUrl, wmsVersion, wmsLayers, crsCode, projDef, source, featureJson){
+    var crsCodeRegistered = registerCrs(crsCode, projDef);
+    if( crsCodeRegistered ){
+        var userConfig = ol.proj.get(crsCode);
+        map.setView(
+            new ol.View({
+                projection: userConfig,
+                constrainResolution: true
+            })
+        );
+    }
+
+    var wmsLayer = new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: wmsUrl,
+        params: {'VERSION': wmsVersion, 'LAYERS': wmsLayers},
+        attributions: source
+      })
+    });
+    map.getLayers().insertAt(0, wmsLayer);
+    setFeature(featureJson, crsCode);
+}
+
+function setFeature(featureJson, crsCode){
+  featureSource.clear();
+  featureSource.addFeatures(featureSource.getFormat().readFeatures(featureJson, {
+                    "dataProjection" : "EPSG:4326",
+                    "featureProjection" : crsCode
+             }));
+
+  var extentGeom = ol.geom.Polygon.fromExtent(featureSource.getExtent())
+  extentGeom.scale(1.2);
+  map.getView().fit(extentGeom.getExtent(), {'maxZoom':20, 'nearest': true } );
+}
+
+var featureSource = new ol.source.Vector({
+  format: new ol.format.GeoJSON(),
+  strategy: ol.loadingstrategy.all
+});
+
+var featureLayer = new ol.layer.Vector({
+  source: featureSource,
+  style: styles
+});
+
+var attribution = new ol.control.Attribution({
+  collapsible: false,
+});
+
+var map = new ol.Map({
+  target: 'map',
+  controls: ol.control.defaults({attribution: false}).extend([attribution]),
+  layers: [
+    featureLayer
+  ],
+  view: new ol.View({
+    projection: 'EPSG:4326',
+    center: [10.0143, 53.5537],
+    zoom: 14,
+    constrainResolution: true
+  })
+});
+
+var info = $('#info');
+info.tooltip({
+  animation: false,
+  trigger: 'manual'
+});
+
+var displayTooltip = function(pixel) {
+  info.css({
+    left: (pixel[0] + 15) + 'px',
+    top: (pixel[1] - 15) + 'px'
+  });
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+    return feature;
+  });
+  if (feature) {
+    info.tooltip('hide')
+      .attr('data-original-title', feature.getId())
+      .tooltip('show');
+  } else {
+    info.tooltip('hide');
+  }
+};
+
+map.on('pointermove', function(evt) {
+  if (evt.dragging) {
+    info.tooltip('hide');
+    return;
+  }
+  displayTooltip(evt.pixel);
+});
+/*
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+
+var overlay = new ol.Overlay({
+  element: container,
+  autoPan: true,
+  autoPanAnimation: {
+    duration: 250
+  }
+});
+map.addOverlay(overlay);
+
+closer.onclick = function() {
+  overlay.setPosition(undefined);
+  select.getFeatures().clear();
+  closer.blur();
+  return false;
+};
+
+var clickCoordinate;
+map.on('singleclick', function(evt) {
+  clickCoordinate = evt.coordinate;
+});
+
+var select = new ol.interaction.Select();
+map.addInteraction(select);
+select.on('select', function(e) {
+  var feature = e.selected[0];
+  var keys = feature.getKeys();
+  var geometryName = feature.getGeometryName();
+  var html = '<table>';
+  for (i = 0; i < keys.length; i++){
+    var key = keys[i];
+    if (key != geometryName){
+      html = html + '<tr><th>' + key + '</th><th>' + feature.get(key) + '</th></tr>';
+    }
+  }
+  html = html + '</table>';
+  content.innerHTML = '<div><h6>' + feature.getId() + '</h6></div><div>' + html + '</div>';
+  overlay.setPosition(clickCoordinate);
+});
+*/
+
+function registerCrs(crsCode, projDef){
+   if( crsCode != null &&  projDef != null ) {
+       proj4.defs(crsCode, projDef);
+       ol.proj.proj4.register(proj4);
+       return true;
+   }
+   return false;
+}
+
+function createHtmlConfigUrl(){
+  return retrieveThisDatasetUrl() + "/config/html";
+}
+
+function createMapConfigUrl(){
+  return retrieveThisDatasetUrl() + "/config/map";
+}
+
+function createDocumentationUrl(){
+  var baseUrl = retrieveThisDatasetUrl();
+  var indexOfDataset = (baseUrl.lastIndexOf("dataset"))
+  return baseUrl.substring ( 0, indexOfDataset ) + "documentation/index.html#_usage";
+}
+
+function retrieveThisDatasetUrl(){
+  var baseUrl = retrieveBaseUrl();
+  var indexIncludeDataset = (baseUrl.lastIndexOf("dataset") + 9)
+  var indexOfDatasetId = baseUrl.substring(indexIncludeDataset, baseUrl.length ).indexOf( "/" ) + indexIncludeDataset;
+  return baseUrl.substring ( 0, indexOfDatasetId );
+}
+
+function retrieveBaseUrl() {
+      var featuresRefWithoutQuery = window.location.href;
+      if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+      }
+      if ( featuresRefWithoutQuery.endsWith("/") ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
+      }
+      return featuresRefWithoutQuery;
+}
+</script>
+</body>
+</html>

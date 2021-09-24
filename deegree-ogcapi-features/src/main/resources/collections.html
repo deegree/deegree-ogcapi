@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>deegree - OGC API Features 1.0 - Collections</title>
+
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/vue-meta/dist/vue-meta.min.js"></script>
+    <script>
+        function loadCss(relativePath){
+            var url = asAbsoluteUrl(relativePath);
+
+            var link = document.createElement("link");
+            link.setAttribute("rel", "stylesheet");
+            link.setAttribute("type", "text/css");
+            link.setAttribute("href", url);
+
+            document.getElementsByTagName("head")[0].appendChild( link );
+        }
+
+        function asAbsoluteUrl(relativePath ) {
+            var url = window.location.href;
+            if ( url.indexOf('?') >= 0 ) {
+              url = url.substr(0, url.indexOf('?'));
+            }
+            if( !url.endsWith("/") )
+              url = url + "/";
+
+            url = url + relativePath;
+            return url;
+        }
+        loadCss( "../css/main.css" );
+    </script>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <ul class="nav" id="breadcrump">
+                <li class="breadcrumb-item">
+                    <a v-bind:href="datasetsLink">Datasets</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-cloak v-bind:href="datasetLink">{{ datasetName }}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Collections</li>
+            </ul>
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="?f=json" target="_blank">JSON</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?f=xml" target="_blank">XML</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="?f=html" tabindex="-1" aria-disabled="true"
+                       target="_blank">HTML</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12" id="content">
+            <h1 class="mt-5">Collections</h1>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="list-group">
+                        <li v-for="collection in collections" class="list-group-item">
+                            <h5 v-cloak>{{ collection.title }}</h5>
+                            <div v-cloak v-html="collection.description"></div>
+
+                            <div class="row mt-2">
+                                <div class="col-sm-2">Links</div>
+                                <div class="col-md-10">
+                                  <div v-for="link in collection.links">
+                                      <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href">{{ link.title }}</a>
+                                      <a v-cloak v-else-if="link.type == 'application/json' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=json'" v-bind:download="collection.id + '.json'">{{ link.title }}</a>
+                                      <a v-cloak v-else-if="link.type == 'application/xml' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=xml'" v-bind:download="collection.id + '.xml'">{{ link.title }}</a>
+                                  </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2" v-if="collection.crs">
+                              <div class="col-sm-2">Coordinate Reference Systems</div>
+                              <div class="col-md-10">
+                                <div class="row">
+                                    <div v-cloak class="col-md-12" v-for="crsitem in collection.crs">{{ crsitem }}</div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row mt-2" v-if="collection.storageCrs">
+                                <div class="col-sm-2">Storage CRS</div>
+                                <div class="col-md-10">
+                                  <div class="row">
+                                      <div v-cloak class="col-md-12" >{{ collection.storageCrs }}</div>
+                                  </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row" v-if="licenseLink != null" >
+                <div class="col-sm-3">License</div>
+                <div class="col-md-9">
+                    <a v-cloak v-bind:href="licenseLink.href" >{{ licenseLink.title }}</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer" id="footer">
+    <div class="footer-brand-left"></div>
+    <div class="d-flex row justify-content-between">
+        <div class="px-md-5">
+            <a v-cloak v-bind:href="helpUrl" target="_blank" class="help"> Help</a>
+        </div>
+        <div class="px-md-5">
+            <span v-if="legalNoticeUrl && legalNoticeUrl.length > 0">
+                <a v-cloak v-bind:href="legalNoticeUrl" target="_blank" class="legalNotice"> Legal Notice</a>
+            </span>
+            <span v-else>
+                <a href="https://deegree-enterprise.de" target="_blank" class="legalNotice"> deegree Enterprise Edition</a>
+            </span>
+            <span v-if="privacyUrl && privacyUrl.length > 0">
+               <span> | </span>
+               <a v-cloak v-bind:href="privacyUrl" target="_blank" class="privacy"> Privacy Policy</a>
+            </span>
+            <span class="footer-brand-right"></span>
+        </div>
+    </div>
+</footer>
+
+<script>
+var App = new Vue({
+  el: '#content',
+  data: {
+    collections: '',
+    licenseLink: ''
+  },
+
+  created() {
+    this.fetchData().catch(error => {
+      console.error(error)
+    })
+  },
+  methods: {
+    async fetchData() {
+      var baseUrl = retrieveBaseUrl();
+      const response = await fetch( baseUrl, {headers: {'Accept': 'application/json' } } );
+      const json = await response.json();
+      this.collections = json.collections;
+      this.licenseLink = parseLinks(json, 'license', 'text/plain');
+    }
+  }
+})
+
+
+var AppBreadcrump = new Vue({
+  el: '#breadcrump',
+  metaInfo() {
+    const title = this.datasetTitle
+    return {
+      title: title,
+      titleTemplate: 'Collections - %s',
+    }
+  },
+  data: {
+    datasetLink: '',
+    datasetName: '',
+    datasetsLink: '',
+    datasetTitle: ''
+  },
+
+  created() {
+    var self = this;
+    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+    self.datasetLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
+    self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
+    this.fetchData().catch(error => {
+      console.error(error)
+    })
+  },
+  methods: {
+    async fetchData() {
+      const response = await fetch( this.datasetLink, {headers: {'Accept': 'application/json' } } );
+      const json = await response.json();
+      this.datasetTitle = json.title;
+    }
+  }
+})
+
+var footerApp = new Vue({
+  el: '#footer',
+  data: {
+    helpUrl: '',
+    legalNoticeUrl: '',
+    privacyUrl: ''
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+
+    $.ajax({
+      dataType: "json",
+      url: createHtmlConfigUrl(),
+      success: function(data) {
+        self.helpUrl = data.documentationUrl ? data.documentationUrl : createDocumentationUrl();
+        self.legalNoticeUrl = data.legalNoticeUrl;
+        self.privacyUrl = data.privacyUrl;
+      }
+    });
+  }
+})
+
+function parseLinks(data, rel, type){
+  var links = $( data.links ).filter(
+    function( n, i ) {
+      return i.rel===rel && i.type===type;
+    });
+    if ( links.length > 0 )
+      return links[0];
+}
+
+function createHtmlConfigUrl(){
+  return retrieveThisDatasetUrl() + "/config/html";
+}
+
+function createDocumentationUrl(){
+  var baseUrl = retrieveThisDatasetUrl();
+  var indexOfDataset = (baseUrl.lastIndexOf("dataset"))
+  return baseUrl.substring ( 0, indexOfDataset ) + "documentation/index.html#_usage";
+}
+
+function retrieveThisDatasetUrl(){
+  var baseUrl = retrieveBaseUrl();
+  var indexIncludeDataset = (baseUrl.lastIndexOf("dataset") + 9)
+  var indexOfDatasetId = baseUrl.substring(indexIncludeDataset, baseUrl.length ).indexOf( "/" ) + indexIncludeDataset;
+  return baseUrl.substring ( 0, indexOfDatasetId );
+}
+
+function retrieveBaseUrl() {
+      var featuresRefWithoutQuery = window.location.href;
+      if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+      }
+      if ( featuresRefWithoutQuery.endsWith("/") ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
+      }
+      return featuresRefWithoutQuery;
+}
+</script>
+</body>
+</html>

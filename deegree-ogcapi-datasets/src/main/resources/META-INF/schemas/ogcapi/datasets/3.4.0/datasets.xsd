@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.deegree.org/ogcapi/datasets"
+        elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
+  <annotation>
+    <appinfo>
+      <jaxb:schemaBindings>
+        <jaxb:package name="org.deegree.services.jaxb.ogcapi.datasets"/>
+      </jaxb:schemaBindings>
+    </appinfo>
+  </annotation>
+
+  <element name="Datasets">
+    <complexType>
+      <sequence>
+        <element name="Title" minOccurs="0" type="string"/>
+        <element name="Description" minOccurs="0" type="string"/>
+        <element name="Contact" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="Name" type="string"/>
+              <element name="Url" minOccurs="0" type="string"/>
+              <element name="EMail" minOccurs="0" type="string"/>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+      <attribute name="configVersion" use="required">
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="3.4.0"/>
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+
+</schema>

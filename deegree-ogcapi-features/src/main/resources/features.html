@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@2.5.0/dist/bootstrap-vue.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css" type="text/css">
+
+    <title>deegree - OGC API Features 1.0 - Features</title>
+
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+      .table-borderless td,
+      .table-borderless th {
+        border: 0;
+      }
+      .hidden_header {
+        display: none;
+      }
+      .map {
+        height: 480px;
+        width: 540px;
+      }
+      .filter-button {
+        margin: 1%;
+      }
+      .filter-form-select {
+        margin: 1%;
+      }
+      .filter-input {
+        margin: 1%;
+      }
+      .filter-header {
+        margin: 1%;
+      }
+      .filter-form-input {
+        margin: 1%;
+      }
+      .filter-form-checkbox {
+        margin: 1%;
+      }
+      #info {
+        position: absolute;
+        z-index: 100;
+      }
+      .tooltip-inner {
+        max-width: 100%;
+      }
+      #popup-content {
+        font-size: smaller;
+      }
+      .ol-popup {
+        position: absolute;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+        min-width: 280px;
+      }
+      .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+      .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+      }
+      .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+      }
+      .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+      }
+      .ol-popup-closer:after {
+        content: "✖";
+      }
+    </style>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/vue-router@2.0.0/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@2.5.0/dist/bootstrap-vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
+    <script src="https://unpkg.com/vue-meta/dist/vue-meta.min.js"></script>
+    <script>
+        function loadCss(relativePath){
+            var url = asAbsoluteUrl(relativePath);
+
+            var link = document.createElement("link");
+            link.setAttribute("rel", "stylesheet");
+            link.setAttribute("type", "text/css");
+            link.setAttribute("href", url);
+
+            document.getElementsByTagName("head")[0].appendChild( link );
+        }
+
+        function asAbsoluteUrl(relativePath ) {
+            var url = window.location.href;
+            if ( url.indexOf('?') >= 0 ) {
+              url = url.substr(0, url.indexOf('?'));
+            }
+            if( !url.endsWith("/") )
+              url = url + "/";
+            url = url + relativePath;
+            return url;
+        }
+        loadCss( "../../../css/main.css" );
+    </script>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid" id="breadcrumpContainer">
+            <a class="navbar-brand" href="#"></a>
+            <ul class="nav" id="breadcrump">
+                <li class="breadcrumb-item">
+                    <a v-bind:href="datasetsLink">Datasets</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-cloak v-bind:href="datasetLink">{{ datasetName }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-bind:href="collectionsLink">Collections</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a v-cloak v-bind:href="collectionLink">{{ collectionId }}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Features</li>
+            </ul>
+            <ul class="nav justify-content-end">
+              <li class="nav-item">
+                  <a class="nav-link" v-bind:href="selfJsonLink" target="_blank">GeoJSON</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" v-bind:href="selfXmlLink" target="_blank">GML</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link disabled" href="?f=html" tabindex="-1" aria-disabled="true" target="_blank">HTML</a>
+              </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container" >
+    <div class="row" id="collection">
+        <div class="col">
+            <h1 v-cloak class="mt-5">{{ title }}</h1>
+            <div v-cloak v-html="description"></div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row justify-content-between" id="content">
+        <div class="col-md" id="app">
+            <!--
+            <div class="row">
+                <div class="col">
+                    <b-button class="filter-button" v-on:click="isFilterHidden = !isFilterHidden" variant="primary">Filter
+                    </b-button>
+                </div>
+            </div>
+            <div v-if="!isFilterHidden">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="filter-header">Property Filter</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b-form-select class="filter-form-select" v-model="propertyFilterSelection"
+                                       :options="propertyFilterOptions"></b-form-select>
+                    </div>
+                    <div class="col">
+                        <input class="form-control filter-input" type="text" v-model="propertyFilterQuery"
+                               placeholder="Value"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b-button class="filter-button" v-on:click="filterProperty" variant="outline-primary">Apply
+                            Property Filter
+                        </b-button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="filter-header">Bounding Box Filter</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input class="form-control filter-input" type="text" v-model="bboxYLLFilterValue"/>
+                    </div>
+                    <div class="col">
+                        <input class="form-control filter-input" type="text" v-model="bboxXLLFilterValue"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input class="form-control filter-input" type="text" v-model="bboxYURFilterValue"/>
+                    </div>
+                    <div class="col">
+                        <input class="form-control filter-input" type="text" v-model="bboxXURFilterValue"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b-button class="filter-button" v-on:click="filterBbox" variant="outline-primary">Apply
+                            Bounding Box Filter
+                        </b-button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="filter-header">Date/Time Filter</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5 class="filter-header">Instant/Start Period</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b-form-input class="filter-form-input" type="date" v-model="filterDateStartValue" :disabled="filterOpenStartChecked"></b-form-input>
+                    </div>
+                    <div class="col">
+                        <b-form-input class="filter-form-input" type="time" v-model="filterTimeStartValue" :disabled="filterOpenStartChecked"></b-form-input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b-form-checkbox class="filter-form-checkbox" v-model="filterOpenStartChecked" :value="true" :unchecked-value="false">Open Start</b-form-checkbox>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5 class="filter-header">End Period</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b-form-input class="filter-form-input" type="date" v-model="filterDateEndValue" :disabled="filterOpenEndChecked"></b-form-input>
+                    </div>
+                    <div class="col">
+                        <b-form-input class="filter-form-input" type="time" v-model="filterTimeEndValue" :disabled="filterOpenEndChecked"></b-form-input>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                      <b-form-checkbox class="filter-form-checkbox" v-model="filterOpenEndChecked" :value="true" :unchecked-value="false">Open End</b-form-checkbox>
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b-button class="filter-button" v-on:click="filterDateTime" variant="outline-primary">Apply
+                            Date/Time Filter
+                        </b-button>
+                    </div>
+                </div>
+            </div>
+            -->
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <b-pagination-nav :kex="paging" :link-gen="linkGen" v-model="currentPage" :number-of-pages="numberOfPages" use-router></b-pagination-nav>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <b-table class="table-borderless"
+                             thead-class="hidden_header"
+                             small :items="items" :fields="fields" :current-page="currentPage" :per-page="0">
+                        <template v-slot:cell()="data">
+                            <b-card>
+                                <template v-slot:header>
+                                    <b-link v-cloak :href="data.item.link">{{ data.value }}</b-link>
+                                </template>
+                                <b-card-text>
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Attribute</th>
+                                            <th scope="col">Value</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="(property, attribute) in data.item.properties">
+                                            <td v-cloak>{{ attribute }}</td>
+                                            <td v-cloak v-if="(typeof property) == 'string' && property.startsWith('http')" >
+                                                <a v-bind:href="property" target="_blank">Link</a>
+                                            </td>
+                                            <td v-cloak v-else-if="Array.isArray(property) && property.length > 0 && typeof(property[0]) !== 'object'" >
+                                                <ul class="propertylist">
+                                                    <li v-for="item in property">
+                                                        {{ item }}
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <td v-cloak v-else-if="(Array.isArray(property) && property.length > 0) || typeof(property) === 'object'" >
+                                                <a v-bind:href="data.item.jsonLink" target="_blank">Complex object, view as json</a>
+                                            </td>
+                                            <td v-cloak v-else >{{ property }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </b-card-text>
+                            </b-card>
+                        </template>
+                    </b-table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <b-pagination-nav :kex="paging" :link-gen="linkGen" v-model="currentPage" :number-of-pages="numberOfPages" use-router></b-pagination-nav>
+                </div>
+            </div>
+            <router-view name="router" />
+        </div>
+        <div class="col-md">
+            <div id="map" class="map">
+                <div id="info"></div>
+                <!--
+                <div id="popup" class="ol-popup">
+                    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                    <div id="popup-content"></div>
+                </div>
+                -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer class="page-footer" id="footer">
+    <div class="footer-brand-left"></div>
+    <div class="d-flex row justify-content-between">
+        <div class="px-md-5">
+            <a v-cloak v-bind:href="helpUrl" target="_blank" class="help"> Help</a>
+        </div>
+        <div class="px-md-5">
+            <span v-if="legalNoticeUrl && legalNoticeUrl.length > 0">
+                <a v-cloak v-bind:href="legalNoticeUrl" target="_blank" class="legalNotice"> Legal Notice</a>
+            </span>
+            <span v-else>
+                <a href="https://deegree-enterprise.de" target="_blank" class="legalNotice"> deegree Enterprise Edition</a>
+            </span>
+            <span v-if="privacyUrl && privacyUrl.length > 0">
+               <span> | </span>
+               <a v-cloak v-bind:href="privacyUrl" target="_blank" class="privacy"> Privacy Policy</a>
+            </span>
+            <span class="footer-brand-right"></span>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
+
+<script>
+const router = new VueRouter({
+  mode: 'history'
+})
+
+new Vue({
+  router,
+  el: '#app',
+  data() {
+    return {
+      fields: [{
+            key: 'id',
+            label: 'Feature'
+          }],
+      items: '',
+      paging: 0,
+      currentPage: 1,
+      perPage: 10,
+      totalItems: 0,
+      numberOfPages: 1,
+      defaultLimit: 10,
+      defaultOffset: 0,
+      isFilterHidden: true,
+      propertyFilterQuery: null,
+      propertyFilterSelection: null,
+      propertyFilterOptions: [
+        { value: null, text: 'Please select a property to filter' },
+        { value: 'id', text: 'ID' }
+      ],
+      bboxYLLFilterValue: '',
+      bboxXLLFilterValue: '',
+      bboxYURFilterValue: '',
+      bboxXURFilterValue: '',
+      filterDateStartValue: '',
+      filterTimeStartValue: '',
+      filterDateEndValue: '',
+      filterTimeEndValue: '',
+      filterOpenStartChecked: false,
+      filterOpenEndChecked: false
+    }
+  },
+  created() {
+   /*
+    this.calculateBboxFilterValues(),
+    this.calculateDatetimeFilterValues()
+    */
+    this.fetchData();
+  },
+  methods: {
+    linkGen(pageNum) {
+      var params = parseFeaturesRequestParams();
+      var featuresPerPage = getParamByName(params, 'limit', this.defaultLimit);
+
+      if (pageNum == 1) {
+        params['offset'] = 0;
+      } else {
+        params['offset'] = featuresPerPage * (pageNum - 1)
+      }
+      params['limit'] = featuresPerPage;
+
+      return {
+         name: 'router',
+         path: router.currentRoute.path,
+         query: params
+      };
+    },
+    async fetchData() {
+      var baseUrl = retrieveBaseUrl();
+      var featuresUrl = createFeaturesUrl(baseUrl);
+      const response = await fetch( featuresUrl, {headers: {'Accept': 'application/geo+json' } } );
+      const json = await response.json();
+
+      this.items = [];
+      json.features.forEach(feature => {
+        this.items.push({
+            id: feature.id,
+            link: baseUrl + '/' + feature.id,
+            jsonLink: baseUrl + '/' + feature.id + '?f=json',
+            properties: feature.properties,
+            _showDetails: true
+          });
+      });
+      this.totalItems = json.numberMatched;
+      this.defaultLimit = json.numberReturned;
+      this.limitParam = parseParamFromUrl(featuresUrl, 'limit', this.defaultLimit);
+      this.numberOfPages  = Math.ceil(this.totalItems/this.limitParam);
+
+
+      var params = parseFeaturesRequestParams();
+      var featuresPerPage = getParamByName(params, 'limit', this.defaultLimit);
+      var featuresSkipped = getParamByName(params, 'offset', this.defaultOffset);
+      this.currentPage = Math.floor(featuresSkipped / featuresPerPage) + 1;
+
+      this.forceRerenderPaging();
+      fetchConfigAndSetFeatures(json);
+    },
+    forceRerenderPaging() {
+      this.paging += 1;
+    },
+    filterProperty: function( event ) {
+      if ( this.propertyFilterSelection == null ){
+        alert( 'Please select a property to filter' );
+      } else if ( this.propertyFilterSelection == 'id' ) {
+        var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+        window.location.href = thisLink.concat("/").concat(this.propertyFilterQuery);
+      }
+    },
+    filterBbox: function( event ) {
+      var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+      var thisLinkNoParams = thisLink.substring(0, thisLink.indexOf('?'));
+      var params = new URLSearchParams(window.location.search);
+      params.delete('bbox');
+      if ( this.bboxYLLFilterValue == '' || this.bboxXLLFilterValue == '' || this.bboxYURFilterValue == '' || this.bboxXURFilterValue == '' ){
+        if ( params.toString().length == 0 ){
+          window.location.href = thisLinkNoParams;
+        } else {
+          window.location.href = thisLinkNoParams.concat("?").concat(params.toString());
+        }
+      } else {
+        window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&bbox=").concat(this.bboxYLLFilterValue).concat(",").concat(this.bboxXLLFilterValue).concat(",").concat(this.bboxYURFilterValue).concat(",").concat(this.bboxXURFilterValue);
+      }
+    },
+    calculateBboxFilterValues: function() {
+      var bboxParam = new URLSearchParams(window.location.search).get('bbox');
+      if ( bboxParam != null ){
+        var splitBbox = bboxParam.split(',');
+        this.bboxYLLFilterValue = splitBbox[0];
+        this.bboxXLLFilterValue = splitBbox[1];
+        this.bboxYURFilterValue = splitBbox[2];
+        this.bboxXURFilterValue = splitBbox[3];
+      }
+    },
+    filterDateTime: function(){
+      var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+      var thisLinkNoParams = thisLink.substring(0, thisLink.indexOf('?'));
+      var params = new URLSearchParams(window.location.search);
+      params.delete('datetime');
+      if ( ( this.filterDateStartValue == '' && this.filterOpenStartChecked == false ) || ( this.filterDateEndValue == '' && this.filterOpenStartChecked == true ) || ( this.filterOpenStartChecked == true && this.filterOpenEndChecked == true ) ){
+        if ( params.toString().length == 0 ){
+          window.location.href = thisLinkNoParams;
+        } else {
+          window.location.href = thisLinkNoParams.concat("?").concat(params.toString());
+        }
+      } else if ( this.filterDateEndValue == '' && this.filterOpenEndChecked == false ) {
+        if ( this.filterTimeStartValue.length == 5 ){
+          window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat(this.filterDateStartValue).concat("T").concat(this.filterTimeStartValue).concat(":00");
+        } else {
+          window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat(this.filterDateStartValue);
+        }
+      } else {
+        if ( this.filterOpenStartChecked == true ) {
+          if ( this.filterTimeEndValue.length == 5 ){
+            window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat("/").concat(this.filterDateEndValue).concat("T").concat(this.filterTimeEndValue).concat(":00");
+          } else {
+            window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat("/").concat(this.filterDateEndValue);
+          }
+        } else if ( this.filterOpenEndChecked == true ) {
+          if ( this.filterTimeStartValue.length == 5 ){
+            window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat(this.filterDateStartValue).concat("T").concat(this.filterTimeStartValue).concat(":00").concat("/");
+          } else {
+            window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat(this.filterDateStartValue).concat("/");
+          }
+        } else {
+          if ( this.filterTimeStartValue.length == 5 ){
+            if ( this.filterTimeEndValue.length == 5 ){
+              window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat(this.filterDateStartValue).concat("T").concat(this.filterTimeStartValue).concat(":00").concat("/").concat(this.filterDateEndValue).concat("T").concat(this.filterTimeEndValue).concat(":00");
+            } else {
+              window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat(this.filterDateStartValue).concat("T").concat(this.filterTimeStartValue).concat(":00").concat("/").concat(this.filterDateEndValue);
+            }
+          } else {
+            if ( this.filterTimeEndValue.length == 5 ){
+              window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat(this.filterDateStartValue).concat("/").concat(this.filterDateEndValue).concat("T").concat(this.filterTimeEndValue).concat(":00");
+            } else {
+              window.location.href = thisLinkNoParams.concat("?").concat(params.toString()).concat("&datetime=").concat(this.filterDateStartValue).concat("/").concat(this.filterDateEndValue);
+            }
+          }
+        }
+      }
+    },
+    calculateDatetimeFilterValues: function() {
+      var datetimeParam = new URLSearchParams(window.location.search).get('datetime');
+      if ( datetimeParam != null ){
+        if ( datetimeParam.startsWith("/") ) {
+          this.filterOpenStartChecked = true;
+        } else if ( datetimeParam.endsWith("/") ) {
+          this.filterOpenEndChecked = true;
+        }
+        var splitDatetime = datetimeParam.split('/');
+        var startDate = splitDatetime[0].split('T');
+        this.filterDateStartValue = startDate[0];
+        if ( startDate.length == 2 ){
+          this.filterTimeStartValue = startDate[1].substring(0,5);
+        }
+        if ( splitDatetime.length == 2 ){
+          var endDate = splitDatetime[1].split('T');
+          this.filterDateEndValue = endDate[0];
+          if ( endDate.length == 2 ){
+            this.filterTimeEndValue = endDate[1].substring(0,5);
+          }
+        }
+      }
+    }
+  },
+  watch: {
+    currentPage: {
+      handler: function(value) {
+        this.fetchData().catch(error => {
+          console.error(error)
+        })
+      }
+    }
+  }
+})
+
+var AppCollection = new Vue({
+  el: '#collection',
+  metaInfo() {
+    const title = this.title
+    return {
+      title: title,
+      titleTemplate: 'Items - %s',
+    }
+  },
+  data: {
+    title: '',
+    description: '',
+    extent: ''
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+    var collectionLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+
+    $.ajax({
+      dataType: "json",
+      //url: "http://localhost:8002/collections/strassenbaumkataster",
+      url: collectionLink,
+      success: function(data) {
+        self.title = data.title;
+        self.description = data.description;
+        self.links = data.links;
+        self.extent = data.extent;
+      }
+    });
+  }
+
+})
+
+var AppBreadcrump = new Vue({
+  router,
+  el: '#breadcrumpContainer',
+  data: {
+    collectionId: '',
+    featureId: '',
+    datasetLink: '',
+    datasetName: '',
+    datasetsLink: '',
+    collectionsLink: '',
+    collectionLink: '',
+    selfJsonLink: '',
+    selfXmlLink: ''
+  },
+
+  created() {
+    var self = this;
+    var thisLink = window.location.href.endsWith("/") ? window.location.href.substring(0, window.location.href.length -1) : window.location.href;
+    self.collectionLink = thisLink.substring(0, thisLink.lastIndexOf("/"));
+    self.collectionsLink = self.collectionLink.substring(0, self.collectionLink.lastIndexOf("/"));
+    self.datasetLink = self.collectionsLink.substring(0, self.collectionsLink.lastIndexOf("/"));
+    self.datasetName = self.datasetLink.substring(self.datasetLink.lastIndexOf("/") + 1);
+    self.datasetsLink = self.datasetLink.substring(0, self.datasetLink.lastIndexOf("/"));
+
+    this.setJsonAndXmlLinks();
+
+    $.ajax({
+      dataType: "json",
+      //url: "http://localhost:8002/collections/strassenbaumkataster",
+      url: self.collectionLink,
+      success: function(data) {
+        self.collectionId = data.title;
+      }
+    });
+  },
+  methods: {
+    setJsonAndXmlLinks(){
+      var currentPath = router.currentRoute.fullPath;
+      this.selfJsonLink = currentPath.indexOf("?") > -1 ? currentPath + "&f=json" : currentPath + "?f=json";
+      this.selfXmlLink = currentPath.indexOf("?") > -1 ? currentPath + "&f=xml" : currentPath + "?f=xml";
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      if(to !== from ) {
+        this.setJsonAndXmlLinks();
+      }
+    }
+  }
+})
+
+var footerApp = new Vue({
+  el: '#footer',
+  data: {
+    helpUrl: '',
+    legalNoticeUrl: '',
+    privacyUrl: ''
+  },
+
+  created() {
+    // create a closure to access component in the callback below
+    var self = this;
+
+    $.ajax({
+      dataType: "json",
+      url: createHtmlConfigUrl(),
+      success: function(data) {
+        self.helpUrl = data.documentationUrl ? data.documentationUrl : createDocumentationUrl();
+        self.legalNoticeUrl = data.legalNoticeUrl;
+        self.privacyUrl = data.privacyUrl;
+      }
+    });
+  }
+})
+
+function createFeaturesUrl(featuresRefWithoutQuery) {
+  var params = parseFeaturesRequestParams();
+  return createUrlWithQuery(featuresRefWithoutQuery, params);
+}
+
+function parseFeaturesRequestParams() {
+  var params = parseQueryString(window.location.search);
+  delete params['crs']
+  return params;
+}
+
+function parseParamFromUrl(url, key, defaultValue){
+  var params = parseQueryString(url);
+  return getParamByName(params, key, defaultValue);
+}
+
+function getParamByName(params, key, defaultValue){
+  var paramFromUrl = getParameterCaseInsensitive(params, key);
+  if(paramFromUrl) {
+    return paramFromUrl;
+  }
+  return defaultValue;
+}
+
+function getParameterCaseInsensitive(object, key) {
+  return object[Object.keys(object)
+    .find(k => k.toLowerCase() === key.toLowerCase())
+  ];
+}
+
+function createUrlWithQuery(url, params) {
+    var isFirst = true;
+    let key;
+    for (key in params) {
+       if( key != 'f' ) {
+          if(isFirst){
+            url = url + '?';
+          } else {
+            url = url + '&';
+          }
+          url = url + key + '=' + params[key];
+          isFirst = false;
+        }
+    };
+    return url;
+}
+
+function parseQueryString(queryString) {
+	var params = [];
+
+    if ( queryString.indexOf('?') >= 0 ) {
+        queryString = queryString.substr(queryString.indexOf('?')+1, queryString.length);
+    }
+
+    if( queryString.length > 0 ){
+        var kvps = queryString.split('&');
+        kvps.forEach( kvp => {
+            if(kvp){
+              var keyValuePair = kvp.split('=');
+              var key = keyValuePair[0];
+              var value = keyValuePair[1];
+              value = decodeURIComponent(value);
+              value = value.replace(/\+/g, ' ');
+              params[key] = value;
+            }
+        });
+	}
+
+	return params;
+}
+var styles = [
+  new ol.style.Style({
+    image: new ol.style.Circle({
+      radius: 6,
+      fill: new ol.style.Fill({
+        color: 'rgba(0,0,255, 0.1)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: 'rgba(0,0,255, 1)',
+        width: 2
+      })
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(0,0,255, 1)',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(0, 0, 255, 0.1)'
+    })
+  })
+];
+
+async function fetchConfigAndSetFeatures(featuresJson) {
+  var configUrl = createMapConfigUrl();
+
+  const response = await fetch( configUrl, {headers: {'Accept': 'application/json' } } );
+  if( response.status == 200 ){
+    const json = await response.json();
+    setMapBackgroundAndExtent(json.wmsUrl, json.wmsVersion, json.wmsLayers, json.crsCode, json.crsProj4Definition, json.source, featuresJson);
+  } else {
+    setMapBackgroundAndExtent('http://sg.geodatenzentrum.de/wms_dtk250', '1.1.1', 'dtk250', null, null, null, featuresJson);
+  }
+}
+
+function setMapBackgroundAndExtent(wmsUrl, wmsVersion, wmsLayers, crsCode, projDef, source, featuresJson){
+    var crsCodeRegistered = registerCrs(crsCode, projDef);
+    if( crsCodeRegistered ){
+        var userConfig = ol.proj.get(crsCode);
+        map.setView(
+            new ol.View({
+                projection: userConfig,
+                constrainResolution: true
+            })
+        );
+    }
+
+    var wmsLayer = new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: wmsUrl,
+        params: {'VERSION': wmsVersion, 'LAYERS': wmsLayers},
+        attributions: source
+      })
+    });
+    map.getLayers().insertAt(0, wmsLayer);
+    setFeatures(featuresJson, crsCode);
+}
+
+function setFeatures(featuresJson, crsCode){
+  featureSource.clear();
+  featureSource.addFeatures(featureSource.getFormat().readFeatures(featuresJson, {
+                    "dataProjection" : "EPSG:4326",
+                    "featureProjection" : crsCode
+             }));
+
+  var extentGeom = ol.geom.Polygon.fromExtent(featureSource.getExtent())
+  extentGeom.scale(1.2);
+  map.getView().fit(extentGeom.getExtent(), {'maxZoom':20, 'nearest': true } );
+}
+
+var featureSource = new ol.source.Vector({
+  format: new ol.format.GeoJSON(),
+  strategy: ol.loadingstrategy.all
+});
+
+var featureLayer = new ol.layer.Vector({
+  source: featureSource,
+  style: styles
+});
+
+var attribution = new ol.control.Attribution({
+  collapsible: false,
+});
+
+var map = new ol.Map({
+  target: 'map',
+  controls: ol.control.defaults({attribution: false}).extend([attribution]),
+  layers: [
+    featureLayer
+  ],
+  view: new ol.View({
+    projection: 'EPSG:4326',
+    center: [10.0143, 53.5537],
+    zoom: 14,
+    constrainResolution: true
+  })
+});
+
+var info = $('#info');
+info.tooltip({
+  animation: false,
+  trigger: 'manual'
+});
+
+var displayTooltip = function(pixel) {
+  info.css({
+    left: (pixel[0] + 15) + 'px',
+    top: (pixel[1] - 15) + 'px'
+  });
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+    return feature;
+  });
+  if (feature) {
+    info.tooltip('hide')
+      .attr('data-original-title', feature.getId())
+      .tooltip('show');
+  } else {
+    info.tooltip('hide');
+  }
+};
+
+map.on('pointermove', function(evt) {
+  if (evt.dragging) {
+    info.tooltip('hide');
+    return;
+  }
+  displayTooltip(evt.pixel);
+});
+
+/*
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+
+var overlay = new ol.Overlay({
+  element: container,
+  autoPan: true,
+  autoPanAnimation: {
+    duration: 250
+  }
+});
+map.addOverlay(overlay);
+
+closer.onclick = function() {
+  overlay.setPosition(undefined);
+  select.getFeatures().clear();
+  closer.blur();
+  return false;
+};
+
+var clickCoordinate;
+map.on('singleclick', function(evt) {
+  clickCoordinate = evt.coordinate;
+});
+
+var select = new ol.interaction.Select();
+map.addInteraction(select);
+select.on('select', function(e) {
+  var feature = e.selected[0];
+  var keys = feature.getKeys();
+  var geometryName = feature.getGeometryName();
+  var html = '<table>';
+  for (i = 0; i < keys.length; i++){
+    var key = keys[i];
+    if (key != geometryName){
+      html = html + '<tr><th>' + key + '</th><th>' + feature.get(key) + '</th></tr>';
+    }
+  }
+  html = html + '</table>';
+  content.innerHTML = '<div><h6>' + feature.getId() + '</h6></div><div>' + html + '</div>';
+  overlay.setPosition(clickCoordinate);
+});
+*/
+function registerCrs(crsCode, projDef){
+   if( crsCode != null &&  projDef != null ) {
+       proj4.defs(crsCode, projDef);
+       ol.proj.proj4.register(proj4);
+       return true;
+   }
+   return false;
+}
+
+function createHtmlConfigUrl(){
+  return retrieveThisDatasetUrl() + "/config/html";
+}
+
+function createMapConfigUrl(){
+  return retrieveThisDatasetUrl() + "/config/map";
+}
+
+function createDocumentationUrl(){
+  var baseUrl = retrieveThisDatasetUrl();
+  var indexOfDataset = (baseUrl.lastIndexOf("dataset"))
+  return baseUrl.substring ( 0, indexOfDataset ) + "documentation/index.html#_usage";
+}
+
+function retrieveThisDatasetUrl(){
+  var baseUrl = retrieveBaseUrl();
+  var indexIncludeDataset = (baseUrl.lastIndexOf("dataset") + 9)
+  var indexOfDatasetId = baseUrl.substring(indexIncludeDataset, baseUrl.length ).indexOf( "/" ) + indexIncludeDataset;
+  return baseUrl.substring ( 0, indexOfDatasetId );
+}
+
+function retrieveBaseUrl() {
+      var featuresRefWithoutQuery = window.location.href;
+      if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
+      }
+      if ( featuresRefWithoutQuery.endsWith("/") ) {
+        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
+      }
+      return featuresRefWithoutQuery;
+}
+</script>

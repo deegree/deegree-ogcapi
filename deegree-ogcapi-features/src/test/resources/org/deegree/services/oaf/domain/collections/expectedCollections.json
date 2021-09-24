@@ -1,0 +1,46 @@
+{
+  "links": [
+    {
+      "href": "http://link.de/collections",
+      "rel": "self",
+      "type": "application/json",
+      "title": "collectionsTitle"
+    }
+  ],
+  "collections": [
+    {
+      "id": "testId",
+      "title": "testTitle",
+      "description": "testDesc",
+      "links": [
+        {
+          "href": "http://link.de/testcollection",
+          "rel": "self",
+          "type": "application/json",
+          "title": "collectionTitle"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [ [
+            10.3,
+            48.4,
+            10.5,
+            48.6
+          ] ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2020-04-22T10:00:00.000+0000",
+            "2020-04-15T10:00:00.000+0000"
+          ]
+        }
+      },
+      "itemType": "feature",
+      "crs": [
+        "EPSG:4326"
+      ]
+    }
+  ]
+}

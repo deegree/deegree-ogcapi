@@ -1,0 +1,17 @@
+{
+  "title": "TestTitle",
+  "description": "TestDesc",
+  "contact": {
+    "name": "name",
+    "url": "http://test.de",
+    "email": "test@oaf.de"
+  },
+  "links": [
+    {
+      "href": "http://link.de/lp",
+      "rel": null,
+      "type": null,
+      "title": null
+    }
+  ]
+}
