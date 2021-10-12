@@ -177,35 +177,6 @@
     </pluginManagement>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-ogcapi-features</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <!-- deegree-core -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-featurestore-sql</artifactId>
-      <version>${deegree-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-featurestore-simplesql</artifactId>
-      <version>${deegree-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-featurestore-memory</artifactId>
-      <version>${deegree-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-featurestore-shape</artifactId>
-      <version>${deegree-version}</version>
-    </dependency>
-  </dependencies>
-
   <modules>
     <module>deegree-ogcapi-webapp-oracle</module>
     <module>deegree-ogcapi-webapp-postgres</module>

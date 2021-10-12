@@ -32,23 +32,4 @@
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-sqldialect-oracle</artifactId>
-      <version>${deegree-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-featurestore-simplesql</artifactId>
-      <version>${deegree-version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>deegree-sqldialect-postgis</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-  </dependencies>
-
 </project>
