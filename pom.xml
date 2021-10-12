@@ -31,7 +31,7 @@
   <repositories>
     <repository>
       <id>deegree-ogcapi-repo</id>
-      <url>https://repo.deegree.org/content/repositories/deegree-ogcapi-snapshots/</url>
+      <url>https://repo.deegree.org/repository/public-ogcapi/</url>
       <releases>
         <updatePolicy>never</updatePolicy>
       </releases>
