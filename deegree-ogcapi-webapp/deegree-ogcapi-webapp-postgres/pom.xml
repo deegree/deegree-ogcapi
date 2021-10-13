@@ -32,4 +32,13 @@
     </plugins>
   </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>deegree-sqldialect-postgis</artifactId>
+      <version>${deegree-version}</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
 </project>
