@@ -15,7 +15,9 @@ NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 8] with https://tomcat.apache.org/d
 
 === Download
 
-The deegree OAF webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database from the deegree Enterprise repository.footnote:[URL is http://buildserver.deegree-enterprise.de/nexus/. Please contact support@deegree-enterprise.de for detailed information how to access the artifacts. Subscription required.].
+deegree webservices downloads are available on the http://www.deegree.org[deegree home page].
+
+The deegree OGC API webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database.
 Both artifacts contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
 Download the WAR file and store it in the local file system of the server.
 
@@ -47,7 +49,7 @@ To uninstall the webapp:
 
 === Docker
 
-With deegree Enterprise a Docker Image with deegree OAF is available.footnote:[Please contact support@deegree-enterprise.de for more information.]. When using the Docker image the installation of Docker is required. Check the https://docs.docker.com/get-docker/[Docker Documentation] for requirements and installation instructions.
+A Docker Image with deegree OGC API is available. When using the Docker image the installation of Docker is required. Check the https://docs.docker.com/get-docker/[Docker Documentation] for requirements and installation instructions.
 The docker image provides all software components and no additional software installations are necessary.
 
 [[supported_browser]]
