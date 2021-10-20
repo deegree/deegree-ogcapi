@@ -9,7 +9,6 @@
   <files>
     <file>
       <source>${project.build.directory}/pdf/${project.artifactId}.pdf</source>
-      <outputDirectory>/</outputDirectory>
     </file>
   </files>
 </assembly>
