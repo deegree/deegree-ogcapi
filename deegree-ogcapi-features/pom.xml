@@ -88,7 +88,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.deegree</groupId>
       <artifactId>deegree-protocol-wfs</artifactId>
     </dependency>
     <dependency>

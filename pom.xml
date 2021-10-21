@@ -510,9 +510,15 @@
     <dependencies>
       <!-- deegree-core -->
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-featurestore-commons</artifactId>
+        <version>${deegree-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-featurestore-sql</artifactId>
         <version>${deegree-version}</version>
+      </dependency>
         <!--
         <exclusions>
           <exclusion>
@@ -521,14 +527,23 @@
           </exclusion>
         </exclusions>
         -->
-      </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>deegree-featurestore-commons</artifactId>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-featurestore-simplesql</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-featurestore-memory</artifactId>
+        <version>${deegree-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-featurestore-shape</artifactId>
+        <version>${deegree-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-services-commons</artifactId>
         <version>${deegree-version}</version>
         <scope>compile</scope>
@@ -544,32 +559,37 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-sqldialect-postgis</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-sqldialect-oracle</artifactId>
+        <version>${deegree-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-connectionprovider-datasource</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-core-base</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-core-commons</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-core-geometry</artifactId>
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-core-workspace</artifactId>
         <version>${deegree-version}</version>
       </dependency>
@@ -579,7 +599,7 @@
         <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-services-config</artifactId>
         <version>${deegree-version}</version>
       </dependency>
