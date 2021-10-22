@@ -14,7 +14,7 @@ This section show how to get help in case of problems.
 [[help_support]]
 === Support
 
-Professional support is provided by deegree enterprise team. Contact support@deegree-enterprise.de in case of any inquiry.
+Use the deegree support options (mailing lists, commercial support) to get help.
 
 [[help_faq]]
 === FAQ

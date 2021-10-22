@@ -188,8 +188,8 @@ The next example shows a configuration for a dataset called "trees" with all opt
     </DatasetLicense>
     <DatasetCreator> <!--9-->
       <Name>Dataset Creator Name</Name>
-      <Url>http://deegree-enterprise.de</Url>
-      <EMail>info@deegree-enterprise.de</EMail>
+      <Url>http://deegree.org</Url>
+      <EMail>info@deegree.org</EMail>
     </DatasetCreator>
     <MetadataURL format="application/xml">http://example.metadata.org?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=1234</MetadataURL> <!--10-->
     <MetadataURL format="text/html">http://example.metadata.org/path_to_html/1234</MetadataURL> <!--11-->
@@ -423,5 +423,5 @@ DELETE /config/delete[/path] - delete currently running workspace or file in wor
 
 The REST-API is enabled by default. To protect this interface from unauthorized use, it is automatically secured with a so-called API key. Each HTTP request requires that the API key contained in the file _config.apikey_ is transferred.
 
-A detailed documentation of the REST-API interface and how access is configured is described in section "15.1. Usage of the interface"
-of the deegree webservices handbook.footnote:[Documentation provided with deegree Enterprise, file: _documentation/manuals/deegree-core-documentation.pdf_].
+A detailed documentation of the REST-API interface and how access is configured is described in section "deegree REST interface"
+of the https://download.deegree.org/documentation/3.4.17/html/#anchor-configuration-restapi[deegree webservices handbook].
