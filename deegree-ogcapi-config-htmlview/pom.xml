@@ -22,20 +22,16 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>deegree-core-base</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.deegree</groupId>
       <artifactId>deegree-core-commons</artifactId>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.deegree</groupId>
       <artifactId>deegree-core-workspace</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 

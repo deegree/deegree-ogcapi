@@ -182,27 +182,33 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>deegree-ogcapi-features</artifactId>
       <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
     <!-- deegree-core -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.deegree</groupId>
       <artifactId>deegree-featurestore-sql</artifactId>
-      <version>${deegree-version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.deegree</groupId>
       <artifactId>deegree-featurestore-simplesql</artifactId>
-      <version>${deegree-version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.deegree</groupId>
       <artifactId>deegree-featurestore-memory</artifactId>
-      <version>${deegree-version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.deegree</groupId>
       <artifactId>deegree-featurestore-shape</artifactId>
-      <version>${deegree-version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.deegree</groupId>
+      <artifactId>deegree-connectionprovider-datasource</artifactId>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 
