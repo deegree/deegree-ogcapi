@@ -6,12 +6,12 @@ There are many ways to install deegree OAF on a server. This section will descri
 [[requirements]]
 === Requirements
 
-deegree OAF works on every Java Servlet container implementing the Java Servlet API 3.1 using an OpenJDK or Oracle JRE 8. The JRE and Java Servlet container constitute the runtime environment.
+deegree OAF works on every Java Servlet container implementing the Java Servlet API 3.1 using an OpenJDK or Oracle JRE 11. The JRE and Java Servlet container constitute the runtime environment.
 The installation of these components must be done prior of this installation.
 
 The server hosting the service should have at least 4 GB of free memory and more than 2 CPU cores available.
 
-NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 8] with https://tomcat.apache.org/download-90.cgi[Apache Tomcat 9] is the recommended runtime environment.
+NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 11] with https://tomcat.apache.org/download-90.cgi[Apache Tomcat 9] is the recommended runtime environment.
 
 === Download
 
