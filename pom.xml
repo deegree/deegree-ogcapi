@@ -99,7 +99,7 @@
         <plugin>
           <groupId>org.jvnet.jaxb2.maven2</groupId>
           <artifactId>maven-jaxb2-plugin</artifactId>
-          <version>0.13.1</version>
+          <version>0.14.0</version>
           <executions>
             <execution>
               <goals>
@@ -122,17 +122,22 @@
               <artifactId>deegree-jaxb-resolver</artifactId>
               <version>1.0</version>
             </dependency>
+            <dependency>
+              <groupId>org.glassfish.jaxb</groupId>
+              <artifactId>jaxb-runtime</artifactId>
+              <version>2.3.4</version>
+            </dependency>
           </dependencies>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.3.0</version>
           <configuration>
             <tarLongFileMode>gnu</tarLongFileMode>
           </configuration>
@@ -140,27 +145,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>appassembler-maven-plugin</artifactId>
-          <version>1.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat7-maven-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.antlr</groupId>
-          <artifactId>antlr3-maven-plugin</artifactId>
-          <version>3.4</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
+          <version>2.22.2</version>
           <configuration>
             <!-- Travis build workaround -->
             <argLine>-Xms1024m -Xmx2048m</argLine>
@@ -169,31 +159,25 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.19.1</version>
+          <version>2.22.2</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.8.1</version>
         </plugin>
         <!-- reporting and site -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.5.1</version>
+          <version>3.9.1</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.maven.wagon</groupId>
               <artifactId>wagon-ssh</artifactId>
-              <version>2.10</version>
+              <version>3.4.3</version>
             </dependency>
           </dependencies>
-        </plugin>
-        <!-- set plugin versions of default plugins -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -208,37 +192,32 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.3.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.8.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>buildnumber-maven-plugin</artifactId>
-          <version>1.4</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.8</version>
+          <version>3.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.4</version>
+          <version>3.3.1</version>
           <configuration>
             <additionalparam>-Xdoclint:none</additionalparam>
           </configuration>
@@ -251,13 +230,13 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
-          <version>1.9.5</version>
+          <version>1.12.0</version>
         </plugin>
         <!-- git describe -->
         <plugin>
           <groupId>com.lukegb.mojo</groupId>
           <artifactId>gitdescribe-maven-plugin</artifactId>
-          <version>2.0</version>
+          <version>3.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -267,7 +246,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.4.1</version>
+          <version>3.0.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -296,7 +275,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
         <executions>
           <execution>
             <id>enforce-java</id>
@@ -355,7 +333,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.3</version>
+            <version>1.4</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -385,8 +363,7 @@
           <source>${java.version}</source>
           <target>${java.version}</target>
           <encoding>${project.build.sourceEncoding}</encoding>
-          <compilerArgument>-Alog4j.outputdir=${project.basedir}/target/classes/META-INF/deegree/log4j/
-          </compilerArgument>
+          <compilerArgument>-Alog4j.outputdir=${project.basedir}/target/classes/META-INF/deegree/log4j/</compilerArgument>
         </configuration>
       </plugin>
       <plugin>
@@ -483,7 +460,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>1.14</version>
+        <version>2.0.0</version>
       </plugin>
     </plugins>
   </build>
@@ -493,7 +470,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
+        <version>3.3.1</version>
         <configuration>
           <detectLinks>false</detectLinks>
           <detectOfflineLinks>false</detectOfflineLinks>
@@ -685,7 +662,7 @@
       <dependency>
         <groupId>jakarta.xml.bind</groupId>
         <artifactId>jakarta.xml.bind-api</artifactId>
-        <version>2.3.2</version>
+        <version>2.3.3</version>
       </dependency>
       <!-- swagger -->
       <dependency>
@@ -716,7 +693,7 @@
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-integration</artifactId>
-        <version>2.1.7</version>
+        <version>2.1.11</version>
       </dependency>
       <!-- jackson -->
       <dependency>
@@ -758,7 +735,7 @@
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
-        <version>2.12.0</version>
+        <version>2.12.1</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>
@@ -809,7 +786,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.12</version>
+        <version>4.13.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -821,25 +798,25 @@
       <dependency>
         <groupId>org.powermock</groupId>
         <artifactId>powermock-module-junit4</artifactId>
-        <version>2.0.2</version>
+        <version>2.0.9</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito2</artifactId>
-        <version>2.0.2</version>
+        <version>2.0.9</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.8.2</version>
+        <version>2.8.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-matchers</artifactId>
-        <version>2.8.2</version>
+        <version>2.8.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -869,7 +846,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.0.20</version>
+        <version>2.0.28</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -914,9 +891,9 @@
     <java.version>1.8</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>2.33</jersey-version>
-    <swagger-version>2.1.7</swagger-version>
-    <swagger-ui-version>3.49.0</swagger-ui-version>
-    <jackson-version>2.12.3</jackson-version>
+    <swagger-version>2.1.11</swagger-version>
+    <swagger-ui-version>3.52.5</swagger-ui-version>
+    <jackson-version>2.12.5</jackson-version>
     <deegree-version>3.4.17-SNAPSHOT</deegree-version>
     <slf4j.version>1.7.30</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
@@ -1011,6 +988,23 @@
           </plugin>
         </plugins>
       </reporting>
+    </profile>
+    <profile>
+      <id>jdk11</id>
+      <activation>
+        <jdk>[11,)</jdk>
+      </activation>
+      <properties>
+        <java.version>11</java.version>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+          <version>2.3.5</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 
