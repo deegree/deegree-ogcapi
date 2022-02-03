@@ -9,10 +9,11 @@ pipeline {
   }
   stages {
     stage('Preparation') {
-      steps{
+      steps {
         deleteDir()
-        git url: 'git@github.com:deegree/deegree-ogcapi.git', branch: '${BRANCH}'
+        git url: 'git@github.com:deegree/deegree-ogcapi.git', credentialsId: 'deegree-ci', branch: '${BRANCH}'
         sh 'mvn --version'
+        sh 'java -version'
         sh 'mkdir ./mvn_local_repo'
       }
     }
@@ -24,11 +25,13 @@ pipeline {
         always {
           junit '**/target/surefire-reports/*.xml'
         }
+        success {
+          archiveArtifacts artifacts: 'deegree-ogcapi-webapp/**/*.war'
       }
     }
     stage('Deploy') {
-      steps{
-        sh 'mvn deploy -Dskip.unit.tests=true'
+      steps {
+        sh 'mvn deploy -Dskip.unit.tests=true -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
       }
     }
   }
