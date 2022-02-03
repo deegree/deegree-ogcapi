@@ -2,7 +2,7 @@ pipeline {
   agent any
   tools {
     maven 'maven-3.8'
-    jdk 'adoptopenjdk-jdk8'
+    jdk 'adoptopenjdk-jdk11'
   }
   parameters {
     string(defaultValue: "main", description: 'Set git branch', name: 'BRANCH')
@@ -17,8 +17,11 @@ pipeline {
         sh 'mkdir ./mvn_local_repo'
       }
     }
-    stage('Build') {
-      steps{
+    stage('Build-jdk8') {
+      tools {
+        jdk 'adoptopenjdk-jdk8'
+      }
+      steps {
         sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
       }
       post {
@@ -27,6 +30,20 @@ pipeline {
         }
         success {
           archiveArtifacts artifacts: 'deegree-ogcapi-webapp/**/*.war'
+        }
+      }
+    }
+    stage('Build-jdk11') {
+      steps {
+        sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
+      }
+      post {
+        always {
+          junit '**/target/surefire-reports/*.xml'
+        }
+        success {
+          archiveArtifacts artifacts: 'deegree-ogcapi-webapp/**/*.war'
+        }
       }
     }
     stage('Deploy') {
