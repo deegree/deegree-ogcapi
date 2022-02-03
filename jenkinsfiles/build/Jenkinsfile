@@ -2,7 +2,7 @@ pipeline {
   agent any
   tools {
     maven 'maven-3.8'
-    jdk 'adoptopenjdk-jdk8'
+    jdk 'adoptopenjdk-jdk11'
   }
   parameters {
     string(defaultValue: "main", description: 'Set git branch', name: 'BRANCH')
@@ -18,6 +18,9 @@ pipeline {
       }
     }
     stage('Build-jdk8') {
+      tools {
+        jdk 'adoptopenjdk-jdk8'
+      }
       steps {
         sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
       }
@@ -31,9 +34,6 @@ pipeline {
       }
     }
     stage('Build-jdk11') {
-      tools {
-        jdk 'adoptopenjdk-jdk11'
-      }
       steps {
         sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
       }
