@@ -617,7 +617,7 @@
       <dependency>
         <groupId>org.glassfish.jersey.core</groupId>
         <artifactId>jersey-common</artifactId>
-        <version>2.34</version>
+        <version>${jersey-version}</version>
       </dependency>
       <dependency>
         <groupId>org.glassfish.jersey.containers</groupId>
@@ -890,7 +890,7 @@
     <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
     <java.version>1.8</java.version>
     <site.dir>${user.home}/Sites</site.dir>
-    <jersey-version>2.33</jersey-version>
+    <jersey-version>2.34</jersey-version>
     <swagger-version>2.1.11</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.12.5</jackson-version>
