@@ -3,15 +3,12 @@ pipeline {
   tools {
     maven 'maven-3.8'
     jdk 'adoptopenjdk-jdk11'
-  }
-  parameters {
-    string(defaultValue: "main", description: 'Set git branch', name: 'BRANCH')
+    git 'git-default'
   }
   stages {
     stage('Preparation') {
       steps {
         deleteDir()
-        git url: 'git@github.com:deegree/deegree-ogcapi.git', credentialsId: 'deegree-ci', branch: '${BRANCH}'
         sh 'mvn --version'
         sh 'java -version'
         sh 'mkdir ./mvn_local_repo'
@@ -22,6 +19,7 @@ pipeline {
         jdk 'adoptopenjdk-jdk8'
       }
       steps {
+        sh 'java -version'
         sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
       }
       post {
@@ -35,6 +33,7 @@ pipeline {
     }
     stage('Build-jdk11') {
       steps {
+        sh 'java -version'
         sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
       }
       post {
