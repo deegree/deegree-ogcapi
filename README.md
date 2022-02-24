@@ -38,7 +38,7 @@ By participating you are expected to uphold the [OSGeo deegree contribution guid
 ### Supporting partners
 
 <p align="center">
-  <a href="https://geoinfo.hamburg.de/" target="_blank">
+  <a href="https://www.geobasis-bb.de/" target="_blank">
     <img width="130px" src="sponsor_lgb.jpg">
   </a>
 </p>
