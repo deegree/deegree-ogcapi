@@ -19,7 +19,7 @@ Further information about how to build deegree webservices can be found on the G
 https://github.com/deegree/deegree3/wiki
 
 ## License
-deegree ogcapi is distributed under the [GNU Lesser General Public License, Version 2.1 (LGPL 2.1)](License).
+deegree ogcapi is distributed under the [GNU Lesser General Public License, Version 2.1 (LGPL 2.1)](LICENSE).
 
 ## Contribution guidelines
 First off all, thank you for taking the time to contribute to deegree ogcapi project! :+1: :tada:
