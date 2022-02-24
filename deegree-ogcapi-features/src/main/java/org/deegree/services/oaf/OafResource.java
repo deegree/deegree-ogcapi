@@ -120,6 +120,7 @@ public class OafResource implements Resource {
             this.oafConfiguration = new OafDatasetConfiguration( id, featureTypeMetadata, datasetMetadata, supportedCrs,
                                                                  featureStores, useExistingGMLSchema );
             this.htmlViewConfiguration = getHtmlViewConfig( workspace );
+            LOG.debug("Initialising deegree ogcapi with " + oafConfiguration + " and HTML view config " + htmlViewConfiguration);
         } catch ( InvalidConfigurationException e ) {
             throw new ResourceInitException( "OAF Configuration could not be parsed", e );
         }

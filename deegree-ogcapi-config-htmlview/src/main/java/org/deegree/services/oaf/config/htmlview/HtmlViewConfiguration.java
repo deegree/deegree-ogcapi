@@ -155,4 +155,20 @@ public class HtmlViewConfiguration {
     public String getDocumentationUrl() {
         return documentationUrl;
     }
+
+    @Override
+    public String toString() {
+        return "HtmlViewConfiguration{" +
+                "cssFile=" + cssFile +
+                ", legalNoticeUrl='" + legalNoticeUrl + '\'' +
+                ", privacyUrl='" + privacyUrl + '\'' +
+                ", documentationUrl='" + documentationUrl + '\'' +
+                ", wmsUrl='" + wmsUrl + '\'' +
+                ", wmsVersion='" + wmsVersion + '\'' +
+                ", wmsLayers='" + wmsLayers + '\'' +
+                ", crsCode='" + crsCode + '\'' +
+                ", crsProj4Definition='" + crsProj4Definition + '\'' +
+                ", source='" + source + '\'' +
+                '}';
+    }
 }
