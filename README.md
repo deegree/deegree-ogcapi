@@ -44,6 +44,6 @@ By participating you are expected to uphold the [OSGeo deegree contribution guid
 </p>
 
 ### Sponsoring 
-Use [GitHub Sponsors](https://github.com/sponsors/OSGeo) to donate via GitHub or you can submit you donation via [PayPal](https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=NWV8QNKA36YGL&source=url).
+Use [GitHub Sponsors](https://github.com/sponsors/OSGeo) to donate via GitHub or you can submit your donation via [PayPal](https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=NWV8QNKA36YGL&source=url).
 
 The OSGeo Treasurer will contact you to acknowledge your sponsorship. Please have a logo ready for your organization if you wish to be recognized publicly.
