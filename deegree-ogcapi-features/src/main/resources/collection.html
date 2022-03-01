@@ -349,7 +349,7 @@ var map = new ol.Map({
 
 function registerCrs(crsCode, projDef){
    if( crsCode != null &&  projDef != null ) {
-       proj4.defs('EPSG:25832', '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+       proj4.defs(crsCode, projDef);
        ol.proj.proj4.register(proj4);
        return true;
    }
