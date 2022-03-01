@@ -212,7 +212,7 @@ var AppBreadcrump = new Vue({
 var footerApp = new Vue({
   el: '#footer',
   data: {
-    helpUrl: '',
+    helpUrl: createDocumentationUrl(),
     legalNoticeUrl: '',
     privacyUrl: ''
   },
@@ -225,7 +225,9 @@ var footerApp = new Vue({
       dataType: "json",
       url: createHtmlConfigUrl(),
       success: function(data) {
-        self.helpUrl = data.documentationUrl ? data.documentationUrl : createDocumentationUrl();
+        if ( data.documentationUrl ) {
+          self.helpUrl = data.documentationUrl;
+        }
         self.legalNoticeUrl = data.legalNoticeUrl;
         self.privacyUrl = data.privacyUrl;
       }
