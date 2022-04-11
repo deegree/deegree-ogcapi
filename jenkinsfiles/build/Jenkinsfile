@@ -20,7 +20,7 @@ pipeline {
       }
       steps {
         sh 'java -version'
-        sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
+        sh 'mvn -Djava.awt.headless=true -fae -U -s ${WORKSPACE}/settings.xml clean install'
       }
       post {
         always {
@@ -34,7 +34,7 @@ pipeline {
     stage('Build-jdk11') {
       steps {
         sh 'java -version'
-        sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
+        sh 'mvn -Djava.awt.headless=true -fae -U -s ${WORKSPACE}/settings.xml clean install'
       }
       post {
         always {
@@ -47,7 +47,7 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        sh 'mvn deploy -Dskip.unit.tests=true -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
+        sh 'mvn deploy -Dskip.unit.tests=true -s ${WORKSPACE}/settings.xml -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
       }
     }
   }
