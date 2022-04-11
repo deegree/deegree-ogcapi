@@ -10,7 +10,7 @@ pipeline {
       steps {
         sh 'mvn --version'
         sh 'java -version'
-        sh 'mkdir ./mvn_local_repo'
+        sh 'mkdir -p ./mvn_local_repo'
       }
     }
     stage('Build-jdk8') {
