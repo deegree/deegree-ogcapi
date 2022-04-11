@@ -185,7 +185,7 @@ var App = new Vue({
       this.apilink = firstByRel(json, 'service-desc');
       this.collectionlink = firstByRel(json, 'data');
       this.conformanceLink = firstByRel(json, 'conformance');
-      this.metadataLink = firstByRel(json, 'describedBy');
+      this.metadataLink = firstByRel(json, 'describedBy', true);
       this.licenseLink = firstByRel(json, 'license');
       this.contact = json.contact;
     }
@@ -233,13 +233,21 @@ var footerApp = new Vue({
   }
 })
 
-function firstByRel(data, rel){
+function firstByRel(data, rel, otherThanHtmlOrTest){
   var links = $( data.links ).filter(
     function( n, i ) {
       return i.rel===rel && (i.type==='text/html' || i.type==='text/plain');
     });
     if ( links.length > 0 )
       return links[0];
+    else if (otherThanHtmlOrTest){
+      var allRelLinks = $( data.links ).filter(
+        function( n, i ) {
+          return i.rel===rel;
+        });
+      if ( allRelLinks.length > 0 )
+        return allRelLinks[0];
+    }
 }
 
 function createHtmlConfigUrl(){
