@@ -45,8 +45,13 @@ pipeline {
       }
     }
     stage('Deploy') {
+        when {
+            branch 'main'
+        }
       steps {
-        sh 'mvn deploy -Dskip.unit.tests=true -s ${WORKSPACE}/settings.xml -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
+        withCredentials([usernamePassword(credentialsId: 'nexus-deploy', passwordVariable: 'PASSWORD_VAR', usernameVariable: 'USERNAME_VAR')]) {
+            sh 'mvn deploy -Dskip.unit.tests=true -s ${WORKSPACE}/settings.xml -Drepo.username=${USERNAME_VAR} -Drepo.password=${PASSWORD_VAR} -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
+        }
       }
     }
   }
