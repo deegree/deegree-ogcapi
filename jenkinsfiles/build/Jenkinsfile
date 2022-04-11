@@ -8,7 +8,6 @@ pipeline {
   stages {
     stage('Preparation') {
       steps {
-        deleteDir()
         sh 'mvn --version'
         sh 'java -version'
         sh 'mkdir ./mvn_local_repo'
