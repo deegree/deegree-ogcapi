@@ -221,4 +221,16 @@ public class DatasetMetadata {
         return DEFAULT_DESCRIPTION;
     }
 
+    @Override
+    public String toString() {
+        return "DatasetMetadata{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", providerContact=" + providerContact +
+                ", creatorContact=" + creatorContact +
+                ", metadataUrls=" + metadataUrls +
+                ", providerLicense=" + providerLicense +
+                ", datasetLicense=" + datasetLicense +
+                '}';
+    }
 }
