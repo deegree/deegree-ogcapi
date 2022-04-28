@@ -60,8 +60,8 @@
                 <value>org.eclipse.jetty.util.log.Slf4jLog</value>
               </systemProperty>
               <systemProperty>
-                <name>log4j.configurationFile</name>
-                <value>${project.basedir}/src/test/resources/log4j.properties</value>
+                <name>log4j2.configurationFile</name>
+                <value>/log4j2.properties</value>
               </systemProperty>
             </systemProperties>
           </configuration>
@@ -85,19 +85,19 @@
           </executions>
           <dependencies>
             <dependency>
-              <groupId>log4j</groupId>
-              <artifactId>log4j</artifactId>
-              <version>${log4j.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-log4j12</artifactId>
-              <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
               <groupId>org.slf4j</groupId>
               <artifactId>slf4j-api</artifactId>
               <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-core</artifactId>
+              <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-slf4j-impl</artifactId>
+              <version>${log4j.version}</version>
             </dependency>
           </dependencies>
         </plugin>

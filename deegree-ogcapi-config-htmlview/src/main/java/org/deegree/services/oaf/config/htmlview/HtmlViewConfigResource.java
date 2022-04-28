@@ -63,6 +63,7 @@ public class HtmlViewConfigResource implements Resource {
     @Override
     public void init() {
         htmlViewConfiguration = parseHtmlViewConfiguration();
+        LOG.debug("Using HTML view configuration: " + htmlViewConfiguration);
     }
 
     @Override

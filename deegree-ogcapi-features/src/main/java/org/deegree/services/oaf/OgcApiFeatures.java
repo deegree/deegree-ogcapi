@@ -56,7 +56,7 @@ public class OgcApiFeatures extends ResourceConfig {
         register( new ObjectMapperContextResolver() );
 
         initOgcFrontCntroller( servletConfig );
-        LOG.debug( "deegree OGCFrontController initialized. Config REST API is available" );
+        LOG.info( "deegree OGCFrontController initialized. Config REST API is available" );
 
         DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = new DeegreeWorkspaceInitializer();
         deegreeWorkspaceInitializer.initialize();

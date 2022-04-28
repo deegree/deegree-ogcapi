@@ -3,18 +3,14 @@ pipeline {
   tools {
     maven 'maven-3.8'
     jdk 'adoptopenjdk-jdk11'
-  }
-  parameters {
-    string(defaultValue: "main", description: 'Set git branch', name: 'BRANCH')
+    git 'git-default'
   }
   stages {
     stage('Preparation') {
       steps {
-        deleteDir()
-        git url: 'git@github.com:deegree/deegree-ogcapi.git', credentialsId: 'deegree-ci', branch: '${BRANCH}'
         sh 'mvn --version'
         sh 'java -version'
-        sh 'mkdir ./mvn_local_repo'
+        sh 'mkdir -p ./mvn_local_repo'
       }
     }
     stage('Build-jdk8') {
@@ -22,7 +18,8 @@ pipeline {
         jdk 'adoptopenjdk-jdk8'
       }
       steps {
-        sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
+        sh 'java -version'
+        sh 'mvn -Djava.awt.headless=true -fae -U -s ${WORKSPACE}/settings.xml clean install'
       }
       post {
         always {
@@ -35,7 +32,8 @@ pipeline {
     }
     stage('Build-jdk11') {
       steps {
-        sh 'mvn -Djava.awt.headless=true -fae -U -s settings.xml clean install'
+        sh 'java -version'
+        sh 'mvn -Djava.awt.headless=true -fae -U -s ${WORKSPACE}/settings.xml clean install'
       }
       post {
         always {
@@ -47,8 +45,13 @@ pipeline {
       }
     }
     stage('Deploy') {
+        when {
+            branch 'main'
+        }
       steps {
-        sh 'mvn deploy -Dskip.unit.tests=true -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
+        withCredentials([usernamePassword(credentialsId: 'nexus-deploy', passwordVariable: 'PASSWORD_VAR', usernameVariable: 'USERNAME_VAR')]) {
+            sh 'mvn deploy -Dskip.unit.tests=true -s ${WORKSPACE}/settings.xml -Drepo.username=${USERNAME_VAR} -Drepo.password=${PASSWORD_VAR} -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
+        }
       }
     }
   }

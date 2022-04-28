@@ -4,6 +4,18 @@
                       https://maven.apache.org/xsd/settings-1.0.0.xsd">
 
   <localRepository>./mvn_local_repo</localRepository>
+  <servers>
+    <server>
+      <id>deegree-snapshots</id>
+      <username>${repo.username}</username>
+      <password>${repo.password}</password>
+    </server>
+    <server>
+      <id>deegree-releases</id>
+      <username>${repo.username}</username>
+      <password>${repo.password}</password>
+    </server>
+  </servers>
 <!--
   <mirrors>
     <mirror>

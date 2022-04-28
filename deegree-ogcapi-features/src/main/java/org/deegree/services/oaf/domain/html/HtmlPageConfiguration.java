@@ -22,7 +22,7 @@
 package org.deegree.services.oaf.domain.html;
 
 /**
- * Encapsulates zhe configuration of the legal notice
+ * Encapsulates the configuration of the legal notice
  */
 public class HtmlPageConfiguration {
 
@@ -48,5 +48,14 @@ public class HtmlPageConfiguration {
 
     public String getDocumentationUrl() {
         return documentationUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "HtmlPageConfiguration{" +
+                "legalNoticeUrl='" + legalNoticeUrl + '\'' +
+                ", privacyUrl='" + privacyUrl + '\'' +
+                ", documentationUrl='" + documentationUrl + '\'' +
+                '}';
     }
 }
