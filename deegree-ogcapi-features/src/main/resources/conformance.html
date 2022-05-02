@@ -107,7 +107,7 @@
                 <a v-cloak v-bind:href="legalNoticeUrl" target="_blank" class="legalNotice"> Legal Notice</a>
             </span>
             <span v-else>
-                <a href="https://deegree-enterprise.de" target="_blank" class="legalNotice"> deegree Enterprise Edition</a>
+                <a href="https://www.deegree.org" target="_blank" class="legalNotice"> deegree</a>
             </span>
             <span v-if="privacyUrl && privacyUrl.length > 0">
                <span> | </span>
@@ -162,7 +162,7 @@ var AppBreadcrump = new Vue({
 var footerApp = new Vue({
   el: '#footer',
   data: {
-    helpUrl: '',
+    helpUrl: createDocumentationUrl(),
     legalNoticeUrl: '',
     privacyUrl: ''
   },
@@ -175,7 +175,9 @@ var footerApp = new Vue({
       dataType: "json",
       url: createHtmlConfigUrl(),
       success: function(data) {
-        self.helpUrl = data.documentationUrl ? data.documentationUrl : createDocumentationUrl();
+        if ( data.documentationUrl ) {
+          self.helpUrl = data.documentationUrl;
+        }
         self.legalNoticeUrl = data.legalNoticeUrl;
         self.privacyUrl = data.privacyUrl;
       }
