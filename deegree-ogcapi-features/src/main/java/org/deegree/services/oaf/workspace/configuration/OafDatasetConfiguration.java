@@ -137,4 +137,16 @@ public class OafDatasetConfiguration {
     public boolean isUseExistingGMLSchema() {
         return useExistingGMLSchema;
     }
+
+    @Override
+    public String toString() {
+        return "OafDatasetConfiguration{" +
+                "id='" + id + '\'' +
+                ", featureTypeMetadata=" + featureTypeMetadata +
+                ", serviceMetadata=" + serviceMetadata +
+                ", suppportedCrs=" + suppportedCrs +
+                ", featureStores=" + featureStores +
+                ", useExistingGMLSchema=" + useExistingGMLSchema +
+                '}';
+    }
 }
