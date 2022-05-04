@@ -56,7 +56,7 @@
           </sequence>
         </complexType>
       </element>
-      <element name="MetadataURL" minOccurs="1" maxOccurs="unbounded">
+      <element name="MetadataURL" minOccurs="0" maxOccurs="unbounded">
         <complexType>
           <simpleContent>
             <extension base="string">

@@ -98,9 +98,12 @@
                 <div class="col-sm-3">Links</div>
                 <div class="col-md-9">
                     <div v-for="link in links">
-                        <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href" >{{ link.title }}</a>
+                        <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate' && link.rel != 'describedBy'" v-bind:href="link.href" >{{ link.title }}</a>
                         <a v-cloak v-else-if="link.type == 'application/json' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=json'" v-bind:download="collectionId + '.json'">{{ link.title }}</a>
                         <a v-cloak v-else-if="link.type == 'application/xml' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=xml'" v-bind:download="collectionId + '.xml'">{{ link.title }}</a>
+                    </div>
+                    <div v-for="metadataLink in metadataLinks">
+                        <a v-cloak v-bind:href="metadataLink.href" >{{ metadataLink.title }}</a>
                     </div>
                 </div>
             </div>
@@ -179,6 +182,7 @@ var App = new Vue({
     title: '',
     description: '',
     links: '',
+    metadataLinks: '',
     extent: '',
     crs: '',
     storageCrs: ''
@@ -198,6 +202,7 @@ var App = new Vue({
       this.title = json.title;
       this.description = json.description;
       this.links = json.links;
+      this.metadataLinks = parseMetadataLinks(this.links);
       this.extent = json.extent;
       this.crs = json.crs;
       this.storageCrs = json.storageCrs;
@@ -388,6 +393,21 @@ function retrieveBaseUrl() {
         featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
       }
       return featuresRefWithoutQuery;
+}
+
+function parseMetadataLinks(links){
+  var metadataLinks = $( links ).filter(
+    function( n, i ) {
+      return i.rel==='describedBy' && (i.type==='text/html' || i.type==='text/plain');
+    });
+    if (metadataLinks.length > 0)
+      return metadataLinks;
+    else{
+      return $( links ).filter(
+        function( n, i ) {
+          return i.rel==='describedBy';
+        });
+    }
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.1/proj4.js" ></script>
