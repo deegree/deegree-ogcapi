@@ -101,7 +101,7 @@
                                       <a v-cloak v-else-if="link.type == 'application/xml' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=xml'" v-bind:download="collection.id + '.xml'">{{ link.title }}</a>
                                   </div>
                                   <div v-for="(metadataLinks, title ) in collectionsMetadata">
-                                      <div v-for="link in metadataLinks">
+                                      <div v-if="title == collection.title" v-for="link in metadataLinks">
                                           <a v-cloak v-bind:href="link.href">{{ link.title }}</a>
                                       </div>
                                   </div>
