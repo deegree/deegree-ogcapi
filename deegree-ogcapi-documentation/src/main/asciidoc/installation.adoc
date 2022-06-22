@@ -1,7 +1,7 @@
 [[installation]]
 == Installation
 
-There are many ways to install deegree OAF on a server. This section will describe the various installation paths available.
+There are many ways to install deegree OAF. This section will describe the various installation paths available.
 
 [[requirements]]
 === Requirements
@@ -15,10 +15,10 @@ NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 11] with https://tomcat.apache.org/
 
 === Download
 
-deegree webservices downloads are available on the http://www.deegree.org[deegree home page].
+The deegree OGC API webapp is provided as a web application archive (WAR) file and release versions are available on the https://github.com/deegree/deegree-ogcapi/releases[deegree OGC API GitHub page].
 
-The deegree OGC API webapp is provided as a WAR file with the name *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL and *_deegree-ogcapi-webapp-oracle.war_* for Oracle database.
-Both artifacts contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
+Choose either the *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL/PostGIS or the *_deegree-ogcapi-webapp-oracle.war_* for Oracle databases.
+Both webapps contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
 Download the WAR file and store it in the local file system of the server.
 
 [[installation_deploy]]
@@ -49,8 +49,18 @@ To uninstall the webapp:
 
 === Docker
 
-A Docker Image with deegree OGC API is available. When using the Docker image the installation of Docker is required. Check the https://docs.docker.com/get-docker/[Docker Documentation] for requirements and installation instructions.
+Docker images with deegree OGC API are available on https://hub.docker.com[Docker Hub]. This requires the installation of Docker on the server. Check the https://docs.docker.com/get-docker/[Docker documentation] for requirements and installation instructions.
 The docker image provides all software components and no additional software installations are necessary.
+
+Get the docker image with:
+
+    docker pull deegree/deegree-ogcapi:latest
+
+To start a Docker container with the name _ogcapi_ on port _8080_ run the following command:
+
+    docker run --name ogcapi -d -p 8080:8080 deegree/deegree-ogcapi:latest
+
+See the https://docs.docker.com/engine/reference/commandline/cli/[Docker CLI documentation] for more information how to connect a container to a network, mount a volume into the container, or set environment variables.
 
 [[supported_browser]]
 === Supported Browser
