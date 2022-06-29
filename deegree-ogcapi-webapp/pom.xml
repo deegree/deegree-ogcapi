@@ -17,7 +17,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>3.2.3</version>
           <!-- Add Swagger UI resources to the war file. -->
           <configuration>
             <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -105,7 +104,6 @@
           <!-- Download Swagger UI webjar. -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.1.1</version>
           <executions>
             <execution>
               <id>swagger-ui</id>
@@ -140,7 +138,6 @@
           <!-- Replace the OpenAPI specification example URL with the local one. -->
           <groupId>com.google.code.maven-replacer-plugin</groupId>
           <artifactId>replacer</artifactId>
-          <version>1.5.3</version>
           <executions>
             <execution>
               <phase>prepare-package</phase>
