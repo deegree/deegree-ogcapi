@@ -86,8 +86,8 @@ To provide general information about the datasets provider the following configu
 ----
 <Datasets xmlns="http://www.deegree.org/ogcapi/datasets"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  http://schemas.deegree.org/ogcapi/datasets/3.4.0/datasets.xsd"
-          configVersion="3.4.0">
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  http://schemas.deegree.org/3.5/ogcapi/datasets/datasets.xsd"
+          configVersion="3.5.0">
   <Title>Datasets Title</Title>
   <Description>Datasets Description</Description> <!--1-->
   <Contact>
@@ -133,8 +133,8 @@ Each dataset is configured in a separate file. The following example shows a min
 ----
 <deegreeOAF xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/ogcapi/features/3.4.0/features.xsd"
-            configVersion="3.4.0">
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/3.5/ogcapi/features/features.xsd"
+            configVersion="3.5.0">
 
   <FeatureStoreId>streets</FeatureStoreId>  <!--1-->
 
@@ -158,8 +158,8 @@ The next example shows a complete configuration for a dataset called "trees" wit
 ----
 <deegreeOAF xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/ogcapi/features/3.4.0/features.xsd"
-            configVersion="3.4.0">
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/3.5/ogcapi/features/features.xsd"
+            configVersion="3.5.0">
 
   <FeatureStoreId>trees</FeatureStoreId>  <!--1-->
 
@@ -262,8 +262,8 @@ The following excerpt of the _streets_metadata.xml_ shows which options are avai
 ----
 <deegreeServicesMetadata xmlns="http://www.deegree.org/services/metadata"
                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                         xsi:schemaLocation="http://www.deegree.org/services/metadata http://schemas.deegree.org/services/metadata/3.4.0/metadata.xsd"
-                         configVersion="3.4.0">
+                         xsi:schemaLocation="http://www.deegree.org/services/metadata https://schemas.deegree.org/3.5/services/metadata/metadata.xsd"
+                         configVersion="3.5.0">
 
   <ServiceIdentification> <!--1-->
     <Title>deegree OGC API - Features</Title>
@@ -350,8 +350,8 @@ To configure the HTML encoding a configuration file can be used. The following e
 ----
 <HtmlView xmlns="http://www.deegree.org/ogcapi/htmlview"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview http://schemas.deegree.org/ogcapi/3.4.0/htmlview.xsd"
-          configVersion="3.4.0">
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview http://schemas.deegree.org/3.5/ogcapi/htmlview/htmlview.xsd"
+          configVersion="3.5.0">
 
   <CssFile>../html/lgv.css</CssFile>  <!--1-->
   <LegalNoticeUrl>https://www.hamburg.de/legalNotice/</LegalNoticeUrl> <!--2-->
@@ -425,4 +425,4 @@ DELETE /config/delete[/path] - delete currently running workspace or file in wor
 The REST-API is enabled by default. To protect this interface from unauthorized use, it is automatically secured with a so-called API key. Each HTTP request requires that the API key contained in the file _config.apikey_ is transferred.
 
 A detailed documentation of the REST-API interface and how access is configured is described in section "deegree REST interface"
-of the https://download.deegree.org/documentation/3.4.17/html/#anchor-configuration-restapi[deegree webservices handbook].
+of the https://download.deegree.org/documentation/current/html/#anchor-configuration-restapi[deegree webservices handbook].
