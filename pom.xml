@@ -875,9 +875,9 @@
     <swagger-version>2.1.11</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.12.5</jackson-version>
-    <deegree-version>3.4.26-SNAPSHOT</deegree-version>
+    <deegree-version>3.5.0-SNAPSHOT</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
-    <log4j.version>2.17.1</log4j.version>
+    <log4j.version>2.17.2</log4j.version>
   </properties>
 
   <modules>

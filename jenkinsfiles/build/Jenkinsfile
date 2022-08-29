@@ -13,26 +13,8 @@ pipeline {
         sh 'mkdir -p ./mvn_local_repo'
       }
     }
-    stage('Build-jdk8') {
-      tools {
-        jdk 'adoptopenjdk-jdk8'
-      }
-      steps {
-        sh 'java -version'
-        sh 'mvn -Djava.awt.headless=true -fae -U -s ${WORKSPACE}/settings.xml clean install'
-      }
-      post {
-        always {
-          junit '**/target/surefire-reports/*.xml'
-        }
-        success {
-          archiveArtifacts artifacts: 'deegree-ogcapi-webapp/**/*.war'
-        }
-      }
-    }
     stage('Build-jdk11') {
       steps {
-        sh 'java -version'
         sh 'mvn -Djava.awt.headless=true -fae -U -s ${WORKSPACE}/settings.xml clean install'
       }
       post {
