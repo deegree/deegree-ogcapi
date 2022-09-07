@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <name>deegree OGC API</name>
   <description>deegree OGC API implementation</description>
-  <url>https://oaf.lat-lon.de/</url>
+  <url>https://github.com/deegree/deegree-ogcapi</url>
   <inceptionYear>2019</inceptionYear>
   <organization>
     <name>OSGeo deegree project</name>
@@ -24,7 +24,7 @@
   <scm>
     <connection>scm:git:git@github.com:deegree/deegree-ogcapi.git</connection>
     <developerConnection>scm:git:git@github.com:deegree/deegree-ogcapi.git</developerConnection>
-    <url>https://github.com/deegree/deegree3</url>
+    <url>https://github.com/deegree/deegree-ogcapi</url>
     <tag>HEAD</tag>
   </scm>
 
