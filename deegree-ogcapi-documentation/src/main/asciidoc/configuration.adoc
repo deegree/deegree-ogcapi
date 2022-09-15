@@ -86,8 +86,8 @@ To provide general information about the datasets provider the following configu
 ----
 <Datasets xmlns="http://www.deegree.org/ogcapi/datasets"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  http://schemas.deegree.org/3.5/ogcapi/datasets/datasets.xsd"
-          configVersion="3.5.0">
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  http://schemas.deegree.org/3.5/ogcapi/datasets/datasets.xsd">
+
   <Title>Datasets Title</Title>
   <Description>Datasets Description</Description> <!--1-->
   <Contact>
@@ -133,8 +133,7 @@ Each dataset is configured in a separate file. The following example shows a min
 ----
 <deegreeOAF xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/3.5/ogcapi/features/features.xsd"
-            configVersion="3.5.0">
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/3.5/ogcapi/features/features.xsd">
 
   <FeatureStoreId>streets</FeatureStoreId>  <!--1-->
 
@@ -158,9 +157,8 @@ The next example shows a complete configuration for a dataset called "trees" wit
 ----
 <deegreeOAF xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/3.5/ogcapi/features/features.xsd"
-            configVersion="3.5.0">
-
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features http://schemas.deegree.org/3.5/ogcapi/features/features.xsd">
+            
   <FeatureStoreId>trees</FeatureStoreId>  <!--1-->
 
   <UseExistingGMLSchema>true</UseExistingGMLSchema> <!--2-->
@@ -262,8 +260,7 @@ The following excerpt of the _streets_metadata.xml_ shows which options are avai
 ----
 <deegreeServicesMetadata xmlns="http://www.deegree.org/services/metadata"
                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                         xsi:schemaLocation="http://www.deegree.org/services/metadata https://schemas.deegree.org/3.5/services/metadata/metadata.xsd"
-                         configVersion="3.5.0">
+                         xsi:schemaLocation="http://www.deegree.org/services/metadata https://schemas.deegree.org/3.5/services/metadata/metadata.xsd">
 
   <ServiceIdentification> <!--1-->
     <Title>deegree OGC API - Features</Title>
@@ -350,9 +347,8 @@ To configure the HTML encoding a configuration file can be used. The following e
 ----
 <HtmlView xmlns="http://www.deegree.org/ogcapi/htmlview"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview http://schemas.deegree.org/3.5/ogcapi/htmlview/htmlview.xsd"
-          configVersion="3.5.0">
-
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview http://schemas.deegree.org/3.5/ogcapi/htmlview/htmlview.xsd">
+          
   <CssFile>../html/lgv.css</CssFile>  <!--1-->
   <LegalNoticeUrl>https://www.hamburg.de/legalNotice/</LegalNoticeUrl> <!--2-->
   <PrivacyPolicyUrl>https://www.hamburg.de/datenschutz/</PrivacyPolicyUrl> <!--3-->
