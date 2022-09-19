@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <name>deegree OGC API</name>
   <description>deegree OGC API implementation</description>
-  <url>https://oaf.lat-lon.de/</url>
+  <url>https://github.com/deegree/deegree-ogcapi</url>
   <inceptionYear>2019</inceptionYear>
   <organization>
     <name>OSGeo deegree project</name>
@@ -24,7 +24,7 @@
   <scm>
     <connection>scm:git:git@github.com:deegree/deegree-ogcapi.git</connection>
     <developerConnection>scm:git:git@github.com:deegree/deegree-ogcapi.git</developerConnection>
-    <url>https://github.com/deegree/deegree3</url>
+    <url>https://github.com/deegree/deegree-ogcapi</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -861,7 +861,7 @@
       <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.2.2</version>
+        <version>2.8.9</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -875,9 +875,9 @@
     <swagger-version>2.1.11</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.12.5</jackson-version>
-    <deegree-version>3.4.26-SNAPSHOT</deegree-version>
+    <deegree-version>3.5.0-SNAPSHOT</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
-    <log4j.version>2.17.1</log4j.version>
+    <log4j.version>2.17.2</log4j.version>
   </properties>
 
   <modules>
