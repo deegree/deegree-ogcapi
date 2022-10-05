@@ -827,7 +827,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.0.28</version>
+        <version>2.0.29</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -872,7 +872,7 @@
     <java.version>1.8</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>2.34</jersey-version>
-    <swagger-version>2.1.11</swagger-version>
+    <swagger-version>2.1.13</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.12.5</jackson-version>
     <deegree-version>3.5.0-SNAPSHOT</deegree-version>
