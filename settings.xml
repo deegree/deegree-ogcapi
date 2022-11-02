@@ -1,7 +1,7 @@
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0
+                      https://maven.apache.org/xsd/settings-1.2.0.xsd">
 
   <localRepository>./mvn_local_repo</localRepository>
   <servers>
@@ -18,6 +18,18 @@
   </servers>
 <!--
   <mirrors>
+    <mirror>
+      <id>jaspersoft-third-party-mirror</id>
+      <mirrorOf>jaspersoft-third-party</mirrorOf>
+      <url>http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+      <blocked>false</blocked>
+    </mirror>
+    <mirror>
+      <id>terracotta-releases</id>
+      <mirrorOf>terracotta-releases</mirrorOf>
+      <url>http://www.terracotta.org/download/reflector/releases/</url>
+      <blocked>false</blocked>
+    </mirror>
     <mirror>
         <id>deegree-ogcapi</id>
         <mirrorOf>*</mirrorOf>

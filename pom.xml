@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <name>deegree OGC API</name>
   <description>deegree OGC API implementation</description>
-  <url>https://oaf.lat-lon.de/</url>
+  <url>https://github.com/deegree/deegree-ogcapi</url>
   <inceptionYear>2019</inceptionYear>
   <organization>
     <name>OSGeo deegree project</name>
@@ -24,7 +24,7 @@
   <scm>
     <connection>scm:git:git@github.com:deegree/deegree-ogcapi.git</connection>
     <developerConnection>scm:git:git@github.com:deegree/deegree-ogcapi.git</developerConnection>
-    <url>https://github.com/deegree/deegree3</url>
+    <url>https://github.com/deegree/deegree-ogcapi</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -99,7 +99,7 @@
         <plugin>
           <groupId>org.jvnet.jaxb2.maven2</groupId>
           <artifactId>maven-jaxb2-plugin</artifactId>
-          <version>0.14.0</version>
+          <version>0.15.1</version>
           <executions>
             <execution>
               <goals>
@@ -132,12 +132,12 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.2</version>
           <configuration>
             <tarLongFileMode>gnu</tarLongFileMode>
           </configuration>
@@ -145,7 +145,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -164,13 +164,13 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
-          <version>2.8.1</version>
+          <version>2.12.0</version>
         </plugin>
         <!-- reporting and site -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.9.1</version>
+          <version>3.12.1</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.maven.wagon</groupId>
@@ -182,12 +182,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
+          <version>3.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
+          <version>3.0.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -197,12 +197,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.10.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.2.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -217,9 +217,9 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.4.1</version>
           <configuration>
-            <additionalparam>-Xdoclint:none</additionalparam>
+            <doclint>none</doclint>
           </configuration>
         </plugin>
         <plugin>
@@ -246,7 +246,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -334,7 +334,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.4</version>
+            <version>1.6.1</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -344,7 +344,7 @@
         <configuration>
           <detectLinks>false</detectLinks>
           <detectOfflineLinks>false</detectOfflineLinks>
-          <aggregate>false</aggregate>
+          <source>${java.version}</source>
         </configuration>
       </plugin>
       <plugin>
@@ -471,15 +471,30 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.3.1</version>
+        <version>3.4.1</version>
         <configuration>
+          <doclint>none</doclint>
           <detectLinks>false</detectLinks>
           <detectOfflineLinks>false</detectOfflineLinks>
-          <aggregate>false</aggregate>
-          <minmemory>512m</minmemory>
-          <maxmemory>4g</maxmemory>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <minmemory>128m</minmemory>
+          <maxmemory>1g</maxmemory>
+          <source>${java.version}</source>
         </configuration>
+        <reportSets>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
@@ -866,7 +881,7 @@
       <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.2.2</version>
+        <version>2.8.9</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -876,13 +891,13 @@
     <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
     <java.version>1.8</java.version>
     <site.dir>${user.home}/Sites</site.dir>
-    <jersey-version>2.34</jersey-version>
+    <jersey-version>2.36</jersey-version>
     <swagger-version>2.1.13</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
-    <jackson-version>2.12.5</jackson-version>
-    <deegree-version>3.4.26-SNAPSHOT</deegree-version>
+    <jackson-version>2.13.3</jackson-version>
+    <deegree-version>3.5.0-SNAPSHOT</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
-    <log4j.version>2.17.1</log4j.version>
+    <log4j.version>2.17.2</log4j.version>
   </properties>
 
   <modules>
@@ -900,9 +915,9 @@
       <reporting>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>2.5.2</version>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.4.2</version>
             <configuration>
               <xmlOutput>true</xmlOutput>
               <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
@@ -912,7 +927,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>2.7.1</version>
+            <version>3.16.0</version>
             <configuration>
               <linkXref>true</linkXref>
               <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
@@ -929,32 +944,20 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.9.1</version>
+            <version>3.1.2</version>
             <configuration>
               <configLocation>checkstyle.xml</configLocation>
             </configuration>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.4</version>
-            <configuration>
-              <detectLinks>false</detectLinks>
-              <detectOfflineLinks>false</detectOfflineLinks>
-              <aggregate>false</aggregate>
-              <minmemory>128m</minmemory>
-              <maxmemory>1g</maxmemory>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jxr-plugin</artifactId>
-            <version>2.3</version>
+            <version>3.3.0</version>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.4</version>
+            <version>3.2.2</version>
             <configuration>
               <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
               <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
@@ -963,7 +966,7 @@
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
-            <version>1.4.5</version>
+            <version>7.2.1</version>
             <reportSets>
               <reportSet>
                 <reports>

@@ -96,9 +96,14 @@
                                 <div class="col-sm-2">Links</div>
                                 <div class="col-md-10">
                                   <div v-for="link in collection.links">
-                                      <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate'" v-bind:href="link.href">{{ link.title }}</a>
+                                      <a v-cloak v-if="link.type == 'text/html' && link.rel != 'alternate' && link.rel != 'describedBy'" v-bind:href="link.href">{{ link.title }}</a>
                                       <a v-cloak v-else-if="link.type == 'application/json' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=json'" v-bind:download="collection.id + '.json'">{{ link.title }}</a>
                                       <a v-cloak v-else-if="link.type == 'application/xml' && link.rel == 'enclosure'" v-bind:href="link.href + '&f=xml'" v-bind:download="collection.id + '.xml'">{{ link.title }}</a>
+                                  </div>
+                                  <div v-for="(metadataLinks, title ) in collectionsMetadata">
+                                      <div v-if="title == collection.title" v-for="link in metadataLinks">
+                                          <a v-cloak v-bind:href="link.href">{{ link.title }}</a>
+                                      </div>
                                   </div>
                                 </div>
                             </div>
@@ -161,6 +166,7 @@ var App = new Vue({
   el: '#content',
   data: {
     collections: '',
+    collectionsMetadata: '',
     licenseLink: ''
   },
 
@@ -175,6 +181,7 @@ var App = new Vue({
       const response = await fetch( baseUrl, {headers: {'Accept': 'application/json' } } );
       const json = await response.json();
       this.collections = json.collections;
+      this.collectionsMetadata = parseCollectionsMetadataLinks(this.collections);
       this.licenseLink = parseLinks(json, 'license', 'text/plain');
     }
   }
@@ -249,6 +256,31 @@ function parseLinks(data, rel, type){
     });
     if ( links.length > 0 )
       return links[0];
+}
+
+function parseCollectionsMetadataLinks(collections){
+  const metadataLinksPerCollection = {};
+  collections.forEach(function(collection){
+    var title = collection.title;
+    var links = parseMetadataLinks(collection.links);
+    metadataLinksPerCollection[title] = links;
+  });
+  return metadataLinksPerCollection;
+}
+
+function parseMetadataLinks(links){
+  var metadataLinks = $( links ).filter(
+    function( n, i ) {
+      return i.rel==='describedBy' && (i.type==='text/html' || i.type==='text/plain');
+    });
+    if (metadataLinks.length > 0)
+      return metadataLinks;
+    else{
+      return $( links ).filter(
+        function( n, i ) {
+          return i.rel==='describedBy';
+        });
+    }
 }
 
 function createHtmlConfigUrl(){

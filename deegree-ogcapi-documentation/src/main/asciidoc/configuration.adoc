@@ -151,7 +151,7 @@ Each dataset is configured in a separate file. The following example shows a min
 <3> additional CRS, to retrieve data in the given CRS the optional query parameter `+{crs}+` needs to be used, see section <<query_parameter>> for more information
 <4> identifier of the HTML encoding configuration, links to file _html/streetsview.xml_
 
-The next example shows a configuration for a dataset called "trees" with all options available.
+The next example shows a complete configuration for a dataset called "trees" with all options available.
 
 .ogcapi/trees.xml
 [source,xml]
@@ -206,8 +206,8 @@ The next example shows a configuration for a dataset called "trees" with all opt
 <7> provider license applicable to the service provider with description element
 <8> dataset license applicable to the dataset using link to license element
 <9> dataset provider contact details
-<10> metadata link in format `application/xml` for the dataset
-<11> metadata link in format `text/html` for the dataset
+<10> metadata link in format `application/xml` for the dataset (optional)
+<11> metadata link in format `text/html` for the dataset (optional)
 
 NOTE: The dataset configuration file must be stored in the subdirectory _ogcapi/_. The file is mandatory.
 
@@ -240,7 +240,7 @@ The element ```<Metadata/>``` has the following subelements:
 |ProviderLicense |0..1 |Complex |License of the dataset provider
 |DatasetLicense |0..1 |Complex |License of the dataset
 |DatasetCreator |0..1 |Complex |Contact details of the dataset creator
-|MetadataURL |0..n |URL |URL of the metadata record describing the dataset, use the attribute `format` to link HTML or XML representation.
+|MetadataURL |0..n |URL |URL of the metadata record describing the dataset, use the attribute `format` to link HTML or XML representation. Use this link to a metadata record when you have a metadata record describing all containing feature collections. Otherwise use the element `<Dataset>` as described in the next chapter <<config_metadata>>.
 |===
 
 The elements ```<ProviderLicense/>``` and ```<DatasetLicense/>``` can have either a ```<Name/>``` and ```<Description/>``` element or a ```<Name/>``` and ```<URL/>``` element. The ```<URL/>``` can have an optional attribute `format` specifying the media type such as `application/xml` (default is `text/html`). Same applies to the element ```<MetadataURL/>```.
@@ -273,9 +273,9 @@ The following excerpt of the _streets_metadata.xml_ shows which options are avai
   <DatasetMetadata>
     <MetadataUrlTemplate>http://example.metadata.org/services/csw?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=${metadataSetId}</MetadataUrlTemplate> <!--3-->
     <MetadataUrlTemplate format="text/html">http://example.metadata.org/csw/htmlrepaesentation/${metadataSetId}</MetadataUrlTemplate> <!--4-->
-    <Dataset>
-      <Name xmlns:app="http://www.deegree.org/app">app:streets</Name> <!--5-->
-      <Title>Streets</Title> <!--6-->
+    <Dataset> <!--5-->
+      <Name xmlns:app="http://www.deegree.org/app">app:streets</Name> <!--6-->
+      <Title>Streets</Title> <!--7-->
       <Abstract>Streets of the city of Hamburg</Abstract>
       <MetadataSetId>beefcafe-beef-cafe-beef-cafebeefcaf</MetadataSetId>
     </Dataset>
@@ -287,8 +287,9 @@ The following excerpt of the _streets_metadata.xml_ shows which options are avai
 <2> supports CDATA section with HTML elements
 <3> service metadata link, in the context of OAF this link is used in the collection view link of the metadata
 <4> service metadata link in format `text/html`, in the context of OAF this link is used in the collection view linking to the HTML representation of the metadata.
-<5> feature collection name which links to the feature type configured, here the {collectionId}
-<6> title of the feature collection, used in HTML encoding instead of the {collectionId}
+<5> Use this element when you have a metadata record for the defined feature collection, otherwise define the link to the metadata record on the dataset level as described in chapter <<config_dataset>> for the element `<MetadataURL/>`.
+<6> feature collection name which links to the feature type configured, here the {collectionId}.
+<7> title of the feature collection, used in HTML encoding instead of the {collectionId}
 
 NOTE: The file _streets_metadata.xml_ must be stored in the subdirectory _services/_. The file is mandatory.
 

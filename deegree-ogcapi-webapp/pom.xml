@@ -17,7 +17,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>3.2.3</version>
           <!-- Add Swagger UI resources to the war file. -->
           <configuration>
             <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -45,13 +44,19 @@
           <version>9.4.45.v20220203</version>
           <configuration>
             <webApp>
-              <contextPath>/deegree-services-oaf</contextPath>
+              <contextPath>/deegree-ogcapi</contextPath>
+              <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
+              <containerIncludeJarPattern>^$</containerIncludeJarPattern>
+              <!--
+              <webInfIncludeJarPattern>.*/.*deegree-ogcapi-[^/]\.jar$</webInfIncludeJarPattern>
+              -->
             </webApp>
             <webAppSourceDirectory>target/${project.artifactId}-${project.version}</webAppSourceDirectory>
+            <scanIntervalSeconds>0</scanIntervalSeconds>
             <stopPort>8079</stopPort>
             <stopKey>stopit</stopKey>
             <httpConnector>
-              <port>8081</port>
+              <port>8080</port>
               <idleTimeout>60000</idleTimeout>
             </httpConnector>
             <systemProperties>
@@ -72,9 +77,6 @@
                 <goal>stop</goal>
                 <goal>start</goal>
               </goals>
-              <configuration>
-                <scanIntervalSeconds>0</scanIntervalSeconds>
-              </configuration>
             </execution>
             <execution>
               <id>stop-jetty</id>
@@ -105,7 +107,6 @@
           <!-- Download Swagger UI webjar. -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.1.1</version>
           <executions>
             <execution>
               <id>swagger-ui</id>
@@ -140,7 +141,6 @@
           <!-- Replace the OpenAPI specification example URL with the local one. -->
           <groupId>com.google.code.maven-replacer-plugin</groupId>
           <artifactId>replacer</artifactId>
-          <version>1.5.3</version>
           <executions>
             <execution>
               <phase>prepare-package</phase>
