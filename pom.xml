@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <name>deegree OGC API</name>
   <description>deegree OGC API implementation</description>
-  <url>https://oaf.lat-lon.de/</url>
+  <url>https://github.com/deegree/deegree-ogcapi</url>
   <inceptionYear>2019</inceptionYear>
   <organization>
     <name>OSGeo deegree project</name>
@@ -24,7 +24,7 @@
   <scm>
     <connection>scm:git:git@github.com:deegree/deegree-ogcapi.git</connection>
     <developerConnection>scm:git:git@github.com:deegree/deegree-ogcapi.git</developerConnection>
-    <url>https://github.com/deegree/deegree3</url>
+    <url>https://github.com/deegree/deegree-ogcapi</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -164,7 +164,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
-          <version>2.8.1</version>
+          <version>2.12.0</version>
         </plugin>
         <!-- reporting and site -->
         <plugin>
@@ -197,7 +197,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.10.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -246,7 +246,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -334,7 +334,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.5.1</version>
+            <version>1.6.1</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -782,7 +782,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.13.1</version>
+        <version>4.13.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -842,7 +842,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.0.28</version>
+        <version>2.0.29</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -854,6 +854,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>3.7</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>4.4.14</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
@@ -876,7 +881,7 @@
       <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.2.2</version>
+        <version>2.8.9</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -887,12 +892,12 @@
     <java.version>1.8</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>2.34</jersey-version>
-    <swagger-version>2.1.11</swagger-version>
+    <swagger-version>2.1.13</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.12.5</jackson-version>
-    <deegree-version>3.4.26-SNAPSHOT</deegree-version>
+    <deegree-version>3.5.0-SNAPSHOT</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
-    <log4j.version>2.17.1</log4j.version>
+    <log4j.version>2.17.2</log4j.version>
   </properties>
 
   <modules>
