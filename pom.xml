@@ -170,7 +170,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.9.1</version>
+          <version>3.12.1</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.maven.wagon</groupId>
@@ -217,9 +217,9 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.4.1</version>
           <configuration>
-            <additionalparam>-Xdoclint:none</additionalparam>
+            <doclint>none</doclint>
           </configuration>
         </plugin>
         <plugin>
@@ -344,7 +344,7 @@
         <configuration>
           <detectLinks>false</detectLinks>
           <detectOfflineLinks>false</detectOfflineLinks>
-          <aggregate>false</aggregate>
+          <source>${java.version}</source>
         </configuration>
       </plugin>
       <plugin>
@@ -471,15 +471,30 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.3.1</version>
+        <version>3.4.1</version>
         <configuration>
+          <doclint>none</doclint>
           <detectLinks>false</detectLinks>
           <detectOfflineLinks>false</detectOfflineLinks>
-          <aggregate>false</aggregate>
-          <minmemory>512m</minmemory>
-          <maxmemory>4g</maxmemory>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <minmemory>128m</minmemory>
+          <maxmemory>1g</maxmemory>
+          <source>${java.version}</source>
         </configuration>
+        <reportSets>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
@@ -900,9 +915,9 @@
       <reporting>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>2.5.2</version>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.4.2</version>
             <configuration>
               <xmlOutput>true</xmlOutput>
               <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
@@ -912,7 +927,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>2.7.1</version>
+            <version>3.16.0</version>
             <configuration>
               <linkXref>true</linkXref>
               <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
@@ -929,32 +944,20 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.9.1</version>
+            <version>3.1.2</version>
             <configuration>
               <configLocation>checkstyle.xml</configLocation>
             </configuration>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.4</version>
-            <configuration>
-              <detectLinks>false</detectLinks>
-              <detectOfflineLinks>false</detectOfflineLinks>
-              <aggregate>false</aggregate>
-              <minmemory>128m</minmemory>
-              <maxmemory>1g</maxmemory>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jxr-plugin</artifactId>
-            <version>2.3</version>
+            <version>3.3.0</version>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.4</version>
+            <version>3.2.2</version>
             <configuration>
               <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
               <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
@@ -963,7 +966,7 @@
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
-            <version>1.4.5</version>
+            <version>7.2.1</version>
             <reportSets>
               <reportSet>
                 <reports>

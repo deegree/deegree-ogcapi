@@ -21,8 +21,8 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.0.0</version>
         <executions>
           <execution>
             <id>deegree-ogcapi-assembly</id>
@@ -38,12 +38,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <!-- set version of release related plugins -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
       </plugin>
       <plugin>
         <groupId>org.asciidoctor</groupId>
