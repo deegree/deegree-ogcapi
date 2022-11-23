@@ -23,9 +23,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * This class provides capabilities to write GeoJson output format to writer.
+ *
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 public abstract class AbstractFeatureResponseGeoJsonWriter<T extends AbstractFeatureResponse>
@@ -45,8 +48,8 @@ public abstract class AbstractFeatureResponseGeoJsonWriter<T extends AbstractFea
                          MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream out )
                     throws WebApplicationException {
         try (
-                        Writer writer = new PrintWriter( out );
-                        GeoJsonWriter geoJsonStreamWriter = new GeoJsonWriter( writer, asCrs( feature ) ) ) {
+                Writer writer = new PrintWriter( out, false , UTF_8 );
+                GeoJsonWriter geoJsonStreamWriter = new GeoJsonWriter( writer, asCrs( feature ) ) ) {
             writeContent( feature, geoJsonStreamWriter );
         } catch ( Exception e ) {
             LOG.error( "Writing response failed", e );

@@ -23,8 +23,10 @@ package org.deegree.services.oaf.io.response;
 
 import org.deegree.services.oaf.link.Link;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
@@ -33,7 +35,7 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_LINK;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_MATCHED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_NUMBER_RETURNED;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_TIMESTAMP;
-import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON_TYPE;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
@@ -54,8 +56,11 @@ public class FeaturesResponseCreator {
      * @return never <code>null</code>
      */
     public Response createJsonResponseWithHeaders( AbstractFeatureResponse featureResponse ) {
-        Response.ResponseBuilder response = Response.ok( featureResponse, APPLICATION_GEOJSON );
-        response.header( HEADER_CONTENT_CRS, asContentCrsHeader( featureResponse ) );
+        Response.ResponseBuilder response = Response.ok( featureResponse );
+        response.header( HEADER_CONTENT_CRS, asContentCrsHeader( featureResponse ) )
+                .header( HttpHeaders.CONTENT_TYPE, APPLICATION_GEOJSON_TYPE.withCharset( StandardCharsets.UTF_8.name() ) )
+                .encoding( StandardCharsets.UTF_8.name() );
+
         return response.build();
     }
 
