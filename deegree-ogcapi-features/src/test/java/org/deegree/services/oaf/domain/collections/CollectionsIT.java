@@ -34,6 +34,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_URL;
 import static org.deegree.services.oaf.TestData.createCollection;
@@ -67,6 +69,8 @@ public class CollectionsIT {
                     throws Exception {
         Collections collections = createCollections();
         ObjectMapper objectMapper = new ObjectMapper();
+        // set time zone to correctly interpret value from test data converted to java.util.Date
+        objectMapper.setTimeZone( TimeZone.getTimeZone( ZoneId.of( "UTC" ) ) );
         String actual = objectMapper.writeValueAsString( collections );
 
         assertEquals( expected( "expectedCollections.json" ), actual, LENIENT );
@@ -77,6 +81,8 @@ public class CollectionsIT {
                     throws Exception {
         Collection collection = createCollection();
         ObjectMapper objectMapper = new ObjectMapper();
+        // set time zone to correctly interpret value from test data converted to java.util.Date
+        objectMapper.setTimeZone( TimeZone.getTimeZone( ZoneId.of( "UTC" ) ) );
         String actual = objectMapper.writeValueAsString( collection );
 
         assertEquals( expected( "expectedCollection.json" ), actual, LENIENT );
