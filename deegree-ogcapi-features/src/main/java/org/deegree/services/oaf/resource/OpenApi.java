@@ -22,6 +22,7 @@
 package org.deegree.services.oaf.resource;
 
 import io.swagger.v3.core.util.Json;
+import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -46,6 +47,8 @@ import java.io.FileNotFoundException;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI_YAML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_YAML;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -72,14 +75,40 @@ public class OpenApi {
                     @PathParam("datasetId")
                                     String datasetId )
                     throws Exception {
-        OpenAPI openApi = this.openApiCreator.createOpenApi( headers, datasetId );
+        return respondWithOpenApi( headers, datasetId, true );
+    }
+    
+    @GET
+    @Produces({ APPLICATION_OPENAPI_YAML, APPLICATION_YAML })
+    @Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
+    @Tag(name = "Capabilities")
+    public Response getOpenApiOpenApiYaml(
+                    @Context HttpHeaders headers,
+                    @Context UriInfo uriInfo,
+                    @PathParam("datasetId")
+                                    String datasetId )
+                    throws Exception {
+        return respondWithOpenApi( headers, datasetId, false );
+    }
+
+    private Response respondWithOpenApi(HttpHeaders headers, String datasetId, boolean json) throws Exception {
+    	OpenAPI openApi = this.openApiCreator.createOpenApi( headers, datasetId );
 
         if ( openApi == null )
             return Response.status( 404 ).build();
-        return Response.status( Response.Status.OK ).entity( Json.mapper().writeValueAsString( openApi ) ).build();
-    }
+        
+        String rendered;
+        if (json) {
+        	rendered = Json.mapper().writeValueAsString( openApi );
+        }
+        else {
+        	rendered = Yaml.mapper().writeValueAsString( openApi );
+        }
+        
+        return Response.status( Response.Status.OK ).entity( rendered ).build();
+	}
 
-    @GET
+	@GET
     @Produces({ TEXT_HTML })
     @Operation(hidden = true)
     public Response getOpenApiHtml() {

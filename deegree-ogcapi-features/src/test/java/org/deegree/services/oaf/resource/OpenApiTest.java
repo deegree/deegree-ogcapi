@@ -38,6 +38,7 @@ import org.junit.rules.TemporaryFolder;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -109,6 +110,12 @@ public class OpenApiTest extends JerseyTest {
     @Test public void test_OpenApiHtmlShouldBeAvailable() {
         int status = target( "/datasets/oaf/api" ).request( MediaType.TEXT_HTML ).get().getStatus();
         assertThat( status, is( 200 ) );
+    }
+    
+    @Test public void test_OpenApiYamlShouldBeAvailable() {
+        Response response = target( "/datasets/oaf/api" ).request( OgcApiFeaturesMediaType.APPLICATION_YAML_TYPE ).get();
+        assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getHeaderString( HttpHeaders.CONTENT_TYPE ), is( OgcApiFeaturesMediaType.APPLICATION_YAML ) );
     }
 
     @Test public void test_OpenApiCssShouldReturnCorrectMimeType() {
