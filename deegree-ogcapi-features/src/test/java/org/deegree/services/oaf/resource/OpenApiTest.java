@@ -23,16 +23,15 @@ package org.deegree.services.oaf.resource;
 
 import org.apache.commons.io.IOUtils;
 import org.deegree.services.oaf.OgcApiFeaturesMediaType;
+import org.deegree.services.oaf.filter.OpenApiAliasFilter;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -42,16 +41,14 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -82,6 +79,7 @@ public class OpenApiTest extends JerseyTest {
         when(servletConfig.getServletContext()).thenReturn(servletContext);
         ResourceConfig resourceConfig = new ResourceConfig();
         resourceConfig.packages("org.deegree.services.oaf.resource");
+        resourceConfig.register(OpenApiAliasFilter.class);
         resourceConfig.register(new AbstractBinder() {
             @Override
             protected void configure() {
@@ -97,6 +95,13 @@ public class OpenApiTest extends JerseyTest {
     @Test
     public void test_OpenApiDeclarationShouldBeAvailable() {
         int status = target("/datasets/oaf/api").request(
+                OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get().getStatus();
+        assertThat(status, is(200));
+    }
+    
+    @Test
+    public void test_OpenApiDeclarationAliasShouldBeAvailable() {
+        int status = target("/datasets/oaf/openapi").request(
                 OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get().getStatus();
         assertThat(status, is(200));
     }
