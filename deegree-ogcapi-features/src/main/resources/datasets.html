@@ -223,9 +223,12 @@ function retrieveBaseUrl() {
   if ( featuresRefWithoutQuery.indexOf('?') >= 0 ) {
     featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.indexOf('?'));
   }
-      if ( featuresRefWithoutQuery.endsWith("/") ) {
-        featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
-      }
+  if ( featuresRefWithoutQuery.endsWith("/") ) {
+    featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 1);
+  }
+  if ( featuresRefWithoutQuery.endsWith(".html") ) {
+    featuresRefWithoutQuery = featuresRefWithoutQuery.substr(0, featuresRefWithoutQuery.length - 5);
+  }
   return featuresRefWithoutQuery;
 }
 </script>
