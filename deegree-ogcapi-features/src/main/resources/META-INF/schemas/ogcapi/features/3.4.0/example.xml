@@ -35,4 +35,8 @@
     <MetadataURL format="text/html">http://localhost:8080/linkZuHTml/89362</MetadataURL>
   </Metadata>
 
+  <ConfigureCollection id="River">
+  	<AddLink href="http://inspire.ec.europa.eu/featureconcept/Building" rel="tag" type="application/json" title="Feature concept Building"/>	
+  </ConfigureCollection>
+  
 </deegreeOAF>

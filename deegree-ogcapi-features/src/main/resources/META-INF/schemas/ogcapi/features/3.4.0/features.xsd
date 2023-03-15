@@ -25,6 +25,21 @@
         </element>
         <element name="HtmlViewId" type="string" minOccurs="0"/>
         <element name="Metadata" type="oaf:MetadataType" minOccurs="0"/>
+        <element name="ConfigureCollection" minOccurs="0" maxOccurs="unbounded" >
+        	<complexType>
+        		<sequence>
+        			<element name="AddLink" minOccurs="0" maxOccurs="unbounded">
+					    <complexType>
+					        <attribute name="href" type="string"/>
+					        <attribute name="rel" type="string"/>
+					        <attribute name="type" type="string"/>
+					        <attribute name="title" type="string"/>
+					    </complexType>
+					</element>	
+        		</sequence>
+        		<attribute name="id" type="string"/>
+        	</complexType>
+		</element>
       </sequence>
       <attribute name="configVersion" use="required">
         <simpleType>
@@ -85,5 +100,4 @@
       </choice>
     </sequence>
   </complexType>
-
 </schema>

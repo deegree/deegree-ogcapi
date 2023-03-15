@@ -29,13 +29,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.RequestFormat;
+import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
+import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection;
+import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection.AddLink;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -54,6 +58,10 @@ import static org.deegree.services.oaf.RequestFormat.HTML;
 import static org.deegree.services.oaf.RequestFormat.JSON;
 import static org.deegree.services.oaf.RequestFormat.XML;
 import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -141,8 +149,32 @@ public class FeatureCollections {
 
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
         Collections collections = dataAccess.createCollections( oafConfiguration, linkBuilder );
+        for(Collection collection: collections.getCollections()) {
+        	addAdditionalCollectionLinks(datasetId, collection);
+        }
+        
         return Response.ok( collections, mediaTypeFromRequestFormat( requestFormat ) ).build();
     }
+    
+    private void addAdditionalCollectionLinks(String datasetId, Collection collection) {
+        Map<String,List<ConfigureCollection>> additionalCollectionMap = DeegreeWorkspaceInitializer.getAdditionalCollectionMap();
+
+        if(additionalCollectionMap.containsKey(datasetId)) {
+       	  List<ConfigureCollection> configureCollectionList = additionalCollectionMap.get(datasetId);
+       	  for(ConfigureCollection additionalcoll: configureCollectionList) {
+       		 if(additionalcoll!=null && collection.getId().equals(additionalcoll.getId())) {
+       		    List<AddLink> addLinks = additionalcoll.getAddLink();
+       		    if(addLinks!=null) {
+                    List<Link> oafLinks = new ArrayList<>();
+                    for(AddLink addLink: addLinks) {
+                       oafLinks.add(new Link(addLink.getHref(), addLink.getRel(), addLink.getType(), addLink.getTitle()));
+                    }
+                    collection.addAdditionalLinks(oafLinks);
+       		    }    
+       		 }
+       	  }
+      }
+   }
 
     private String mediaTypeFromRequestFormat( RequestFormat requestFormat ) {
         return XML.equals( requestFormat ) ? APPLICATION_XML : APPLICATION_JSON;

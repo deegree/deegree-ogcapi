@@ -35,6 +35,7 @@ import org.deegree.services.oaf.exceptions.UnknownAppschema;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
+import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
@@ -72,6 +73,8 @@ public class DeegreeWorkspaceInitializer {
     private static Map<String, HtmlViewConfiguration> htmlViewConfigurations = new HashMap<>();
 
     private static HtmlViewConfiguration globalHtmlViewConfiguration;
+    
+    private static Map<String, List<ConfigureCollection>> additionalCollectionMap = new HashMap<>();
 
     public void initialize() {
         DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
@@ -130,8 +133,13 @@ public class DeegreeWorkspaceInitializer {
             throw new UnknownAppschema( path );
         return appschema;
     }
+    
 
-    public String createAppschemaUrl( UriInfo uriInfo, String uri ) {
+	public static Map<String, List<ConfigureCollection>> getAdditionalCollectionMap() {
+		return additionalCollectionMap;
+	}
+
+	public String createAppschemaUrl( UriInfo uriInfo, String uri ) {
         Path uriPath = Paths.get( URI.create( uri ) );
         if ( uriPath.startsWith( pathToAppschemas ) ) {
             Path relativizeUriPath = pathToAppschemas.relativize( uriPath );
@@ -179,6 +187,7 @@ public class DeegreeWorkspaceInitializer {
             HtmlViewConfiguration htmlViewConfiguration = resource.getHtmlViewConfiguration();
             if ( htmlViewConfiguration != null )
                 htmlViewConfigurations.put( id, htmlViewConfiguration );
+            additionalCollectionMap.put(id, resource.getAdditionalCollectionList());
         } );
     }
 
