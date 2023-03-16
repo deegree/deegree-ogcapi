@@ -21,7 +21,7 @@
  */
 package org.deegree.services.oaf.resource;
 
-import org.apache.commons.io.IOUtils;
+import org.deegree.commons.utils.TunableParameter;
 import org.deegree.services.oaf.OgcApiFeaturesMediaType;
 import org.deegree.services.oaf.filter.OpenApiAliasFilter;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
@@ -49,6 +49,7 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -72,6 +73,8 @@ public class OpenApiTest extends JerseyTest {
 
     @Override
     protected Application configure() {
+    	TunableParameter.resetCache();
+    	
         enable(TestProperties.LOG_TRAFFIC);
         ServletContext servletContext = mock(ServletContext.class);
         when(servletContext.getContextPath()).thenReturn("");
@@ -93,7 +96,7 @@ public class OpenApiTest extends JerseyTest {
         return resourceConfig;
     }
 
-    @Test
+	@Test
     public void test_OpenApiDeclarationShouldBeAvailable() {
         int status = target("/datasets/oaf/api").request(
                 OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get().getStatus();
@@ -128,6 +131,15 @@ public class OpenApiTest extends JerseyTest {
         Response response = target( "/datasets/oaf/api/swagger-ui-bundle.js" ).request().get();
         assertThat( response.getStatus(), is( 200 ) );
         assertThat( response.getMediaType().toString(), is( "text/javascript" ) );
+    }
+    
+    /**
+     * Test that by default there is no CORS header returned.
+     */
+    @Test
+    public void test_OpenApiCorsHeader() {
+        Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get();
+        assertThat( response.getHeaderString( "Access-Control-Allow-Origin" ), is(nullValue()));
     }
 
     @Test

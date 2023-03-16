@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.apache.http.HttpStatus;
+import org.deegree.commons.utils.TunableParameter;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.slf4j.Logger;
 
@@ -39,6 +40,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,6 +58,13 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @Path("/datasets/{datasetId}/api")
 public class OpenApi {
+	
+	/**
+	 * Name for parameter that allows enabling allowing all origins for CORS. 
+	 */
+	public static final String PARAMETER_CORS_ALLOWALL = "deegree.oaf.openapi.cors.allow_all";
+	
+	private final boolean corsAllowAll = TunableParameter.get(PARAMETER_CORS_ALLOWALL, false);
 
     private static final Logger LOG = getLogger( OpenApi.class );
 
@@ -105,7 +114,12 @@ public class OpenApi {
         	rendered = Yaml.mapper().writeValueAsString( openApi );
         }
         
-        return Response.status( Response.Status.OK ).entity( rendered ).build();
+        ResponseBuilder resp = Response.status( Response.Status.OK )
+        		.entity( rendered );
+        if (corsAllowAll) {
+        	resp.header( "Access-Control-Allow-Origin", "*" );
+        }
+        return resp.build();
 	}
 
 	@GET
