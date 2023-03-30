@@ -231,11 +231,45 @@ public class DeegreeDataAccess implements DataAccess {
         String title = featureType.getTitle();
         String description = featureType.getDescription();
         List<String> suppportedCrs = oafConfiguration.getSuppportedCrs();
+        
+        /*
+         * From the codes known for the storage CRS we try to use one that is part of the
+         * supported CRS.
+         * 
+         * For reference from "OGC API Features Part 2: Coordinate Reference Systems":
+         * 
+         * Requirement 4:
+         * The value of the storageCrs property SHALL be one of the CRS identifiers from the list
+         * of supported CRS identifiers found in the collection object using the crs property.
+         */
+        String selectedCode = selectCrsCode( featureType.getStorageCrsCodes(), suppportedCrs );
+        
         return new Collection( featureTypeId, title, description, links, featureType.getExtent(), suppportedCrs,
-                               featureType.getStorageCrs() );
+                               selectedCode );
     }
 
-    private Map<String, String> getFeatureTypeNsPrefixes( FeatureStore featureStore ) {
+    /**
+     * Select a CRS code from the given codes, preferring codes from the given list of supported codes.
+     * If there is no match the first code is used as fall-back.  
+     * 
+     * @param crsCodes codes to select from
+     * @param suppportedCodes the supported/preferred codes
+     * @return the selected code
+     */
+    public static String selectCrsCode(List<String> crsCodes, List<String> suppportedCodes) {
+    	if (crsCodes == null || crsCodes.isEmpty()) {
+    		return null;
+    	}
+    	
+		for (String candidate : crsCodes) {
+			if (suppportedCodes.contains(candidate)) {
+				return candidate;
+			}
+		}
+		return crsCodes.get(0);
+	}
+
+	private Map<String, String> getFeatureTypeNsPrefixes( FeatureStore featureStore ) {
         Map<String, String> prefixToNs = new HashMap<String, String>();
         FeatureType[] featureTypes = featureStore.getSchema().getFeatureTypes();
         for ( FeatureType ft : featureTypes ) {

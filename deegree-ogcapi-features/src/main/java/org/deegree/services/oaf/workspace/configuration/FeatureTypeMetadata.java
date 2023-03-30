@@ -49,7 +49,7 @@ public class FeatureTypeMetadata {
 
     private FeatureType featureType;
 
-    private String storageCrs;
+    private List<String> storageCrsCodes;
 
     public FeatureTypeMetadata( QName featureTypeName ) {
         this.name = featureTypeName;
@@ -91,8 +91,8 @@ public class FeatureTypeMetadata {
         return this;
     }
 
-    public FeatureTypeMetadata storageCrs( String storageCrs ) {
-        this.storageCrs = storageCrs;
+    public FeatureTypeMetadata storageCrsCodes( List<String> storageCrsCodes ) {
+        this.storageCrsCodes = storageCrsCodes;
         return this;
     }
 
@@ -128,7 +128,7 @@ public class FeatureTypeMetadata {
         return featureType;
     }
 
-    public String getStorageCrs() {
-        return storageCrs;
+    public List<String> getStorageCrsCodes() {
+        return storageCrsCodes;
     }
 }
