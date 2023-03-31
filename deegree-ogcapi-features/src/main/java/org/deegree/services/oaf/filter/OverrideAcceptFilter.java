@@ -3,6 +3,7 @@ package org.deegree.services.oaf.filter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,7 @@ public class OverrideAcceptFilter implements ContainerRequestFilter {
 	/**
 	 * Name of query parameter that may specify a media type.
 	 */
-	public static final String QUERY_PARAM = "accept";
+	public static final List<String> QUERY_PARAMS = Collections.unmodifiableList(Arrays.asList("accept", "f")) ;
 	
 	/**
 	 * Map of supported extensions with their translation to a media type.
@@ -52,8 +53,15 @@ public class OverrideAcceptFilter implements ContainerRequestFilter {
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		// Priority 1: Check if query parameter overrides accepted format 
-		List<String> overrideTypes = requestContext.getUriInfo().getQueryParameters().get(QUERY_PARAM);
-		if (overrideTypes != null) {
+		List<String> overrideTypes = new ArrayList<>();
+		for (String param : QUERY_PARAMS) {
+			List<String> values = requestContext.getUriInfo().getQueryParameters().get(param);
+			if (values != null) {
+				overrideTypes.addAll(values);
+			}
+		}
+		
+		if (!overrideTypes.isEmpty()) {
 			// allow using "extensions" instead of mime types
 			overrideTypes = overrideTypes.stream().map(t -> {
 				String mapped = ACCEPT_EXTENSIONS.get(t);
@@ -64,7 +72,7 @@ public class OverrideAcceptFilter implements ContainerRequestFilter {
 			}).collect(Collectors.toList());
 		}
 		
-		if (overrideTypes == null || overrideTypes.isEmpty()) {
+		if (overrideTypes.isEmpty()) {
 			// Priority 2: Check if extension overrides accepted format (only specific extensions supported)
 			String path = requestContext.getUriInfo().getPath();
 			
@@ -82,7 +90,7 @@ public class OverrideAcceptFilter implements ContainerRequestFilter {
 			}
 		}
 		
-		if (overrideTypes != null && !overrideTypes.isEmpty()) {
+		if (!overrideTypes.isEmpty()) {
 			// if accepted type should be overridden prepend it to any existing accept header
 			MultivaluedMap<String, String> headers = requestContext.getHeaders();
 			List<String> newTypes = new ArrayList<>(overrideTypes);

@@ -82,7 +82,9 @@ public class UnknownParameterFilter implements ContainerRequestFilter {
     public void filter( ContainerRequestContext requestContext )
                     throws IOException {
         Set<String> expectedParams = collectExpectedParamsFromAnnotations();
-        expectedParams.add( OverrideAcceptFilter.QUERY_PARAM );
+        for (String param : OverrideAcceptFilter.QUERY_PARAMS) {
+        	expectedParams.add( param );
+        }
         addFilterParamsIfRequired( expectedParams );
         Set<String> requestParams = servletRequest.getParameterMap().keySet();
         requestParams.forEach( param -> {

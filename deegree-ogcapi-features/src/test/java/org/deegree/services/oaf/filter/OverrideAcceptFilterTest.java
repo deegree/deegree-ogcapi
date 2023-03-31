@@ -85,17 +85,31 @@ public class OverrideAcceptFilterTest extends JerseyTest {
     }
     
     @Test
-    public void test_QueryParam() {
+    public void test_QueryParam_Accept() {
         Response response = target( "/datasets/oaf/collections/test" ).queryParam("accept", "xml").request().get();
         assertThat( response.getStatus(), is( 200 ) );
         assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_XML ) );
     }
     
     @Test
-    public void test_QueryParamMediaType() {
+    public void test_QueryParamMediaType_Accept() {
         Response response = target( "/datasets/oaf/collections/test" ).queryParam("accept", APPLICATION_XML).request().get();
         assertThat( response.getStatus(), is( 200 ) );
         assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_XML ) );
+    }
+    
+    @Test
+    public void test_QueryParam_f_xml() {
+        Response response = target( "/datasets/oaf/collections/test" ).queryParam("f", "xml").request().get();
+        assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_XML ) );
+    }
+    
+    @Test
+    public void test_QueryParam_f_json() {
+        Response response = target( "/datasets/oaf/collections/test" ).queryParam("f", "json").request().get();
+        assertThat( response.getStatus(), is( 200 ) );
+        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_JSON ) );
     }
 
     @Test
