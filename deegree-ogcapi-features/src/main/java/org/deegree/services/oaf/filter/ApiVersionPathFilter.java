@@ -32,6 +32,7 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
+import org.deegree.commons.utils.TunableParameter;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 
 /**
@@ -47,6 +48,19 @@ import org.deegree.services.oaf.openapi.OpenApiCreator;
 @Provider
 @PreMatching
 public class ApiVersionPathFilter implements ContainerRequestFilter {
+	
+	/**
+	 * Name for parameter that allows enabling the optional version segment in the path. 
+	 */
+	public static final String PARAMETER_ENABLE_VERSION_SEGMENT = "deegree.oaf.openapi.version_path_segment";
+	
+	/**
+	 * Determine if support for the version segment in the path is enabled.
+	 */
+	public static boolean isVersionPathSegmentEnabled() {
+		// disabled by default
+		return TunableParameter.get(PARAMETER_ENABLE_VERSION_SEGMENT, false);
+	}
 
 	public static String determineVersionSegment() {
 		// extract major version from API version
@@ -67,6 +81,10 @@ public class ApiVersionPathFilter implements ContainerRequestFilter {
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
+		if (!isVersionPathSegmentEnabled()) {
+			return;
+		}
+		
 		UriInfo orgUri = requestContext.getUriInfo();
 		List<PathSegment> segments = orgUri.getPathSegments();
 
