@@ -39,8 +39,8 @@ import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
+import org.deegree.services.ogcapi.features.AddLink;
 import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection;
-import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection.AddLink;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

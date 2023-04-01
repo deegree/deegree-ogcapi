@@ -39,4 +39,8 @@
   	<AddLink href="http://inspire.ec.europa.eu/featureconcept/Building" rel="tag" type="application/json" title="Feature concept Building"/>	
   </ConfigureCollection>
   
+  <ConfigureCollections>
+  	<AddLink href="http://inspire.ec.europa.eu/featureconcept/Building" rel="tag" type="application/json" title="Feature concept Building"/>	
+  </ConfigureCollections>
+  
 </deegreeOAF>

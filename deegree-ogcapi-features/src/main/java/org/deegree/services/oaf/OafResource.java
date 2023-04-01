@@ -54,6 +54,7 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.ogcapi.features.DateTimePropertyType;
 import org.deegree.services.ogcapi.features.DeegreeOAF;
 import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection;
+import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollections;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.ResourceInitException;
@@ -97,8 +98,14 @@ public class OafResource implements Resource {
     
     private List<ConfigureCollection> additionalCollectionList = new ArrayList<>();
     
+    private List<ConfigureCollections> additionalCollectionsList = new ArrayList<>();
+    
     public  List<ConfigureCollection> getAdditionalCollectionList() {
 		return additionalCollectionList;
+	}
+
+	public List<ConfigureCollections> getAdditionalCollectionsList() {
+		return additionalCollectionsList;
 	}
 
 	public OafResource( ResourceMetadata<Resource> metadata, Workspace workspace, DeegreeOAF config ) {
@@ -128,6 +135,8 @@ public class OafResource implements Resource {
             this.htmlViewConfiguration = getHtmlViewConfig( workspace );
             
             this.additionalCollectionList= config.getConfigureCollection();
+            
+            this.additionalCollectionsList= config.getConfigureCollections();
             
             LOG.debug("Initialising deegree ogcapi with " + oafConfiguration + " and HTML view config " + htmlViewConfiguration);
         } catch ( InvalidConfigurationException e ) {
