@@ -1,0 +1,10 @@
+Dockerfile
+.github
+jenkinsfiles
+**/target
+**/.classpath
+**/.project
+**/.settings
+**/.metadata
+**/.idea
+**/*.iml
