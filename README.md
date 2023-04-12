@@ -51,11 +51,14 @@ By default using the Docker image deegree ogcapi is served at the root context (
 
 You can use the environment variable `DEEGREE_CONTEXT_PATH` to use a different context path.
 
-For example, if you run the container using this command, the context `/deegree-services-oaf` context path is used and the Datasets overview page is available at <http://localhost:8080/deegree-services-oaf/datasets>:
+For example, if you run the container using this command, the context path `/deegree-services-oaf` is used and the Datasets overview page is available at <http://localhost:8080/deegree-services-oaf/datasets>:
 
 ```
 docker run --name ogcapi -d -p 8080:8080 -e DEEGREE_CONTEXT_PATH=deegree-services-oaf deegree/deegree-ogcapi:latest
 ```
+
+To use a context path with multiple path segments, you need to use `#` as a separator.
+So if you for instance configure `DEEGREE_CONTEXT_PATH` as `deegree#is#awesome` then the context path is `/deegree/is/awesome`.
 
 #### Configure an API key
 
