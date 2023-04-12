@@ -31,12 +31,12 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
 # copy webapp
 COPY --from=builder /target /webapp
 
-# folder for workspace root
+# default folder for workspace root
 ENV DEEGREE_WORKSPACE_ROOT=/workspaces
-RUN mkdir $DEEGREE_WORKSPACE_ROOT && \
-  (rm -r /usr/local/tomcat/webapps/ROOT || true)
 
-VOLUME $DEEGREE_WORKSPACE_ROOT
+# create default workspace root and delete any existing ROOT webapp
+RUN mkdir /workspaces && \
+  (rm -r /usr/local/tomcat/webapps/ROOT || true)
 
 # copy health check script and make it executable
 COPY ./docker/ /docker-scripts/
