@@ -182,7 +182,7 @@ var App = new Vue({
 
       this.title = json.title;
       this.description = json.description;
-      this.apilink = firstByRel(json, 'service-desc');
+      this.apilink = firstByRel(json, 'service-doc');
       this.collectionlink = firstByRel(json, 'data');
       this.conformanceLink = firstByRel(json, 'conformance');
       this.metadataLink = firstByRel(json, 'describedBy', true);
