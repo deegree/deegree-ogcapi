@@ -34,7 +34,7 @@ The following table show the resources available per dataset:
 |===
 |Resource |Path |HTTP method |Supported Encodings |Description
 |Landing page |`/` |GET |`text/html`, `application/json` |Landing page is the top-level resource, which serves as an entry point per dataset
-|OpenAPI |`/api` |GET | `text/html`, `application/json` |API specification document provides metadata about the API itself
+|OpenAPI |`/api` |GET | `text/html`, `application/json`, `application/yaml` |API specification document provides metadata about the API itself
 |Conformance declaration |`/conformance` |GET |`text/html`, `application/json` |Declaration of conformance classes presents information about the functionality that is implemented by the server
 |Feature collections |`/collections` |GET | `text/html`, `application/json`, `application/xml` |Feature collections overview
 |Feature collection |`+/collections/{collectionId}+` |GET | `text/html`, `application/json`, `application/xml` |Feature collection identified by {collectionId}

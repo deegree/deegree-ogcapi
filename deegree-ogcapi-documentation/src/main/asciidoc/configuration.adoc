@@ -457,3 +457,8 @@ The REST-API is enabled by default. To protect this interface from unauthorized 
 
 A detailed documentation of the REST-API interface and how access is configured is described in section "deegree REST interface"
 of the https://download.deegree.org/documentation/3.4.17/html/#anchor-configuration-restapi[deegree webservices handbook].
+
+=== Allow access to OpenAPI document from all origins
+
+In case you want to avoid any issues when using the OpenAPI document from other locations due to CORS, you can enable allowing all origins specifically for accessing the OpenAPI document.
+To enable this set the system property ```deegree.oaf.openapi.cors.allow_all``` to _true_.
