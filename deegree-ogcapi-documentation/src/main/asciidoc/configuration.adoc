@@ -195,6 +195,15 @@ The next example shows a complete configuration for a dataset called "trees" wit
     <MetadataURL format="text/html">http://example.metadata.org/path_to_html/1234</MetadataURL> <!--11-->
   </Metadata>
 
+  <ConfigureCollection id="SimpleFeature"> <!--12-->
+    <AddLink href="https://inspire.ec.europa.eu/featureconcept/XXX" rel="tag" type="text/html" title="Feature concept XXX"/>
+  </ConfigureCollection>
+
+  <ConfigureCollections> <!--13-->
+    <AddLink href="https://github.com/INSPIRE-MIF/XXX" rel="describedby" type="text/html" title="Encoding description"/>
+  </ConfigureCollections>
+
+
 </deegreeOAF>
 ----
 <1> identifier of the feature store configuration, links to file _datasources/feature/trees.xml_
@@ -208,6 +217,8 @@ The next example shows a complete configuration for a dataset called "trees" wit
 <9> dataset provider contact details
 <10> metadata link in format `application/xml` for the dataset (optional)
 <11> metadata link in format `text/html` for the dataset (optional)
+<12> configure additional links for an individual collection. In the example, an additional link to the INSPIRE feature concept for the collection is provided (optional) (required by INSPIRE)
+<13> configure additional links for all collections. In the example, an additional link to the alternative encoding description for collections is provided (optional) (recommended by INSPIRE)
 
 NOTE: The dataset configuration file must be stored in the subdirectory _ogcapi/_. The file is mandatory.
 
@@ -221,6 +232,8 @@ This configuration file can contain the following elements:
 |DateTimeProperties |0..1 |Complex |Configuration of date and time properties, see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_parameter_datetime[parameter datetime in the OGC API specification] for more information
 |HtmlViewId |0..1 |String |Identifier of the HTML encoding configuration, see <<config_htmlview>> for more information
 |Metadata |0..1 |Complex |Configuration of the dataset metadata provided on the dataset's landing page
+|ConfigureCollection |0..1 |Complex |Custom configuration for an individual collection
+|ConfigureCollections |0..1 |Complex |Custom configuration for all collections
 |===
 
 The element ```<DateTimeProperties/>``` can contain multiple elements of ```<DateTimeProperty/>``` which has the following subelements:
@@ -243,7 +256,25 @@ The element ```<Metadata/>``` has the following subelements:
 |MetadataURL |0..n |URL |URL of the metadata record describing the dataset, use the attribute `format` to link HTML or XML representation. Use this link to a metadata record when you have a metadata record describing all containing feature collections. Otherwise use the element `<Dataset>` as described in the next chapter <<config_metadata>>.
 |===
 
+The element ```<ConfigureCollection/>``` has the following subelement:
+
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|AddLink |0..1 |Complex | URL of additional link
+|===
+
+The element ```<ConfigureCollections/>``` has the following subelement:
+
+[width="100%",cols="25%,15%,20%,40%",options="header",]
+|===
+|Option |Cardinality |Value |Description
+|AddLink |0..1 |Complex | URL of additional link
+|===
+
 The elements ```<ProviderLicense/>``` and ```<DatasetLicense/>``` can have either a ```<Name/>``` and ```<Description/>``` element or a ```<Name/>``` and ```<URL/>``` element. The ```<URL/>``` can have an optional attribute `format` specifying the media type such as `application/xml` (default is `text/html`). Same applies to the element ```<MetadataURL/>```.
+
+The ```<AddLink/>``` elements in ```<ConfigureCollection/>``` and ```<ConfigureCollections/>``` have ```href```, ```rel```, ```type``` and ```title``` parameters.
 
 See the following section <<config_metadata>> for more configuration options for metadata.
 
