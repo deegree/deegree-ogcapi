@@ -458,6 +458,10 @@ The REST-API is enabled by default. To protect this interface from unauthorized 
 A detailed documentation of the REST-API interface and how access is configured is described in section "deegree REST interface"
 of the https://download.deegree.org/documentation/3.4.17/html/#anchor-configuration-restapi[deegree webservices handbook].
 
+=== Enable response header with API version
+
+Set the system property ```deegree.oaf.openapi.version_response_header``` to _true_ to enable returning a response header ```API-Version``` with the version of the implemented OGC API Features.
+
 === Allow access to OpenAPI document from all origins
 
 In case you want to avoid any issues when using the OpenAPI document from other locations due to CORS, you can enable allowing all origins specifically for accessing the OpenAPI document.
