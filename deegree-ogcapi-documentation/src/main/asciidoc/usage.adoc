@@ -49,7 +49,7 @@ NOTE: The context for the listed resource is _datasets/{datasetId}_. The OGC API
 [[openapi]]
 === OpenAPI document
 
-The OpenAPI page is available under the context _/api_. The use of _/api_ on the server is optional and the API definition may be hosted on completely separate server.
+The OpenAPI page is available under the context _/api_ or _/openapi_. The use of _/api_ on the server is optional and the API definition may be hosted on completely separate server.
 If you have deployed the deegree OAF webapp under the context of _deegree-services-oaf_ and you have a dataset configured with the name
 _streets_ the resulting request path would be _/deegree-services-oaf/datasets/streets/api_.
 
