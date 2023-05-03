@@ -242,7 +242,7 @@ public class LinkBuilder {
 
     private void addServiceDesc( List<Link> links, String apiHref ) {
         links.add( new Link( apiHref, SERVICE_DESC.getRel(), APPLICATION_OPENAPI, "API definition" ) );
-        links.add( new Link( apiHref, SERVICE_DESC.getRel(), TEXT_HTML, "API definition as HTML" ) );
+        links.add( new Link( apiHref, SERVICE_DOC.getRel(), TEXT_HTML, "API definition as HTML" ) );
     }
 
     private void addData( List<Link> links, String collectionsHref ) {

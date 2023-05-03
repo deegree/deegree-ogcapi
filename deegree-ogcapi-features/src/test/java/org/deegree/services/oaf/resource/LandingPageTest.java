@@ -55,6 +55,7 @@ import static org.deegree.services.oaf.link.LinkRelation.CONFORMANCE;
 import static org.deegree.services.oaf.link.LinkRelation.DATA;
 import static org.deegree.services.oaf.link.LinkRelation.SELF;
 import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DESC;
+import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DOC;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
@@ -185,7 +186,7 @@ public class LandingPageTest extends JerseyTest {
         assertThat( xml, hasXPath( linkWith( ALTERNATE, APPLICATION_XML ) ).withNamespaceContext( nsContext() ) );
         assertThat( xml,
                     hasXPath( linkWith( SERVICE_DESC, APPLICATION_OPENAPI ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( SERVICE_DESC, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
+        assertThat( xml, hasXPath( linkWith( SERVICE_DOC, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
         assertThat( xml, hasXPath( linkWith( CONFORMANCE, APPLICATION_JSON ) ).withNamespaceContext( nsContext() ) );
         assertThat( xml, hasXPath( linkWith( CONFORMANCE, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
         assertThat( xml, hasXPath( linkWith( CONFORMANCE, APPLICATION_XML ) ).withNamespaceContext( nsContext() ) );
