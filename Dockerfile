@@ -28,32 +28,36 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
   org.opencontainers.image.source=$VCS_URL \
   org.opencontainers.image.revision=$VCS_REF
 
-# tomcat port
-EXPOSE 8080
-
-# get dataset list as health check
-HEALTHCHECK \
-    --interval=60s \
-    --timeout=15s \
-    --start-period=2m \
-    --retries=3 \
-    CMD curl --fail http://localhost:8080/datasets || exit 1
-
 # copy webapp
 COPY --from=builder /target /webapp
 
-# folder for workspace root
+# default folder for workspace root
 ENV DEEGREE_WORKSPACE_ROOT=/workspaces
-RUN mkdir $DEEGREE_WORKSPACE_ROOT && \
+
+# create default workspace root and delete any existing ROOT webapp
+RUN mkdir /workspaces && \
   (rm -r /usr/local/tomcat/webapps/ROOT || true)
 
-VOLUME $DEEGREE_WORKSPACE_ROOT
+# copy health check script and make it executable
+COPY ./docker/ /docker-scripts/
+RUN chmod a+x /docker-scripts/*.sh
+
+# health check (get dataset list)
+HEALTHCHECK \
+  --interval=60s \
+  --timeout=15s \
+  --start-period=2m \
+  --retries=3 \
+  CMD /docker-scripts/liveness-check.sh
 
 # context path to deploy webapp at; defaults to ROOT, can be overridden for container
 ENV DEEGREE_CONTEXT_PATH=ROOT
 
 # API key to use; if empty will not change API key
 ENV DEEGREE_API_KEY=
+
+# tomcat port
+EXPOSE 8080
 
 # Good article on possibilities to control context path:
 # https://octopus.com/blog/defining-tomcat-context-paths

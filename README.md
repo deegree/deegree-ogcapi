@@ -42,6 +42,7 @@ By default the application runs in the root context, so you can then access the 
 
 The container expects the configuration for the default workspace, the API key and the workspace folders at `/workspaces`.
 You can mount a folder to this location or use a volume.
+If you want to use a different folder within the container you need to override the environment variable `DEEGREE_WORKSPACE_ROOT`.
 
 See the [Docker CLI documentation](https://docs.docker.com/engine/reference/commandline/cli/) for more information how to connect a container to a network, mount a volume into the container, or set environment variables.
 
@@ -51,11 +52,14 @@ By default using the Docker image deegree ogcapi is served at the root context (
 
 You can use the environment variable `DEEGREE_CONTEXT_PATH` to use a different context path.
 
-For example, if you run the container using this command, the context `/deegree-services-oaf` context path is used and the Datasets overview page is available at <http://localhost:8080/deegree-services-oaf/datasets>:
+For example, if you run the container using this command, the context path `/deegree-services-oaf` is used and the Datasets overview page is available at <http://localhost:8080/deegree-services-oaf/datasets>:
 
 ```
 docker run --name ogcapi -d -p 8080:8080 -e DEEGREE_CONTEXT_PATH=deegree-services-oaf deegree/deegree-ogcapi:latest
 ```
+
+To use a context path with multiple path segments, you need to use `#` as a separator.
+So if you for instance configure `DEEGREE_CONTEXT_PATH` as `deegree#is#awesome` then the context path is `/deegree/is/awesome`.
 
 #### Configure an API key
 
