@@ -141,6 +141,14 @@
                   </div>
                 </div>
             </div>
+            <div class="row mt-2" v-if="itemType">
+                <div class="col-md-3">Item type</div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div v-cloak class="col-md-12" >{{ itemType }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -185,7 +193,8 @@ var App = new Vue({
     metadataLinks: '',
     extent: '',
     crs: '',
-    storageCrs: ''
+    storageCrs: '',
+    itemType: ''
   },
 
   created() {
@@ -206,6 +215,7 @@ var App = new Vue({
       this.extent = json.extent;
       this.crs = json.crs;
       this.storageCrs = json.storageCrs;
+      this.itemType = json.itemType;
       fetchConfigAndSetExtent(this.extent.spatial.bbox[0]);
     }
   }
