@@ -62,6 +62,10 @@ public class Collections extends OafDomainResource {
     public void setLinks( List<Link> links ) {
         this.links = links;
     }
+    
+    public void addAdditionalLinks( List<Link> links ) {
+        this.links.addAll(links);
+    }
 
     public List<Collection> getCollections() {
         return collections;

@@ -135,6 +135,11 @@ public class Collection {
         this.links = links;
     }
 
+
+    public void addAdditionalLinks( List<Link> links ) {
+        this.links.addAll(links);
+    }
+    
     public String getItemType() {
         return itemType;
     }

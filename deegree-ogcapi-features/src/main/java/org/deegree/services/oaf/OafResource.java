@@ -27,7 +27,6 @@ import org.deegree.commons.tom.ows.LanguageString;
 import org.deegree.commons.tom.primitive.BaseType;
 import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.commons.utils.Pair;
-import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
@@ -54,6 +53,8 @@ import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.ogcapi.features.DateTimePropertyType;
 import org.deegree.services.ogcapi.features.DeegreeOAF;
+import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection;
+import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollections;
 import org.deegree.workspace.Resource;
 import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.ResourceInitException;
@@ -94,8 +95,20 @@ public class OafResource implements Resource {
     private OafDatasetConfiguration oafConfiguration;
 
     private HtmlViewConfiguration htmlViewConfiguration;
+    
+    private List<ConfigureCollection> additionalCollectionList = new ArrayList<>();
+    
+    private List<ConfigureCollections> additionalCollectionsList = new ArrayList<>();
+    
+    public  List<ConfigureCollection> getAdditionalCollectionList() {
+		return additionalCollectionList;
+	}
 
-    public OafResource( ResourceMetadata<Resource> metadata, Workspace workspace, DeegreeOAF config ) {
+	public List<ConfigureCollections> getAdditionalCollectionsList() {
+		return additionalCollectionsList;
+	}
+
+	public OafResource( ResourceMetadata<Resource> metadata, Workspace workspace, DeegreeOAF config ) {
         this.metadata = metadata;
         this.workspace = workspace;
         this.config = config;
@@ -120,6 +133,11 @@ public class OafResource implements Resource {
             this.oafConfiguration = new OafDatasetConfiguration( id, featureTypeMetadata, datasetMetadata, supportedCrs,
                                                                  featureStores, useExistingGMLSchema );
             this.htmlViewConfiguration = getHtmlViewConfig( workspace );
+            
+            this.additionalCollectionList= config.getConfigureCollection();
+            
+            this.additionalCollectionsList= config.getConfigureCollections();
+            
             LOG.debug("Initialising deegree ogcapi with " + oafConfiguration + " and HTML view config " + htmlViewConfiguration);
         } catch ( InvalidConfigurationException e ) {
             throw new ResourceInitException( "OAF Configuration could not be parsed", e );

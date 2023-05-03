@@ -25,6 +25,23 @@
         </element>
         <element name="HtmlViewId" type="string" minOccurs="0"/>
         <element name="Metadata" type="oaf:MetadataType" minOccurs="0"/>
+        <element name="ConfigureCollection" minOccurs="0" maxOccurs="unbounded" >
+        	<complexType>
+        		<sequence>
+        			<element name="AddLink" minOccurs="0" maxOccurs="unbounded" type="oaf:AddLink"/>
+        		</sequence>
+        		<attribute name="id" type="string"/>
+        	</complexType>
+		</element>
+		
+        <element name="ConfigureCollections" minOccurs="0" maxOccurs="unbounded">
+         <complexType>
+          <sequence>
+            <element name="AddLink" minOccurs="0" maxOccurs="unbounded" type="oaf:AddLink"/>
+          </sequence>
+          </complexType>
+        </element>
+		
       </sequence>
       <attribute name="configVersion" use="required">
         <simpleType>
@@ -36,6 +53,14 @@
     </complexType>
   </element>
 
+ 
+  <complexType name="AddLink">
+      <attribute name="href" type="string"/>
+      <attribute name="rel" type="string"/>
+      <attribute name="type" type="string"/>
+      <attribute name="title" type="string"/>
+  </complexType> 
+  
   <complexType name="DateTimePropertyType">
     <sequence>
       <element name="FeatureTypeName" type="QName"/>
@@ -85,5 +110,4 @@
       </choice>
     </sequence>
   </complexType>
-
 </schema>
