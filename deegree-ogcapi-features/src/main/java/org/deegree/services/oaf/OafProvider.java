@@ -45,7 +45,7 @@ public class OafProvider extends OgcApiProvider {
 
     @Override
     public URL getSchema() {
-        return OafProvider.class.getResource( "/META-INF/schemas/ogcapi/features/3.4.0/features.xsd" );
+        return OafProvider.class.getResource( "/META-INF/schemas/ogcapi/features.xsd" );
     }
 
 }
