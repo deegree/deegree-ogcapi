@@ -912,6 +912,7 @@
     <module>deegree-ogcapi-config</module>
     <module>deegree-ogcapi-config-htmlview</module>
     <module>deegree-ogcapi-webapp</module>
+    <module>deegree-ogcapi-schema</module>
   </modules>
 
   <profiles>
