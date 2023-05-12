@@ -567,6 +567,12 @@
         <groupId>org.deegree</groupId>
         <artifactId>deegree-core-commons</artifactId>
         <version>${deegree-version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.deegree</groupId>
@@ -749,11 +755,12 @@
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>2.12.2</version>
-      </dependency>
-      <dependency>
-        <groupId>xml-apis</groupId>
-        <artifactId>xml-apis</artifactId>
-        <version>1.4.01</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>xml-apis</artifactId>
+            <groupId>xml-apis</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- logging -->
       <dependency>
