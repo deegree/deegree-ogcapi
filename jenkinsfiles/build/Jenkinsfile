@@ -1,21 +1,27 @@
 pipeline {
   agent any
+  options {
+      disableConcurrentBuilds()
+  }
   tools {
-    maven 'maven-3.8'
+    maven 'maven-3.9'
     jdk 'adoptopenjdk-jdk11'
     git 'git-default'
   }
+  environment {
+    MAVEN_OPTS='-Djava.awt.headless=true -Xmx4096m'
+  }
   stages {
-    stage('Preparation') {
+    stage('Initialize') {
       steps {
         sh 'mvn --version'
         sh 'java -version'
-        sh 'mkdir -p ./mvn_local_repo'
+        sh 'git --version'
       }
     }
-    stage('Build-jdk11') {
+    stage('Build') {
       steps {
-        sh 'mvn -Djava.awt.headless=true -fae -U -s ${WORKSPACE}/settings.xml clean install'
+        sh 'mvn -B -fae clean install'
       }
       post {
         always {
@@ -26,15 +32,34 @@ pipeline {
         }
       }
     }
+    stage ('Quality Checks') {
+        when {
+            branch 'main'
+        }
+        steps {
+            echo 'Quality checking'
+            sh 'mvn -B -fae com.github.spotbugs:spotbugs-maven-plugin:spotbugs javadoc:javadoc'
+        }
+        post {
+            always {
+                recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc(), spotBugs()]
+            }
+        }
+    }
     stage('Deploy') {
         when {
             branch 'main'
         }
       steps {
         withCredentials([usernamePassword(credentialsId: 'nexus-deploy', passwordVariable: 'PASSWORD_VAR', usernameVariable: 'USERNAME_VAR')]) {
-            sh 'mvn deploy -Dskip.unit.tests=true -s ${WORKSPACE}/settings.xml -Drepo.username=${USERNAME_VAR} -Drepo.password=${PASSWORD_VAR} -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
+            sh 'mvn -B deploy -Dskip.unit.tests=true -s ${WORKSPACE}/settings.xml -Drepo.username=${USERNAME_VAR} -Drepo.password=${PASSWORD_VAR} -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle'
         }
       }
     }
+  }
+  post {
+      always {
+          cleanWs notFailBuild: true
+      }
   }
 }
