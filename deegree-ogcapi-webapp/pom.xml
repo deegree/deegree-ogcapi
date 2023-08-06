@@ -41,7 +41,7 @@
         <plugin>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.4.45.v20220203</version>
+          <version>11.0.15</version>
           <configuration>
             <webApp>
               <contextPath>/deegree-ogcapi</contextPath>
@@ -60,14 +60,8 @@
               <idleTimeout>60000</idleTimeout>
             </httpConnector>
             <systemProperties>
-              <systemProperty>
-                <name>org.eclipse.jetty.util.log.class</name>
-                <value>org.eclipse.jetty.util.log.Slf4jLog</value>
-              </systemProperty>
-              <systemProperty>
-                <name>log4j2.configurationFile</name>
-                <value>/log4j2.properties</value>
-              </systemProperty>
+              <org.eclipse.jetty.util.log.class>org.eclipse.jetty.util.log.Slf4jLog</org.eclipse.jetty.util.log.class>
+              <log4j2.configurationFile>log4j2.properties</log4j2.configurationFile>
             </systemProperties>
           </configuration>
           <executions>
