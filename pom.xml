@@ -666,6 +666,12 @@
         <artifactId>jakarta.xml.bind-api</artifactId>
         <version>2.3.3</version>
       </dependency>
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>2.3.8</version>
+        <scope>runtime</scope>
+      </dependency>
       <!-- swagger -->
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
@@ -889,7 +895,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
-    <java.version>1.8</java.version>
+    <java.version>11</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>2.36</jersey-version>
     <swagger-version>2.1.13</swagger-version>
@@ -981,23 +987,6 @@
           </plugin>
         </plugins>
       </reporting>
-    </profile>
-    <profile>
-      <id>jdk11</id>
-      <activation>
-        <jdk>[11,)</jdk>
-      </activation>
-      <properties>
-        <java.version>11</java.version>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>org.glassfish.jaxb</groupId>
-          <artifactId>jaxb-runtime</artifactId>
-          <version>2.3.5</version>
-          <scope>runtime</scope>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
 
