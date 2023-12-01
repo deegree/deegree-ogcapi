@@ -11,6 +11,11 @@ pipeline {
   environment {
     MAVEN_OPTS='-Djava.awt.headless=true -Xmx4096m'
   }
+  parameters {
+        string name: 'REL_VERSION', defaultValue: "1.3.x", description: 'Next release version'
+        string name: 'DEV_VERSION', defaultValue: "1.3.x-SNAPSHOT", description: 'Next snapshot version'
+        booleanParam name: 'PERFORM_RELEASE', defaultValue: false, description: 'Perform release build (on main branch only)'
+  }
   stages {
     stage('Initialize') {
       steps {
@@ -21,7 +26,7 @@ pipeline {
     }
     stage('Build') {
       steps {
-        sh 'mvn -B -fae clean install'
+        sh 'mvn -B -C -fae clean install'
       }
       post {
         always {
@@ -54,6 +59,24 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'nexus-deploy', passwordVariable: 'PASSWORD_VAR', usernameVariable: 'USERNAME_VAR')]) {
             sh 'mvn -B deploy -Dskip.unit.tests=true -s ${WORKSPACE}/settings.xml -Drepo.username=${USERNAME_VAR} -Drepo.password=${PASSWORD_VAR} -pl :deegree-ogcapi-webapp-postgres,:deegree-ogcapi-webapp-oracle,:deegree-ogcapi-documentation,:deegree-ogcapi-schema'
         }
+      }
+    }
+    stage ('Release') {
+      when {
+          allOf {
+              triggeredBy cause: "UserIdCause", detail: "tmc"
+              expression { return params.PERFORM_RELEASE }
+          }
+      }
+      steps {
+          echo 'Prepare release version ${REL_VERSION}'
+          sh 'mvn -Dresume=false -DreleaseVersion=${REL_VERSION} -DdevelopmentVersion=${DEV_VERSION} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform'
+      }
+      post {
+          success {
+              archiveArtifacts artifacts: '**/target/deegree-ogcapi-webapp-*.war', fingerprint: true
+              archiveArtifacts artifacts: '**/target/deegree-ogcapi-documentation*.zip', fingerprint: true
+          }
       }
     }
   }
