@@ -45,7 +45,7 @@ public class DatasetsConfigProvider extends OgcApiDatasetsProvider {
 
     @Override
     public URL getSchema() {
-        return DatasetsConfigProvider.class.getResource( "/META-INF/schemas/ogcapi/datasets/3.4.0/datasets.xsd" );
+        return DatasetsConfigProvider.class.getResource( "/META-INF/schemas/ogcapi/datasets.xsd" );
     }
 
 }
