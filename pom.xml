@@ -143,6 +143,13 @@
             <!-- Travis build workaround -->
             <argLine>-Xms1024m -Xmx2048m</argLine>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.surefire</groupId>
+              <artifactId>surefire-junit47</artifactId>
+              <version>3.2.2</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
