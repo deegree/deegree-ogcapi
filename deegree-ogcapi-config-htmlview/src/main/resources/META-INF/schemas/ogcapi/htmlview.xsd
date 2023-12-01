@@ -52,13 +52,6 @@
           </complexType>
         </element>
       </sequence>
-      <attribute name="configVersion" use="required">
-        <simpleType>
-          <restriction base="string">
-            <enumeration value="3.4.0"/>
-          </restriction>
-        </simpleType>
-      </attribute>
     </complexType>
   </element>
 </schema>

@@ -45,7 +45,7 @@ public class HtmlViewConfigProvider extends OgcApiConfigProvider {
 
     @Override
     public URL getSchema() {
-        return HtmlViewConfigProvider.class.getResource( "/META-INF/schemas/ogcapi/htmlview/3.4.0/htmlview.xsd" );
+        return HtmlViewConfigProvider.class.getResource( "/META-INF/schemas/ogcapi/htmlview.xsd" );
     }
 
 }
