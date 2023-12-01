@@ -61,8 +61,7 @@ pipeline {
         }
       }
     }
-  }
-  stage ('Release') {
+    stage ('Release') {
       when {
           allOf {
               triggeredBy cause: "UserIdCause", detail: "tmc"
@@ -79,6 +78,7 @@ pipeline {
               archiveArtifacts artifacts: '**/target/deegree-ogcapi-documentation*.zip', fingerprint: true
           }
       }
+    }
   }
   post {
       always {
