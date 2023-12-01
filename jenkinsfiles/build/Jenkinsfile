@@ -5,6 +5,14 @@ pipeline {
     jdk 'adoptopenjdk-jdk11'
     git 'git-default'
   }
+  environment {
+    MAVEN_OPTS='-Djava.awt.headless=true -Xmx4096m'
+  }
+  parameters {
+        string name: 'REL_VERSION', defaultValue: "1.3.x", description: 'Next release version'
+        string name: 'DEV_VERSION', defaultValue: "1.3.x-SNAPSHOT", description: 'Next snapshot version'
+        booleanParam name: 'PERFORM_RELEASE', defaultValue: false, description: 'Perform release build (on main branch only)'
+  }
   stages {
     stage('Preparation') {
       steps {
@@ -15,7 +23,7 @@ pipeline {
     }
     stage('Build-jdk11') {
       steps {
-        sh 'mvn -Djava.awt.headless=true -fae -U -s ${WORKSPACE}/settings.xml clean install'
+        sh 'mvn -B -C -fae clean install'
       }
       post {
         always {
@@ -36,5 +44,28 @@ pipeline {
         }
       }
     }
+  }
+  stage ('Release') {
+      when {
+          allOf {
+              triggeredBy cause: "UserIdCause", detail: "tmc"
+              expression { return params.PERFORM_RELEASE }
+          }
+      }
+      steps {
+          echo 'Prepare release version ${REL_VERSION}'
+          sh 'mvn -Dresume=false -DreleaseVersion=${REL_VERSION} -DdevelopmentVersion=${DEV_VERSION} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform'
+      }
+      post {
+          success {
+              archiveArtifacts artifacts: '**/target/deegree-ogcapi-webapp-*.war', fingerprint: true
+              archiveArtifacts artifacts: '**/target/deegree-ogcapi-documentation*.zip', fingerprint: true
+          }
+      }
+  }
+  post {
+      always {
+          cleanWs notFailBuild: true
+      }
   }
 }
