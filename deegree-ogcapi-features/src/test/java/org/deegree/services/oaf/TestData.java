@@ -51,6 +51,7 @@ import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -202,8 +203,8 @@ public class TestData {
 
     private static Temporal createTemporal() {
         List<Date> interval = new ArrayList<>();
-        DateTime end = new DateTime( 2020, 4, 22, 12, 0, 0, 0 );
-        DateTime begin = new DateTime( 2020, 4, 15, 12, 0, 0, 0 );
+        DateTime end = new DateTime( 2020, 4, 22, 12, 0, 0, 0, DateTimeZone.UTC );
+        DateTime begin = new DateTime( 2020, 4, 15, 12, 0, 0, 0, DateTimeZone.UTC );
         interval.add( end.toDate() );
         interval.add( begin.toDate() );
         return new Temporal( interval, null );

@@ -30,17 +30,6 @@
 
   <repositories>
     <repository>
-      <id>deegree-ogcapi-repo</id>
-      <url>https://repo.deegree.org/repository/public-ogcapi/</url>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <!--
-    <repository>
       <id>deegree-repo</id>
       <url>https://repo.deegree.org/content/groups/public/</url>
       <releases>
@@ -50,7 +39,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-  -->
   </repositories>
 
   <distributionManagement>
@@ -99,7 +87,7 @@
         <plugin>
           <groupId>org.jvnet.jaxb2.maven2</groupId>
           <artifactId>maven-jaxb2-plugin</artifactId>
-          <version>0.15.1</version>
+          <version>0.15.3</version>
           <executions>
             <execution>
               <goals>
@@ -125,19 +113,19 @@
             <dependency>
               <groupId>org.glassfish.jaxb</groupId>
               <artifactId>jaxb-runtime</artifactId>
-              <version>2.3.4</version>
+              <version>2.3.9</version>
             </dependency>
           </dependencies>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.4.2</version>
+          <version>3.6.0</version>
           <configuration>
             <tarLongFileMode>gnu</tarLongFileMode>
           </configuration>
@@ -145,12 +133,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.6.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.2</version>
+          <version>3.2.2</version>
           <configuration>
             <!-- Travis build workaround -->
             <argLine>-Xms1024m -Xmx2048m</argLine>
@@ -159,12 +147,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.22.2</version>
+          <version>3.2.2</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
-          <version>2.12.0</version>
+          <version>2.16.1</version>
         </plugin>
         <!-- reporting and site -->
         <plugin>
@@ -182,42 +170,42 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.1.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>3.3.2</version>
+          <version>3.4.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>3.11.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.2.2</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.1</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>buildnumber-maven-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>3.6.2</version>
           <configuration>
             <doclint>none</doclint>
           </configuration>
@@ -225,12 +213,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>3.0.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
-          <version>1.12.0</version>
+          <version>2.1.0</version>
         </plugin>
         <!-- git describe -->
         <plugin>
@@ -241,12 +229,12 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>properties-maven-plugin</artifactId>
-          <version>1.0.0</version>
+          <version>1.2.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.4.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -334,7 +322,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.2</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -461,7 +449,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>2.3.0</version>
       </plugin>
     </plugins>
   </build>
@@ -471,7 +459,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.4.1</version>
+        <version>3.6.2</version>
         <configuration>
           <doclint>none</doclint>
           <detectLinks>false</detectLinks>
@@ -567,6 +555,12 @@
         <groupId>org.deegree</groupId>
         <artifactId>deegree-core-commons</artifactId>
         <version>${deegree-version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.deegree</groupId>
@@ -672,6 +666,12 @@
         <artifactId>jakarta.xml.bind-api</artifactId>
         <version>2.3.3</version>
       </dependency>
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>2.3.9</version>
+        <scope>runtime</scope>
+      </dependency>
       <!-- swagger -->
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
@@ -701,7 +701,7 @@
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-integration</artifactId>
-        <version>2.1.11</version>
+        <version>2.1.13</version>
       </dependency>
       <!-- jackson -->
       <dependency>
@@ -749,11 +749,12 @@
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>2.12.2</version>
-      </dependency>
-      <dependency>
-        <groupId>xml-apis</groupId>
-        <artifactId>xml-apis</artifactId>
-        <version>1.4.01</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>xml-apis</artifactId>
+            <groupId>xml-apis</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- logging -->
       <dependency>
@@ -811,13 +812,13 @@
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.8.3</version>
+        <version>2.9.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-matchers</artifactId>
-        <version>2.8.3</version>
+        <version>2.9.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -829,7 +830,7 @@
       <dependency>
         <groupId>org.skyscreamer</groupId>
         <artifactId>jsonassert</artifactId>
-        <version>1.5.0</version>
+        <version>1.5.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -847,7 +848,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.0.29</version>
+        <version>2.0.33</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -863,7 +864,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.4.14</version>
+        <version>4.4.16</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
@@ -880,7 +881,7 @@
       <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
-        <version>2.9.7</version>
+        <version>2.9.9</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -894,13 +895,13 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
-    <java.version>1.8</java.version>
+    <java.version>11</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>2.36</jersey-version>
-    <swagger-version>2.1.13</swagger-version>
+    <swagger-version>2.2.11</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
-    <jackson-version>2.14.1</jackson-version>
-    <deegree-version>3.5.0-SNAPSHOT</deegree-version>
+    <jackson-version>2.14.3</jackson-version>
+    <deegree-version>3.5.4</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
     <log4j.version>2.17.2</log4j.version>
   </properties>
@@ -923,7 +924,7 @@
           <plugin>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-maven-plugin</artifactId>
-            <version>4.4.2</version>
+            <version>4.7.3.5</version>
             <configuration>
               <xmlOutput>true</xmlOutput>
               <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
@@ -933,7 +934,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.16.0</version>
+            <version>3.21.2</version>
             <configuration>
               <linkXref>true</linkXref>
               <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
@@ -950,7 +951,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>3.1.2</version>
+            <version>3.3.1</version>
             <configuration>
               <configLocation>checkstyle.xml</configLocation>
             </configuration>
@@ -958,12 +959,12 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jxr-plugin</artifactId>
-            <version>3.3.0</version>
+            <version>3.3.1</version>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>3.2.2</version>
+            <version>3.4.5</version>
             <configuration>
               <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
               <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
@@ -972,7 +973,11 @@
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
-            <version>7.2.1</version>
+            <version>8.4.3</version>
+            <configuration>
+              <cveValidForHours>24</cveValidForHours>
+              <knownExploitedEnabled>false</knownExploitedEnabled>
+            </configuration>
             <reportSets>
               <reportSet>
                 <reports>
@@ -983,23 +988,6 @@
           </plugin>
         </plugins>
       </reporting>
-    </profile>
-    <profile>
-      <id>jdk11</id>
-      <activation>
-        <jdk>[11,)</jdk>
-      </activation>
-      <properties>
-        <java.version>11</java.version>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>org.glassfish.jaxb</groupId>
-          <artifactId>jaxb-runtime</artifactId>
-          <version>2.3.5</version>
-          <scope>runtime</scope>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
 

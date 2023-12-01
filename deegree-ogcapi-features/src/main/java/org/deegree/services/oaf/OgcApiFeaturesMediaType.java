@@ -35,6 +35,9 @@ public final class OgcApiFeaturesMediaType {
     public static final String APPLICATION_OPENAPI = "application/vnd.oai.openapi+json;version=3.0";
     public static final MediaType APPLICATION_OPENAPI_TYPE = new MediaType("application", "vnd.oai.openapi+json;version=3.0");
     
+    public static final String APPLICATION_OPENAPI_YAML = "application/vnd.oai.openapi+yaml;version=3.0";
+    public static final MediaType APPLICATION_OPENAPI_YAML_TYPE = new MediaType("application", "vnd.oai.openapi+yaml;version=3.0");
+    
     // Note: There is no registered media type yet, but this is the latest proposal
     // See https://github.com/ietf-wg-httpapi/mediatypes/blob/main/draft-ietf-httpapi-yaml-mediatypes.md
     public static final String APPLICATION_YAML = "application/yaml";
