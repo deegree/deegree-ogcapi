@@ -49,9 +49,11 @@ public class FeaturesRequest {
 
     private final Map<FilterProperty, List<String>> filterRequestProperties;
 
+    private final String filter;
+
     public FeaturesRequest( String collectionId, int limit, int offset, boolean isBulkUpload, List<Double> bbox,
                             String bboxCrs, String datetime, String responseCrs,
-                            Map<FilterProperty, List<String>> filterRequestProperties ) {
+                            Map<FilterProperty, List<String>> filterRequestProperties, String filter ) {
         this.collectionId = collectionId;
         this.limit = limit;
         this.offset = offset;
@@ -61,6 +63,7 @@ public class FeaturesRequest {
         this.responseCrs = responseCrs;
         this.isBulkUpload = isBulkUpload;
         this.filterRequestProperties = filterRequestProperties;
+        this.filter = filter;
     }
 
     public String getCollectionId() {
@@ -97,5 +100,9 @@ public class FeaturesRequest {
 
     public Map<FilterProperty, List<String>> getFilterRequestProperties() {
         return filterRequestProperties;
+    }
+
+    public String getFilter() {
+        return filter;
     }
 }
