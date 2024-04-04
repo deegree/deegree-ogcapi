@@ -56,6 +56,8 @@ public class FeaturesRequestBuilder {
 
     private String filter;
 
+    private String filterCrs;
+
     public FeaturesRequestBuilder( String collectionId ) {
         this.collectionId = collectionId;
     }
@@ -101,8 +103,9 @@ public class FeaturesRequestBuilder {
         return this;
     }
 
-	public FeaturesRequestBuilder withFilter(String filter) {
+	public FeaturesRequestBuilder withFilter(String filter, String filterCrs) throws InvalidParameterValue {
 		this.filter = filter;
+		this.filterCrs = validateAndRetrieveCrs("filter-crs", filterCrs);
 		return this;
 	}
 
@@ -114,7 +117,7 @@ public class FeaturesRequestBuilder {
     public FeaturesRequest build() {
         return new FeaturesRequest( this.collectionId, this.limit, this.offset, this.isBulkUpload, this.bbox,
                                     this.bboxCrs, this.datetime, this.responseCrs, this.filterRequestProperties,
-                                    this.filter );
+                                    this.filter, this.filterCrs );
     }
 
     private List<Double> validateBbox( List<Double> bbox )
