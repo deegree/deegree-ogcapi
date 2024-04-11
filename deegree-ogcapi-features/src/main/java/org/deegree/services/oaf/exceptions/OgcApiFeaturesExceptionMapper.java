@@ -30,7 +30,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.deegree.services.oaf.exceptions.ExceptionMediaTypeUtil.selectMediaType;
 
 /**
@@ -45,11 +44,10 @@ public class OgcApiFeaturesExceptionMapper implements ExceptionMapper<OgcApiFeat
     @Override
     public Response toResponse( OgcApiFeaturesException exception ) {
         MediaType selectedType = selectMediaType( request );
-
+        Response.Status statusCode = exception.getStatusCode();
         OgcApiFeaturesExceptionReport oafExceptionReport = new OgcApiFeaturesExceptionReport( exception.getMessage(),
-                                                                                              NOT_FOUND.getStatusCode() );
-
-        return Response.status( exception.getStatusCode() ).entity( oafExceptionReport ).type( selectedType ).build();
+                                                                                              statusCode.getStatusCode() );
+        return Response.status( statusCode ).entity( oafExceptionReport ).type( selectedType ).build();
     }
 
 }

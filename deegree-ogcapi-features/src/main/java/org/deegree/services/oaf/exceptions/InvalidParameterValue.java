@@ -30,7 +30,7 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
  */
 public class InvalidParameterValue extends OgcApiFeaturesException {
 
-    private static final String EXCEPTION_MSG = "Parameter '%s has invalid content: ";
+    static final String EXCEPTION_MSG = "Parameter '%s' has invalid content: %s";
 
     public InvalidParameterValue() {
     }

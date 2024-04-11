@@ -119,8 +119,8 @@ public class Features {
                                     style = ParameterStyle.FORM) @QueryParam("filter") String filter,
                     @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
 					                style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
-                    @Parameter(description = "The encoding of the filter parameter.",
-                                    style = ParameterStyle.FORM) @QueryParam("filter-lang") FilterLang filterLang,
+                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
                     @Parameter(description = "The coordinate reference system of the response geometries. Example: 'EPSG:25832' Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
@@ -129,8 +129,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterCrs,
-                         crs, format, JSON );
+        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
+                         filterCrs, crs, format, JSON );
     }
 
     @GET
@@ -166,8 +166,8 @@ public class Features {
                                     style = ParameterStyle.FORM) @QueryParam("filter") String filter,
                     @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
                                     style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
-                    @Parameter(description = "The encoding of the filter parameter.",
-                                    style = ParameterStyle.FORM) @QueryParam("filter-lang") FilterLang filterLang,
+                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
@@ -176,8 +176,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterCrs,
-                        crs, format, XML, acceptHeader);
+        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
+                        filterCrs, crs, format, XML, acceptHeader);
     }
 
     @GET
@@ -212,8 +212,8 @@ public class Features {
                                     style = ParameterStyle.FORM) @QueryParam("filter") String filter,
                     @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
                                     style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
-                    @Parameter(description = "The encoding of the filter parameter.",
-                                    style = ParameterStyle.FORM) @QueryParam("filter-lang") FilterLang filterLang,
+                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
@@ -222,8 +222,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterCrs,
-                        crs, format, HTML);
+        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
+                        filterCrs, crs, format, HTML);
     }
 
     @GET
@@ -257,8 +257,8 @@ public class Features {
                                     style = ParameterStyle.FORM) @QueryParam("filter") String filter,
                     @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
                                     style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
-                    @Parameter(description = "The encoding of the filter parameter.",
-                                    style = ParameterStyle.FORM) @QueryParam("filter-lang") FilterLang filterLang,
+                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+					                schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
@@ -267,23 +267,24 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterCrs,
-                        crs, format, JSON);
+        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
+                        filterLang, filterCrs, crs, format, JSON);
     }
 
     private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
 							  boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter,
-                               String filterCrs, String crs, String format, RequestFormat defaultFormat )
+                               String filterLang, String filterCrs, String crs, String format, RequestFormat defaultFormat )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
         return features( uriInfo, datasetId, collectionId, limit, offset, isBulkUpload, bbox, bboxCrs, datetime, filter,
-                         filterCrs, crs, format, defaultFormat, null );
+                         filterLang, filterCrs, crs, format, defaultFormat, null );
     }
 
     private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
                                boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter,
-                               String filterCrs, String crs, String formatParamValue, RequestFormat defaultFormat,
-                               String acceptHeader )
+                               String filterLang, String filterCrs, String crs, String formatParamValue,
+                               RequestFormat defaultFormat, String acceptHeader )
                     throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
+        FilterLang.fromType(filterLang);
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
         OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         oafConfiguration.checkCollection( collectionId );

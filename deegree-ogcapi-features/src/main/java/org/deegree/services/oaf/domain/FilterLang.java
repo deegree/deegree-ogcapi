@@ -21,6 +21,11 @@
  */
 package org.deegree.services.oaf.domain;
 
+import org.deegree.services.oaf.exceptions.InvalidParameterValue;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
@@ -32,6 +37,24 @@ public enum FilterLang {
 
 	FilterLang(String type) {
 		this.type = type;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public static FilterLang fromType(String filterLang) throws InvalidParameterValue {
+		if (filterLang == null)
+			return null;
+		for (FilterLang b : FilterLang.values()) {
+			if (b.getType().equals(filterLang)) {
+				return b;
+			}
+		}
+		String allowedValues = Arrays.stream(FilterLang.values())
+			.map(FilterLang::getType)
+			.collect(Collectors.joining(", "));
+		throw new InvalidParameterValue("filter-lang", "Supported values are: " + allowedValues);
 	}
 
 	@Override
