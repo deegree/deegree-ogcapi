@@ -1,7 +1,7 @@
 == Introduction
 
 The deegree OGC API Features (OAF) implementation is compliant to the latest OGC Standards called
-http://docs.opengeospatial.org/is/17-069r3/17-069r3.html[OGC API - Features - Part 1: Core] and http://docs.opengeospatial.org/is/18-058/18-058.html[Part 2: CRS]. deegree OAF provides a server implementation that has been developed based on deegree's existing workspace concept using the API of https://www.deegree.org[deegree webservices]. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
+http://docs.opengeospatial.org/is/17-069r3/17-069r3.html[OGC API - Features - Part 1: Core] and http://docs.opengeospatial.org/is/18-058/18-058.html[Part 2: Coordinate Reference Systems by Reference]. deegree OAF provides a server implementation that has been developed based on deegree's existing workspace concept using the API of https://www.deegree.org[deegree webservices]. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
 
 === OGC API family
 
@@ -16,6 +16,7 @@ deegree OAF supports the following conformance classes:
 
 * Core (Part 1)
 * Coordinate Reference Systems by Reference (Part 2)
+* Partly https://docs.ogc.org/DRAFTS/19-079r1.html[Filtering (Part 3)] with https://docs.ogc.org/DRAFTS/21-065.html[CQL2 functions] limited to `s_intersects` for points and bounding boxes.
 
 Based on that requirements class deegree OAF provides implementations of representations for spatial data using encodings such as:
 

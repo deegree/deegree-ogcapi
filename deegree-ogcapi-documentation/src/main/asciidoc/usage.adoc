@@ -108,7 +108,7 @@ Or use a browser and additional plugins to send the HTTP request directly. Use t
 |===
 
 [[json_encoding]]
-=== Accessing data in JSON/GeoJSON
+=== Accessing data in JSON/GeoJSON format
 
 To retrieve a resource in `application/json` encoding use the request parameter _f=json_.
 To retrieve the landing page of the dataset streets in `application/json` encoding use the following request _datasets/streets/?f=json_.
@@ -117,7 +117,7 @@ Example URL: http://localhost:8080/deegree-services-oaf/datasets/streets/?f=json
 See section <<query_parameter>> for more information about other supported query parameters.
 
 [[gml_encoding]]
-=== Accessing data in XML/GML
+=== Accessing data in XML/GML format
 
 To retrieve a resource in `application/xml` encoding use the request parameter _f=xml_.
 To retrieve the landing page of the dataset streets in `application/xml` encoding use the following request _datasets/streets/?f=xml_.
@@ -177,13 +177,16 @@ The following query parameters are supported when using HTTP GET:
 [width="100%",cols="20%,30%,20%,30%",options="header",]
 |===
 |Query parameter name |Value type |Example value |Description
-|`crs` |String | EPSG:4326 |EPSG code defines the CRS of the returned data
-|`bbox` |Comma separated floating point values | 567190,5934330, 567200,5934360 |List of comma separated floating point values defining a bounding box
-|`bbox-crs` |String | EPSG:4326 |EPSG code defines the CRS of the coordinates of the `bbox` parameter
+|`crs` |String |EPSG:4326 |EPSG code defines the CRS of the returned data
+|`bbox` |Comma separated floating point values |567190,5934330, 567200,5934360 |List of comma separated floating point values defining a bounding box
+|`bbox-crs` |String |EPSG:4326 |EPSG code defines the CRS of the coordinates of the `bbox` parameter
 |`f` |String |json |Requested encoding of a given resource, can be `json`, `html` or `gml`
 |`limit` |integer |10 |Limit the numbers of items per page
 |`offset` |integer |0 |Start index of items
-|`bulk` |boolean|true|Applicable for features resource only, can be combined with parameter `f`
+|`bulk` |boolean |true |Applicable for features resource only, can be combined with parameter `f`
+|`filter`|String |s_intersects({spatialQueryable},{spatialInstance}) |Filter limited to `s_intersects` with first operand `{spatialQueryable}` defining the property name and the second operand `{spatialInstance}` the basic spatial data type point or bounding box.
+|`filter-lang`|String |cql2-text |Defines the filtering language, indicates that the value of the `filter` parameter is the text encoding of CQL2, can be combined with parameter `filter`
+|`filter-crs`|String | EPSG:4326|Allows clients to assert which CRS is being used to encode geometric values in a `filter` expression, can be combined with parameter `filter`
 |===
 
 NOTE: Check the <<openapi>> on which resources the listed query parameters are supported. Additional query parameters may be available depending on the resource.
