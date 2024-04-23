@@ -16,7 +16,7 @@ deegree OAF supports the following conformance classes:
 
 * Core (Part 1)
 * Coordinate Reference Systems by Reference (Part 2)
-* Partly https://docs.ogc.org/DRAFTS/19-079r1.html[Filtering (Part 3)] with https://docs.ogc.org/DRAFTS/21-065.html[CQL2 functions] limited to `s_intersects` for points and bounding boxes.
+* Partly https://docs.ogc.org/DRAFTS/19-079r1.html[Filtering (Part 3)] with https://docs.ogc.org/DRAFTS/21-065.html[CQL2 functions] limited to `S_INTERSECTS`.
 
 Based on that requirements class deegree OAF provides implementations of representations for spatial data using encodings such as:
 
