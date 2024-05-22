@@ -38,6 +38,7 @@ import org.deegree.services.oaf.io.response.FeaturesResponseCreator;
 import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.io.request.FeaturesRequestBuilder;
 import org.deegree.services.oaf.link.LinkBuilder;
+import org.deegree.services.oaf.domain.FilterLang;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
@@ -114,6 +115,12 @@ public class Features {
                                     "The datetime used as filter. Either a date-time or a period string that adheres to RFC 3339. Examples: A date-time: '2018-02-12T23:20:50Z' A period: '2018-02-12T00:00:00Z/2018-03-18T12:31:12Z' or '2018-02-12T00:00:00Z/P1M6DT12H31M12S''", style = ParameterStyle.FORM)
                     @QueryParam("datetime")
                                     String datetime,
+                    @Parameter(description = "The filter expression to be applied when retrieving features.",
+                                    style = ParameterStyle.FORM) @QueryParam("filter") String filter,
+                    @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+					                style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
+                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
                     @Parameter(description = "The coordinate reference system of the response geometries. Example: 'EPSG:25832' Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
@@ -122,8 +129,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, crs, format,
-                         JSON );
+        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
+                         filterCrs, crs, format, JSON );
     }
 
     @GET
@@ -155,6 +162,12 @@ public class Features {
                     @Parameter(description = "The datetime used as filter.", style = ParameterStyle.FORM)
                     @QueryParam("datetime")
                                     String datetime,
+                    @Parameter(description = "The filter expression to be applied when retrieving features.",
+                                    style = ParameterStyle.FORM) @QueryParam("filter") String filter,
+                    @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+                                    style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
+                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
@@ -163,8 +176,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, crs, format,
-                         XML, acceptHeader );
+        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
+                        filterCrs, crs, format, XML, acceptHeader);
     }
 
     @GET
@@ -195,6 +208,12 @@ public class Features {
                     @Parameter(description = "The datetime used as filter.", style = ParameterStyle.FORM)
                     @QueryParam("datetime")
                                     String datetime,
+                    @Parameter(description = "The filter expression to be applied when retrieving features.",
+                                    style = ParameterStyle.FORM) @QueryParam("filter") String filter,
+                    @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+                                    style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
+                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
@@ -203,8 +222,8 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, crs, format,
-                         HTML );
+        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
+                        filterCrs, crs, format, HTML);
     }
 
     @GET
@@ -234,6 +253,12 @@ public class Features {
                     @Parameter(description = "The datetime used as filter.", style = ParameterStyle.FORM)
                     @QueryParam("datetime")
                                     String datetime,
+                    @Parameter(description = "The filter expression to be applied when retrieving features.",
+                                    style = ParameterStyle.FORM) @QueryParam("filter") String filter,
+                    @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+                                    style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
+                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+					                schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
                     @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
                     @QueryParam("crs")
                                     String crs,
@@ -242,22 +267,24 @@ public class Features {
                     @QueryParam("f")
                                     String format )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, crs, format,
-                         JSON );
+        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
+                        filterLang, filterCrs, crs, format, JSON);
     }
 
     private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-                               boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String crs,
-                               String format, RequestFormat defaultFormat )
+							  boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter,
+                               String filterLang, String filterCrs, String crs, String format, RequestFormat defaultFormat )
                     throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features( uriInfo, datasetId, collectionId, limit, offset, isBulkUpload, bbox, bboxCrs, datetime, crs,
-                         format, defaultFormat, null );
+        return features( uriInfo, datasetId, collectionId, limit, offset, isBulkUpload, bbox, bboxCrs, datetime, filter,
+                         filterLang, filterCrs, crs, format, defaultFormat, null );
     }
 
     private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-                               boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String crs,
-                               String formatParamValue, RequestFormat defaultFormat, String acceptHeader )
+                               boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter,
+                               String filterLang, String filterCrs, String crs, String formatParamValue,
+                               RequestFormat defaultFormat, String acceptHeader )
                     throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
+        FilterLang.fromType(filterLang);
         RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
         OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
         oafConfiguration.checkCollection( collectionId );
@@ -265,8 +292,8 @@ public class Features {
             return Response.ok( getClass().getResourceAsStream( "/features.html" ), TEXT_HTML ).build();
         }
 
-        Map<FilterProperty, List<String>> filterParameters = findFilterParameters( datasetId, collectionId,
-                                                                                   uriInfo.getQueryParameters() );
+        Map<FilterProperty, List<String>> filterParameters = findQueryableParameters( datasetId, collectionId,
+                                                                                      uriInfo.getQueryParameters() );
 
         FeaturesRequest featuresRequest = new FeaturesRequestBuilder( collectionId )
                         .withLimit( limit )
@@ -275,7 +302,8 @@ public class Features {
                         .withBbox( bbox, bboxCrs )
                         .withDatetime( datetime )
                         .withResponseCrs( crs )
-                        .withFilterParameters( filterParameters ).build();
+                        .withQueryableParameters( filterParameters )
+                        .withFilter( filter, filterCrs ).build();
         LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
         FeaturesResponse featureResponse = dataAccess.retrieveFeatures( oafConfiguration, collectionId, featuresRequest,
                                                                         linkBuilder );
@@ -286,8 +314,8 @@ public class Features {
         return featureResponseCreator.createJsonResponseWithHeaders( featureResponse );
     }
 
-    private Map<FilterProperty, List<String>> findFilterParameters( String datasetId, String collectionId,
-                                                                    MultivaluedMap<String, String> queryParameters )
+    private Map<FilterProperty, List<String>> findQueryableParameters( String datasetId, String collectionId,
+                                                                       MultivaluedMap<String, String> queryParameters )
                     throws UnknownDatasetId, UnknownCollectionId {
         Map<FilterProperty, List<String>> filterRequestProperties = new HashMap<>();
         OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );

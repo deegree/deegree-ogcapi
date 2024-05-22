@@ -228,7 +228,7 @@ public class DeegreeQueryBuilderTest {
         DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder( mockOafConfiguration() );
         Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams( BaseType.STRING, "value" );
         FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID )
-                        .withFilterParameters( filterParameters ).build();
+                        .withQueryableParameters( filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -242,7 +242,7 @@ public class DeegreeQueryBuilderTest {
         DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder( mockOafConfiguration() );
         Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams( BaseType.STRING, "value*" );
         FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID )
-                        .withFilterParameters( filterParameters ).build();
+                        .withQueryableParameters( filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -256,7 +256,7 @@ public class DeegreeQueryBuilderTest {
         DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder( mockOafConfiguration() );
         Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams( BaseType.INTEGER, "10" );
         FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID )
-                        .withFilterParameters( filterParameters ).build();
+                        .withQueryableParameters( filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -272,7 +272,7 @@ public class DeegreeQueryBuilderTest {
         DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder( mockOafConfiguration() );
         Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams( BaseType.DECIMAL, ">9.56" );
         FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID )
-                        .withFilterParameters( filterParameters ).build();
+                        .withQueryableParameters( filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -288,7 +288,7 @@ public class DeegreeQueryBuilderTest {
         DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder( mockOafConfiguration() );
         Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams( BaseType.DOUBLE, "<5.89" );
         FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID )
-                        .withFilterParameters( filterParameters ).build();
+                        .withQueryableParameters( filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -304,7 +304,7 @@ public class DeegreeQueryBuilderTest {
         DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder( mockOafConfiguration() );
         Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams( BaseType.INTEGER, ">=10" );
         FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID )
-                        .withFilterParameters( filterParameters ).build();
+                        .withQueryableParameters( filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -320,7 +320,7 @@ public class DeegreeQueryBuilderTest {
         DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder( mockOafConfiguration() );
         Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams( BaseType.INTEGER, "<=10" );
         FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID )
-                        .withFilterParameters( filterParameters ).build();
+                        .withQueryableParameters( filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -337,7 +337,7 @@ public class DeegreeQueryBuilderTest {
         Map<FilterProperty, List<String>> filterParameters = new MultivaluedHashMap<>();
         filterParameters.put( new FilterProperty( new QName( "http://deegree.org/oaf", "name" ), BaseType.STRING ),
                               Arrays.asList( "value1", "value2" ) );
-        FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID ).withFilterParameters(
+        FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID ).withQueryableParameters(
                         filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
@@ -359,7 +359,7 @@ public class DeegreeQueryBuilderTest {
         Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams( BaseType.STRING, "value" );
         filterParameters.put( new FilterProperty( new QName( "http://deegree.org/oaf", "age" ), BaseType.INTEGER ),
                               Collections.singletonList( "15" ) );
-        FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID ).withFilterParameters(
+        FeaturesRequest featureRequest = new FeaturesRequestBuilder( COLLECTION_ID ).withQueryableParameters(
                         filterParameters ).build();
         Query query = deegreeQueryBuilder.createQuery( FT_METADATA, featureRequest );
         OperatorFilter filter = (OperatorFilter) query.getFilter();
