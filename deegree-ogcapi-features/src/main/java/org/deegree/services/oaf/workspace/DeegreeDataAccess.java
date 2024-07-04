@@ -88,7 +88,7 @@ public class DeegreeDataAccess implements DataAccess {
                     throws UnknownCollectionId, InternalQueryException, InvalidParameterValue {
         FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         String crs = validateAndRetrieveCrs( featuresRequest.getResponseCrs() );
-        FeatureStore featureStore = oafConfiguration.getFeatureStore( featureTypeMetadata.getName(), collectionId );
+        FeatureStore featureStore =featureTypeMetadata.getFeatureStore();
         try {
             DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder( oafConfiguration );
             Query query = queryBuilder.createQuery( featureTypeMetadata, featuresRequest );
@@ -107,7 +107,7 @@ public class DeegreeDataAccess implements DataAccess {
                     throws InternalQueryException, InvalidParameterValue, UnknownCollectionId, UnknownFeatureId {
         FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
         String crs = validateAndRetrieveCrs( responseCrs );
-        FeatureStore featureStore = oafConfiguration.getFeatureStore( featureTypeMetadata.getName(), collectionId );
+        FeatureStore featureStore = featureTypeMetadata.getFeatureStore();
         try {
             DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder( oafConfiguration );
             Query queryById = queryBuilder.createQueryById( featureTypeMetadata.getName(), featureId );

@@ -22,6 +22,7 @@
 package org.deegree.services.oaf.workspace.configuration;
 
 import org.deegree.commons.ows.metadata.MetadataUrl;
+import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.types.FeatureType;
 import org.deegree.services.oaf.domain.collections.Extent;
 
@@ -48,6 +49,8 @@ public class FeatureTypeMetadata {
     private List<FilterProperty> filterProperties;
 
     private FeatureType featureType;
+
+	private FeatureStore featureStore;
 
     private List<String> storageCrsCodes;
 
@@ -78,7 +81,6 @@ public class FeatureTypeMetadata {
     public FeatureTypeMetadata metadataUrls( List<MetadataUrl> metadataUrls ) {
         this.metadataUrls = metadataUrls;
         return this;
-
     }
 
     public FeatureTypeMetadata filterProperties( List<FilterProperty> filterProperties ) {
@@ -90,6 +92,11 @@ public class FeatureTypeMetadata {
         this.featureType = featureType;
         return this;
     }
+
+	public FeatureTypeMetadata featureStore(FeatureStore featureStore) {
+		this.featureStore = featureStore;
+		return this;
+	}
 
     public FeatureTypeMetadata storageCrsCodes( List<String> storageCrsCodes ) {
         this.storageCrsCodes = storageCrsCodes;
@@ -128,7 +135,12 @@ public class FeatureTypeMetadata {
         return featureType;
     }
 
-    public List<String> getStorageCrsCodes() {
-        return storageCrsCodes;
-    }
+	public FeatureStore getFeatureStore() {
+		return featureStore;
+	}
+
+	public List<String> getStorageCrsCodes() {
+		return storageCrsCodes;
+	}
+
 }
