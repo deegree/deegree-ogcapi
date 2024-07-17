@@ -21,6 +21,7 @@
  */
 package org.deegree.services.oaf.resource;
 
+import org.deegree.services.oaf.domain.FilterLang;
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
 import org.deegree.services.oaf.io.response.gml.FeaturesResponseGmlWriter;
@@ -66,7 +67,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 
 /**
@@ -85,7 +85,8 @@ public class FeaturesTest extends JerseyTest {
                 bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
                 bindAsContract( OpenApiCreator.class );
             }
-        } );
+        })
+			.packages("org.deegree.services.oaf.exceptions");
         return resourceConfig;
     }
 
@@ -131,6 +132,24 @@ public class FeaturesTest extends JerseyTest {
         MultivaluedMap<String, Object> headers = response.getHeaders();
         assertThat( response.getMediaType(), is( APPLICATION_GML_SF2_TYPE ) );
     }
+
+	@Test
+	public void test_Features_FilterLang() {
+		Response response = target("/datasets/oaf/collections/test/items")
+			.queryParam("filter-lang", FilterLang.CQL2_TEXT.getType())
+			.request(APPLICATION_GML_SF2)
+			.get();
+		assertThat(response.getStatus(), is(200));
+	}
+
+	@Test
+	public void test_Features_FilterLangInvalid() {
+		Response response = target("/datasets/oaf/collections/test/items").queryParam("filter-lang", "unknown")
+			.request(APPLICATION_GML_SF2)
+			.get();
+		assertThat(response.getStatus(), is(400));
+	}
+
 
     private DataAccess mockDataAccess() {
         DataAccess testFactory = Mockito.mock( DataAccess.class );

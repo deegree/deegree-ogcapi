@@ -11,6 +11,8 @@ This section show how to get help in case of problems.
 
 * Using the browser's navigation buttons when using the HTML view may result in empty pages or the switch to JSON encoding. Affected browsers: Google Chrome, Chromium. You can avoid this by enabling the Vary HTTP response header in your HTTP server configuration. Check the HTTP server documentation how to configure this.
 
+* The implementation supports only parts of OGC API - Features - Part 3. The implementation is not fully supporting the following requirements classes: "Queryables", "Queryables as Query Parameters", "Filter" with "CQL2 Functions", and "Features Filter".
+
 [[help_support]]
 === Support
 

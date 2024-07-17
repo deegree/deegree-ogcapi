@@ -21,6 +21,9 @@
  */
 package org.deegree.services.oaf.workspace;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.deegree.commons.tom.TypedObjectNode;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.UnknownCRSException;
@@ -51,6 +54,10 @@ import org.deegree.filter.temporal.TemporalOperator;
 import org.deegree.geometry.Envelope;
 import org.deegree.geometry.SimpleGeometryFactory;
 import org.deegree.protocol.wfs.getfeature.TypeName;
+import org.deegree.services.oaf.cql2.Cql2ErrorListener;
+import org.deegree.services.oaf.cql2.Cql2FilterVisitor;
+import org.deegree.services.oaf.cql2.Cql2Lexer;
+import org.deegree.services.oaf.cql2.Cql2Parser;
 import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
@@ -147,7 +154,8 @@ public class DeegreeQueryBuilder {
         return new OperatorFilter( and );
     }
 
-    private List<Operator> createFilterOperator( FeaturesRequest featuresRequest ) {
+    private List<Operator> createFilterOperator( FeaturesRequest featuresRequest )
+                    throws InternalQueryException {
         List<Operator> filterOperators = new ArrayList<>();
         Map<FilterProperty, List<String>> filterRequestProperties = featuresRequest.getFilterRequestProperties();
         if ( filterRequestProperties != null ) {
@@ -158,8 +166,24 @@ public class DeegreeQueryBuilder {
                 } );
             } );
         }
+        if (featuresRequest.getFilter() != null) {
+			filterOperators.add(parseCql2Filter(featuresRequest));
+		}
         return filterOperators;
     }
+
+	private Operator parseCql2Filter(FeaturesRequest featuresRequest) throws InternalQueryException {
+		CharStream input = new ANTLRInputStream(featuresRequest.getFilter());
+		Cql2Lexer lexer = new Cql2Lexer(input);
+		CommonTokenStream cts = new CommonTokenStream(lexer);
+		cts.fill();
+		Cql2Parser parser = new Cql2Parser(cts);
+		parser.removeErrorListeners();
+		parser.addErrorListener(new Cql2ErrorListener());
+		Cql2Parser.BooleanExpressionContext cql2 = parser.booleanExpression();
+		Cql2FilterVisitor visitor = new Cql2FilterVisitor(lookupCrs(featuresRequest.getFilterCrs()));
+		return (Operator) visitor.visit(cql2);
+	}
 
     private ComparisonOperator createFilterOperator( FilterProperty filterProperty,
                                                      String value ) {
@@ -281,15 +305,19 @@ public class DeegreeQueryBuilder {
         List<Double> bbox = featuresRequest.getBbox();
         if ( bbox == null )
             return null;
-        String crsName = featuresRequest.getBboxCrs();
-        try {
-            ICRS crs = CRSManager.lookup( crsName );
-            return simpleGeometryFactory.createEnvelope( bbox.get( 0 ), bbox.get( 1 ), bbox.get( 2 ), bbox.get( 3 ),
-                                                         crs );
-        } catch ( UnknownCRSException e ) {
-            throw new InternalQueryException( "Unsupported CRS: " + crsName );
-        }
+        ICRS crs = lookupCrs( featuresRequest.getBboxCrs() );
+        return simpleGeometryFactory.createEnvelope( bbox.get( 0 ), bbox.get( 1 ), bbox.get( 2 ), bbox.get( 3 ),
+                                                     crs );
     }
+
+	private ICRS lookupCrs(String crsName) throws InternalQueryException {
+		try {
+			return CRSManager.lookup(crsName);
+		}
+		catch (UnknownCRSException e) {
+			throw new InternalQueryException("Unsupported CRS: " + crsName);
+		}
+	}
 
     private class DatetimeInterval {
 

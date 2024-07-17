@@ -54,6 +54,10 @@ public class FeaturesRequestBuilder {
 
     private Map<FilterProperty, List<String>> filterRequestProperties;
 
+    private String filter;
+
+    private String filterCrs;
+
     public FeaturesRequestBuilder( String collectionId ) {
         this.collectionId = collectionId;
     }
@@ -94,10 +98,16 @@ public class FeaturesRequestBuilder {
         return this;
     }
 
-    public FeaturesRequestBuilder withFilterParameters( Map<FilterProperty, List<String>> filterRequestProperties ) {
+    public FeaturesRequestBuilder withQueryableParameters( Map<FilterProperty, List<String>> filterRequestProperties ) {
         this.filterRequestProperties = filterRequestProperties;
         return this;
     }
+
+	public FeaturesRequestBuilder withFilter(String filter, String filterCrs) throws InvalidParameterValue {
+		this.filter = filter;
+		this.filterCrs = validateAndRetrieveCrs("filter-crs", filterCrs);
+		return this;
+	}
 
     public FeaturesRequestBuilder withBulkUpload( boolean isBulkUpload ) {
         this.isBulkUpload = isBulkUpload;
@@ -106,7 +116,8 @@ public class FeaturesRequestBuilder {
 
     public FeaturesRequest build() {
         return new FeaturesRequest( this.collectionId, this.limit, this.offset, this.isBulkUpload, this.bbox,
-                                    this.bboxCrs, this.datetime, this.responseCrs, this.filterRequestProperties );
+                                    this.bboxCrs, this.datetime, this.responseCrs, this.filterRequestProperties,
+                                    this.filter, this.filterCrs );
     }
 
     private List<Double> validateBbox( List<Double> bbox )
