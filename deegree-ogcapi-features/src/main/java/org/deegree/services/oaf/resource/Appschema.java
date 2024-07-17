@@ -84,7 +84,7 @@ public class Appschema {
         OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
         OafDatasetConfiguration dataset = oafDatasets.getDataset( datasetId );
         FeatureTypeMetadata featureTypeMetadata = dataset.getFeatureTypeMetadata( collectionId );
-        FeatureStore featureStore = dataset.getFeatureStore( featureTypeMetadata.getName(), collectionId );
+        FeatureStore featureStore = featureTypeMetadata.getFeatureStore();
         SchemaResponse schemaResponse = createSchemaResponse( dataset.isUseExistingGMLSchema(), featureStore,
                                                               featureTypeMetadata, datasetId,
                                                               linkBuilder );

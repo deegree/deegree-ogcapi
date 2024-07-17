@@ -116,15 +116,15 @@ public class TestData {
                 featureType = getFeatureType( featureTypeName, "io/schema/kita.xsd" );
             if ( featureType == null )
                 throw new IllegalArgumentException( "FeatureType with name " + featureTypeName + " is not known" );
+            FeatureStore featureStore = mock( FeatureStore.class );
+            when( featureStore.getSchema() ).thenReturn( featureType.getSchema() );
+            ftm.featureStore( featureStore );
+
             ftm.featureType( featureType );
 
             featureTypeMetadata.put( featureTypeName.getLocalPart(), ftm );
             when( oafConfiguration.getFeatureTypeMetadata() ).thenReturn( featureTypeMetadata );
             when( oafConfiguration.getFeatureTypeMetadata( eq( featureTypeName.getLocalPart() ) ) ).thenReturn( ftm );
-            FeatureStore featureStore = mock( FeatureStore.class );
-            when( featureStore.getSchema() ).thenReturn( featureType.getSchema() );
-            when( oafConfiguration.getFeatureStore( eq( featureTypeName ),
-                                                    eq( featureTypeName.getLocalPart() ) ) ).thenReturn( featureStore );
 
             OafDatasets oafDatasets = new OafDatasets();
             oafDatasets.addDataset( "oaf", oafConfiguration );

@@ -126,12 +126,11 @@ public class OafResource implements Resource {
             Map<String, FeatureTypeMetadata> featureTypeMetadata = parseFeatureTypeMetadata( owsMetadataProvider );
             DatasetMetadata datasetMetadata = new DatasetMetadata( owsMetadataProvider, config.getMetadata() );
             List<String> supportedCrs = parseQueryCrs( config );
-            Map<QName, FeatureStore> featureStores = parseFeatureStores( workspace, featureTypeMetadata );
             String id = metadata.getIdentifier().getId();
             boolean useExistingGMLSchema =
                             config.isUseExistingGMLSchema() != null ? config.isUseExistingGMLSchema() : true;
             this.oafConfiguration = new OafDatasetConfiguration( id, featureTypeMetadata, datasetMetadata, supportedCrs,
-                                                                 featureStores, useExistingGMLSchema );
+                                                                 useExistingGMLSchema );
             this.htmlViewConfiguration = getHtmlViewConfig( workspace );
             
             this.additionalCollectionList= config.getConfigureCollection();
@@ -180,23 +179,6 @@ public class OafResource implements Resource {
         if ( globalHtmlViewConfigResource != null )
             return globalHtmlViewConfigResource.getHtmlViewConfiguration();
         return null;
-    }
-
-    private Map<QName, FeatureStore> parseFeatureStores( Workspace workspace,
-                                                         Map<String, FeatureTypeMetadata> featureTypeMetadatas ) {
-
-        List<ResourceIdentifier<FeatureStore>> featureStoreIds = workspace.getResourcesOfType(
-                        FeatureStoreProvider.class );
-        Map<QName, FeatureStore> featureStores = new HashMap<>();
-        featureTypeMetadatas.values().stream().forEach( ftm -> {
-            for ( ResourceIdentifier<FeatureStore> featureStoreId : featureStoreIds ) {
-                FeatureStore featureStore = workspace.getResource( FeatureStoreProvider.class, featureStoreId.getId() );
-                if ( featureStore.isMapped( ftm.getName() ) ) {
-                    featureStores.put( ftm.getName(), featureStore );
-                }
-            }
-        } );
-        return featureStores;
     }
 
     private Map<String, FeatureTypeMetadata> parseFeatureTypeMetadata( OWSMetadataProvider metadata )
@@ -303,6 +285,7 @@ public class OafResource implements Resource {
                         .metadataUrls( metadataUrls )
                         .filterProperties( filterProperties )
                         .featureType( featureType )
+				        .featureStore( featureStore )
                         .storageCrsCodes( storageCrsCodes != null ? Arrays.asList( storageCrsCodes ) : null );
     }
 

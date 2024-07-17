@@ -43,18 +43,15 @@ public class OafDatasetConfiguration {
 
     private final List<String> suppportedCrs;
 
-    private Map<QName, FeatureStore> featureStores;
-
     private final boolean useExistingGMLSchema;
 
     public OafDatasetConfiguration(String id, Map<String, FeatureTypeMetadata> featureTypeMetadata,
                                    DatasetMetadata serviceMetadata, List<String> suppportedCrs,
-                                   Map<QName, FeatureStore> featureStores, boolean useExistingGMLSchema) {
+                                   boolean useExistingGMLSchema) {
         this.id = id;
         this.featureTypeMetadata = featureTypeMetadata;
         this.serviceMetadata = serviceMetadata;
         this.suppportedCrs = suppportedCrs;
-        this.featureStores = featureStores;
         this.useExistingGMLSchema = useExistingGMLSchema;
     }
 
@@ -93,23 +90,6 @@ public class OafDatasetConfiguration {
     }
 
     /**
-     * @param featureStoreName
-     *                 name of the feature type (OAF collection), must not be <code>null</code>
-     * @param collectionId
-     *                 the id of the collection, may be <code>null</code>
-     * @return the {@link FeatureStore} providing the feature type (OAF collection) with the passed name, never <code>null</code>
-     * @throws UnknownCollectionId
-     *                 if not feature store with the passed name could be found
-     */
-    public FeatureStore getFeatureStore( QName featureStoreName, String collectionId )
-                    throws UnknownCollectionId {
-        if ( featureStores.containsKey( featureStoreName ) ) {
-            return featureStores.get( featureStoreName );
-        }
-        throw new UnknownCollectionId( collectionId );
-    }
-
-    /**
      * @return metadata of this dataset, never <code>null</code>
      */
     public DatasetMetadata getServiceMetadata() {
@@ -145,7 +125,6 @@ public class OafDatasetConfiguration {
                 ", featureTypeMetadata=" + featureTypeMetadata +
                 ", serviceMetadata=" + serviceMetadata +
                 ", suppportedCrs=" + suppportedCrs +
-                ", featureStores=" + featureStores +
                 ", useExistingGMLSchema=" + useExistingGMLSchema +
                 '}';
     }
