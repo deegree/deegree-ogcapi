@@ -457,3 +457,16 @@ of the https://download.deegree.org/documentation/3.4.17/html/#anchor-configurat
 
 In case you want to avoid any issues when using the OpenAPI document from other locations due to CORS, you can enable allowing all origins specifically for accessing the OpenAPI document.
 To enable this set the system property ```deegree.oaf.openapi.cors.allow_all``` to _true_.
+
+=== Enable API version segment in path
+
+Set the system property ```deegree.oaf.openapi.version_path_segment``` to _true_ to enable a path segment representing the major API version. The segment is inserted in dataset related paths after the dataset ID.
+
+```
+EXAMPLE
+/datasets/streets/v1/collections
+```
+
+The OpenAPI definition for each dataset then includes the version segment in the server URL.
+
+The version segment is added after the dataset ID because deegree creates a separate API with its own API definition for each dataset.

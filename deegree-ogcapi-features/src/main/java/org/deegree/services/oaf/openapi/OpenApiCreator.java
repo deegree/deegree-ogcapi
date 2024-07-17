@@ -60,7 +60,7 @@ public class OpenApiCreator {
 
     private static final Logger LOG = getLogger( OpenApiCreator.class );
 
-    private static final String VERSION = "1.0";
+    public static final String VERSION = "1.0";
 
     @Context
     private ServletConfig servletConfig;
