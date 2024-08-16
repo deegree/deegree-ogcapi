@@ -21,7 +21,7 @@ ENV DEEGREE_OAF_VERSION=1.3.0
 EXPOSE 8080
 
 # add deegree OGCAPI webapp
-RUN curl https://repo.deegree.org/repository/public-ogcapi/org/deegree/deegree-ogcapi-webapp-postgres/${DEEGREE_OAF_VERSION}/deegree-ogcapi-webapp-postgres-${DEEGREE_OAF_VERSION}.war -o /usr/local/tomcat/webapps/deegree-ogcapi.war
+RUN curl https://repo.deegree.org/content/repositories/public/org/deegree/deegree-ogcapi-webapp-postgres/${DEEGREE_OAF_VERSION}/deegree-ogcapi-webapp-postgres-${DEEGREE_OAF_VERSION}.war -o /usr/local/tomcat/webapps/deegree-ogcapi.war
 
 # run tomcat
 CMD ["catalina.sh", "run"]
