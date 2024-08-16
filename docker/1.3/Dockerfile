@@ -1,6 +1,6 @@
 # This file is available under the following license:
 # under LGPL 2.1 (LICENSE.TXT) Copyright 2020 Torsten Friebe <tfr@users.sourceforge.net>
-FROM tomcat:9.0-jdk11-temurin-jammy
+FROM tomcat:9-jdk11
 
 ENV LANG en_US.UTF-8
 
@@ -15,7 +15,7 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
 LABEL maintainer="deegree TMC <tmc@deegree.org>"
 
 # set deegree OAF version
-ENV DEEGREE_OAF_VERSION=1.3-SNAPSHOT
+ENV DEEGREE_OAF_VERSION=1.3.0
 
 # tomcat port
 EXPOSE 8080
