@@ -180,7 +180,7 @@ var App = new Vue({
       var baseUrl = retrieveBaseUrl();
       const response = await fetch( baseUrl, {headers: {'Accept': 'application/json' } } );
       const json = await response.json();
-      this.collections = json.collections;
+      this.collections = sortCollections(json.collections);
       this.collectionsMetadata = parseCollectionsMetadataLinks(this.collections);
       this.licenseLink = parseLinks(json, 'license', 'text/plain');
     }
@@ -256,6 +256,14 @@ function parseLinks(data, rel, type){
     });
     if ( links.length > 0 )
       return links[0];
+}
+
+function sortCollections(collections){
+  return collections.sort((c1, c2) => {
+    const c1Id = c1.id;
+    const c2Id = c2.id;
+    return c1Id.localeCompare(c2Id);
+  });
 }
 
 function parseCollectionsMetadataLinks(collections){
