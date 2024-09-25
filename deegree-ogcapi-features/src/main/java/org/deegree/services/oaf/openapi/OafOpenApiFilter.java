@@ -52,6 +52,7 @@ import org.deegree.feature.types.property.GeometryPropertyType;
 import org.deegree.feature.types.property.SimplePropertyType;
 import org.deegree.gml.GMLVersion;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.filter.ApiVersionPathFilter;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
@@ -150,6 +151,11 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         if ( server.getUrl() == null || !server.getUrl().endsWith( "/" ) )
             url.append( "/" );
         url.append( "datasets/" ).append( datasetId );
+        
+        if ( ApiVersionPathFilter.isVersionPathSegmentEnabled() ) {
+        	url.append( "/" ).append( ApiVersionPathFilter.VERSION_SEGMENT );
+        }
+        
         server.setUrl( url.toString() );
     }
 
