@@ -74,7 +74,7 @@ public class OpenApiCreator {
     @Inject
     private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    public OpenAPI createOpenApi( HttpHeaders headers, String datasetId )
+    public OpenAPI createOpenApi(HttpHeaders headers, UriInfo uriInfo, String datasetId )
                     throws Exception {
         OpenAPI oas = createOpenApiDocument( datasetId );
         SwaggerConfiguration oasConfig = createSwaggerConfiguration( oas );
@@ -92,9 +92,9 @@ public class OpenApiCreator {
         if ( oas2 != null && ctx.getOpenApiConfiguration() != null
              && ctx.getOpenApiConfiguration().getFilterClass() != null ) {
             try {
-                OafOpenApiFilter filter = new OafOpenApiFilter( datasetId, deegreeWorkspaceInitializer );
+                OafOpenApiFilter filter = new OafOpenApiFilter( uriInfo, datasetId, deegreeWorkspaceInitializer );
                 SpecFilter f = new SpecFilter();
-                oas2 = f.filter( oas2, filter, getQueryParams( uriInfo.getQueryParameters() ), getCookies( headers ),
+                oas2 = f.filter( oas2, filter, getQueryParams( this.uriInfo.getQueryParameters() ), getCookies( headers ),
                                  getHeaders( headers ) );
             } catch ( Exception e ) {
                 LOG.error( "failed to load filter", e );
@@ -147,18 +147,8 @@ public class OpenApiCreator {
         DatasetMetadata metadata = oafConfiguration.getServiceMetadata();
         Info info = createInfo( metadata );
         OpenAPI oas = new OpenAPI();
-        addserver( oas );
         oas.info( info );
         return oas;
-    }
-
-    private void addserver( OpenAPI oas ) {
-        String contextPath = servletConfig.getServletContext().getContextPath();
-        if ( contextPath != null && !contextPath.isEmpty() ) {
-            Server server = new Server().url( contextPath );
-            List<Server> servers = Collections.singletonList( server );
-            oas.servers( servers );
-        }
     }
 
     private Info createInfo( DatasetMetadata metadata ) {
