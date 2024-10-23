@@ -147,16 +147,11 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 		if (openAPI.getServers() == null || openAPI.getServers().isEmpty())
 			openAPI.addServersItem(new Server());
 		Server server = openAPI.getServers().get(0);
-        String relativePathToOpenApi = createRelativePathToOpenApi();
-        server.setUrl(relativePathToOpenApi);
+		String relativePathToOpenApi = uriInfo.getBaseUriBuilder().path("datasets").path(datasetId).toString();
+		server.setUrl(relativePathToOpenApi);
 	}
 
-	private String createRelativePathToOpenApi() {
-		String baseUriPath = uriInfo.getBaseUri().getPath();
-		if (!baseUriPath.endsWith("/"))
-			baseUriPath = baseUriPath + "/";
-		return baseUriPath + "datasets/" + datasetId;
-	}
+
 
     private void filterPaths( OpenAPI openAPI ) {
         Paths paths = openAPI.getPaths();

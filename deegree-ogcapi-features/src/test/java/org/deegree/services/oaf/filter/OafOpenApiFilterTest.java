@@ -74,8 +74,7 @@ public class OafOpenApiFilterTest {
 
 	@BeforeClass
     public static void mockUriInfo(){
-        when(uriInfo.getBaseUri()).thenReturn(URI.create(BASE_URI));
-        when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI));
+        when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI));
     }
 
     @Test
@@ -117,7 +116,7 @@ public class OafOpenApiFilterTest {
 
 		List<Server> servers = openAPI.getServers();
 		assertThat(servers.size(), is(1));
-		assertThat(servers.get(0).getUrl(), is("/deegree-services-oaf/datasets/oaf"));
+		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
     }
 
     @Test
@@ -160,7 +159,7 @@ public class OafOpenApiFilterTest {
 
 		List<Server> servers = openAPI.getServers();
 		assertThat(servers.size(), is(1));
-		assertThat(servers.get(0).getUrl(), is("/deegree-services-oaf/datasets/oaf"));
+		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
     }
 
     @Test
@@ -203,7 +202,7 @@ public class OafOpenApiFilterTest {
 
 		List<Server> servers = openAPI.getServers();
 		assertThat(servers.size(), is(1));
-		assertThat(servers.get(0).getUrl(), is("/deegree-services-oaf/datasets/oaf"));
+		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
     }
 
     private Matcher<PathItem> hasResponseMediaType( String... mediaTypes ) {
