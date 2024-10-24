@@ -147,8 +147,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 		if (openAPI.getServers() == null || openAPI.getServers().isEmpty())
 			openAPI.addServersItem(new Server());
 		Server server = openAPI.getServers().get(0);
-		String relativePathToOpenApi = uriInfo.getBaseUriBuilder().path("datasets").path(datasetId).toString();
-		server.setUrl(relativePathToOpenApi);
+		String absolutePathToOpenApi = uriInfo.getBaseUriBuilder().path("datasets").path(datasetId).toString();
+		server.setUrl(absolutePathToOpenApi);
 	}
 
 
