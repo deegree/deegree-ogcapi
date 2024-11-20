@@ -60,6 +60,7 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -117,6 +118,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
     public static final String GEOMETRY_PROPERTY_NAME = "geometry";
 
+    private final UriInfo uriInfo;
+
     private final String datasetId;
 
     private final OafDatasetConfiguration datasetConfiguration;
@@ -124,10 +127,10 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
     @Inject
     private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    public OafOpenApiFilter( String datasetId, DeegreeWorkspaceInitializer deegreeWorkspaceInitializer )
-                    throws UnknownDatasetId {
+    public OafOpenApiFilter(UriInfo uriInfo, String datasetId,
+			DeegreeWorkspaceInitializer deegreeWorkspaceInitializer) throws UnknownDatasetId {
+        this.uriInfo = uriInfo;
         this.datasetId = datasetId;
-
         OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
         this.datasetConfiguration = oafDatasets.getDataset( datasetId );
     }
@@ -140,18 +143,15 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
         return super.filterOpenAPI( openAPI, params, cookies, headers );
     }
 
-    private void filterServers( OpenAPI openAPI ) {
-        if ( openAPI.getServers() == null || openAPI.getServers().isEmpty() )
-            openAPI.addServersItem( new Server() );
-        Server server = openAPI.getServers().get( 0 );
-        StringBuilder url = new StringBuilder();
-        if ( server.getUrl() != null )
-            url.append( server.getUrl() );
-        if ( server.getUrl() == null || !server.getUrl().endsWith( "/" ) )
-            url.append( "/" );
-        url.append( "datasets/" ).append( datasetId );
-        server.setUrl( url.toString() );
-    }
+	private void filterServers(OpenAPI openAPI) {
+		if (openAPI.getServers() == null || openAPI.getServers().isEmpty())
+			openAPI.addServersItem(new Server());
+		Server server = openAPI.getServers().get(0);
+		String absolutePathToOpenApi = uriInfo.getBaseUriBuilder().path("datasets").path(datasetId).toString();
+		server.setUrl(absolutePathToOpenApi);
+	}
+
+
 
     private void filterPaths( OpenAPI openAPI ) {
         Paths paths = openAPI.getPaths();

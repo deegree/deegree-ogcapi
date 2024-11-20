@@ -58,12 +58,12 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @Path("/datasets/{datasetId}/api")
 public class OpenApi {
-	
+
 	/**
-	 * Name for parameter that allows enabling allowing all origins for CORS. 
+	 * Name for parameter that allows enabling allowing all origins for CORS.
 	 */
 	public static final String PARAMETER_CORS_ALLOWALL = "deegree.oaf.openapi.cors.allow_all";
-	
+
 	private final boolean corsAllowAll = TunableParameter.get(PARAMETER_CORS_ALLOWALL, false);
 
     private static final Logger LOG = getLogger( OpenApi.class );
@@ -84,28 +84,28 @@ public class OpenApi {
                     @PathParam("datasetId")
                                     String datasetId )
                     throws Exception {
-        return respondWithOpenApi( headers, datasetId, true );
+        return respondWithOpenApi( headers, uriInfo, datasetId, true );
     }
-    
+
     @GET
     @Produces({ APPLICATION_OPENAPI_YAML, APPLICATION_YAML })
     @Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
     @Tag(name = "Capabilities")
     public Response getOpenApiOpenApiYaml(
-                    @Context HttpHeaders headers,
-                    @Context UriInfo uriInfo,
-                    @PathParam("datasetId")
+			@Context HttpHeaders headers,
+			@Context UriInfo uriInfo,
+			@PathParam("datasetId")
                                     String datasetId )
                     throws Exception {
-        return respondWithOpenApi( headers, datasetId, false );
+        return respondWithOpenApi( headers, uriInfo, datasetId, false );
     }
 
-    private Response respondWithOpenApi(HttpHeaders headers, String datasetId, boolean json) throws Exception {
-    	OpenAPI openApi = this.openApiCreator.createOpenApi( headers, datasetId );
+    private Response respondWithOpenApi(HttpHeaders headers, UriInfo uriInfo, String datasetId, boolean json) throws Exception {
+    	OpenAPI openApi = this.openApiCreator.createOpenApi( headers, uriInfo, datasetId );
 
         if ( openApi == null )
             return Response.status( 404 ).build();
-        
+
         String rendered;
         if (json) {
         	rendered = Json.mapper().writeValueAsString( openApi );
@@ -113,7 +113,7 @@ public class OpenApi {
         else {
         	rendered = Yaml.mapper().writeValueAsString( openApi );
         }
-        
+
         ResponseBuilder resp = Response.status( Response.Status.OK )
         		.entity( rendered );
         if (corsAllowAll) {

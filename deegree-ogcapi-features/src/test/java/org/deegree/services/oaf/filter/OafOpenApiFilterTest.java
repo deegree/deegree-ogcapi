@@ -21,24 +21,6 @@
  */
 package org.deegree.services.oaf.filter;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.Content;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.parser.OpenAPIV3Parser;
-import org.deegree.services.oaf.openapi.OafOpenApiFilter;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.junit.Test;
-
-import javax.xml.namespace.QName;
-import java.net.URL;
-import java.util.Map;
-
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
@@ -52,11 +34,48 @@ import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
+import java.net.URI;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.parser.OpenAPIV3Parser;
+import org.deegree.services.oaf.openapi.OafOpenApiFilter;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mock;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 public class OafOpenApiFilterTest {
+
+	private static final String BASE_URI = "http://localhost:8081/deegree-services-oaf";
+
+	@Mock
+	static UriInfo uriInfo = mock(UriInfo.class);
+
+	@BeforeClass
+    public static void mockUriInfo(){
+        when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI));
+    }
 
     @Test
     public void testFilterOperation()
@@ -67,7 +86,7 @@ public class OafOpenApiFilterTest {
 
         DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer();
 
-        OafOpenApiFilter filter = new OafOpenApiFilter( "oaf", deegreeWorkspaceInitializer );
+        OafOpenApiFilter filter = new OafOpenApiFilter( uriInfo, "oaf", deegreeWorkspaceInitializer );
         filter.filterOpenAPI( openAPI, null, null, null );
 
         Paths paths = openAPI.getPaths();
@@ -94,6 +113,10 @@ public class OafOpenApiFilterTest {
         assertThat( paths.get( "/collections/strassenbaumkataster/items/{featureId}" ),
                     hasResponseMediaType( APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
                                           APPLICATION_GML_SF2, TEXT_HTML ) );
+
+		List<Server> servers = openAPI.getServers();
+		assertThat(servers.size(), is(1));
+		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
     }
 
     @Test
@@ -106,7 +129,7 @@ public class OafOpenApiFilterTest {
         DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
                                 new QName( "http://www.deegree.org/app", "KitaEinrichtungen" ) );
 
-        OafOpenApiFilter filter = new OafOpenApiFilter( "oaf", deegreeWorkspaceInitializer );
+        OafOpenApiFilter filter = new OafOpenApiFilter( uriInfo, "oaf", deegreeWorkspaceInitializer );
         filter.filterOpenAPI( openAPI, null, null, null );
 
         Paths paths = openAPI.getPaths();
@@ -133,6 +156,10 @@ public class OafOpenApiFilterTest {
         ArraySchema leistungsnameSchema = (ArraySchema) propertiesSchema.getProperties().get( "Leistungsname" );
         assertThat( leistungsnameSchema.getType(), is( "array" ) );
         assertThat( leistungsnameSchema.getItems().getType(), is( "string" ) );
+
+		List<Server> servers = openAPI.getServers();
+		assertThat(servers.size(), is(1));
+		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
     }
 
     @Test
@@ -145,7 +172,7 @@ public class OafOpenApiFilterTest {
         DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
                                 new QName( "http://www.deegree.org/datasource/feature/sql", "Zuwanderung" ) );
 
-        OafOpenApiFilter filter = new OafOpenApiFilter( "oaf", deegreeWorkspaceInitializer );
+        OafOpenApiFilter filter = new OafOpenApiFilter( uriInfo, "oaf", deegreeWorkspaceInitializer );
         filter.filterOpenAPI( openAPI, null, null, null );
 
         Paths paths = openAPI.getPaths();
@@ -172,6 +199,10 @@ public class OafOpenApiFilterTest {
         Schema countryComplexItems = countryComplexSchema.getItems();
         assertThat( ( (Schema) countryComplexItems.getProperties().get( "name" ) ).getType(), is( "string" ) );
         assertThat( ( (Schema) countryComplexItems.getProperties().get( "pop" ) ).getType(), is( "number" ) );
+
+		List<Server> servers = openAPI.getServers();
+		assertThat(servers.size(), is(1));
+		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
     }
 
     private Matcher<PathItem> hasResponseMediaType( String... mediaTypes ) {
