@@ -9,7 +9,7 @@ The deegree OGC API Features (deegree ogcapi) implementation is compliant to the
 The user documentation (e.g. "How to set up deegree ogcapi?") can be found in the [user manual](./deegree-ogcapi-documentation/src/main/asciidoc/index.adoc).
 
 ## Developer documentation
-To build deegree ogcapi you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) or higher and [Apache Maven 3.8.x](https://maven.apache.org/). Then run the following command to build the project:
+To build deegree ogcapi you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) or higher and [Apache Maven 3.9.x](https://maven.apache.org/). Then run the following command to build the project:
 
 ```shell
 mvn clean install
@@ -19,6 +19,8 @@ Further information about how to build deegree webservices can be found on the G
 https://github.com/deegree/deegree3/wiki
 
 ## Docker
+
+[![deegree-ogcapi](https://dockeri.co/image/deegree/deegree-ogcapi)](https://hub.docker.com/r/deegree/deegree-ogcapi/)
 
 ### Build Docker image
 
