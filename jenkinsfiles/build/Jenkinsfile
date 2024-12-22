@@ -1,7 +1,7 @@
 pipeline {
   agent any
   options {
-      disableConcurrentBuilds()
+    disableConcurrentBuilds()
   }
   tools {
     maven 'maven-3.9'
@@ -12,9 +12,9 @@ pipeline {
     MAVEN_OPTS='-Djava.awt.headless=true -Xmx4096m'
   }
   parameters {
-        string name: 'REL_VERSION', defaultValue: "1.3.x", description: 'Next release version'
-        string name: 'DEV_VERSION', defaultValue: "1.3.x-SNAPSHOT", description: 'Next snapshot version'
-        booleanParam name: 'PERFORM_RELEASE', defaultValue: false, description: 'Perform release build (on main branch only)'
+    string name: 'REL_VERSION', defaultValue: "1.3.x", description: 'Next release version'
+    string name: 'DEV_VERSION', defaultValue: "1.3.x-SNAPSHOT", description: 'Next snapshot version'
+    booleanParam name: 'PERFORM_RELEASE', defaultValue: false, description: 'Perform release build (on main branch only)'
   }
   stages {
     stage('Initialize') {
@@ -38,41 +38,47 @@ pipeline {
       }
     }
     stage ('Quality Checks') {
-        when {
-            branch 'main'
+      when {
+        branch 'main'
+      }
+      steps {
+        echo 'Quality checking'
+        sh 'mvn -B -fae com.github.spotbugs:spotbugs-maven-plugin:spotbugs javadoc:javadoc'
+      }
+      post {
+        always {
+          recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc(), spotBugs()]
         }
-        steps {
-            echo 'Quality checking'
-            sh 'mvn -B -fae com.github.spotbugs:spotbugs-maven-plugin:spotbugs javadoc:javadoc'
-        }
-        post {
-            always {
-                recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc(), spotBugs()]
-            }
-        }
+      }
     }
     stage ('Release') {
       when {
-          allOf {
-              triggeredBy cause: "UserIdCause", detail: "tmc"
-              expression { return params.PERFORM_RELEASE }
-          }
+        allOf {
+          triggeredBy cause: "UserIdCause", detail: "tmc"
+          expression { return params.PERFORM_RELEASE }
+        }
       }
       steps {
-          echo 'Prepare release version ${REL_VERSION}'
-          sh 'mvn -Dresume=false -DreleaseVersion=${REL_VERSION} -DdevelopmentVersion=${DEV_VERSION} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform'
+        echo 'Prepare release version ${REL_VERSION}'
+        withMaven(mavenSettingsConfig: 'mvn-server-settings', options: [junitPublisher(healthScaleFactor: 1.0)], publisherStrategy: 'EXPLICIT') {
+          sshagent(credentials: ['jenkins-ogcapi-ssh-key']) {
+            withCredentials([usernamePassword(credentialsId:'nexus-deploy', passwordVariable: 'PASSWORD_VAR', usernameVariable: 'USERNAME_VAR')]) {
+              sh 'mvn -Dresume=false -DreleaseVersion=${REL_VERSION} -DdevelopmentVersion=${DEV_VERSION} -Darguments="-Drepo.username=${USERNAME_VAR} -Drepo.password=${PASSWORD_VAR}" -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform'
+            }
+          }
+        }
       }
       post {
-          success {
-              archiveArtifacts artifacts: '**/target/deegree-ogcapi-webapp-*.war', fingerprint: true
-              archiveArtifacts artifacts: '**/target/deegree-ogcapi-documentation*.zip', fingerprint: true
-          }
+        success {
+          archiveArtifacts artifacts: '**/target/deegree-ogcapi-webapp-*.war', fingerprint: true
+          archiveArtifacts artifacts: '**/target/deegree-ogcapi-documentation*.zip', fingerprint: true
+        }
       }
     }
   }
   post {
-      always {
-          cleanWs notFailBuild: true
-      }
+    always {
+      cleanWs notFailBuild: true
+    }
   }
 }
