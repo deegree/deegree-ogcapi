@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -41,62 +41,58 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.deegree.services.oaf.exceptions.ExceptionMediaTypeUtil.selectMediaType;
 
 /**
- * Checks the passed query parameters. If an query parameter has an invalid value the request aborts with a BAD_REQUEST.
+ * Checks the passed query parameters. If an query parameter has an invalid value the
+ * request aborts with a BAD_REQUEST.
  *
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 @Provider
 public class InvalidParameterFilter implements ContainerRequestFilter {
 
-    private static final String EXCEPTION_MSG = "Parameter with name '%s' has invalid content '%s'.";
+	private static final String EXCEPTION_MSG = "Parameter with name '%s' has invalid content '%s'.";
 
-    @Context
-    private ResourceInfo resourceInfo;
+	@Context
+	private ResourceInfo resourceInfo;
 
-    @Context
-    private Request request;
+	@Context
+	private Request request;
 
-    @Override
-    public void filter( ContainerRequestContext requestContext )
-                    throws IOException {
-        if ( resourceInfo.getResourceClass().isAssignableFrom( Features.class ) ) {
-            MultivaluedMap<String, String> queryParameters = requestContext.getUriInfo().getQueryParameters();
-            boolean isValid = validateInteger( requestContext, "limit", queryParameters );
-            if ( isValid ) {
-                validateInteger( requestContext, "offset", queryParameters );
-            }
-        }
-    }
+	@Override
+	public void filter(ContainerRequestContext requestContext) throws IOException {
+		if (resourceInfo.getResourceClass().isAssignableFrom(Features.class)) {
+			MultivaluedMap<String, String> queryParameters = requestContext.getUriInfo().getQueryParameters();
+			boolean isValid = validateInteger(requestContext, "limit", queryParameters);
+			if (isValid) {
+				validateInteger(requestContext, "offset", queryParameters);
+			}
+		}
+	}
 
-    private boolean validateInteger( ContainerRequestContext requestContext, String paramKey,
-                                     MultivaluedMap<String, String> queryParameters ) {
-        List<String> queryParam = queryParameters.get( paramKey );
-        if ( queryParam != null ) {
-            try {
-                queryParam.forEach( s -> {
-                    Integer.valueOf( s );
-                } );
-            } catch ( NumberFormatException e ) {
-                Response response = createInvalidParameterResponse( paramKey, queryParam );
-                requestContext.abortWith( response );
-                return false;
-            }
-        }
-        return true;
-    }
+	private boolean validateInteger(ContainerRequestContext requestContext, String paramKey,
+			MultivaluedMap<String, String> queryParameters) {
+		List<String> queryParam = queryParameters.get(paramKey);
+		if (queryParam != null) {
+			try {
+				queryParam.forEach(s -> {
+					Integer.valueOf(s);
+				});
+			}
+			catch (NumberFormatException e) {
+				Response response = createInvalidParameterResponse(paramKey, queryParam);
+				requestContext.abortWith(response);
+				return false;
+			}
+		}
+		return true;
+	}
 
-    private Response createInvalidParameterResponse( String param, List<String> queryParam ) {
-        String queryParamString = queryParam.stream().collect( Collectors.joining( "," ) );
-        MediaType selectedType = selectMediaType( request );
-        String message = String.format( EXCEPTION_MSG, param, queryParamString );
-        OgcApiFeaturesExceptionReport oafExceptionReport = new OgcApiFeaturesExceptionReport(
-                        message,
-                        BAD_REQUEST.getStatusCode() );
-        return Response
-                        .status( BAD_REQUEST )
-                        .entity( oafExceptionReport )
-                        .type( selectedType )
-                        .build();
-    }
+	private Response createInvalidParameterResponse(String param, List<String> queryParam) {
+		String queryParamString = queryParam.stream().collect(Collectors.joining(","));
+		MediaType selectedType = selectMediaType(request);
+		String message = String.format(EXCEPTION_MSG, param, queryParamString);
+		OgcApiFeaturesExceptionReport oafExceptionReport = new OgcApiFeaturesExceptionReport(message,
+				BAD_REQUEST.getStatusCode());
+		return Response.status(BAD_REQUEST).entity(oafExceptionReport).type(selectedType).build();
+	}
 
 }

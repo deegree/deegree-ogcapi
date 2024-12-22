@@ -31,16 +31,16 @@ import org.deegree.services.controller.OGCFrontController;
  */
 public class Update {
 
-    public static String update()
-                    throws UpdateException {
-        try {
-            OGCFrontController fc = OGCFrontController.getInstance();
-            fc.setActiveWorkspaceName( OGCFrontController.getServiceWorkspace().getName() );
-            fc.update();
-            return "Update complete.";
-        } catch ( Exception e ) {
-            throw new UpdateException( e );
-        }
-    }
+	public static String update() throws UpdateException {
+		try {
+			OGCFrontController fc = OGCFrontController.getInstance();
+			fc.setActiveWorkspaceName(OGCFrontController.getServiceWorkspace().getName());
+			fc.update();
+			return "Update complete.";
+		}
+		catch (Exception e) {
+			throw new UpdateException(e);
+		}
+	}
 
 }

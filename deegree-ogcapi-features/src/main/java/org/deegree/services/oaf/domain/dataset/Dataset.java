@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,40 +30,40 @@ import java.util.List;
  */
 public class Dataset {
 
-    private String name;
+	private String name;
 
-    private String title;
+	private String title;
 
-    private List<Link> links;
+	private List<Link> links;
 
-    public Dataset( String name, String title, List<Link> links ) {
-        this.name = name;
-        this.title = title;
-        this.links = links;
-    }
+	public Dataset(String name, String title, List<Link> links) {
+		this.name = name;
+		this.title = title;
+		this.links = links;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName( String name ) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setTitle( String title ) {
-        this.title = title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public List<Link> getLinks() {
-        return links;
-    }
+	public List<Link> getLinks() {
+		return links;
+	}
 
-    public void setLinks( List<Link> links ) {
-        this.links = links;
-    }
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
 
 }

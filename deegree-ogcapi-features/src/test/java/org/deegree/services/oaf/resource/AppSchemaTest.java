@@ -43,36 +43,35 @@ import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 public class AppSchemaTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( Appschema.class, SchemaResponseGmlWriter.class );
-        resourceConfig.register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind( mockDataAccess() ).to( DataAccess.class );
-                bind( mockWorkspaceInitializer( new QName( "http://www.deegree.org/app", "KitaEinrichtungen" ) ) ).to(
-                                DeegreeWorkspaceInitializer.class );
-            }
-        } );
-        return resourceConfig;
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		ResourceConfig resourceConfig = new ResourceConfig(Appschema.class, SchemaResponseGmlWriter.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(mockDataAccess()).to(DataAccess.class);
+				bind(mockWorkspaceInitializer(new QName("http://www.deegree.org/app", "KitaEinrichtungen")))
+					.to(DeegreeWorkspaceInitializer.class);
+			}
+		});
+		return resourceConfig;
+	}
 
-    @Test
-    public void test_AppSchemaDeclaration_Xml_ShouldBeAvailable() {
-        final String xml = target( "/datasets/oaf/collections/KitaEinrichtungen/appschema" ).request(
-                        APPLICATION_XML ).get(
-                        String.class );
+	@Test
+	public void test_AppSchemaDeclaration_Xml_ShouldBeAvailable() {
+		final String xml = target("/datasets/oaf/collections/KitaEinrichtungen/appschema").request(APPLICATION_XML)
+			.get(String.class);
 
-        assertThat( xml,
-                    hasXPath( "//xs:schema/xs:import[@namespace = 'http://www.opengis.net/gml/3.2' and @schemaLocation='http://schemas.opengis.net/gml/3.2.1/gml.xsd']" ).withNamespaceContext(
-                                    nsContext() ) );
-    }
+		assertThat(xml, hasXPath(
+				"//xs:schema/xs:import[@namespace = 'http://www.opengis.net/gml/3.2' and @schemaLocation='http://schemas.opengis.net/gml/3.2.1/gml.xsd']")
+			.withNamespaceContext(nsContext()));
+	}
 
-    private Map<String, String> nsContext() {
-        Map<String, String> nsContext = new HashMap<>();
-        nsContext.put( "xs", "http://www.w3.org/2001/XMLSchema" );
-        return nsContext;
-    }
+	private Map<String, String> nsContext() {
+		Map<String, String> nsContext = new HashMap<>();
+		nsContext.put("xs", "http://www.w3.org/2001/XMLSchema");
+		return nsContext;
+	}
 
 }

@@ -48,38 +48,38 @@ import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
  */
 public class FeatureCollectionTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( FeatureCollection.class );
-        resourceConfig.register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind( mockDataAccess() ).to( DataAccess.class );
-                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
-            }
-        } );
-        return resourceConfig;
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		ResourceConfig resourceConfig = new ResourceConfig(FeatureCollection.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(mockDataAccess()).to(DataAccess.class);
+				bind(mockWorkspaceInitializer()).to(DeegreeWorkspaceInitializer.class);
+			}
+		});
+		return resourceConfig;
+	}
 
-    @Test
-    public void test_CollectionDeclaration_Json_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections/test" ).request( APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-    }
+	@Test
+	public void test_CollectionDeclaration_Json_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections/test").request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+	}
 
-    @Test
-    public void test_CollectionDeclaration_Xml_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections/test" ).request( APPLICATION_XML ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        String xml = response.readEntity( String.class );
-        assertThat( xml, hasXPath( "/core:Collections/core:Collection" ).withNamespaceContext( nsContext() ) );
-    }
+	@Test
+	public void test_CollectionDeclaration_Xml_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections/test").request(APPLICATION_XML).get();
+		assertThat(response.getStatus(), is(200));
+		String xml = response.readEntity(String.class);
+		assertThat(xml, hasXPath("/core:Collections/core:Collection").withNamespaceContext(nsContext()));
+	}
 
-    private Map<String, String> nsContext() {
-        Map<String, String> nsContext = new HashMap<>();
-        nsContext.put( "core", XML_CORE_NS_URL );
-        return nsContext;
-    }
+	private Map<String, String> nsContext() {
+		Map<String, String> nsContext = new HashMap<>();
+		nsContext.put("core", XML_CORE_NS_URL);
+		return nsContext;
+	}
 
 }

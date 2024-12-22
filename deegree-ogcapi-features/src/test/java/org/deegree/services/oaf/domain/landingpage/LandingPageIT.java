@@ -46,45 +46,41 @@ import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
  */
 public class LandingPageIT {
 
-    @Test
-    public void testLandingPageToXml()
-                    throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance( LandingPage.class );
+	@Test
+	public void testLandingPageToXml() throws Exception {
+		JAXBContext jaxbContext = JAXBContext.newInstance(LandingPage.class);
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-        LandingPage landingPage = createLandingPage();
-        marshaller.marshal( landingPage, bos );
+		Marshaller marshaller = jaxbContext.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		LandingPage landingPage = createLandingPage();
+		marshaller.marshal(landingPage, bos);
 
-        assertThat( bos.toString(), ValidationMatcher.valid( schemaFrom( XML_CORE_SCHEMA_URL ) ) );
-    }
+		assertThat(bos.toString(), ValidationMatcher.valid(schemaFrom(XML_CORE_SCHEMA_URL)));
+	}
 
-    @Test
-    public void testLandingPageToJson()
-                    throws Exception {
-        LandingPage landingPage = createLandingPage();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String actual = objectMapper.writeValueAsString( landingPage );
+	@Test
+	public void testLandingPageToJson() throws Exception {
+		LandingPage landingPage = createLandingPage();
+		ObjectMapper objectMapper = new ObjectMapper();
+		String actual = objectMapper.writeValueAsString(landingPage);
 
-        assertEquals( expected( "expectedLandingPage.json" ), actual, LENIENT );
-    }
+		assertEquals(expected("expectedLandingPage.json"), actual, LENIENT);
+	}
 
-    private LandingPage createLandingPage() {
-        Link link = new Link( "http://link.de/lp" );
-        Contact contact = new Contact( "name", "http://test.de", "test@oaf.de" );
-        return new LandingPage( "TestTitle", "TestDesc", contact, Collections.singletonList( link ) );
-    }
+	private LandingPage createLandingPage() {
+		Link link = new Link("http://link.de/lp");
+		Contact contact = new Contact("name", "http://test.de", "test@oaf.de");
+		return new LandingPage("TestTitle", "TestDesc", contact, Collections.singletonList(link));
+	}
 
-    private String expected( String resource )
-                    throws IOException {
-        return IOUtils.toString( getClass().getResourceAsStream( resource ), StandardCharsets.UTF_8 );
-    }
+	private String expected(String resource) throws IOException {
+		return IOUtils.toString(getClass().getResourceAsStream(resource), StandardCharsets.UTF_8);
+	}
 
-    private StreamSource schemaFrom( String url )
-                    throws IOException {
-        return new StreamSource( new URL( url ).openStream() );
-    }
+	private StreamSource schemaFrom(String url) throws IOException {
+		return new StreamSource(new URL(url).openStream());
+	}
 
 }

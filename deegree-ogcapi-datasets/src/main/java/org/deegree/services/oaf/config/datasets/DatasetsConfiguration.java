@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,28 +28,28 @@ package org.deegree.services.oaf.config.datasets;
  */
 public class DatasetsConfiguration {
 
-    private final String title;
+	private final String title;
 
-    private final String description;
+	private final String description;
 
-    private final Contact contact;
+	private final Contact contact;
 
-    public DatasetsConfiguration( String title, String description,
-                                  Contact contact ) {
-        this.title = title;
-        this.description = description;
-        this.contact = contact;
-    }
+	public DatasetsConfiguration(String title, String description, Contact contact) {
+		this.title = title;
+		this.description = description;
+		this.contact = contact;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Contact getContact() {
-        return contact;
-    }
+	public Contact getContact() {
+		return contact;
+	}
+
 }

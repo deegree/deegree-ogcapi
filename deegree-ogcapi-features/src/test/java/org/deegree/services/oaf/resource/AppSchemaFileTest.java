@@ -44,37 +44,35 @@ import static org.junit.Assert.assertThat;
 
 public class AppSchemaFileTest extends JerseyTest {
 
-    @ClassRule
-    public static TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@ClassRule
+	public static TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private static Path pathToXsd;
+	private static Path pathToXsd;
 
-    @BeforeClass
-    public static void initXsd()
-                    throws IOException {
-        pathToXsd = Paths.get( temporaryFolder.newFile( "kita.xsd" ).toURI() );
-    }
+	@BeforeClass
+	public static void initXsd() throws IOException {
+		pathToXsd = Paths.get(temporaryFolder.newFile("kita.xsd").toURI());
+	}
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( AppschemaFile.class );
-        resourceConfig.register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind( mockWorkspaceInitializer( new QName( "http://www.deegree.org/app", "KitaEinrichtungen" ),
-                                                pathToXsd ) ).to(
-                                DeegreeWorkspaceInitializer.class );
-            }
-        } );
-        return resourceConfig;
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		ResourceConfig resourceConfig = new ResourceConfig(AppschemaFile.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(mockWorkspaceInitializer(new QName("http://www.deegree.org/app", "KitaEinrichtungen"), pathToXsd))
+					.to(DeegreeWorkspaceInitializer.class);
+			}
+		});
+		return resourceConfig;
+	}
 
-    @Test
-    public void test_AppSchemaFileDeclaration_Xml_ShouldBeAvailable() {
-        int statusCode = target( "/appschemas/kita.xsd" ).request( APPLICATION_XML ).get().getStatus();
+	@Test
+	public void test_AppSchemaFileDeclaration_Xml_ShouldBeAvailable() {
+		int statusCode = target("/appschemas/kita.xsd").request(APPLICATION_XML).get().getStatus();
 
-        assertThat( statusCode, is( 200 ) );
-    }
+		assertThat(statusCode, is(200));
+	}
 
 }

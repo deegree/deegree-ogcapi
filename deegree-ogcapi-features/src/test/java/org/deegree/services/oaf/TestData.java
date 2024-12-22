@@ -76,148 +76,150 @@ import static org.mockito.Mockito.when;
  */
 public class TestData {
 
-    public static DataAccess mockDataAccess() {
-        DataAccess testFactory = mock( DataAccess.class );
-        Collection collection = createCollection();
-        Collections testCollection = createCollections( collection );
-        try {
-            when( testFactory.createCollections( any( OafDatasetConfiguration.class ),
-                                                 any( LinkBuilder.class ) ) ).thenReturn( testCollection );
-            when( testFactory.createCollection( any( OafDatasetConfiguration.class ), eq( "test" ),
-                                                any( LinkBuilder.class ) ) ).thenReturn( collection );
-        } catch ( UnknownCollectionId e ) {
-            e.printStackTrace();
-        }
-        return testFactory;
-    }
+	public static DataAccess mockDataAccess() {
+		DataAccess testFactory = mock(DataAccess.class);
+		Collection collection = createCollection();
+		Collections testCollection = createCollections(collection);
+		try {
+			when(testFactory.createCollections(any(OafDatasetConfiguration.class), any(LinkBuilder.class)))
+				.thenReturn(testCollection);
+			when(testFactory.createCollection(any(OafDatasetConfiguration.class), eq("test"), any(LinkBuilder.class)))
+				.thenReturn(collection);
+		}
+		catch (UnknownCollectionId e) {
+			e.printStackTrace();
+		}
+		return testFactory;
+	}
 
-    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer() {
-        QName featureTypeName = new QName( "http://www.deegree.org/app", "strassenbaumkataster" );
-        return mockWorkspaceInitializer( featureTypeName );
-    }
+	public static DeegreeWorkspaceInitializer mockWorkspaceInitializer() {
+		QName featureTypeName = new QName("http://www.deegree.org/app", "strassenbaumkataster");
+		return mockWorkspaceInitializer(featureTypeName);
+	}
 
-    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName ) {
-        return mockWorkspaceInitializer( featureTypeName, null );
-    }
+	public static DeegreeWorkspaceInitializer mockWorkspaceInitializer(QName featureTypeName) {
+		return mockWorkspaceInitializer(featureTypeName, null);
+	}
 
-    public static DeegreeWorkspaceInitializer mockWorkspaceInitializer( QName featureTypeName, Path pathToXsd ) {
-        try {
-            OafDatasetConfiguration oafConfiguration = mock( OafDatasetConfiguration.class );
-            DatasetMetadata serviceMetadata = mock( DatasetMetadata.class );
-            when( oafConfiguration.getServiceMetadata() ).thenReturn( serviceMetadata );
+	public static DeegreeWorkspaceInitializer mockWorkspaceInitializer(QName featureTypeName, Path pathToXsd) {
+		try {
+			OafDatasetConfiguration oafConfiguration = mock(OafDatasetConfiguration.class);
+			DatasetMetadata serviceMetadata = mock(DatasetMetadata.class);
+			when(oafConfiguration.getServiceMetadata()).thenReturn(serviceMetadata);
 
-            Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
-            FeatureTypeMetadata ftm = new FeatureTypeMetadata( featureTypeName );
+			Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
+			FeatureTypeMetadata ftm = new FeatureTypeMetadata(featureTypeName);
 
-            FeatureType featureType = getFeatureType( featureTypeName, "io/schema/strassenbaumkataster.xsd" );
-            if ( featureType == null )
-                featureType = getFeatureType( featureTypeName, "io/schema/micado_kennzahlen_v1_2.xsd" );
-            if ( featureType == null )
-                featureType = getFeatureType( featureTypeName, "io/schema/kita.xsd" );
-            if ( featureType == null )
-                throw new IllegalArgumentException( "FeatureType with name " + featureTypeName + " is not known" );
-            FeatureStore featureStore = mock( FeatureStore.class );
-            when( featureStore.getSchema() ).thenReturn( featureType.getSchema() );
-            ftm.featureStore( featureStore );
+			FeatureType featureType = getFeatureType(featureTypeName, "io/schema/strassenbaumkataster.xsd");
+			if (featureType == null)
+				featureType = getFeatureType(featureTypeName, "io/schema/micado_kennzahlen_v1_2.xsd");
+			if (featureType == null)
+				featureType = getFeatureType(featureTypeName, "io/schema/kita.xsd");
+			if (featureType == null)
+				throw new IllegalArgumentException("FeatureType with name " + featureTypeName + " is not known");
+			FeatureStore featureStore = mock(FeatureStore.class);
+			when(featureStore.getSchema()).thenReturn(featureType.getSchema());
+			ftm.featureStore(featureStore);
 
-            ftm.featureType( featureType );
+			ftm.featureType(featureType);
 
-            featureTypeMetadata.put( featureTypeName.getLocalPart(), ftm );
-            when( oafConfiguration.getFeatureTypeMetadata() ).thenReturn( featureTypeMetadata );
-            when( oafConfiguration.getFeatureTypeMetadata( eq( featureTypeName.getLocalPart() ) ) ).thenReturn( ftm );
+			featureTypeMetadata.put(featureTypeName.getLocalPart(), ftm);
+			when(oafConfiguration.getFeatureTypeMetadata()).thenReturn(featureTypeMetadata);
+			when(oafConfiguration.getFeatureTypeMetadata(eq(featureTypeName.getLocalPart()))).thenReturn(ftm);
 
-            OafDatasets oafDatasets = new OafDatasets();
-            oafDatasets.addDataset( "oaf", oafConfiguration );
-            DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock( DeegreeWorkspaceInitializer.class );
-            when( deegreeWorkspaceInitializer.getAppschemaFile( anyString() ) ).thenReturn( pathToXsd );
-            when( deegreeWorkspaceInitializer.getOafDatasets() ).thenReturn( oafDatasets );
-            return deegreeWorkspaceInitializer;
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+			OafDatasets oafDatasets = new OafDatasets();
+			oafDatasets.addDataset("oaf", oafConfiguration);
+			DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock(DeegreeWorkspaceInitializer.class);
+			when(deegreeWorkspaceInitializer.getAppschemaFile(anyString())).thenReturn(pathToXsd);
+			when(deegreeWorkspaceInitializer.getOafDatasets()).thenReturn(oafDatasets);
+			return deegreeWorkspaceInitializer;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
-    private static FeatureType getFeatureType( QName featureTypeName, String applicationschema )
-                    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String schemaURL = TestData.class.getResource( applicationschema ).toString();
-        GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader( GML_32, null, schemaURL );
-        AppSchema schema = xsdAdapter.extractAppSchema();
-        return schema.getFeatureType( featureTypeName );
-    }
+	private static FeatureType getFeatureType(QName featureTypeName, String applicationschema)
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		String schemaURL = TestData.class.getResource(applicationschema).toString();
+		GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader(GML_32, null, schemaURL);
+		AppSchema schema = xsdAdapter.extractAppSchema();
+		return schema.getFeatureType(featureTypeName);
+	}
 
-    public static FeaturesResponse features() {
-        Link link = new Link( "http://self", "self", "application/json", "title" );
-        EmptyFeatureInputStream features = new EmptyFeatureInputStream();
-        Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeaturesResponseBuilder( features ).withFeatureTypeNsPrefixes(
-                        featureTypeNsPrefixes ).withNumberOfFeatures( 10 ).withNumberOfFeaturesMatched(
-                        100 ).withStartIndex( 0 ).withLinks(
-                        java.util.Collections.singletonList( link ) ).withMaxFeaturesAndStartIndexApplicable(
-                        false ).withResponseCrsName( DEFAULT_CRS ).buildFeaturesResponse();
-    }
+	public static FeaturesResponse features() {
+		Link link = new Link("http://self", "self", "application/json", "title");
+		EmptyFeatureInputStream features = new EmptyFeatureInputStream();
+		Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
+		return new FeaturesResponseBuilder(features).withFeatureTypeNsPrefixes(featureTypeNsPrefixes)
+			.withNumberOfFeatures(10)
+			.withNumberOfFeaturesMatched(100)
+			.withStartIndex(0)
+			.withLinks(java.util.Collections.singletonList(link))
+			.withMaxFeaturesAndStartIndexApplicable(false)
+			.withResponseCrsName(DEFAULT_CRS)
+			.buildFeaturesResponse();
+	}
 
-    public static FeatureResponse feature()
-                    throws XMLStreamException, IOException, UnknownCRSException {
-        Link link = new Link( "http://self", "self", "application/json", "title" );
-        Feature feature = readFeature();
-        Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
-        return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes(
-                        featureTypeNsPrefixes ).withLinks(
-                        java.util.Collections.singletonList( link ) ).withResponseCrsName(
-                        DEFAULT_CRS ).buildFeatureResponse();
-    }
+	public static FeatureResponse feature() throws XMLStreamException, IOException, UnknownCRSException {
+		Link link = new Link("http://self", "self", "application/json", "title");
+		Feature feature = readFeature();
+		Map<String, String> featureTypeNsPrefixes = java.util.Collections.emptyMap();
+		return new FeaturesResponseBuilder(feature).withFeatureTypeNsPrefixes(featureTypeNsPrefixes)
+			.withLinks(java.util.Collections.singletonList(link))
+			.withResponseCrsName(DEFAULT_CRS)
+			.buildFeatureResponse();
+	}
 
-    public static Collections createCollections() {
-        Link link = new Link( "http://link.de/collections", "self", "application/json", "collectionsTitle" );
-        Collection collection = createCollection();
-        return new Collections( java.util.Collections.singletonList( link ),
-                                java.util.Collections.singletonList( collection ) );
-    }
+	public static Collections createCollections() {
+		Link link = new Link("http://link.de/collections", "self", "application/json", "collectionsTitle");
+		Collection collection = createCollection();
+		return new Collections(java.util.Collections.singletonList(link),
+				java.util.Collections.singletonList(collection));
+	}
 
-    public static Collections createCollections( Collection collection ) {
-        Link link = new Link( "http://link.de/collections", "self", "application/json", "collectionsTitle" );
-        return new Collections( java.util.Collections.singletonList( link ),
-                                java.util.Collections.singletonList( collection ) );
-    }
+	public static Collections createCollections(Collection collection) {
+		Link link = new Link("http://link.de/collections", "self", "application/json", "collectionsTitle");
+		return new Collections(java.util.Collections.singletonList(link),
+				java.util.Collections.singletonList(collection));
+	}
 
-    public static Collection createCollection() {
-        Link collectionLink = new Link( "http://link.de/testcollection", "self", "application/json",
-                                        "collectionTitle" );
-        Extent extent = new Extent();
-        extent.setSpatial( createSpatial() );
-        extent.setTemporal( createTemporal() );
-        List<Link> links = java.util.Collections.singletonList( collectionLink );
-        List<String> crs = java.util.Collections.singletonList( "EPSG:4326" );
-        return new Collection( "testId", "testTitle", "testDesc", links, extent, crs, DEFAULT_CRS );
-    }
+	public static Collection createCollection() {
+		Link collectionLink = new Link("http://link.de/testcollection", "self", "application/json", "collectionTitle");
+		Extent extent = new Extent();
+		extent.setSpatial(createSpatial());
+		extent.setTemporal(createTemporal());
+		List<Link> links = java.util.Collections.singletonList(collectionLink);
+		List<String> crs = java.util.Collections.singletonList("EPSG:4326");
+		return new Collection("testId", "testTitle", "testDesc", links, extent, crs, DEFAULT_CRS);
+	}
 
-    private static Spatial createSpatial() {
-        List<Double> bbox = new ArrayList<>();
-        bbox.add( 10.3 );
-        bbox.add( 48.4 );
-        bbox.add( 10.5 );
-        bbox.add( 48.6 );
-        return new Spatial( java.util.Collections.singletonList( bbox ), DEFAULT_CRS );
-    }
+	private static Spatial createSpatial() {
+		List<Double> bbox = new ArrayList<>();
+		bbox.add(10.3);
+		bbox.add(48.4);
+		bbox.add(10.5);
+		bbox.add(48.6);
+		return new Spatial(java.util.Collections.singletonList(bbox), DEFAULT_CRS);
+	}
 
-    private static Temporal createTemporal() {
-        List<Date> interval = new ArrayList<>();
-        DateTime end = new DateTime( 2020, 4, 22, 12, 0, 0, 0, DateTimeZone.UTC );
-        DateTime begin = new DateTime( 2020, 4, 15, 12, 0, 0, 0, DateTimeZone.UTC );
-        interval.add( end.toDate() );
-        interval.add( begin.toDate() );
-        return new Temporal( interval, null );
-    }
+	private static Temporal createTemporal() {
+		List<Date> interval = new ArrayList<>();
+		DateTime end = new DateTime(2020, 4, 22, 12, 0, 0, 0, DateTimeZone.UTC);
+		DateTime begin = new DateTime(2020, 4, 15, 12, 0, 0, 0, DateTimeZone.UTC);
+		interval.add(end.toDate());
+		interval.add(begin.toDate());
+		return new Temporal(interval, null);
+	}
 
-    public static Feature readFeature()
-                    throws XMLStreamException, IOException, UnknownCRSException {
-        GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader( GML_32,
-                                                                           TestData.class.getResource(
-                                                                                           "io/strassenbaumkataster-oneFeature.gml" ) );
-        FeatureCollection featureCollection = gmlReader.readFeatureCollection();
-        FeatureInputStream featureStream = new MemoryFeatureInputStream( featureCollection );
-        Feature feature = featureStream.iterator().next();
-        return feature;
-    }
+	public static Feature readFeature() throws XMLStreamException, IOException, UnknownCRSException {
+		GMLStreamReader gmlReader = GMLInputFactory.createGMLStreamReader(GML_32,
+				TestData.class.getResource("io/strassenbaumkataster-oneFeature.gml"));
+		FeatureCollection featureCollection = gmlReader.readFeatureCollection();
+		FeatureInputStream featureStream = new MemoryFeatureInputStream(featureCollection);
+		Feature feature = featureStream.iterator().next();
+		return feature;
+	}
+
 }

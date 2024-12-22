@@ -77,259 +77,239 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets/{datasetId}/collections/{collectionId}/items")
 public class Features {
 
-    private final FeaturesResponseCreator featureResponseCreator = new FeaturesResponseCreator();
+	private final FeaturesResponseCreator featureResponseCreator = new FeaturesResponseCreator();
 
-    @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+	@Inject
+	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    @Inject
-    private DataAccess dataAccess;
+	@Inject
+	private DataAccess dataAccess;
 
-    @GET
-    @Produces({ APPLICATION_GEOJSON })
-    @Operation(operationId = "features", summary = "retrieves features of collection {collectionId}", description = "Retrieves the features of the collection with the id {collectionId}")
-    @Tag(name = "Data")
-    public Response featuresGeoJson(
-                    @Context
-                                    UriInfo uriInfo,
-                    @PathParam("datasetId")
-                                    String datasetId,
-                    @PathParam("collectionId")
-                                    String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
-                    @QueryParam("limit")
-                                    int limit,
-                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
-                    @QueryParam("offset")
-                                    int offset,
-                    @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
-                    @QueryParam("bulk")
-                                     boolean bulk,
-                    @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset [minx, miny, maxx, maxy]. Example: '567190,5934330,567200,5934360'", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
-                    @QueryParam("bbox")
-                                    List<Double> bbox,
-                    @Parameter(description = "The coordinate reference system of the value of the bbox parameter. Example: 'EPSG:25832' Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84", style = ParameterStyle.FORM)
-                    @QueryParam("bbox-crs")
-                                    String bboxCrs,
-                    @Parameter(description =
-                                    "The datetime used as filter. Either a date-time or a period string that adheres to RFC 3339. Examples: A date-time: '2018-02-12T23:20:50Z' A period: '2018-02-12T00:00:00Z/2018-03-18T12:31:12Z' or '2018-02-12T00:00:00Z/P1M6DT12H31M12S''", style = ParameterStyle.FORM)
-                    @QueryParam("datetime")
-                                    String datetime,
-                    @Parameter(description = "The filter expression to be applied when retrieving features.",
-                                    style = ParameterStyle.FORM) @QueryParam("filter") String filter,
-                    @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-					                style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
-                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
-                    @Parameter(description = "The coordinate reference system of the response geometries. Example: 'EPSG:25832' Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84", style = ParameterStyle.FORM)
-                    @QueryParam("crs")
-                                    String crs,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f")
-                                    String format )
-                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features( uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
-                         filterCrs, crs, format, JSON );
-    }
+	@GET
+	@Produces({ APPLICATION_GEOJSON })
+	@Operation(operationId = "features", summary = "retrieves features of collection {collectionId}",
+			description = "Retrieves the features of the collection with the id {collectionId}")
+	@Tag(name = "Data")
+	public Response featuresGeoJson(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId,
+			@Parameter(
+					description = "Limits the number of items presented in the response document. Ignored if bulk is true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "10", minimum = "1",
+							maximum = "1000")) @QueryParam("limit") int limit,
+			@Parameter(
+					description = "The start index of the items presented in the response document. Ignored if bulk is true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "0", minimum = "0")) @QueryParam("offset") int offset,
+			@Parameter(
+					description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "false")) @QueryParam("bulk") boolean bulk,
+			@Parameter(
+					description = "The bounding boxes that describe the spatial extent of the dataset [minx, miny, maxx, maxy]. Example: '567190,5934330,567200,5934360'",
+					explode = Explode.FALSE, style = ParameterStyle.FORM,
+					array = @ArraySchema(minItems = 4, maxItems = 6)) @QueryParam("bbox") List<Double> bbox,
+			@Parameter(
+					description = "The coordinate reference system of the value of the bbox parameter. Example: 'EPSG:25832' Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+					style = ParameterStyle.FORM) @QueryParam("bbox-crs") String bboxCrs,
+			@Parameter(
+					description = "The datetime used as filter. Either a date-time or a period string that adheres to RFC 3339. Examples: A date-time: '2018-02-12T23:20:50Z' A period: '2018-02-12T00:00:00Z/2018-03-18T12:31:12Z' or '2018-02-12T00:00:00Z/P1M6DT12H31M12S''",
+					style = ParameterStyle.FORM) @QueryParam("datetime") String datetime,
+			@Parameter(description = "The filter expression to be applied when retrieving features.",
+					style = ParameterStyle.FORM) @QueryParam("filter") String filter,
+			@Parameter(
+					description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+					style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
+			@Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
+			@Parameter(
+					description = "The coordinate reference system of the response geometries. Example: 'EPSG:25832' Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+					style = ParameterStyle.FORM) @QueryParam("crs") String crs,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
+			throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
+		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
+				filterLang, filterCrs, crs, format, JSON);
+	}
 
-    @GET
-    @Produces({ APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2 })
-    @Operation(hidden = true)
-    public Response featuresGml(
-                    @Context
-                                    UriInfo uriInfo,
-                    @HeaderParam("Accept") String acceptHeader,
-                    @PathParam("datasetId")
-                                    String datasetId,
-                    @PathParam("collectionId")
-                                    String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
-                    @QueryParam("limit")
-                                    int limit,
-                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
-                    @QueryParam("offset")
-                                    int offset,
-                    @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
-                    @QueryParam("bulk")
-                                    boolean bulk,
-                    @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
-                    @QueryParam("bbox")
-                                    List<Double> bbox,
-                    @Parameter(description = "The coordinate reference system of the value of the bbox parameter.", style = ParameterStyle.FORM)
-                    @QueryParam("bbox-crs")
-                                    String bboxCrs,
-                    @Parameter(description = "The datetime used as filter.", style = ParameterStyle.FORM)
-                    @QueryParam("datetime")
-                                    String datetime,
-                    @Parameter(description = "The filter expression to be applied when retrieving features.",
-                                    style = ParameterStyle.FORM) @QueryParam("filter") String filter,
-                    @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-                                    style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
-                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
-                    @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
-                    @QueryParam("crs")
-                                    String crs,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f")
-                                    String format )
-                    throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
-        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
-                        filterCrs, crs, format, XML, acceptHeader);
-    }
+	@GET
+	@Produces({ APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2 })
+	@Operation(hidden = true)
+	public Response featuresGml(@Context UriInfo uriInfo, @HeaderParam("Accept") String acceptHeader,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
+			@Parameter(
+					description = "Limits the number of items presented in the response document. Ignored if bulk=true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "10", minimum = "1",
+							maximum = "1000")) @QueryParam("limit") int limit,
+			@Parameter(
+					description = "The start index of the items presented in the response document. Ignored if bulk=true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "0", minimum = "0")) @QueryParam("offset") int offset,
+			@Parameter(
+					description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "false")) @QueryParam("bulk") boolean bulk,
+			@Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.",
+					explode = Explode.FALSE, style = ParameterStyle.FORM,
+					array = @ArraySchema(minItems = 4, maxItems = 6)) @QueryParam("bbox") List<Double> bbox,
+			@Parameter(description = "The coordinate reference system of the value of the bbox parameter.",
+					style = ParameterStyle.FORM) @QueryParam("bbox-crs") String bboxCrs,
+			@Parameter(description = "The datetime used as filter.",
+					style = ParameterStyle.FORM) @QueryParam("datetime") String datetime,
+			@Parameter(description = "The filter expression to be applied when retrieving features.",
+					style = ParameterStyle.FORM) @QueryParam("filter") String filter,
+			@Parameter(
+					description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+					style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
+			@Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
+			@Parameter(description = "The coordinate reference system of the response geometries.",
+					style = ParameterStyle.FORM) @QueryParam("crs") String crs,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
+			throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
+		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
+				filterLang, filterCrs, crs, format, XML, acceptHeader);
+	}
 
-    @GET
-    @Produces({ TEXT_HTML })
-    @Operation(hidden = true)
-    public Response featuresHtml(
-                    @Context
-                                    UriInfo uriInfo,
-                    @PathParam("datasetId")
-                                    String datasetId,
-                    @PathParam("collectionId")
-                                    String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
-                    @QueryParam("limit")
-                                    int limit,
-                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
-                    @QueryParam("offset")
-                                    int offset,
-                    @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
-                    @QueryParam("bulk")
-                                     boolean bulk,
-                    @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
-                    @QueryParam("bbox")
-                                    List<Double> bbox,
-                    @Parameter(description = "The coordinate reference system of the value of the bbox parameter.", style = ParameterStyle.FORM)
-                    @QueryParam("bbox-crs")
-                                    String bboxCrs,
-                    @Parameter(description = "The datetime used as filter.", style = ParameterStyle.FORM)
-                    @QueryParam("datetime")
-                                    String datetime,
-                    @Parameter(description = "The filter expression to be applied when retrieving features.",
-                                    style = ParameterStyle.FORM) @QueryParam("filter") String filter,
-                    @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-                                    style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
-                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
-                    @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
-                    @QueryParam("crs")
-                                    String crs,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f")
-                                    String format )
-                    throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter, filterLang,
-                        filterCrs, crs, format, HTML);
-    }
+	@GET
+	@Produces({ TEXT_HTML })
+	@Operation(hidden = true)
+	public Response featuresHtml(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId,
+			@Parameter(
+					description = "Limits the number of items presented in the response document. Ignored if bulk=true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "10", minimum = "1",
+							maximum = "1000")) @QueryParam("limit") int limit,
+			@Parameter(
+					description = "The start index of the items presented in the response document. Ignored if bulk=true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "0", minimum = "0")) @QueryParam("offset") int offset,
+			@Parameter(
+					description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "false")) @QueryParam("bulk") boolean bulk,
+			@Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.",
+					explode = Explode.FALSE, style = ParameterStyle.FORM,
+					array = @ArraySchema(minItems = 4, maxItems = 6)) @QueryParam("bbox") List<Double> bbox,
+			@Parameter(description = "The coordinate reference system of the value of the bbox parameter.",
+					style = ParameterStyle.FORM) @QueryParam("bbox-crs") String bboxCrs,
+			@Parameter(description = "The datetime used as filter.",
+					style = ParameterStyle.FORM) @QueryParam("datetime") String datetime,
+			@Parameter(description = "The filter expression to be applied when retrieving features.",
+					style = ParameterStyle.FORM) @QueryParam("filter") String filter,
+			@Parameter(
+					description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+					style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
+			@Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
+			@Parameter(description = "The coordinate reference system of the response geometries.",
+					style = ParameterStyle.FORM) @QueryParam("crs") String crs,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
+			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
+		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
+				filterLang, filterCrs, crs, format, HTML);
+	}
 
-    @GET
-    @Operation(hidden = true)
-    public Response featuresOther(
-                    @Context
-                                    UriInfo uriInfo,
-                    @PathParam("datasetId")
-                                    String datasetId,
-                    @PathParam("collectionId")
-                                    String collectionId,
-                    @Parameter(description = "Limits the number of items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "10", minimum = "1", maximum = "1000"))
-                    @QueryParam("limit")
-                                    int limit,
-                    @Parameter(description = "The start index of the items presented in the response document. Ignored if bulk=true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "0", minimum = "0"))
-                    @QueryParam("offset")
-                                    int offset,
-                    @Parameter(description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.", style = ParameterStyle.FORM, schema = @Schema(defaultValue = "false"))
-                    @QueryParam("bulk")
-                                    boolean bulk,
-                    @Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.", explode = Explode.FALSE, style = ParameterStyle.FORM, array = @ArraySchema(minItems = 4, maxItems = 6))
-                    @QueryParam("bbox")
-                                    List<Double> bbox,
-                    @Parameter(description = "The coordinate reference system of the value of the bbox parameter.", style = ParameterStyle.FORM)
-                    @QueryParam("bbox-crs")
-                                    String bboxCrs,
-                    @Parameter(description = "The datetime used as filter.", style = ParameterStyle.FORM)
-                    @QueryParam("datetime")
-                                    String datetime,
-                    @Parameter(description = "The filter expression to be applied when retrieving features.",
-                                    style = ParameterStyle.FORM) @QueryParam("filter") String filter,
-                    @Parameter(description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-                                    style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
-                    @Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
-					                schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
-                    @Parameter(description = "The coordinate reference system of the response geometries.", style = ParameterStyle.FORM)
-                    @QueryParam("crs")
-                                    String crs,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f")
-                                    String format )
-                    throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-                        filterLang, filterCrs, crs, format, JSON);
-    }
+	@GET
+	@Operation(hidden = true)
+	public Response featuresOther(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId,
+			@Parameter(
+					description = "Limits the number of items presented in the response document. Ignored if bulk=true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "10", minimum = "1",
+							maximum = "1000")) @QueryParam("limit") int limit,
+			@Parameter(
+					description = "The start index of the items presented in the response document. Ignored if bulk=true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "0", minimum = "0")) @QueryParam("offset") int offset,
+			@Parameter(
+					description = "The bulk parameter is used to download all items of the collection. LIMIT and OFFSET are ignored if bulk is true.",
+					style = ParameterStyle.FORM,
+					schema = @Schema(defaultValue = "false")) @QueryParam("bulk") boolean bulk,
+			@Parameter(description = "The bounding boxes that describe the spatial extent of the dataset.",
+					explode = Explode.FALSE, style = ParameterStyle.FORM,
+					array = @ArraySchema(minItems = 4, maxItems = 6)) @QueryParam("bbox") List<Double> bbox,
+			@Parameter(description = "The coordinate reference system of the value of the bbox parameter.",
+					style = ParameterStyle.FORM) @QueryParam("bbox-crs") String bboxCrs,
+			@Parameter(description = "The datetime used as filter.",
+					style = ParameterStyle.FORM) @QueryParam("datetime") String datetime,
+			@Parameter(description = "The filter expression to be applied when retrieving features.",
+					style = ParameterStyle.FORM) @QueryParam("filter") String filter,
+			@Parameter(
+					description = "The CRS of the geometries used in the filter expression. Example: 'EPSG:25832'  Default: http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+					style = ParameterStyle.FORM) @QueryParam("filter-crs") String filterCrs,
+			@Parameter(description = "The encoding of the filter parameter.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "cql2-text" })) @QueryParam("filter-lang") String filterLang,
+			@Parameter(description = "The coordinate reference system of the response geometries.",
+					style = ParameterStyle.FORM) @QueryParam("crs") String crs,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
+			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
+		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
+				filterLang, filterCrs, crs, format, JSON);
+	}
 
-    private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-							  boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter,
-                               String filterLang, String filterCrs, String crs, String format, RequestFormat defaultFormat )
-                    throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-        return features( uriInfo, datasetId, collectionId, limit, offset, isBulkUpload, bbox, bboxCrs, datetime, filter,
-                         filterLang, filterCrs, crs, format, defaultFormat, null );
-    }
+	private Response features(UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
+			boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter, String filterLang,
+			String filterCrs, String crs, String format, RequestFormat defaultFormat)
+			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
+		return features(uriInfo, datasetId, collectionId, limit, offset, isBulkUpload, bbox, bboxCrs, datetime, filter,
+				filterLang, filterCrs, crs, format, defaultFormat, null);
+	}
 
-    private Response features( UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-                               boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter,
-                               String filterLang, String filterCrs, String crs, String formatParamValue,
-                               RequestFormat defaultFormat, String acceptHeader )
-                    throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
-        FilterLang.fromType(filterLang);
-        RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
-        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
-        oafConfiguration.checkCollection( collectionId );
-        if ( HTML.equals( requestFormat ) ) {
-            return Response.ok( getClass().getResourceAsStream( "/features.html" ), TEXT_HTML ).build();
-        }
+	private Response features(UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
+			boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter, String filterLang,
+			String filterCrs, String crs, String formatParamValue, RequestFormat defaultFormat, String acceptHeader)
+			throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
+		FilterLang.fromType(filterLang);
+		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
+		OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
+		oafConfiguration.checkCollection(collectionId);
+		if (HTML.equals(requestFormat)) {
+			return Response.ok(getClass().getResourceAsStream("/features.html"), TEXT_HTML).build();
+		}
 
-        Map<FilterProperty, List<String>> filterParameters = findQueryableParameters( datasetId, collectionId,
-                                                                                      uriInfo.getQueryParameters() );
+		Map<FilterProperty, List<String>> filterParameters = findQueryableParameters(datasetId, collectionId,
+				uriInfo.getQueryParameters());
 
-        FeaturesRequest featuresRequest = new FeaturesRequestBuilder( collectionId )
-                        .withLimit( limit )
-                        .withOffset( offset )
-                        .withBulkUpload( isBulkUpload )
-                        .withBbox( bbox, bboxCrs )
-                        .withDatetime( datetime )
-                        .withResponseCrs( crs )
-                        .withQueryableParameters( filterParameters )
-                        .withFilter( filter, filterCrs ).build();
-        LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        FeaturesResponse featureResponse = dataAccess.retrieveFeatures( oafConfiguration, collectionId, featuresRequest,
-                                                                        linkBuilder );
-        if ( XML.equals( requestFormat ) ) {
-            return featureResponseCreator.createGmlResponseWithHeaders( featureResponse,
-                                                                        acceptHeader );
-        }
-        return featureResponseCreator.createJsonResponseWithHeaders( featureResponse );
-    }
+		FeaturesRequest featuresRequest = new FeaturesRequestBuilder(collectionId).withLimit(limit)
+			.withOffset(offset)
+			.withBulkUpload(isBulkUpload)
+			.withBbox(bbox, bboxCrs)
+			.withDatetime(datetime)
+			.withResponseCrs(crs)
+			.withQueryableParameters(filterParameters)
+			.withFilter(filter, filterCrs)
+			.build();
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		FeaturesResponse featureResponse = dataAccess.retrieveFeatures(oafConfiguration, collectionId, featuresRequest,
+				linkBuilder);
+		if (XML.equals(requestFormat)) {
+			return featureResponseCreator.createGmlResponseWithHeaders(featureResponse, acceptHeader);
+		}
+		return featureResponseCreator.createJsonResponseWithHeaders(featureResponse);
+	}
 
-    private Map<FilterProperty, List<String>> findQueryableParameters( String datasetId, String collectionId,
-                                                                       MultivaluedMap<String, String> queryParameters )
-                    throws UnknownDatasetId, UnknownCollectionId {
-        Map<FilterProperty, List<String>> filterRequestProperties = new HashMap<>();
-        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
-        FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
-        if ( featureTypeMetadata != null ) {
-            List<FilterProperty> filterProperties = featureTypeMetadata.getFilterProperties();
-            filterProperties.forEach( filterProperty -> {
-                String filterName = filterProperty.getName().getLocalPart();
-                if ( queryParameters.containsKey( filterName ) ) {
-                    filterRequestProperties.put( filterProperty, queryParameters.get( filterName ) );
-                }
-            } );
-        }
-        return filterRequestProperties;
-    }
+	private Map<FilterProperty, List<String>> findQueryableParameters(String datasetId, String collectionId,
+			MultivaluedMap<String, String> queryParameters) throws UnknownDatasetId, UnknownCollectionId {
+		Map<FilterProperty, List<String>> filterRequestProperties = new HashMap<>();
+		OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
+		FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata(collectionId);
+		if (featureTypeMetadata != null) {
+			List<FilterProperty> filterProperties = featureTypeMetadata.getFilterProperties();
+			filterProperties.forEach(filterProperty -> {
+				String filterName = filterProperty.getName().getLocalPart();
+				if (queryParameters.containsKey(filterName)) {
+					filterRequestProperties.put(filterProperty, queryParameters.get(filterName));
+				}
+			});
+		}
+		return filterRequestProperties;
+	}
 
 }

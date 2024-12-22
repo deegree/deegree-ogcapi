@@ -69,33 +69,31 @@ import java.io.File;
  */
 public class List {
 
-    public static String list()
-                    throws InvalidPathException {
-        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-        File dir = workspace.getLocation();
-        return list( dir );
-    }
+	public static String list() throws InvalidPathException {
+		DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+		File dir = workspace.getLocation();
+		return list(dir);
+	}
 
-    public static String list( String path )
-                    throws InvalidPathException {
-        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-        File dir = workspace.getLocation();
-        dir = new File( dir, path );
-        if ( !dir.exists() ) {
-            throw new InvalidPathException( workspace.getName(), path );
-        }
-        return list( dir );
-    }
+	public static String list(String path) throws InvalidPathException {
+		DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+		File dir = workspace.getLocation();
+		dir = new File(dir, path);
+		if (!dir.exists()) {
+			throw new InvalidPathException(workspace.getName(), path);
+		}
+		return list(dir);
+	}
 
-    private static String list( File dir ) {
-        StringBuilder sb = new StringBuilder();
-        File[] ls = dir.listFiles();
-        if ( ls != null ) {
-            for ( File f : ls ) {
-                sb.append( f.getName() ).append( "\n" );
-            }
-        }
-        return sb.toString();
-    }
+	private static String list(File dir) {
+		StringBuilder sb = new StringBuilder();
+		File[] ls = dir.listFiles();
+		if (ls != null) {
+			for (File f : ls) {
+				sb.append(f.getName()).append("\n");
+			}
+		}
+		return sb.toString();
+	}
 
 }

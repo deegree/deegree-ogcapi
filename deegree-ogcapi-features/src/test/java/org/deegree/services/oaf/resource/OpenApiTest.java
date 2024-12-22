@@ -59,103 +59,105 @@ import static org.mockito.Mockito.when;
  */
 public class OpenApiTest extends JerseyTest {
 
-    @ClassRule
-    public static TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@ClassRule
+	public static TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    @BeforeClass
-    public static void copyToTmpFolder()
-                            throws IOException {
-        temporaryFolder.newFile( "swagger-ui-bundle.css" );
-        temporaryFolder.newFile( "swagger-ui-bundle.js" );
-        temporaryFolder.newFile( "index.html" );
-    }
+	@BeforeClass
+	public static void copyToTmpFolder() throws IOException {
+		temporaryFolder.newFile("swagger-ui-bundle.css");
+		temporaryFolder.newFile("swagger-ui-bundle.js");
+		temporaryFolder.newFile("index.html");
+	}
 
+	@Override
+	protected Application configure() {
+		TunableParameter.resetCache();
 
-    @Override
-    protected Application configure() {
-    	TunableParameter.resetCache();
-    	
-        enable(TestProperties.LOG_TRAFFIC);
-        ServletContext servletContext = mock(ServletContext.class);
-        when(servletContext.getContextPath()).thenReturn("");
-        when( servletContext.getRealPath( "/swagger-ui/" ) ).thenReturn( temporaryFolder.getRoot().toString() );
-        ServletConfig servletConfig = mock(ServletConfig.class);
-        when(servletConfig.getServletContext()).thenReturn(servletContext);
-        ResourceConfig resourceConfig = new ResourceConfig();
-        resourceConfig.packages("org.deegree.services.oaf.resource");
-        resourceConfig.register(OpenApiAliasFilter.class);
-        resourceConfig.register(new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind(servletContext).to(ServletContext.class);
-                bind(servletConfig).to(ServletConfig.class);
-                bindAsContract(OpenApiCreator.class);
-                bind(mockWorkspaceInitializer()).to(DeegreeWorkspaceInitializer.class);
-            }
-        });
-        return resourceConfig;
-    }
+		enable(TestProperties.LOG_TRAFFIC);
+		ServletContext servletContext = mock(ServletContext.class);
+		when(servletContext.getContextPath()).thenReturn("");
+		when(servletContext.getRealPath("/swagger-ui/")).thenReturn(temporaryFolder.getRoot().toString());
+		ServletConfig servletConfig = mock(ServletConfig.class);
+		when(servletConfig.getServletContext()).thenReturn(servletContext);
+		ResourceConfig resourceConfig = new ResourceConfig();
+		resourceConfig.packages("org.deegree.services.oaf.resource");
+		resourceConfig.register(OpenApiAliasFilter.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(servletContext).to(ServletContext.class);
+				bind(servletConfig).to(ServletConfig.class);
+				bindAsContract(OpenApiCreator.class);
+				bind(mockWorkspaceInitializer()).to(DeegreeWorkspaceInitializer.class);
+			}
+		});
+		return resourceConfig;
+	}
 
 	@Test
-    public void test_OpenApiDeclarationShouldBeAvailable() {
-        int status = target("/datasets/oaf/api").request(
-                OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get().getStatus();
-        assertThat(status, is(200));
-    }
-    
-    @Test
-    public void test_OpenApiDeclarationAliasShouldBeAvailable() {
-        int status = target("/datasets/oaf/openapi").request(
-                OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get().getStatus();
-        assertThat(status, is(200));
-    }
+	public void test_OpenApiDeclarationShouldBeAvailable() {
+		int status = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get().getStatus();
+		assertThat(status, is(200));
+	}
 
-    @Test public void test_OpenApiHtmlShouldBeAvailable() {
-        int status = target( "/datasets/oaf/api" ).request( MediaType.TEXT_HTML ).get().getStatus();
-        assertThat( status, is( 200 ) );
-    }
-    
-    @Test public void test_OpenApiYamlShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/api" ).request( OgcApiFeaturesMediaType.APPLICATION_YAML_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString( HttpHeaders.CONTENT_TYPE ), is( OgcApiFeaturesMediaType.APPLICATION_YAML ) );
-    }
+	@Test
+	public void test_OpenApiDeclarationAliasShouldBeAvailable() {
+		int status = target("/datasets/oaf/openapi").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI)
+			.get()
+			.getStatus();
+		assertThat(status, is(200));
+	}
 
-    @Test public void test_OpenApiCssShouldReturnCorrectMimeType() {
-        Response response = target( "/datasets/oaf/api/swagger-ui-bundle.css" ).request().get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType().toString(), is( "text/css" ) );
-    }
+	@Test
+	public void test_OpenApiHtmlShouldBeAvailable() {
+		int status = target("/datasets/oaf/api").request(MediaType.TEXT_HTML).get().getStatus();
+		assertThat(status, is(200));
+	}
 
-    @Test public void test_OpenApiJavascriptShouldReturnCorrectMimeType() {
-        Response response = target( "/datasets/oaf/api/swagger-ui-bundle.js" ).request().get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType().toString(), is( "text/javascript" ) );
-    }
-    
-    /**
-     * Test that by default there is no CORS header returned.
-     */
-    @Test
-    public void test_OpenApiCorsHeader() {
-        Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get();
-        assertThat( response.getHeaderString( "Access-Control-Allow-Origin" ), is(nullValue()));
-    }
+	@Test
+	public void test_OpenApiYamlShouldBeAvailable() {
+		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_YAML_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(OgcApiFeaturesMediaType.APPLICATION_YAML));
+	}
 
-    @Test
-    public void test_OpenApiContent() {
-        String json = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get(
-                String.class);
+	@Test
+	public void test_OpenApiCssShouldReturnCorrectMimeType() {
+		Response response = target("/datasets/oaf/api/swagger-ui-bundle.css").request().get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType().toString(), is("text/css"));
+	}
 
-        assertThat(json, isJson());
-        assertThat(json, hasJsonPath("$.openapi", equalTo("3.0.1")));
-        assertThat(json, hasJsonPath("$.paths./"));
-        assertThat(json, hasJsonPath("$.paths./conformance"));
-        assertThat(json, hasJsonPath("$.paths./collections"));
-        assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster"));
-        assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster/items"));
-        assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster/items/{featureId}"));
-        assertThat(json, hasJsonPath("$.paths./api"));
-    }
+	@Test
+	public void test_OpenApiJavascriptShouldReturnCorrectMimeType() {
+		Response response = target("/datasets/oaf/api/swagger-ui-bundle.js").request().get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType().toString(), is("text/javascript"));
+	}
+
+	/**
+	 * Test that by default there is no CORS header returned.
+	 */
+	@Test
+	public void test_OpenApiCorsHeader() {
+		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get();
+		assertThat(response.getHeaderString("Access-Control-Allow-Origin"), is(nullValue()));
+	}
+
+	@Test
+	public void test_OpenApiContent() {
+		String json = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI)
+			.get(String.class);
+
+		assertThat(json, isJson());
+		assertThat(json, hasJsonPath("$.openapi", equalTo("3.0.1")));
+		assertThat(json, hasJsonPath("$.paths./"));
+		assertThat(json, hasJsonPath("$.paths./conformance"));
+		assertThat(json, hasJsonPath("$.paths./collections"));
+		assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster"));
+		assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster/items"));
+		assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster/items/{featureId}"));
+		assertThat(json, hasJsonPath("$.paths./api"));
+	}
 
 }

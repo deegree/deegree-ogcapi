@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -44,32 +44,32 @@ import static org.junit.Assert.assertThat;
  */
 public class FeatureCollectionsTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( FeatureCollections.class );
-        resourceConfig.register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind( mockDataAccess() ).to( DataAccess.class );
-                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
-            }
-        } );
-        return resourceConfig;
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		ResourceConfig resourceConfig = new ResourceConfig(FeatureCollections.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(mockDataAccess()).to(DataAccess.class);
+				bind(mockWorkspaceInitializer()).to(DeegreeWorkspaceInitializer.class);
+			}
+		});
+		return resourceConfig;
+	}
 
-    @Test
-    public void test_CollectionsDeclaration_Json_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections" ).request( APPLICATION_JSON_TYPE ).get();
+	@Test
+	public void test_CollectionsDeclaration_Json_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections").request(APPLICATION_JSON_TYPE).get();
 
-        assertThat( response.getStatus(), is( 200 ) );
-    }
+		assertThat(response.getStatus(), is(200));
+	}
 
-    @Test
-    public void test_CollectionsDeclaration_Xml_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections" ).request( APPLICATION_XML ).get();
+	@Test
+	public void test_CollectionsDeclaration_Xml_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections").request(APPLICATION_XML).get();
 
-        assertThat( response.getStatus(), is( 200 ) );
-    }
+		assertThat(response.getStatus(), is(200));
+	}
 
 }

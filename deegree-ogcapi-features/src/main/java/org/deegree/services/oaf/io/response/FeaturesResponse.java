@@ -33,47 +33,45 @@ import java.util.Map;
  */
 public class FeaturesResponse extends AbstractFeatureResponse {
 
-    private final FeatureInputStream features;
+	private final FeatureInputStream features;
 
-    private final int numberOfFeaturesMatched;
+	private final int numberOfFeaturesMatched;
 
-    private final int numberOfFeatures;
+	private final int numberOfFeatures;
 
-    private final int startIndex;
+	private final int startIndex;
 
-    private final boolean isMaxFeaturesAndStartIndexApplicable;
+	private final boolean isMaxFeaturesAndStartIndexApplicable;
 
-    FeaturesResponse( FeatureInputStream features,
-                      Map<String, String> featureTypeNsPrefixes,
-                      int numberOfFeatures, int numberOfFeaturesMatched,
-                      int startIndex, List<Link> links, boolean isMaxFeaturesAndStartIndexApplicable,
-                      String responseCrsName, SchemaLocation schemaLocation ) {
-        super( featureTypeNsPrefixes, responseCrsName, schemaLocation, links );
-        this.features = features;
-        this.numberOfFeatures = numberOfFeatures;
-        this.numberOfFeaturesMatched = numberOfFeaturesMatched;
-        this.startIndex = startIndex;
-        this.isMaxFeaturesAndStartIndexApplicable = isMaxFeaturesAndStartIndexApplicable;
-    }
+	FeaturesResponse(FeatureInputStream features, Map<String, String> featureTypeNsPrefixes, int numberOfFeatures,
+			int numberOfFeaturesMatched, int startIndex, List<Link> links, boolean isMaxFeaturesAndStartIndexApplicable,
+			String responseCrsName, SchemaLocation schemaLocation) {
+		super(featureTypeNsPrefixes, responseCrsName, schemaLocation, links);
+		this.features = features;
+		this.numberOfFeatures = numberOfFeatures;
+		this.numberOfFeaturesMatched = numberOfFeaturesMatched;
+		this.startIndex = startIndex;
+		this.isMaxFeaturesAndStartIndexApplicable = isMaxFeaturesAndStartIndexApplicable;
+	}
 
-    public FeatureInputStream getFeatures() {
-        return features;
-    }
+	public FeatureInputStream getFeatures() {
+		return features;
+	}
 
-    public int getNumberOfFeatures() {
-        return numberOfFeatures;
-    }
+	public int getNumberOfFeatures() {
+		return numberOfFeatures;
+	}
 
-    public int getNumberOfFeaturesMatched() {
-        return numberOfFeaturesMatched;
-    }
+	public int getNumberOfFeaturesMatched() {
+		return numberOfFeaturesMatched;
+	}
 
-    public boolean isMaxFeaturesAndStartIndexApplicable() {
-        return isMaxFeaturesAndStartIndexApplicable;
-    }
+	public boolean isMaxFeaturesAndStartIndexApplicable() {
+		return isMaxFeaturesAndStartIndexApplicable;
+	}
 
-    public int getStartIndex() {
-        return startIndex;
-    }
+	public int getStartIndex() {
+		return startIndex;
+	}
 
 }

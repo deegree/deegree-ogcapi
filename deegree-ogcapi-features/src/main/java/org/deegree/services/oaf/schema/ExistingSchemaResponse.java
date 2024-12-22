@@ -8,14 +8,15 @@ import org.deegree.gml.schema.GMLSchemaInfoSet;
  */
 public class ExistingSchemaResponse extends SchemaResponse {
 
-    private final GMLSchemaInfoSet gmlSchema;
+	private final GMLSchemaInfoSet gmlSchema;
 
-    public ExistingSchemaResponse( FeatureType featureType, GMLSchemaInfoSet gmlSchema ) {
-        super( featureType );
-        this.gmlSchema = gmlSchema;
-    }
+	public ExistingSchemaResponse(FeatureType featureType, GMLSchemaInfoSet gmlSchema) {
+		super(featureType);
+		this.gmlSchema = gmlSchema;
+	}
 
-    public GMLSchemaInfoSet getGmlSchema() {
-        return gmlSchema;
-    }
+	public GMLSchemaInfoSet getGmlSchema() {
+		return gmlSchema;
+	}
+
 }
