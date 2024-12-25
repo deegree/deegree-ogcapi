@@ -2,7 +2,7 @@
 # under LGPL 2.1 (LICENSE.TXT) Copyright 2020 Torsten Friebe <tfr@users.sourceforge.net>
 FROM tomcat:9-jdk11
 
-ENV LANG en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 # add build info labels that can be set on build
 # see also https://github.com/opencontainers/image-spec/blob/master/annotations.md
@@ -15,7 +15,7 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
 LABEL maintainer="deegree TMC <tmc@deegree.org>"
 
 # set deegree OAF version
-ENV DEEGREE_OAF_VERSION=1.3.2
+ENV DEEGREE_OAF_VERSION=1.3.3
 
 # tomcat port
 EXPOSE 8080
