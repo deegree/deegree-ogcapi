@@ -60,7 +60,8 @@ public class OpenApiCreator {
 
     private static final Logger LOG = getLogger( OpenApiCreator.class );
 
-    private static final String VERSION = "1.0";
+    // Implemented version of OGC API Features specification
+    public static final String VERSION = "1.0.1";
 
     @Context
     private ServletConfig servletConfig;
