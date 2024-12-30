@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,25 +35,26 @@ import java.util.List;
 @Provider
 public class DoubleListConverterProvider implements ParamConverterProvider {
 
-    @Override
-    public <T> ParamConverter<T> getConverter( Class<T> aClass, Type type, Annotation[] annotations ) {
-        if ( isListWithDoubles( aClass, type ) ) {
-            return (ParamConverter<T>) new DoubleListConverter();
-        }
-        return null;
-    }
+	@Override
+	public <T> ParamConverter<T> getConverter(Class<T> aClass, Type type, Annotation[] annotations) {
+		if (isListWithDoubles(aClass, type)) {
+			return (ParamConverter<T>) new DoubleListConverter();
+		}
+		return null;
+	}
 
-    private <T> boolean isListWithDoubles( Class<T> aClass, Type type ) {
-        if ( List.class.isAssignableFrom( aClass ) && type instanceof ParameterizedType ) {
-            Type[] actualTypeArguments = ( (ParameterizedType) type ).getActualTypeArguments();
-            if ( actualTypeArguments.length == 1 ) {
-                Type actualTypeArgument = actualTypeArguments[0];
-                if ( actualTypeArgument instanceof Class && ( (Class) actualTypeArgument ).isAssignableFrom(
-                                Double.class ) ) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+	private <T> boolean isListWithDoubles(Class<T> aClass, Type type) {
+		if (List.class.isAssignableFrom(aClass) && type instanceof ParameterizedType) {
+			Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+			if (actualTypeArguments.length == 1) {
+				Type actualTypeArgument = actualTypeArguments[0];
+				if (actualTypeArgument instanceof Class
+						&& ((Class) actualTypeArgument).isAssignableFrom(Double.class)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }

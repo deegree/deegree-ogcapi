@@ -76,62 +76,60 @@ import java.util.List;
  */
 public class Restart {
 
-    public static String restart()
-                    throws RestartException {
-        try {
-            OGCFrontController fc = OGCFrontController.getInstance();
-            fc.reload();
-            return "Restart of workspace " + OGCFrontController.getServiceWorkspace().getName() + " completed.";
-        } catch ( Exception e ) {
-            throw new RestartException( e );
-        }
-    }
+	public static String restart() throws RestartException {
+		try {
+			OGCFrontController fc = OGCFrontController.getInstance();
+			fc.reload();
+			return "Restart of workspace " + OGCFrontController.getServiceWorkspace().getName() + " completed.";
+		}
+		catch (Exception e) {
+			throw new RestartException(e);
+		}
+	}
 
-    public static String restart( DeegreeWorkspace workspace, String path )
-                    throws RestartException {
-        try {
-            if ( path == null ) {
-                return restartWorkspace( workspace.getName() );
-            }
-            return restartResource( workspace, path );
-        } catch ( Exception e ) {
-            throw new RestartException( e );
-        }
-    }
+	public static String restart(DeegreeWorkspace workspace, String path) throws RestartException {
+		try {
+			if (path == null) {
+				return restartWorkspace(workspace.getName());
+			}
+			return restartResource(workspace, path);
+		}
+		catch (Exception e) {
+			throw new RestartException(e);
+		}
+	}
 
-    private static String restartWorkspace( String workspaceName )
-                    throws IOException, URISyntaxException, ServletException {
-        OGCFrontController fc = OGCFrontController.getInstance();
-        fc.setActiveWorkspaceName( workspaceName );
-        fc.reload();
-        return "Restart of workspace " + workspaceName + " completed.";
-    }
+	private static String restartWorkspace(String workspaceName)
+			throws IOException, URISyntaxException, ServletException {
+		OGCFrontController fc = OGCFrontController.getInstance();
+		fc.setActiveWorkspaceName(workspaceName);
+		fc.reload();
+		return "Restart of workspace " + workspaceName + " completed.";
+	}
 
-    private static String restartResource( DeegreeWorkspace workspace, String path ) {
-        List<String> initialisedIds = reinitializeChain( workspace, path );
-        if ( initialisedIds.isEmpty() ) {
-            return "Could not find a resource to restart in workspace " + workspace.getName();
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append( "Restart of workspace " )
-          .append( workspace.getName() )
-          .append( " completed. Restarted resources:" );
-        for ( String initialisedId : initialisedIds ) {
-            sb.append( "\n" );
-            sb.append( "   - " ).append( initialisedId );
-        }
-        return sb.toString();
-    }
+	private static String restartResource(DeegreeWorkspace workspace, String path) {
+		List<String> initialisedIds = reinitializeChain(workspace, path);
+		if (initialisedIds.isEmpty()) {
+			return "Could not find a resource to restart in workspace " + workspace.getName();
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("Restart of workspace ").append(workspace.getName()).append(" completed. Restarted resources:");
+		for (String initialisedId : initialisedIds) {
+			sb.append("\n");
+			sb.append("   - ").append(initialisedId);
+		}
+		return sb.toString();
+	}
 
-    private static List<String> reinitializeChain( DeegreeWorkspace workspace, String resourcePath ) {
-        List<String> allInitialisedIds = new ArrayList<>();
-        Workspace ws = workspace.getNewWorkspace();
-        List<ResourceIdentifier<?>> ids = WorkspaceUtils.getPossibleIdentifiers( ws, resourcePath );
-        for ( ResourceIdentifier<?> id : ids ) {
-            List<String> initialisedIds = WorkspaceUtils.reinitializeChain( ws, id );
-            allInitialisedIds.addAll( initialisedIds );
-        }
-        return allInitialisedIds;
-    }
+	private static List<String> reinitializeChain(DeegreeWorkspace workspace, String resourcePath) {
+		List<String> allInitialisedIds = new ArrayList<>();
+		Workspace ws = workspace.getNewWorkspace();
+		List<ResourceIdentifier<?>> ids = WorkspaceUtils.getPossibleIdentifiers(ws, resourcePath);
+		for (ResourceIdentifier<?> id : ids) {
+			List<String> initialisedIds = WorkspaceUtils.reinitializeChain(ws, id);
+			allInitialisedIds.addAll(initialisedIds);
+		}
+		return allInitialisedIds;
+	}
 
 }

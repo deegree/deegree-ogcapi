@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -62,96 +62,98 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 @Produces({ APPLICATION_GML })
 public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeatureResponse> {
 
-    @Override
-    public boolean isWriteable( Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType ) {
-        return FeaturesResponse.class == type || FeatureResponse.class == type;
-    }
+	@Override
+	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+		return FeaturesResponse.class == type || FeatureResponse.class == type;
+	}
 
-    @Override
-    public long getSize( AbstractFeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
-                         MediaType mediaType ) {
-        // deprecated by JAX-RS 2.0 and ignored by Jersey runtime
-        return 0;
-    }
+	@Override
+	public long getSize(AbstractFeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType) {
+		// deprecated by JAX-RS 2.0 and ignored by Jersey runtime
+		return 0;
+	}
 
-    @Override
-    public void writeTo( AbstractFeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
-                         MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream out )
-                    throws WebApplicationException {
-        GMLStreamWriter gmlStreamWriter = null;
-        try {
-            XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter( out );
-            gmlStreamWriter = GMLOutputFactory.createGMLStreamWriter( GMLVersion.GML_32,
-                                                                      xmlStreamWriter );
-            Map<String, String> prefixToNs = new HashMap<>();
-            prefixToNs.putAll( features.getFeatureTypeNsPrefixes() );
-            gmlStreamWriter.setNamespaceBindings( prefixToNs );
-            gmlStreamWriter.setOutputCrs( asCrs( features ) );
-            GMLFeatureWriter featureWriter = new GMLFeatureWriter( gmlStreamWriter );
+	@Override
+	public void writeTo(AbstractFeatureResponse features, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream out)
+			throws WebApplicationException {
+		GMLStreamWriter gmlStreamWriter = null;
+		try {
+			XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter(out);
+			gmlStreamWriter = GMLOutputFactory.createGMLStreamWriter(GMLVersion.GML_32, xmlStreamWriter);
+			Map<String, String> prefixToNs = new HashMap<>();
+			prefixToNs.putAll(features.getFeatureTypeNsPrefixes());
+			gmlStreamWriter.setNamespaceBindings(prefixToNs);
+			gmlStreamWriter.setOutputCrs(asCrs(features));
+			GMLFeatureWriter featureWriter = new GMLFeatureWriter(gmlStreamWriter);
 
-            xmlStreamWriter.writeStartElement( "sf", "FeatureCollection", XML_SF_NS_URL );
-            xmlStreamWriter.writeNamespace( "sf", XML_SF_NS_URL );
-            xmlStreamWriter.writeNamespace( "xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-            xmlStreamWriter.writeAttribute( "http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
-                                            createSchemaLocation( features ) );
+			xmlStreamWriter.writeStartElement("sf", "FeatureCollection", XML_SF_NS_URL);
+			xmlStreamWriter.writeNamespace("sf", XML_SF_NS_URL);
+			xmlStreamWriter.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+			xmlStreamWriter.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
+					createSchemaLocation(features));
 
-            if ( features instanceof FeatureResponse && ( (FeatureResponse) features ).getFeature() != null ) {
-                writeFeature( ( (FeatureResponse) features ).getFeature(), xmlStreamWriter, featureWriter );
-            } else if ( features instanceof FeaturesResponse ) {
-                writeFeatures( ( (FeaturesResponse) features ).getFeatures(), xmlStreamWriter, featureWriter );
-            }
+			if (features instanceof FeatureResponse && ((FeatureResponse) features).getFeature() != null) {
+				writeFeature(((FeatureResponse) features).getFeature(), xmlStreamWriter, featureWriter);
+			}
+			else if (features instanceof FeaturesResponse) {
+				writeFeatures(((FeaturesResponse) features).getFeatures(), xmlStreamWriter, featureWriter);
+			}
 
-            xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeEndElement();
 
-        } catch ( Exception ex ) {
-            throw new WebApplicationException( ex );
-        } finally {
-            if ( gmlStreamWriter != null ) {
-                try {
-                    gmlStreamWriter.close();
-                } catch ( XMLStreamException e ) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+		}
+		catch (Exception ex) {
+			throw new WebApplicationException(ex);
+		}
+		finally {
+			if (gmlStreamWriter != null) {
+				try {
+					gmlStreamWriter.close();
+				}
+				catch (XMLStreamException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
-    private void writeFeatures( FeatureInputStream featureStream, XMLStreamWriter xmlStreamWriter,
-                                GMLFeatureWriter featureWriter )
-                    throws XMLStreamException, UnknownCRSException, TransformationException {
-        try {
-            for ( Feature feature : featureStream ) {
-                writeFeature( feature, xmlStreamWriter, featureWriter );
-            }
-        } finally {
-            featureStream.close();
-        }
-    }
+	private void writeFeatures(FeatureInputStream featureStream, XMLStreamWriter xmlStreamWriter,
+			GMLFeatureWriter featureWriter) throws XMLStreamException, UnknownCRSException, TransformationException {
+		try {
+			for (Feature feature : featureStream) {
+				writeFeature(feature, xmlStreamWriter, featureWriter);
+			}
+		}
+		finally {
+			featureStream.close();
+		}
+	}
 
-    private void writeFeature( Feature feature, XMLStreamWriter xmlStreamWriter,
-                               GMLFeatureWriter featureWriter )
-                    throws XMLStreamException, UnknownCRSException, TransformationException {
-        xmlStreamWriter.writeStartElement( "sf", "featureMember", XML_SF_NS_URL );
-        featureWriter.export( feature );
-        xmlStreamWriter.writeEndElement();
-    }
+	private void writeFeature(Feature feature, XMLStreamWriter xmlStreamWriter, GMLFeatureWriter featureWriter)
+			throws XMLStreamException, UnknownCRSException, TransformationException {
+		xmlStreamWriter.writeStartElement("sf", "featureMember", XML_SF_NS_URL);
+		featureWriter.export(feature);
+		xmlStreamWriter.writeEndElement();
+	}
 
-    private ICRS asCrs( AbstractFeatureResponse features ) {
-        if ( features.getResponseCrsName() != null ) {
-            CRSRef ref = CRSManager.getCRSRef( features.getResponseCrsName() );
-            ref.getReferencedObject(); // test if exists
-            return ref;
-        }
-        return null;
-    }
+	private ICRS asCrs(AbstractFeatureResponse features) {
+		if (features.getResponseCrsName() != null) {
+			CRSRef ref = CRSManager.getCRSRef(features.getResponseCrsName());
+			ref.getReferencedObject(); // test if exists
+			return ref;
+		}
+		return null;
+	}
 
-    private String createSchemaLocation( AbstractFeatureResponse features ) {
-        StringBuilder schemaLocation = new StringBuilder();
-        schemaLocation.append( XML_SF_NS_URL ).append( " " ).append( XML_SF_NS_SCHEMA_LOCATION );
-        if ( features.getSchemaLocation() != null ) {
-            schemaLocation.append( " " ).append( features.getSchemaLocation().asXmlSchemaLocation() );
-        }
-        return schemaLocation.toString();
-    }
+	private String createSchemaLocation(AbstractFeatureResponse features) {
+		StringBuilder schemaLocation = new StringBuilder();
+		schemaLocation.append(XML_SF_NS_URL).append(" ").append(XML_SF_NS_SCHEMA_LOCATION);
+		if (features.getSchemaLocation() != null) {
+			schemaLocation.append(" ").append(features.getSchemaLocation().asXmlSchemaLocation());
+		}
+		return schemaLocation.toString();
+	}
 
 }

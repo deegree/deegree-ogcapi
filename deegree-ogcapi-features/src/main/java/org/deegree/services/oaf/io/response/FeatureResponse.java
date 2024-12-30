@@ -33,16 +33,16 @@ import java.util.Map;
  */
 public class FeatureResponse extends AbstractFeatureResponse {
 
-    private final Feature feature;
+	private final Feature feature;
 
-    FeatureResponse( Feature feature, Map<String, String> featureTypeNsPrefixes, List<Link> links,
-                     String responseCrsName, SchemaLocation schemaLocation ) {
-        super( featureTypeNsPrefixes, responseCrsName, schemaLocation, links );
-        this.feature = feature;
-    }
+	FeatureResponse(Feature feature, Map<String, String> featureTypeNsPrefixes, List<Link> links,
+			String responseCrsName, SchemaLocation schemaLocation) {
+		super(featureTypeNsPrefixes, responseCrsName, schemaLocation, links);
+		this.feature = feature;
+	}
 
-    public Feature getFeature() {
-        return feature;
-    }
+	public Feature getFeature() {
+		return feature;
+	}
 
 }

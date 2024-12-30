@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,18 +30,18 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
  */
 public class InvalidParameterValue extends OgcApiFeaturesException {
 
-    static final String EXCEPTION_MSG = "Parameter '%s' has invalid content: %s";
+	static final String EXCEPTION_MSG = "Parameter '%s' has invalid content: %s";
 
-    public InvalidParameterValue() {
-    }
+	public InvalidParameterValue() {
+	}
 
-    public InvalidParameterValue( String parameterName, String reason ) {
-        super( String.format( EXCEPTION_MSG, parameterName, reason ) );
-    }
+	public InvalidParameterValue(String parameterName, String reason) {
+		super(String.format(EXCEPTION_MSG, parameterName, reason));
+	}
 
-    @Override
-    public Response.Status getStatusCode() {
-        return BAD_REQUEST;
-    }
+	@Override
+	public Response.Status getStatusCode() {
+		return BAD_REQUEST;
+	}
 
 }

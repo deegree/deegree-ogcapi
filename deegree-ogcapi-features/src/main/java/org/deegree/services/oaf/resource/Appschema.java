@@ -66,83 +66,78 @@ import static org.deegree.gml.GMLVersion.GML_32;
 @Path("/datasets/{datasetId}/collections/{collectionId}/appschema")
 public class Appschema {
 
-    @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+	@Inject
+	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    @GET
-    @Produces({ APPLICATION_XML })
-    @Operation(operationId = "appschema",
-                    summary = "retrieve GML application schema of collection {collectionId}",
-                    description = "Retrieves the GML application schema of the collection with the id {collectionId}. The GML application schema describes the structure of the XML representation of the features.")
-    @Tag(name = "Schema")
-    public Response appschema(
-                    @Context UriInfo uriInfo,
-                    @PathParam("datasetId") String datasetId,
-                    @PathParam("collectionId") String collectionId )
-                    throws UnknownDatasetId, UnknownCollectionId {
-        LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
-        OafDatasetConfiguration dataset = oafDatasets.getDataset( datasetId );
-        FeatureTypeMetadata featureTypeMetadata = dataset.getFeatureTypeMetadata( collectionId );
-        FeatureStore featureStore = featureTypeMetadata.getFeatureStore();
-        SchemaResponse schemaResponse = createSchemaResponse( dataset.isUseExistingGMLSchema(), featureStore,
-                                                              featureTypeMetadata, datasetId,
-                                                              linkBuilder );
-        return Response.ok( schemaResponse ).build();
-    }
+	@GET
+	@Produces({ APPLICATION_XML })
+	@Operation(operationId = "appschema", summary = "retrieve GML application schema of collection {collectionId}",
+			description = "Retrieves the GML application schema of the collection with the id {collectionId}. The GML application schema describes the structure of the XML representation of the features.")
+	@Tag(name = "Schema")
+	public Response appschema(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId) throws UnknownDatasetId, UnknownCollectionId {
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
+		OafDatasetConfiguration dataset = oafDatasets.getDataset(datasetId);
+		FeatureTypeMetadata featureTypeMetadata = dataset.getFeatureTypeMetadata(collectionId);
+		FeatureStore featureStore = featureTypeMetadata.getFeatureStore();
+		SchemaResponse schemaResponse = createSchemaResponse(dataset.isUseExistingGMLSchema(), featureStore,
+				featureTypeMetadata, datasetId, linkBuilder);
+		return Response.ok(schemaResponse).build();
+	}
 
-    private SchemaResponse createSchemaResponse( boolean useExistingGMLSchema, FeatureStore featureStore,
-                                                 FeatureTypeMetadata featureTypeMetadata,
-                                                 String datasetId,
-                                                 LinkBuilder linkBuilder ) {
-        AppSchema schema = featureStore.getSchema();
-        FeatureType featureType = schema.getFeatureType( featureTypeMetadata.getName() );
-        String featureTypeNamespaceURI = featureType.getName().getNamespaceURI();
-        Map<String, String> nsToSchemaLocation = buildNsToSchemaLocations( schema, featureTypeNamespaceURI,
-                                                                           datasetId, linkBuilder );
-        if ( useExistingGMLSchema ) {
-            GMLSchemaInfoSet gmlSchema = findGmlSchema( featureStore, nsToSchemaLocation.keySet() );
-            if ( gmlSchema != null ) {
-                return new ExistingSchemaResponse( featureType, gmlSchema );
-            }
-        }
-        Map<String, String> prefixToNs = schema.getNamespaceBindings().entrySet().stream().collect(
-                        toMap( e -> e.getKey(), e -> e.getValue() ) );
-        return new GeneratedSchemaResponse( featureType, nsToSchemaLocation, prefixToNs );
-    }
+	private SchemaResponse createSchemaResponse(boolean useExistingGMLSchema, FeatureStore featureStore,
+			FeatureTypeMetadata featureTypeMetadata, String datasetId, LinkBuilder linkBuilder) {
+		AppSchema schema = featureStore.getSchema();
+		FeatureType featureType = schema.getFeatureType(featureTypeMetadata.getName());
+		String featureTypeNamespaceURI = featureType.getName().getNamespaceURI();
+		Map<String, String> nsToSchemaLocation = buildNsToSchemaLocations(schema, featureTypeNamespaceURI, datasetId,
+				linkBuilder);
+		if (useExistingGMLSchema) {
+			GMLSchemaInfoSet gmlSchema = findGmlSchema(featureStore, nsToSchemaLocation.keySet());
+			if (gmlSchema != null) {
+				return new ExistingSchemaResponse(featureType, gmlSchema);
+			}
+		}
+		Map<String, String> prefixToNs = schema.getNamespaceBindings()
+			.entrySet()
+			.stream()
+			.collect(toMap(e -> e.getKey(), e -> e.getValue()));
+		return new GeneratedSchemaResponse(featureType, nsToSchemaLocation, prefixToNs);
+	}
 
-    private Map<String, String> buildNsToSchemaLocations( AppSchema schema, String featureTypeNamespaceURI,
-                                                          String datasetId,
-                                                          LinkBuilder linkBuilder ) {
-        List<String> additionalNamespaceUris = schema.getNamespacesDependencies( featureTypeNamespaceURI );
+	private Map<String, String> buildNsToSchemaLocations(AppSchema schema, String featureTypeNamespaceURI,
+			String datasetId, LinkBuilder linkBuilder) {
+		List<String> additionalNamespaceUris = schema.getNamespacesDependencies(featureTypeNamespaceURI);
 
-        Map<String, String> nsToSchemaLocation = new HashMap<>();
-        for ( String ns : additionalNamespaceUris ) {
-            Optional<QName> featureTypeName = findFeatureTypeNameByNamespace( schema, ns );
-            if ( featureTypeName.isPresent() ) {
-                String schemaLocation = linkBuilder.createSchemaLink( datasetId, featureTypeName.get().getLocalPart() );
-                nsToSchemaLocation.put( ns, schemaLocation );
-            }
-        }
-        return nsToSchemaLocation;
-    }
+		Map<String, String> nsToSchemaLocation = new HashMap<>();
+		for (String ns : additionalNamespaceUris) {
+			Optional<QName> featureTypeName = findFeatureTypeNameByNamespace(schema, ns);
+			if (featureTypeName.isPresent()) {
+				String schemaLocation = linkBuilder.createSchemaLink(datasetId, featureTypeName.get().getLocalPart());
+				nsToSchemaLocation.put(ns, schemaLocation);
+			}
+		}
+		return nsToSchemaLocation;
+	}
 
-    private GMLSchemaInfoSet findGmlSchema( FeatureStore store, Collection<String> namespaces ) {
-        Set<String> appNamespaces = store.getSchema().getAppNamespaces();
-        boolean storeSupportsAllRequestedNamespaces = appNamespaces.containsAll( namespaces );
-        if ( storeSupportsAllRequestedNamespaces ) {
-            return store.getSchema().getGMLSchema();
-        }
-        return null;
-    }
+	private GMLSchemaInfoSet findGmlSchema(FeatureStore store, Collection<String> namespaces) {
+		Set<String> appNamespaces = store.getSchema().getAppNamespaces();
+		boolean storeSupportsAllRequestedNamespaces = appNamespaces.containsAll(namespaces);
+		if (storeSupportsAllRequestedNamespaces) {
+			return store.getSchema().getGMLSchema();
+		}
+		return null;
+	}
 
-    private Optional<QName> findFeatureTypeNameByNamespace( AppSchema schema, String namespaceUrl ) {
-        if ( GML_32.getNamespace().equals( namespaceUrl ) )
-            return Optional.empty();
-        FeatureType[] featureTypes = schema.getFeatureTypes();
-        return Arrays.stream( featureTypes ).filter(
-                        featureType -> namespaceUrl.equals( featureType.getName().getNamespaceURI() ) ).map(
-                        featureType -> featureType.getName() ).findFirst();
-    }
+	private Optional<QName> findFeatureTypeNameByNamespace(AppSchema schema, String namespaceUrl) {
+		if (GML_32.getNamespace().equals(namespaceUrl))
+			return Optional.empty();
+		FeatureType[] featureTypes = schema.getFeatureTypes();
+		return Arrays.stream(featureTypes)
+			.filter(featureType -> namespaceUrl.equals(featureType.getName().getNamespaceURI()))
+			.map(featureType -> featureType.getName())
+			.findFirst();
+	}
 
 }

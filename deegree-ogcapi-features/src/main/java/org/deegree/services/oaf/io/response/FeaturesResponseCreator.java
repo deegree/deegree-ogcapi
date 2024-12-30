@@ -48,98 +48,88 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_S
  */
 public class FeaturesResponseCreator {
 
-    /**
-     * Creates a response with the expected HTTP Headers
-     *
-     * @param featureResponse
-     *                 never <code>null</code>
-     * @return never <code>null</code>
-     */
-    public Response createJsonResponseWithHeaders( AbstractFeatureResponse featureResponse ) {
-        Response.ResponseBuilder response = Response.ok( featureResponse );
-        response.header( HEADER_CONTENT_CRS, asContentCrsHeader( featureResponse ) )
-                .header( HttpHeaders.CONTENT_TYPE, APPLICATION_GEOJSON_TYPE.withCharset( StandardCharsets.UTF_8.name() ) )
-                .encoding( StandardCharsets.UTF_8.name() );
+	/**
+	 * Creates a response with the expected HTTP Headers
+	 * @param featureResponse never <code>null</code>
+	 * @return never <code>null</code>
+	 */
+	public Response createJsonResponseWithHeaders(AbstractFeatureResponse featureResponse) {
+		Response.ResponseBuilder response = Response.ok(featureResponse);
+		response.header(HEADER_CONTENT_CRS, asContentCrsHeader(featureResponse))
+			.header(HttpHeaders.CONTENT_TYPE, APPLICATION_GEOJSON_TYPE.withCharset(StandardCharsets.UTF_8.name()))
+			.encoding(StandardCharsets.UTF_8.name());
 
-        return response.build();
-    }
+		return response.build();
+	}
 
-    /**
-     * Creates a response with the expected HTTP Headers
-     *
-     * @param featuresResponse
-     *                 never <code>null</code>
-     * @param acceptHeader
-     *                 of the request, may be <code>null</code>
-     * @return never <code>null</code>
-     */
-    public Response createGmlResponseWithHeaders( FeaturesResponse featuresResponse,
-                                                  String acceptHeader ) {
+	/**
+	 * Creates a response with the expected HTTP Headers
+	 * @param featuresResponse never <code>null</code>
+	 * @param acceptHeader of the request, may be <code>null</code>
+	 * @return never <code>null</code>
+	 */
+	public Response createGmlResponseWithHeaders(FeaturesResponse featuresResponse, String acceptHeader) {
 
-        String mediaType = detectMediaType( acceptHeader );
-        Response.ResponseBuilder response = Response.ok( featuresResponse, mediaType );
-        response.header( HEADER_NUMBER_RETURNED, featuresResponse.getNumberOfFeatures() );
-        response.header( HEADER_NUMBER_MATCHED, featuresResponse.getNumberOfFeaturesMatched() );
-        addCommonHeader( featuresResponse, response );
-        return response.build();
-    }
+		String mediaType = detectMediaType(acceptHeader);
+		Response.ResponseBuilder response = Response.ok(featuresResponse, mediaType);
+		response.header(HEADER_NUMBER_RETURNED, featuresResponse.getNumberOfFeatures());
+		response.header(HEADER_NUMBER_MATCHED, featuresResponse.getNumberOfFeaturesMatched());
+		addCommonHeader(featuresResponse, response);
+		return response.build();
+	}
 
-    /**
-     * Creates a response with the expected HTTP Headers
-     *
-     * @param featureResponse
-     *                 never <code>null</code>
-     * @param acceptHeader
-     *                 of the request, may be <code>null</code>
-     * @return never <code>null</code>
-     */
-    public Response createGmlResponseWithHeaders( FeatureResponse featureResponse,
-                                                  String acceptHeader ) {
-        String mediaType = detectMediaType( acceptHeader );
-        Response.ResponseBuilder response = Response.ok( featureResponse, mediaType );
-        addCommonHeader( featureResponse, response );
-        return response.build();
-    }
+	/**
+	 * Creates a response with the expected HTTP Headers
+	 * @param featureResponse never <code>null</code>
+	 * @param acceptHeader of the request, may be <code>null</code>
+	 * @return never <code>null</code>
+	 */
+	public Response createGmlResponseWithHeaders(FeatureResponse featureResponse, String acceptHeader) {
+		String mediaType = detectMediaType(acceptHeader);
+		Response.ResponseBuilder response = Response.ok(featureResponse, mediaType);
+		addCommonHeader(featureResponse, response);
+		return response.build();
+	}
 
-    private void addCommonHeader( AbstractFeatureResponse featureResponse, Response.ResponseBuilder response ) {
-        response.header( HEADER_TIMESTAMP, new Date() );
-        response.header( HEADER_CONTENT_CRS, asContentCrsHeader( featureResponse ) );
-        featureResponse.getLinks().forEach( link -> {
-            response.header( HEADER_LINK, asString( link ) );
-        } );
-    }
+	private void addCommonHeader(AbstractFeatureResponse featureResponse, Response.ResponseBuilder response) {
+		response.header(HEADER_TIMESTAMP, new Date());
+		response.header(HEADER_CONTENT_CRS, asContentCrsHeader(featureResponse));
+		featureResponse.getLinks().forEach(link -> {
+			response.header(HEADER_LINK, asString(link));
+		});
+	}
 
-    private String detectMediaType( String acceptHeader ) {
-        if ( acceptHeader == null || acceptHeader.isEmpty() )
-            return APPLICATION_GML;
-        MediaType mediaType = MediaType.valueOf( acceptHeader );
-        Map<String, String> parameters = mediaType.getParameters();
-        if ( parameters.isEmpty() )
-            return APPLICATION_GML;
-        String profileValue = parameters.get( "profile" );
-        if ( profileValue != null && !profileValue.isEmpty() ) {
-            if ( APPLICATION_GML_SF0_TYPE.getParameters().get( "profile" ).equals( profileValue ) )
-                return APPLICATION_GML_SF0;
-            else if ( APPLICATION_GML_SF2_TYPE.getParameters().get( "profile" ).equals( profileValue ) )
-                return APPLICATION_GML_SF2;
-        }
-        return APPLICATION_GML_32;
-    }
+	private String detectMediaType(String acceptHeader) {
+		if (acceptHeader == null || acceptHeader.isEmpty())
+			return APPLICATION_GML;
+		MediaType mediaType = MediaType.valueOf(acceptHeader);
+		Map<String, String> parameters = mediaType.getParameters();
+		if (parameters.isEmpty())
+			return APPLICATION_GML;
+		String profileValue = parameters.get("profile");
+		if (profileValue != null && !profileValue.isEmpty()) {
+			if (APPLICATION_GML_SF0_TYPE.getParameters().get("profile").equals(profileValue))
+				return APPLICATION_GML_SF0;
+			else if (APPLICATION_GML_SF2_TYPE.getParameters().get("profile").equals(profileValue))
+				return APPLICATION_GML_SF2;
+		}
+		return APPLICATION_GML_32;
+	}
 
-    private String asContentCrsHeader( AbstractFeatureResponse featureResponse ) {
-        String crsName = featureResponse.getResponseCrsName();
-        if ( crsName == null )
-            return null;
-        return "<" + crsName + ">";
-    }
+	private String asContentCrsHeader(AbstractFeatureResponse featureResponse) {
+		String crsName = featureResponse.getResponseCrsName();
+		if (crsName == null)
+			return null;
+		return "<" + crsName + ">";
+	}
 
-    private String asString( Link link ) {
-        StringBuilder linkBuilder = new StringBuilder();
-        linkBuilder.append( "<" ).append( link.getHref() ).append( ">; " );
-        linkBuilder.append( "rel=\"" ).append( link.getRel() ).append( "\"; " );
-        linkBuilder.append( "title=\"" ).append( link.getTitle() ).append( "\"; " );
-        linkBuilder.append( "type=\"" ).append( link.getType() ).append( "\"" );
-        return linkBuilder.toString();
-    }
+	private String asString(Link link) {
+		StringBuilder linkBuilder = new StringBuilder();
+		linkBuilder.append("<").append(link.getHref()).append(">; ");
+		linkBuilder.append("rel=\"").append(link.getRel()).append("\"; ");
+		linkBuilder.append("title=\"").append(link.getTitle()).append("\"; ");
+		linkBuilder.append("type=\"").append(link.getType()).append("\"");
+		return linkBuilder.toString();
+	}
 
 }

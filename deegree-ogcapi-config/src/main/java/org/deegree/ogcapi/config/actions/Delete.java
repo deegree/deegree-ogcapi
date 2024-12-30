@@ -74,29 +74,27 @@ import static org.deegree.commons.config.DeegreeWorkspace.unregisterWorkspace;
  */
 public class Delete {
 
-    public static String delete()
-                    throws DeleteException {
-        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-        File dir = workspace.getLocation();
-        if ( !deleteQuietly( dir ) ) {
-            unregisterWorkspace( workspace.getName() );
-            throw new DeleteException( "Workspace deletion unsuccessful." );
-        }
-        unregisterWorkspace( workspace.getName() );
-        return "Workspace deleted.";
-    }
+	public static String delete() throws DeleteException {
+		DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+		File dir = workspace.getLocation();
+		if (!deleteQuietly(dir)) {
+			unregisterWorkspace(workspace.getName());
+			throw new DeleteException("Workspace deletion unsuccessful.");
+		}
+		unregisterWorkspace(workspace.getName());
+		return "Workspace deleted.";
+	}
 
-    public static String delete( String path )
-                    throws DeleteException, InvalidPathException {
-        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-        File fileOrDir = new File( workspace.getLocation(), path );
-        if ( !fileOrDir.exists() ) {
-            throw new InvalidPathException( workspace.getName(), fileOrDir.getName() );
-        }
-        if ( !deleteQuietly( fileOrDir ) ) {
-            throw new DeleteException( "Deletion unsuccessful." );
-        }
-        return fileOrDir.getName() + " deleted.";
-    }
+	public static String delete(String path) throws DeleteException, InvalidPathException {
+		DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+		File fileOrDir = new File(workspace.getLocation(), path);
+		if (!fileOrDir.exists()) {
+			throw new InvalidPathException(workspace.getName(), fileOrDir.getName());
+		}
+		if (!deleteQuietly(fileOrDir)) {
+			throw new DeleteException("Deletion unsuccessful.");
+		}
+		return fileOrDir.getName() + " deleted.";
+	}
 
 }

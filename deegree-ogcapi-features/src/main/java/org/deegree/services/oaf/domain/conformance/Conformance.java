@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -40,28 +40,28 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
 @XmlRootElement(name = "ConformsTo", namespace = XML_CORE_NS_URL)
 public class Conformance extends OafDomainResource {
 
-    @XmlElement(name = "link", namespace = XML_ATOM_NS_URL)
-    @JsonIgnore
-    private List<Link> links;
+	@XmlElement(name = "link", namespace = XML_ATOM_NS_URL)
+	@JsonIgnore
+	private List<Link> links;
 
-    public Conformance() {
-    }
+	public Conformance() {
+	}
 
-    public Conformance( List<Link> links ) {
-        this.links = links;
-    }
+	public Conformance(List<Link> links) {
+		this.links = links;
+	}
 
-    public List<Link> getLinks() {
-        return links;
-    }
+	public List<Link> getLinks() {
+		return links;
+	}
 
-    public void setLinks( List<Link> links ) {
-        this.links = links;
-    }
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
 
-    @JsonProperty
-    public List<String> getConformsTo() {
-        return links.stream().map( link -> link.getHref() ).collect( Collectors.toList() );
-    }
+	@JsonProperty
+	public List<String> getConformsTo() {
+		return links.stream().map(link -> link.getHref()).collect(Collectors.toList());
+	}
 
 }

@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,49 +26,50 @@ package org.deegree.services.oaf.domain.html;
  */
 public class MapConfiguration {
 
-    private final String wmsUrl;
+	private final String wmsUrl;
 
-    private final String wmsVersion;
+	private final String wmsVersion;
 
-    private final String wmsLayers;
+	private final String wmsLayers;
 
-    private final String crsCode;
+	private final String crsCode;
 
-    private final String crsProj4Definition;
+	private final String crsProj4Definition;
 
-    private final String source;
+	private final String source;
 
-    public MapConfiguration( String wmsUrl, String wmsVersion, String wmsLayers, String crsCode,
-                             String crsProj4Definition, String source ) {
-        this.wmsUrl = wmsUrl;
-        this.wmsVersion = wmsVersion;
-        this.wmsLayers = wmsLayers;
-        this.crsCode = crsCode;
-        this.crsProj4Definition = crsProj4Definition;
-        this.source = source;
-    }
+	public MapConfiguration(String wmsUrl, String wmsVersion, String wmsLayers, String crsCode,
+			String crsProj4Definition, String source) {
+		this.wmsUrl = wmsUrl;
+		this.wmsVersion = wmsVersion;
+		this.wmsLayers = wmsLayers;
+		this.crsCode = crsCode;
+		this.crsProj4Definition = crsProj4Definition;
+		this.source = source;
+	}
 
-    public String getWmsUrl() {
-        return wmsUrl;
-    }
+	public String getWmsUrl() {
+		return wmsUrl;
+	}
 
-    public String getWmsVersion() {
-        return wmsVersion;
-    }
+	public String getWmsVersion() {
+		return wmsVersion;
+	}
 
-    public String getWmsLayers() {
-        return wmsLayers;
-    }
+	public String getWmsLayers() {
+		return wmsLayers;
+	}
 
-    public String getCrsCode() {
-        return crsCode;
-    }
+	public String getCrsCode() {
+		return crsCode;
+	}
 
-    public String getCrsProj4Definition() {
-        return crsProj4Definition;
-    }
+	public String getCrsProj4Definition() {
+		return crsProj4Definition;
+	}
 
-    public String getSource() {
-        return source;
-    }
+	public String getSource() {
+		return source;
+	}
+
 }

@@ -45,21 +45,19 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 @Path("/appschemas/{path: .+\\.xsd$}")
 public class AppschemaFile {
 
-    @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+	@Inject
+	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    @GET
-    @Produces({ APPLICATION_XML })
-    @Operation(hidden = true, operationId = "appschema",
-                    summary = "retrieve application schema of collection {collectionId}",
-                    description = "Retrieves the application schema of the collection with the id {collectionId}")
-    @Tag(name = "Schema")
-    public InputStream appschemaFile(
-                    @Context UriInfo uriInfo,
-                    @PathParam("path") String path )
-                    throws UnknownAppschema, IOException {
-        java.nio.file.Path appschemaFile = deegreeWorkspaceInitializer.getAppschemaFile( path );
-        return Files.newInputStream( appschemaFile );
-    }
+	@GET
+	@Produces({ APPLICATION_XML })
+	@Operation(hidden = true, operationId = "appschema",
+			summary = "retrieve application schema of collection {collectionId}",
+			description = "Retrieves the application schema of the collection with the id {collectionId}")
+	@Tag(name = "Schema")
+	public InputStream appschemaFile(@Context UriInfo uriInfo, @PathParam("path") String path)
+			throws UnknownAppschema, IOException {
+		java.nio.file.Path appschemaFile = deegreeWorkspaceInitializer.getAppschemaFile(path);
+		return Files.newInputStream(appschemaFile);
+	}
 
 }

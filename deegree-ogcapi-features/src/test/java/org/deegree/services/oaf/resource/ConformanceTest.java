@@ -43,36 +43,35 @@ import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 public class ConformanceTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        return new ResourceConfig( Conformance.class );
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		return new ResourceConfig(Conformance.class);
+	}
 
-    @Test
-    public void test_ConformanceDeclaration_Json_ShouldBeAvailable() {
-        final String json = target( "/datasets/oaf/conformance" ).request( APPLICATION_JSON_TYPE ).get( String.class );
+	@Test
+	public void test_ConformanceDeclaration_Json_ShouldBeAvailable() {
+		final String json = target("/datasets/oaf/conformance").request(APPLICATION_JSON_TYPE).get(String.class);
 
-        assertThat( json, hasJsonPath( "$.conformsTo", hasItem( CORE.getConformanceClass() ) ) );
-        assertThat( json, hasJsonPath( "$.conformsTo", hasItem( OPENAPI30.getConformanceClass() ) ) );
-    }
+		assertThat(json, hasJsonPath("$.conformsTo", hasItem(CORE.getConformanceClass())));
+		assertThat(json, hasJsonPath("$.conformsTo", hasItem(OPENAPI30.getConformanceClass())));
+	}
 
-    @Test
-    public void test_ConformanceDeclaration_Xml_ShouldBeAvailable() {
-        final String xml = target( "/datasets/oaf/conformance" ).request( APPLICATION_XML ).get( String.class );
+	@Test
+	public void test_ConformanceDeclaration_Xml_ShouldBeAvailable() {
+		final String xml = target("/datasets/oaf/conformance").request(APPLICATION_XML).get(String.class);
 
-        assertThat( xml,
-                    hasXPath( "//core:ConformsTo/atom:link[@href = '" + CORE.getConformanceClass()
-                              + "']" ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( "//core:ConformsTo/atom:link[@href = '" + OPENAPI30.getConformanceClass()
-                                   + "']" ).withNamespaceContext( nsContext() ) );
-    }
+		assertThat(xml, hasXPath("//core:ConformsTo/atom:link[@href = '" + CORE.getConformanceClass() + "']")
+			.withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath("//core:ConformsTo/atom:link[@href = '" + OPENAPI30.getConformanceClass() + "']")
+			.withNamespaceContext(nsContext()));
+	}
 
-    private Map<String, String> nsContext() {
-        Map<String, String> nsContext = new HashMap<>();
-        nsContext.put( "core", XML_CORE_NS_URL );
-        nsContext.put( "atom", XML_ATOM_NS_URL );
-        return nsContext;
-    }
+	private Map<String, String> nsContext() {
+		Map<String, String> nsContext = new HashMap<>();
+		nsContext.put("core", XML_CORE_NS_URL);
+		nsContext.put("atom", XML_ATOM_NS_URL);
+		return nsContext;
+	}
 
 }

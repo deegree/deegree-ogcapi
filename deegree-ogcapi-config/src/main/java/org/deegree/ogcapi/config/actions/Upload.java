@@ -76,25 +76,25 @@ import static org.apache.commons.io.IOUtils.closeQuietly;
  */
 public class Upload {
 
-    public static String upload( String path, HttpServletRequest req )
-                    throws IOException, UploadException {
-        ServletInputStream in = null;
-        try {
-            in = req.getInputStream();
-            DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-            File workspaceDir = workspace.getLocation();
-            File dest = new File( workspaceDir, path );
-            if ( !FilenameUtils.directoryContains( workspaceDir.getCanonicalPath(), dest.getCanonicalPath() ) ) {
-                throw new UploadException( "Unable to upload file: " + path + "." );
-            }
-            if ( !dest.getParentFile().exists() && !dest.getParentFile().mkdirs() ) {
-                throw new UploadException( "Unable to create parent directory for upload." );
-            }
-            copyInputStreamToFile( in, dest );
-            return dest.getName() + " uploaded.";
-        } finally {
-            closeQuietly( in );
-        }
-    }
+	public static String upload(String path, HttpServletRequest req) throws IOException, UploadException {
+		ServletInputStream in = null;
+		try {
+			in = req.getInputStream();
+			DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+			File workspaceDir = workspace.getLocation();
+			File dest = new File(workspaceDir, path);
+			if (!FilenameUtils.directoryContains(workspaceDir.getCanonicalPath(), dest.getCanonicalPath())) {
+				throw new UploadException("Unable to upload file: " + path + ".");
+			}
+			if (!dest.getParentFile().exists() && !dest.getParentFile().mkdirs()) {
+				throw new UploadException("Unable to create parent directory for upload.");
+			}
+			copyInputStreamToFile(in, dest);
+			return dest.getName() + " uploaded.";
+		}
+		finally {
+			closeQuietly(in);
+		}
+	}
 
 }

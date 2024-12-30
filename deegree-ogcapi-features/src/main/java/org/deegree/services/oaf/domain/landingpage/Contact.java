@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,42 +26,43 @@ package org.deegree.services.oaf.domain.landingpage;
  */
 public class Contact {
 
-    private String name;
+	private String name;
 
-    private String url;
+	private String url;
 
-    private String email;
+	private String email;
 
-    public Contact() {
-    }
+	public Contact() {
+	}
 
-    public Contact( String name, String url, String email ) {
-        this.name = name;
-        this.url = url;
-        this.email = email;
-    }
+	public Contact(String name, String url, String email) {
+		this.name = name;
+		this.url = url;
+		this.email = email;
+	}
 
-    public void setName( String name ) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setUrl( String url ) {
-        this.url = url;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    public void setEmail( String email ) {
-        this.email = email;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
+
 }

@@ -42,51 +42,52 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Spatial {
 
-    @XmlTransient
-    private List<List<Double>> bbox = new ArrayList<List<Double>>();
+	@XmlTransient
+	private List<List<Double>> bbox = new ArrayList<List<Double>>();
 
-    @XmlAttribute
-    private String crs;
+	@XmlAttribute
+	private String crs;
 
-    public Spatial() {
-    }
+	public Spatial() {
+	}
 
-    public Spatial( List<List<Double>> bbox, String crs ) {
-        this.bbox = bbox;
-        this.crs = crs;
-    }
+	public Spatial(List<List<Double>> bbox, String crs) {
+		this.bbox = bbox;
+		this.crs = crs;
+	}
 
-    public List<List<Double>> getBbox() {
-        return bbox;
-    }
+	public List<List<Double>> getBbox() {
+		return bbox;
+	}
 
-    public void setBbox( List<List<Double>> bbox ) {
-        this.bbox = bbox;
-    }
+	public void setBbox(List<List<Double>> bbox) {
+		this.bbox = bbox;
+	}
 
-    public String getCrs() {
-        return crs;
-    }
+	public String getCrs() {
+		return crs;
+	}
 
-    public void setCrs( String crs ) {
-        this.crs = crs;
-    }
+	public void setCrs(String crs) {
+		this.crs = crs;
+	}
 
-    @JsonIgnore
-    @XmlList
-    @XmlElement(name = "LowerCorner", namespace = XML_CORE_NS_URL)
-    public List<Double> getLowerCorner() {
-        if ( bbox == null || bbox.size() < 1 || bbox.get( 0 ).size() < 4 )
-            return null;
-        return bbox.get( 0 ).subList( 0, 2 );
-    }
+	@JsonIgnore
+	@XmlList
+	@XmlElement(name = "LowerCorner", namespace = XML_CORE_NS_URL)
+	public List<Double> getLowerCorner() {
+		if (bbox == null || bbox.size() < 1 || bbox.get(0).size() < 4)
+			return null;
+		return bbox.get(0).subList(0, 2);
+	}
 
-    @JsonIgnore
-    @XmlList
-    @XmlElement(name = "UpperCorner", namespace = XML_CORE_NS_URL)
-    public List<Double> getUpperCorner() {
-        if ( bbox == null || bbox.size() < 1 || bbox.get( 0 ).size() < 4 )
-            return null;
-        return bbox.get( 0 ).subList( 2, 4 );
-    }
+	@JsonIgnore
+	@XmlList
+	@XmlElement(name = "UpperCorner", namespace = XML_CORE_NS_URL)
+	public List<Double> getUpperCorner() {
+		if (bbox == null || bbox.size() < 1 || bbox.get(0).size() < 4)
+			return null;
+		return bbox.get(0).subList(2, 4);
+	}
+
 }

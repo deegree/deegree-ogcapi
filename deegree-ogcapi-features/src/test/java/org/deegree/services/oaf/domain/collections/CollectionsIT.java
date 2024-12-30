@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -49,52 +49,50 @@ import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
  */
 public class CollectionsIT {
 
-    @Test
-    public void testCollectionsToXml()
-                    throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance( Collections.class );
+	@Test
+	public void testCollectionsToXml() throws Exception {
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collections.class);
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-        Collections collections = createCollections();
-        marshaller.marshal( collections, bos );
+		Marshaller marshaller = jaxbContext.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		Collections collections = createCollections();
+		marshaller.marshal(collections, bos);
 
-        assertThat( bos.toString(), ValidationMatcher.valid( schemaFrom( XML_CORE_SCHEMA_URL ) ) );
-    }
+		assertThat(bos.toString(), ValidationMatcher.valid(schemaFrom(XML_CORE_SCHEMA_URL)));
+	}
 
-    @Test
-    public void testCollectionsToJson()
-                    throws Exception {
-        Collections collections = createCollections();
-        ObjectMapper objectMapper = new ObjectMapper();
-        // set time zone to correctly interpret value from test data converted to java.util.Date
-        objectMapper.setTimeZone( TimeZone.getTimeZone( ZoneId.of( "UTC" ) ) );
-        String actual = objectMapper.writeValueAsString( collections );
+	@Test
+	public void testCollectionsToJson() throws Exception {
+		Collections collections = createCollections();
+		ObjectMapper objectMapper = new ObjectMapper();
+		// set time zone to correctly interpret value from test data converted to
+		// java.util.Date
+		objectMapper.setTimeZone(TimeZone.getTimeZone(ZoneId.of("UTC")));
+		String actual = objectMapper.writeValueAsString(collections);
 
-        assertEquals( expected( "expectedCollections.json" ), actual, LENIENT );
-    }
+		assertEquals(expected("expectedCollections.json"), actual, LENIENT);
+	}
 
-    @Test
-    public void testCollectionToJson()
-                    throws Exception {
-        Collection collection = createCollection();
-        ObjectMapper objectMapper = new ObjectMapper();
-        // set time zone to correctly interpret value from test data converted to java.util.Date
-        objectMapper.setTimeZone( TimeZone.getTimeZone( ZoneId.of( "UTC" ) ) );
-        String actual = objectMapper.writeValueAsString( collection );
+	@Test
+	public void testCollectionToJson() throws Exception {
+		Collection collection = createCollection();
+		ObjectMapper objectMapper = new ObjectMapper();
+		// set time zone to correctly interpret value from test data converted to
+		// java.util.Date
+		objectMapper.setTimeZone(TimeZone.getTimeZone(ZoneId.of("UTC")));
+		String actual = objectMapper.writeValueAsString(collection);
 
-        assertEquals( expected( "expectedCollection.json" ), actual, LENIENT );
-    }
+		assertEquals(expected("expectedCollection.json"), actual, LENIENT);
+	}
 
-    private String expected( String s2 )
-                    throws IOException {
-        return IOUtils.toString( getClass().getResourceAsStream( s2 ), StandardCharsets.UTF_8 );
-    }
+	private String expected(String s2) throws IOException {
+		return IOUtils.toString(getClass().getResourceAsStream(s2), StandardCharsets.UTF_8);
+	}
 
-    private StreamSource schemaFrom( String url )
-                    throws IOException {
-        return new StreamSource( new URL( url ).openStream() );
-    }
+	private StreamSource schemaFrom(String url) throws IOException {
+		return new StreamSource(new URL(url).openStream());
+	}
+
 }

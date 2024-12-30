@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -36,54 +36,54 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class DatasetsConfigResource implements Resource {
 
-    private static final Logger LOG = getLogger( DatasetsConfigResource.class );
+	private static final Logger LOG = getLogger(DatasetsConfigResource.class);
 
-    private final ResourceMetadata<DatasetsConfigResource> metadata;
+	private final ResourceMetadata<DatasetsConfigResource> metadata;
 
-    private final Workspace workspace;
+	private final Workspace workspace;
 
-    private final Datasets config;
+	private final Datasets config;
 
-    private DatasetsConfiguration DatasetsConfiguration;
+	private DatasetsConfiguration DatasetsConfiguration;
 
-    public DatasetsConfigResource( ResourceMetadata<DatasetsConfigResource> metadata, Workspace workspace,
-                                   Datasets config ) {
-        this.metadata = metadata;
-        this.workspace = workspace;
-        this.config = config;
-    }
+	public DatasetsConfigResource(ResourceMetadata<DatasetsConfigResource> metadata, Workspace workspace,
+			Datasets config) {
+		this.metadata = metadata;
+		this.workspace = workspace;
+		this.config = config;
+	}
 
-    @Override
-    public ResourceMetadata<? extends Resource> getMetadata() {
-        return metadata;
-    }
+	@Override
+	public ResourceMetadata<? extends Resource> getMetadata() {
+		return metadata;
+	}
 
-    @Override
-    public void init() {
-        DatasetsConfiguration = parseDatasetsConfiguration();
-    }
+	@Override
+	public void init() {
+		DatasetsConfiguration = parseDatasetsConfiguration();
+	}
 
-    @Override
-    public void destroy() {
+	@Override
+	public void destroy() {
 
-    }
+	}
 
-    public DatasetsConfiguration getDatasetsConfiguration() {
-        return DatasetsConfiguration;
-    }
+	public DatasetsConfiguration getDatasetsConfiguration() {
+		return DatasetsConfiguration;
+	}
 
-    private DatasetsConfiguration parseDatasetsConfiguration() {
-        if ( config == null )
-            return null;
-        String title = config.getTitle();
-        String description = config.getDescription();
-        Contact configuredContact = null;
-        Datasets.Contact contact = config.getContact();
+	private DatasetsConfiguration parseDatasetsConfiguration() {
+		if (config == null)
+			return null;
+		String title = config.getTitle();
+		String description = config.getDescription();
+		Contact configuredContact = null;
+		Datasets.Contact contact = config.getContact();
 
-        if ( contact != null ) {
-            configuredContact = new Contact( contact.getName(), contact.getEMail(), contact.getUrl() );
-        }
-        return new DatasetsConfiguration( title, description, configuredContact );
-    }
+		if (contact != null) {
+			configuredContact = new Contact(contact.getName(), contact.getEMail(), contact.getUrl());
+		}
+		return new DatasetsConfiguration(title, description, configuredContact);
+	}
 
 }

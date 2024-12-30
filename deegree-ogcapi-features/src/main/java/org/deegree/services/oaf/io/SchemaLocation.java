@@ -26,24 +26,25 @@ package org.deegree.services.oaf.io;
  */
 public class SchemaLocation {
 
-    private final String namespaceURI;
+	private final String namespaceURI;
 
-    private final String schemaLocation;
+	private final String schemaLocation;
 
-    public SchemaLocation( String namespaceURI, String schemaLocation ) {
-        this.namespaceURI = namespaceURI;
-        this.schemaLocation = schemaLocation;
-    }
+	public SchemaLocation(String namespaceURI, String schemaLocation) {
+		this.namespaceURI = namespaceURI;
+		this.schemaLocation = schemaLocation;
+	}
 
-    public String getNamespaceURI() {
-        return namespaceURI;
-    }
+	public String getNamespaceURI() {
+		return namespaceURI;
+	}
 
-    public String getSchemaLocation() {
-        return schemaLocation;
-    }
+	public String getSchemaLocation() {
+		return schemaLocation;
+	}
 
-    public String asXmlSchemaLocation() {
-        return String.format( "%s %s", namespaceURI, schemaLocation );
-    }
+	public String asXmlSchemaLocation() {
+		return String.format("%s %s", namespaceURI, schemaLocation);
+	}
+
 }

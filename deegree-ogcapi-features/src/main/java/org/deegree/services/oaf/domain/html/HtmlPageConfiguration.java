@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,36 +26,34 @@ package org.deegree.services.oaf.domain.html;
  */
 public class HtmlPageConfiguration {
 
-    private final String legalNoticeUrl;
+	private final String legalNoticeUrl;
 
-    private final String privacyUrl;
+	private final String privacyUrl;
 
-    private final String documentationUrl;
+	private final String documentationUrl;
 
-    public HtmlPageConfiguration( String legalNoticeUrl, String privacyUrl, String documentationUrl ) {
-        this.legalNoticeUrl = legalNoticeUrl;
-        this.privacyUrl = privacyUrl;
-        this.documentationUrl = documentationUrl;
-    }
+	public HtmlPageConfiguration(String legalNoticeUrl, String privacyUrl, String documentationUrl) {
+		this.legalNoticeUrl = legalNoticeUrl;
+		this.privacyUrl = privacyUrl;
+		this.documentationUrl = documentationUrl;
+	}
 
-    public String getLegalNoticeUrl() {
-        return legalNoticeUrl;
-    }
+	public String getLegalNoticeUrl() {
+		return legalNoticeUrl;
+	}
 
-    public String getPrivacyUrl() {
-        return privacyUrl;
-    }
+	public String getPrivacyUrl() {
+		return privacyUrl;
+	}
 
-    public String getDocumentationUrl() {
-        return documentationUrl;
-    }
+	public String getDocumentationUrl() {
+		return documentationUrl;
+	}
 
-    @Override
-    public String toString() {
-        return "HtmlPageConfiguration{" +
-                "legalNoticeUrl='" + legalNoticeUrl + '\'' +
-                ", privacyUrl='" + privacyUrl + '\'' +
-                ", documentationUrl='" + documentationUrl + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "HtmlPageConfiguration{" + "legalNoticeUrl='" + legalNoticeUrl + '\'' + ", privacyUrl='" + privacyUrl
+				+ '\'' + ", documentationUrl='" + documentationUrl + '\'' + '}';
+	}
+
 }

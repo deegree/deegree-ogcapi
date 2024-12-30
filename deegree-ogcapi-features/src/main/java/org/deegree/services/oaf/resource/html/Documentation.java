@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,24 +42,23 @@ import static javax.ws.rs.core.MediaType.TEXT_HTML;
 @Path("/documentation")
 public class Documentation {
 
-    @Context
-    private ServletContext servletContext;
+	@Context
+	private ServletContext servletContext;
 
-    @GET
-    @Produces(TEXT_HTML)
-    @Path("/{path: .+}")
-    @Operation(hidden = true)
-    public InputStream getFile(
-                    @PathParam("path")
-                                    String path ) {
-        try {
-            String base = servletContext.getRealPath( "deegree-ogcapi-documentation/" );
-            File f = new File( String.format( "%s/%s", base, path ) );
-            return new FileInputStream( f );
-        } catch ( FileNotFoundException e ) {
-            System.out.println( e.getLocalizedMessage() );
-            return null;
-        }
-    }
+	@GET
+	@Produces(TEXT_HTML)
+	@Path("/{path: .+}")
+	@Operation(hidden = true)
+	public InputStream getFile(@PathParam("path") String path) {
+		try {
+			String base = servletContext.getRealPath("deegree-ogcapi-documentation/");
+			File f = new File(String.format("%s/%s", base, path));
+			return new FileInputStream(f);
+		}
+		catch (FileNotFoundException e) {
+			System.out.println(e.getLocalizedMessage());
+			return null;
+		}
+	}
 
 }

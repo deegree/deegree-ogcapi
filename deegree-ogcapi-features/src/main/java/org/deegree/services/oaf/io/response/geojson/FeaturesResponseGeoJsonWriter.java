@@ -45,96 +45,98 @@ import java.util.Date;
 @Produces("application/geo+json")
 public class FeaturesResponseGeoJsonWriter extends AbstractFeatureResponseGeoJsonWriter<FeaturesResponse> {
 
-    @Override
-    public boolean isWriteable( Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType ) {
-        return FeaturesResponse.class == type;
-    }
+	@Override
+	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+		return FeaturesResponse.class == type;
+	}
 
-    protected void writeContent( FeaturesResponse features, GeoJsonWriter geoJsonStreamWriter )
-                    throws IOException, TransformationException, UnknownCRSException, UnknownFeatureId {
-        geoJsonStreamWriter.startFeatureCollection();
-        int numberReturned = writeFeatures( features, geoJsonStreamWriter );
-        writeLinks( features.getLinks(), geoJsonStreamWriter );
-        writeNumberMatched( features.getNumberOfFeaturesMatched(), geoJsonStreamWriter );
-        writeNumberReturned( numberReturned, geoJsonStreamWriter );
-        writeTimeStamp( geoJsonStreamWriter );
-        writeCrs( features.getResponseCrsName(), geoJsonStreamWriter );
-        if ( numberReturned == 0 ) {
-            geoJsonStreamWriter.name( "features" ).beginArray().endArray();
-        }
-        // Closes the feature collection. Used instead of geoJsonStreamWriter.endFeatureCollection().
-        // The features array is already closed as links could not be written later.
-        geoJsonStreamWriter.endObject();
-    }
+	protected void writeContent(FeaturesResponse features, GeoJsonWriter geoJsonStreamWriter)
+			throws IOException, TransformationException, UnknownCRSException, UnknownFeatureId {
+		geoJsonStreamWriter.startFeatureCollection();
+		int numberReturned = writeFeatures(features, geoJsonStreamWriter);
+		writeLinks(features.getLinks(), geoJsonStreamWriter);
+		writeNumberMatched(features.getNumberOfFeaturesMatched(), geoJsonStreamWriter);
+		writeNumberReturned(numberReturned, geoJsonStreamWriter);
+		writeTimeStamp(geoJsonStreamWriter);
+		writeCrs(features.getResponseCrsName(), geoJsonStreamWriter);
+		if (numberReturned == 0) {
+			geoJsonStreamWriter.name("features").beginArray().endArray();
+		}
+		// Closes the feature collection. Used instead of
+		// geoJsonStreamWriter.endFeatureCollection().
+		// The features array is already closed as links could not be written later.
+		geoJsonStreamWriter.endObject();
+	}
 
-    private int writeFeatures( FeaturesResponse features, GeoJsonWriter writer )
-                    throws IOException, TransformationException, UnknownCRSException {
-        if ( features.isMaxFeaturesAndStartIndexApplicable() ) {
-            return writeAllReturnedFeatures( features, writer );
-        } else {
-            return writeFeaturesAndApplyMaxFeaturesAndStartIndex( features, writer );
-        }
-    }
+	private int writeFeatures(FeaturesResponse features, GeoJsonWriter writer)
+			throws IOException, TransformationException, UnknownCRSException {
+		if (features.isMaxFeaturesAndStartIndexApplicable()) {
+			return writeAllReturnedFeatures(features, writer);
+		}
+		else {
+			return writeFeaturesAndApplyMaxFeaturesAndStartIndex(features, writer);
+		}
+	}
 
-    private int writeAllReturnedFeatures( FeaturesResponse features, GeoJsonWriter writer )
-                    throws IOException, TransformationException, UnknownCRSException {
-        int writtenFeatures = 0;
-        FeatureInputStream featureInputStream = features.getFeatures();
-        try {
-            for ( Feature feature : featureInputStream ) {
-                writer.write( feature );
-                writtenFeatures++;
-            }
-            if ( writtenFeatures > 0 )
-                writer.endArray();
-            return writtenFeatures;
-        } finally {
-            featureInputStream.close();
-        }
-    }
+	private int writeAllReturnedFeatures(FeaturesResponse features, GeoJsonWriter writer)
+			throws IOException, TransformationException, UnknownCRSException {
+		int writtenFeatures = 0;
+		FeatureInputStream featureInputStream = features.getFeatures();
+		try {
+			for (Feature feature : featureInputStream) {
+				writer.write(feature);
+				writtenFeatures++;
+			}
+			if (writtenFeatures > 0)
+				writer.endArray();
+			return writtenFeatures;
+		}
+		finally {
+			featureInputStream.close();
+		}
+	}
 
-    private int writeFeaturesAndApplyMaxFeaturesAndStartIndex( FeaturesResponse features, GeoJsonWriter writer )
-                    throws IOException, TransformationException, UnknownCRSException {
-        int maxFeatures = features.getNumberOfFeatures();
-        int startIndex = features.getStartIndex();
-        int featuresAdded = 0;
-        int featuresSkipped = 0;
-        FeatureInputStream featureInputStream = features.getFeatures();
-        try {
-            for ( Feature feature : featureInputStream ) {
-                if ( featuresAdded == maxFeatures ) {
-                    // limit the number of features written to maxfeatures
-                    break;
-                }
-                if ( featuresSkipped < startIndex ) {
-                    featuresSkipped++;
-                } else {
-                    writer.write( feature );
-                    featuresAdded++;
-                }
-            }
-            if ( featuresAdded > 0 )
-                writer.endArray();
-            return featuresAdded;
-        } finally {
-            featureInputStream.close();
-        }
-    }
+	private int writeFeaturesAndApplyMaxFeaturesAndStartIndex(FeaturesResponse features, GeoJsonWriter writer)
+			throws IOException, TransformationException, UnknownCRSException {
+		int maxFeatures = features.getNumberOfFeatures();
+		int startIndex = features.getStartIndex();
+		int featuresAdded = 0;
+		int featuresSkipped = 0;
+		FeatureInputStream featureInputStream = features.getFeatures();
+		try {
+			for (Feature feature : featureInputStream) {
+				if (featuresAdded == maxFeatures) {
+					// limit the number of features written to maxfeatures
+					break;
+				}
+				if (featuresSkipped < startIndex) {
+					featuresSkipped++;
+				}
+				else {
+					writer.write(feature);
+					featuresAdded++;
+				}
+			}
+			if (featuresAdded > 0)
+				writer.endArray();
+			return featuresAdded;
+		}
+		finally {
+			featureInputStream.close();
+		}
+	}
 
-    private void writeNumberMatched( int numberOfFeatures, GeoJsonWriter writer )
-                    throws IOException {
-        writer.name( "numberMatched" ).value( numberOfFeatures );
-    }
+	private void writeNumberMatched(int numberOfFeatures, GeoJsonWriter writer) throws IOException {
+		writer.name("numberMatched").value(numberOfFeatures);
+	}
 
-    private void writeNumberReturned( int numberOfFeatures, GeoJsonWriter writer )
-                    throws IOException {
-        writer.name( "numberReturned" ).value( numberOfFeatures );
-    }
+	private void writeNumberReturned(int numberOfFeatures, GeoJsonWriter writer) throws IOException {
+		writer.name("numberReturned").value(numberOfFeatures);
+	}
 
-    private void writeTimeStamp( GeoJsonWriter writer )
-                    throws IOException {
-        String now = ISO8601Converter.formatDateTime( new Date() );
-        writer.name( "timeStamp" ).value( now );
-    }
+	private void writeTimeStamp(GeoJsonWriter writer) throws IOException {
+		String now = ISO8601Converter.formatDateTime(new Date());
+		writer.name("timeStamp").value(now);
+	}
 
 }

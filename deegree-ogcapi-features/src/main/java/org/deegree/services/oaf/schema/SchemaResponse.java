@@ -9,14 +9,14 @@ import java.util.Map;
  */
 public class SchemaResponse {
 
-    private final FeatureType featureType;
+	private final FeatureType featureType;
 
-    public SchemaResponse( FeatureType featureType ) {
-        this.featureType = featureType;
-    }
+	public SchemaResponse(FeatureType featureType) {
+		this.featureType = featureType;
+	}
 
-    public FeatureType getFeatureType() {
-        return featureType;
-    }
+	public FeatureType getFeatureType() {
+		return featureType;
+	}
 
 }

@@ -36,72 +36,70 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
  */
 public class FeaturesRequestBuilder {
 
-    private String collectionId;
+	private String collectionId;
 
-    private int limit;
+	private int limit;
 
-    private int offset;
+	private int offset;
 
-    private boolean isBulkUpload;
+	private boolean isBulkUpload;
 
-    private List<Double> bbox;
+	private List<Double> bbox;
 
-    private String bboxCrs;
+	private String bboxCrs;
 
-    private String datetime;
+	private String datetime;
 
-    private String responseCrs;
+	private String responseCrs;
 
-    private Map<FilterProperty, List<String>> filterRequestProperties;
+	private Map<FilterProperty, List<String>> filterRequestProperties;
 
-    private String filter;
+	private String filter;
 
-    private String filterCrs;
+	private String filterCrs;
 
-    public FeaturesRequestBuilder( String collectionId ) {
-        this.collectionId = collectionId;
-    }
+	public FeaturesRequestBuilder(String collectionId) {
+		this.collectionId = collectionId;
+	}
 
-    public FeaturesRequestBuilder withLimit( int limit ) {
-        if ( limit <= 0 )
-            this.limit = 10;
-        else if ( limit > 1000 )
-            this.limit = 1000;
-        else
-            this.limit = limit;
-        return this;
-    }
+	public FeaturesRequestBuilder withLimit(int limit) {
+		if (limit <= 0)
+			this.limit = 10;
+		else if (limit > 1000)
+			this.limit = 1000;
+		else
+			this.limit = limit;
+		return this;
+	}
 
-    public FeaturesRequestBuilder withOffset( int offset ) {
-        if ( offset <= 0 )
-            this.offset = 0;
-        else
-            this.offset = offset;
-        return this;
-    }
+	public FeaturesRequestBuilder withOffset(int offset) {
+		if (offset <= 0)
+			this.offset = 0;
+		else
+			this.offset = offset;
+		return this;
+	}
 
-    public FeaturesRequestBuilder withBbox( List<Double> bbox, String bboxCrs )
-                    throws InvalidParameterValue {
-        this.bbox = validateBbox( bbox );
-        this.bboxCrs = validateAndRetrieveCrs( "bbox-crs", bboxCrs );
-        return this;
-    }
+	public FeaturesRequestBuilder withBbox(List<Double> bbox, String bboxCrs) throws InvalidParameterValue {
+		this.bbox = validateBbox(bbox);
+		this.bboxCrs = validateAndRetrieveCrs("bbox-crs", bboxCrs);
+		return this;
+	}
 
-    public FeaturesRequestBuilder withDatetime( String datetime ) {
-        this.datetime = datetime;
-        return this;
-    }
+	public FeaturesRequestBuilder withDatetime(String datetime) {
+		this.datetime = datetime;
+		return this;
+	}
 
-    public FeaturesRequestBuilder withResponseCrs( String responseCrs )
-                    throws InvalidParameterValue {
-        this.responseCrs = validateAndRetrieveCrs( "crs", responseCrs );
-        return this;
-    }
+	public FeaturesRequestBuilder withResponseCrs(String responseCrs) throws InvalidParameterValue {
+		this.responseCrs = validateAndRetrieveCrs("crs", responseCrs);
+		return this;
+	}
 
-    public FeaturesRequestBuilder withQueryableParameters( Map<FilterProperty, List<String>> filterRequestProperties ) {
-        this.filterRequestProperties = filterRequestProperties;
-        return this;
-    }
+	public FeaturesRequestBuilder withQueryableParameters(Map<FilterProperty, List<String>> filterRequestProperties) {
+		this.filterRequestProperties = filterRequestProperties;
+		return this;
+	}
 
 	public FeaturesRequestBuilder withFilter(String filter, String filterCrs) throws InvalidParameterValue {
 		this.filter = filter;
@@ -109,35 +107,35 @@ public class FeaturesRequestBuilder {
 		return this;
 	}
 
-    public FeaturesRequestBuilder withBulkUpload( boolean isBulkUpload ) {
-        this.isBulkUpload = isBulkUpload;
-        return this;
-    }
+	public FeaturesRequestBuilder withBulkUpload(boolean isBulkUpload) {
+		this.isBulkUpload = isBulkUpload;
+		return this;
+	}
 
-    public FeaturesRequest build() {
-        return new FeaturesRequest( this.collectionId, this.limit, this.offset, this.isBulkUpload, this.bbox,
-                                    this.bboxCrs, this.datetime, this.responseCrs, this.filterRequestProperties,
-                                    this.filter, this.filterCrs );
-    }
+	public FeaturesRequest build() {
+		return new FeaturesRequest(this.collectionId, this.limit, this.offset, this.isBulkUpload, this.bbox,
+				this.bboxCrs, this.datetime, this.responseCrs, this.filterRequestProperties, this.filter,
+				this.filterCrs);
+	}
 
-    private List<Double> validateBbox( List<Double> bbox )
-                    throws InvalidParameterValue {
-        if ( bbox == null || bbox.isEmpty() )
-            return null;
-        if ( bbox.size() != 4 )
-            throw new InvalidParameterValue( "bbox", "does not have exact 4 numbers " );
-        return bbox;
-    }
+	private List<Double> validateBbox(List<Double> bbox) throws InvalidParameterValue {
+		if (bbox == null || bbox.isEmpty())
+			return null;
+		if (bbox.size() != 4)
+			throw new InvalidParameterValue("bbox", "does not have exact 4 numbers ");
+		return bbox;
+	}
 
-    private String validateAndRetrieveCrs( String parameterName, String crs )
-                    throws InvalidParameterValue {
-        if ( crs == null || crs.isEmpty() )
-            return DEFAULT_CRS;
-        try {
-            CRSManager.lookup( crs );
-        } catch ( UnknownCRSException e ) {
-            throw new InvalidParameterValue( parameterName, "Unknown CRS " + crs );
-        }
-        return crs;
-    }
+	private String validateAndRetrieveCrs(String parameterName, String crs) throws InvalidParameterValue {
+		if (crs == null || crs.isEmpty())
+			return DEFAULT_CRS;
+		try {
+			CRSManager.lookup(crs);
+		}
+		catch (UnknownCRSException e) {
+			throw new InvalidParameterValue(parameterName, "Unknown CRS " + crs);
+		}
+		return crs;
+	}
+
 }

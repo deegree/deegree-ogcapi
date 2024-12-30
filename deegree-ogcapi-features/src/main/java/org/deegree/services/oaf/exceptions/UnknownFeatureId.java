@@ -30,19 +30,19 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
  */
 public class UnknownFeatureId extends OgcApiFeaturesException {
 
-    private static final String EXCEPTION_MSG = "A feature with id '%s' is not available.";
+	private static final String EXCEPTION_MSG = "A feature with id '%s' is not available.";
 
-    public UnknownFeatureId() {
-        super();
-    }
+	public UnknownFeatureId() {
+		super();
+	}
 
-    public UnknownFeatureId( String featureId ) {
-        super( String.format( EXCEPTION_MSG, featureId ) );
-    }
+	public UnknownFeatureId(String featureId) {
+		super(String.format(EXCEPTION_MSG, featureId));
+	}
 
-    @Override
-    public Response.Status getStatusCode() {
-        return NOT_FOUND;
-    }
+	@Override
+	public Response.Status getStatusCode() {
+		return NOT_FOUND;
+	}
 
 }

@@ -48,82 +48,86 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class OverrideAcceptFilterTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( FeatureCollection.class );
-        resourceConfig.register(OverrideAcceptFilter.class);
-        resourceConfig.register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind( mockDataAccess() ).to( DataAccess.class );
-                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
-            }
-        } );
-        return resourceConfig;
-    }
-    
-    @Test
-    public void test_Header() {
-        Response response = target( "/datasets/oaf/collections/test" ).request( APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_JSON ) );
-    }
-    
-    @Test
-    public void test_Extension() {
-        Response response = target( "/datasets/oaf/collections/test.xml" ).request().get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_XML ) );
-    }
-    
-    @Test
-    public void test_ExtensionFallback() {
-        Response response = target( "/datasets/oaf/collections/test.xkcd" ).request( APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_JSON ) );
-    }
-    
-    @Test
-    public void test_QueryParam_Accept() {
-        Response response = target( "/datasets/oaf/collections/test" ).queryParam("accept", "xml").request().get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_XML ) );
-    }
-    
-    @Test
-    public void test_QueryParamMediaType_Accept() {
-        Response response = target( "/datasets/oaf/collections/test" ).queryParam("accept", APPLICATION_XML).request().get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_XML ) );
-    }
-    
-    @Test
-    public void test_QueryParam_f_xml() {
-        Response response = target( "/datasets/oaf/collections/test" ).queryParam("f", "xml").request().get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_XML ) );
-    }
-    
-    @Test
-    public void test_QueryParam_f_json() {
-        Response response = target( "/datasets/oaf/collections/test" ).queryParam("f", "json").request().get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_JSON ) );
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		ResourceConfig resourceConfig = new ResourceConfig(FeatureCollection.class);
+		resourceConfig.register(OverrideAcceptFilter.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(mockDataAccess()).to(DataAccess.class);
+				bind(mockWorkspaceInitializer()).to(DeegreeWorkspaceInitializer.class);
+			}
+		});
+		return resourceConfig;
+	}
 
-    @Test
-    public void test_Priorities() {
-        Response response = target( "/datasets/oaf/collections/test.html" ).queryParam("accept", "xml").request( APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( APPLICATION_XML ) );
-    }
-    
-    @Test
-    public void test_PriorityExtension() {
-        Response response = target( "/datasets/oaf/collections/test.html" ).request( APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaderString(HttpHeaders.CONTENT_TYPE), is( TEXT_HTML ) );
-    }
+	@Test
+	public void test_Header() {
+		Response response = target("/datasets/oaf/collections/test").request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
+	}
+
+	@Test
+	public void test_Extension() {
+		Response response = target("/datasets/oaf/collections/test.xml").request().get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+	}
+
+	@Test
+	public void test_ExtensionFallback() {
+		Response response = target("/datasets/oaf/collections/test.xkcd").request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
+	}
+
+	@Test
+	public void test_QueryParam_Accept() {
+		Response response = target("/datasets/oaf/collections/test").queryParam("accept", "xml").request().get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+	}
+
+	@Test
+	public void test_QueryParamMediaType_Accept() {
+		Response response = target("/datasets/oaf/collections/test").queryParam("accept", APPLICATION_XML)
+			.request()
+			.get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+	}
+
+	@Test
+	public void test_QueryParam_f_xml() {
+		Response response = target("/datasets/oaf/collections/test").queryParam("f", "xml").request().get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+	}
+
+	@Test
+	public void test_QueryParam_f_json() {
+		Response response = target("/datasets/oaf/collections/test").queryParam("f", "json").request().get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
+	}
+
+	@Test
+	public void test_Priorities() {
+		Response response = target("/datasets/oaf/collections/test.html").queryParam("accept", "xml")
+			.request(APPLICATION_JSON_TYPE)
+			.get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+	}
+
+	@Test
+	public void test_PriorityExtension() {
+		Response response = target("/datasets/oaf/collections/test.html").request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(TEXT_HTML));
+	}
 
 }

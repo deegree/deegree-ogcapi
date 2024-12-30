@@ -55,34 +55,32 @@ import static org.junit.Assert.assertThat;
  */
 public class FeatureResponseGeoJsonWriterTest {
 
-    @Test
-    public void testWriteTo()
-                    throws Exception {
-        FeatureResponseGeoJsonWriter featureResponeWriter = new FeatureResponseGeoJsonWriter();
-        FeatureResponse featureResponse = createFeatureResponse();
-        OutputStream bos = new ByteArrayOutputStream();
-        featureResponeWriter.writeTo( featureResponse, null, null, null, null, null, bos );
+	@Test
+	public void testWriteTo() throws Exception {
+		FeatureResponseGeoJsonWriter featureResponeWriter = new FeatureResponseGeoJsonWriter();
+		FeatureResponse featureResponse = createFeatureResponse();
+		OutputStream bos = new ByteArrayOutputStream();
+		featureResponeWriter.writeTo(featureResponse, null, null, null, null, null, bos);
 
-        String json = bos.toString();
+		String json = bos.toString();
 
-        assertThat( json, isJson() );
-        assertThat( json, hasJsonPath( "$.type", equalTo( "Feature" ) ) );
-        assertThat( json, hasJsonPath( "$.geometry" ) );
-        assertThat( json, hasJsonPath( "$.properties" ) );
-        assertThat( json, hasJsonPath( "$.links", Matchers.hasSize( 1 ) ) );
-        assertThat( json, hasJsonPath( "$.crs", equalTo( OgcApiFeaturesConstants.DEFAULT_CRS ) ) );
-    }
+		assertThat(json, isJson());
+		assertThat(json, hasJsonPath("$.type", equalTo("Feature")));
+		assertThat(json, hasJsonPath("$.geometry"));
+		assertThat(json, hasJsonPath("$.properties"));
+		assertThat(json, hasJsonPath("$.links", Matchers.hasSize(1)));
+		assertThat(json, hasJsonPath("$.crs", equalTo(OgcApiFeaturesConstants.DEFAULT_CRS)));
+	}
 
-    private FeatureResponse createFeatureResponse()
-                    throws Exception {
-        List<Link> links = Collections.singletonList(
-                        new Link( "http://self", "self", "application/json", "title" ) );
+	private FeatureResponse createFeatureResponse() throws Exception {
+		List<Link> links = Collections.singletonList(new Link("http://self", "self", "application/json", "title"));
 
-        Feature feature = readFeature();
-        Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeaturesResponseBuilder( feature ).withFeatureTypeNsPrefixes(
-                        featureTypeNsPrefixes ).withLinks( links ).withResponseCrsName(
-                        OgcApiFeaturesConstants.DEFAULT_CRS ).buildFeatureResponse();
-    }
+		Feature feature = readFeature();
+		Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
+		return new FeaturesResponseBuilder(feature).withFeatureTypeNsPrefixes(featureTypeNsPrefixes)
+			.withLinks(links)
+			.withResponseCrsName(OgcApiFeaturesConstants.DEFAULT_CRS)
+			.buildFeatureResponse();
+	}
 
 }

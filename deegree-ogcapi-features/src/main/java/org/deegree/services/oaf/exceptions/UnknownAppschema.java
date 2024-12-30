@@ -30,19 +30,19 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
  */
 public class UnknownAppschema extends OgcApiFeaturesException {
 
-    private static final String EXCEPTION_MSG = "Appschema with path '%s' is not available.";
+	private static final String EXCEPTION_MSG = "Appschema with path '%s' is not available.";
 
-    public UnknownAppschema() {
-        super();
-    }
+	public UnknownAppschema() {
+		super();
+	}
 
-    public UnknownAppschema( String appschemaPath ) {
-        super( String.format( EXCEPTION_MSG, appschemaPath ) );
-    }
+	public UnknownAppschema(String appschemaPath) {
+		super(String.format(EXCEPTION_MSG, appschemaPath));
+	}
 
-    @Override
-    public Response.Status getStatusCode() {
-        return NOT_FOUND;
-    }
+	@Override
+	public Response.Status getStatusCode() {
+		return NOT_FOUND;
+	}
 
 }

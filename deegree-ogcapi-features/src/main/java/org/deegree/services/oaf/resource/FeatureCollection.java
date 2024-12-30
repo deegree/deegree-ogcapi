@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -70,123 +70,99 @@ import java.util.Map;
 @Path("/datasets/{datasetId}/collections/{collectionId}")
 public class FeatureCollection {
 
-    @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+	@Inject
+	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    @Inject
-    private DataAccess dataAccess;
+	@Inject
+	private DataAccess dataAccess;
 
-    @GET
-    @Produces({ APPLICATION_JSON })
-    @Operation(operationId = "collection", summary = "describes collection {collectionId}", description = "Describes the collection with the id {collectionId}")
-    @Tag(name = "Collections")
-    @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = Collections.class)))
-    public Response collectionJson(
-                    @PathParam("datasetId")
-                                    String datasetId,
-                    @PathParam("collectionId")
-                                    String collectionId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f")
-                                    String format,
-                    @Context
-                                    UriInfo uriInfo )
-                    throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
-        return collection( datasetId, collectionId, uriInfo, format, JSON );
-    }
+	@GET
+	@Produces({ APPLICATION_JSON })
+	@Operation(operationId = "collection", summary = "describes collection {collectionId}",
+			description = "Describes the collection with the id {collectionId}")
+	@Tag(name = "Collections")
+	@ApiResponse(description = "default response",
+			content = @Content(schema = @Schema(implementation = Collections.class)))
+	public Response collectionJson(@PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
+			@Context UriInfo uriInfo) throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
+		return collection(datasetId, collectionId, uriInfo, format, JSON);
+	}
 
-    @GET
-    @Produces({ APPLICATION_XML })
-    @Operation(hidden = true)
-    public Response collectionXml(
-                    @PathParam("datasetId")
-                                    String datasetId,
-                    @PathParam("collectionId")
-                                    String collectionId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f")
-                                    String format,
-                    @Context
-                                    UriInfo uriInfo )
-                    throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
-        return collection( datasetId, collectionId, uriInfo, format, XML );
-    }
+	@GET
+	@Produces({ APPLICATION_XML })
+	@Operation(hidden = true)
+	public Response collectionXml(@PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
+			@Context UriInfo uriInfo) throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
+		return collection(datasetId, collectionId, uriInfo, format, XML);
+	}
 
-    @GET
-    @Produces({ TEXT_HTML })
-    @Operation(hidden = true)
-    public Response collectionHtml(
-                    @PathParam("datasetId")
-                                    String datasetId,
-                    @PathParam("collectionId")
-                                    String collectionId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f")
-                                    String format,
-                    @Context
-                                    UriInfo uriInfo )
-                    throws UnknownCollectionId, InvalidParameterValue, UnknownDatasetId {
-        return collection( datasetId, collectionId, uriInfo, format, HTML );
-    }
+	@GET
+	@Produces({ TEXT_HTML })
+	@Operation(hidden = true)
+	public Response collectionHtml(@PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
+			@Context UriInfo uriInfo) throws UnknownCollectionId, InvalidParameterValue, UnknownDatasetId {
+		return collection(datasetId, collectionId, uriInfo, format, HTML);
+	}
 
-    @GET
-    @Operation(hidden = true)
-    public Response collectionOther(
-                    @PathParam("datasetId")
-                                    String datasetId,
-                    @PathParam("collectionId")
-                                    String collectionId,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f")
-                                    String format,
-                    @Context
-                                    UriInfo uriInfo )
-                    throws UnknownCollectionId, InvalidParameterValue, UnknownDatasetId {
-        return collection( datasetId, collectionId, uriInfo, format, JSON );
-    }
+	@GET
+	@Operation(hidden = true)
+	public Response collectionOther(@PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
+			@Context UriInfo uriInfo) throws UnknownCollectionId, InvalidParameterValue, UnknownDatasetId {
+		return collection(datasetId, collectionId, uriInfo, format, JSON);
+	}
 
-    private Response collection( String datasetId, String collectionId, UriInfo uriInfo, String formatParamValue,
-                                 RequestFormat defaultFormat )
-                    throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
-        RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
-        OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
-        oafConfiguration.checkCollection( collectionId );
-        if ( HTML.equals( requestFormat ) ) {
-            return Response.ok( getClass().getResourceAsStream( "/collection.html" ), TEXT_HTML ).build();
-        }
-        LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        Collection collection = dataAccess.createCollection( oafConfiguration, collectionId, linkBuilder );
-        addAdditionalCollectionLinks( datasetId, collection);
-        
-        if ( XML.equals( requestFormat ) ) {
-            Collections collections = new Collections();
-            collections.addCollection( collection );
-            return Response.ok( collections, APPLICATION_XML ).build();
-        }
-        return Response.ok( collection, APPLICATION_JSON ).build();
-    }
-    
-    private void addAdditionalCollectionLinks(String datasetId, Collection collection) {
-        Map<String,List<ConfigureCollection>> additionalCollectionMap = DeegreeWorkspaceInitializer.getAdditionalCollectionMap();
+	private Response collection(String datasetId, String collectionId, UriInfo uriInfo, String formatParamValue,
+			RequestFormat defaultFormat) throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
+		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
+		OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
+		oafConfiguration.checkCollection(collectionId);
+		if (HTML.equals(requestFormat)) {
+			return Response.ok(getClass().getResourceAsStream("/collection.html"), TEXT_HTML).build();
+		}
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		Collection collection = dataAccess.createCollection(oafConfiguration, collectionId, linkBuilder);
+		addAdditionalCollectionLinks(datasetId, collection);
 
-        if(additionalCollectionMap.containsKey(datasetId)) {
-       	  List<ConfigureCollection> configureCollectionList = additionalCollectionMap.get(datasetId);
-       	  for(ConfigureCollection additionalcoll: configureCollectionList) {
-       		 if(additionalcoll!=null && collection.getId().equals(additionalcoll.getId())) {
-       		    List<AddLink> addLinks = additionalcoll.getAddLink();
-       		    if(addLinks!=null) {
-                    List<Link> oafLinks = new ArrayList<>();
-                    for(AddLink addLink: addLinks) {
-                       oafLinks.add(new Link(addLink.getHref(), addLink.getRel(), addLink.getType(), addLink.getTitle()));
-                    }
-                    collection.addAdditionalLinks(oafLinks);
-       		    }    
-       		 }
-       	  }
-      }
-   }
+		if (XML.equals(requestFormat)) {
+			Collections collections = new Collections();
+			collections.addCollection(collection);
+			return Response.ok(collections, APPLICATION_XML).build();
+		}
+		return Response.ok(collection, APPLICATION_JSON).build();
+	}
+
+	private void addAdditionalCollectionLinks(String datasetId, Collection collection) {
+		Map<String, List<ConfigureCollection>> additionalCollectionMap = DeegreeWorkspaceInitializer
+			.getAdditionalCollectionMap();
+
+		if (additionalCollectionMap.containsKey(datasetId)) {
+			List<ConfigureCollection> configureCollectionList = additionalCollectionMap.get(datasetId);
+			for (ConfigureCollection additionalcoll : configureCollectionList) {
+				if (additionalcoll != null && collection.getId().equals(additionalcoll.getId())) {
+					List<AddLink> addLinks = additionalcoll.getAddLink();
+					if (addLinks != null) {
+						List<Link> oafLinks = new ArrayList<>();
+						for (AddLink addLink : addLinks) {
+							oafLinks.add(new Link(addLink.getHref(), addLink.getRel(), addLink.getType(),
+									addLink.getTitle()));
+						}
+						collection.addAdditionalLinks(oafLinks);
+					}
+				}
+			}
+		}
+	}
+
 }

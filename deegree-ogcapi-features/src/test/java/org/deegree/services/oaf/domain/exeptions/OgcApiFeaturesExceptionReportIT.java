@@ -40,24 +40,22 @@ import static org.junit.Assert.assertThat;
  */
 public class OgcApiFeaturesExceptionReportIT {
 
-    @Test
-    public void testExceptionToXml()
-                    throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance( OgcApiFeaturesExceptionReport.class );
+	@Test
+	public void testExceptionToXml() throws Exception {
+		JAXBContext jaxbContext = JAXBContext.newInstance(OgcApiFeaturesExceptionReport.class);
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-        OgcApiFeaturesExceptionReport exception = new OgcApiFeaturesExceptionReport( "test", 404 );
-        marshaller.marshal( exception, bos );
+		Marshaller marshaller = jaxbContext.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		OgcApiFeaturesExceptionReport exception = new OgcApiFeaturesExceptionReport("test", 404);
+		marshaller.marshal(exception, bos);
 
-        assertThat( bos.toString(), ValidationMatcher.valid( schemaFrom( XML_CORE_SCHEMA_URL ) ) );
-    }
+		assertThat(bos.toString(), ValidationMatcher.valid(schemaFrom(XML_CORE_SCHEMA_URL)));
+	}
 
-    private StreamSource schemaFrom( String url )
-                    throws IOException {
-        return new StreamSource( new URL( url ).openStream() );
-    }
+	private StreamSource schemaFrom(String url) throws IOException {
+		return new StreamSource(new URL(url).openStream());
+	}
 
 }

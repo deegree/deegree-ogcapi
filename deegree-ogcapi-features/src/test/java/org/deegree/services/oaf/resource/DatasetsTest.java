@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -39,32 +39,32 @@ import static org.junit.Assert.assertThat;
 
 public class DatasetsTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( Datasets.class );
-        resourceConfig.register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
-                bindAsContract( OpenApiCreator.class );
-            }
-        } );
-        return resourceConfig;
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		ResourceConfig resourceConfig = new ResourceConfig(Datasets.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(mockWorkspaceInitializer()).to(DeegreeWorkspaceInitializer.class);
+				bindAsContract(OpenApiCreator.class);
+			}
+		});
+		return resourceConfig;
+	}
 
-    @Test
-    public void test_DatatsetsDeclaration_JSON_ShouldBeAvailable() {
-        Response response = target( "/datasets" ).request( MediaType.APPLICATION_JSON_TYPE ).get();
-        String json = response.readEntity( String.class );
-        assertThat( response.getStatus(), is( 200 ) );
-    }
+	@Test
+	public void test_DatatsetsDeclaration_JSON_ShouldBeAvailable() {
+		Response response = target("/datasets").request(MediaType.APPLICATION_JSON_TYPE).get();
+		String json = response.readEntity(String.class);
+		assertThat(response.getStatus(), is(200));
+	}
 
-    @Test
-    public void test_DatatsetsDeclaration_HTML_ShouldBeAvailable() {
-        Response response = target( "/datasets" ).request( MediaType.APPLICATION_JSON_TYPE ).get();
-        String json = response.readEntity( String.class );
-        assertThat( response.getStatus(), is( 200 ) );
-    }
+	@Test
+	public void test_DatatsetsDeclaration_HTML_ShouldBeAvailable() {
+		Response response = target("/datasets").request(MediaType.APPLICATION_JSON_TYPE).get();
+		String json = response.readEntity(String.class);
+		assertThat(response.getStatus(), is(200));
+	}
 
 }

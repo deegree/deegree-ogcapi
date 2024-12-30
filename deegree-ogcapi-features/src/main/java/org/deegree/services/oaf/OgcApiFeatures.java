@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -49,67 +49,69 @@ import static org.slf4j.LoggerFactory.getLogger;
 @ApplicationPath("/")
 public class OgcApiFeatures extends ResourceConfig {
 
-    private static final Logger LOG = getLogger( OgcApiFeatures.class );
+	private static final Logger LOG = getLogger(OgcApiFeatures.class);
 
-    public OgcApiFeatures( @Context ServletConfig servletConfig ) {
-        super();
-        register( new ObjectMapperContextResolver() );
+	public OgcApiFeatures(@Context ServletConfig servletConfig) {
+		super();
+		register(new ObjectMapperContextResolver());
 
-        initOgcFrontCntroller( servletConfig );
-        LOG.info( "deegree OGCFrontController initialized. Config REST API is available" );
+		initOgcFrontCntroller(servletConfig);
+		LOG.info("deegree OGCFrontController initialized. Config REST API is available");
 
-        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = new DeegreeWorkspaceInitializer();
-        deegreeWorkspaceInitializer.initialize();
+		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = new DeegreeWorkspaceInitializer();
+		deegreeWorkspaceInitializer.initialize();
 
-        packages( "com.fasterxml.jackson.jaxrs.json" );
-        packages( "org.deegree.services.oaf.resource" );
-        packages( "org.deegree.services.oaf.io" );
-        packages( "org.deegree.services.oaf.schema" );
-        packages( "org.deegree.services.oaf.converter" );
-        packages( "org.deegree.services.oaf.exceptions" );
-        packages( "org.deegree.services.oaf.filter" );
-        packages( "org.deegree.ogcapi.config.resource" );
-        packages( "org.deegree.ogcapi.config.exceptions" );
-        register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bindAsContract( OpenApiCreator.class );
-                bindAsContract( DeegreeDataAccess.class ).to( DataAccess.class );
-                bind( deegreeWorkspaceInitializer ).to( DeegreeWorkspaceInitializer.class );
-                bind( DeegreeWorkspaceRestartOrUpdateHandler.class ).to( RestartOrUpdateHandler.class );
-            }
-        } );
-        LOG.info( "deegree OGC API - Features implementation successfully initialized" );
-    }
+		packages("com.fasterxml.jackson.jaxrs.json");
+		packages("org.deegree.services.oaf.resource");
+		packages("org.deegree.services.oaf.io");
+		packages("org.deegree.services.oaf.schema");
+		packages("org.deegree.services.oaf.converter");
+		packages("org.deegree.services.oaf.exceptions");
+		packages("org.deegree.services.oaf.filter");
+		packages("org.deegree.ogcapi.config.resource");
+		packages("org.deegree.ogcapi.config.exceptions");
+		register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bindAsContract(OpenApiCreator.class);
+				bindAsContract(DeegreeDataAccess.class).to(DataAccess.class);
+				bind(deegreeWorkspaceInitializer).to(DeegreeWorkspaceInitializer.class);
+				bind(DeegreeWorkspaceRestartOrUpdateHandler.class).to(RestartOrUpdateHandler.class);
+			}
+		});
+		LOG.info("deegree OGC API - Features implementation successfully initialized");
+	}
 
-    private void initOgcFrontCntroller( @Context ServletConfig servletConfig ) {
-        try {
-            OGCFrontController ogcFrontController = new OGCFrontController();
-            ogcFrontController.init( servletConfig );
-        } catch ( ServletException e ) {
-            LOG.error( "Initialization of the OGCFrontController failed. Config REST API is not available", e );
-        }
-    }
+	private void initOgcFrontCntroller(@Context ServletConfig servletConfig) {
+		try {
+			OGCFrontController ogcFrontController = new OGCFrontController();
+			ogcFrontController.init(servletConfig);
+		}
+		catch (ServletException e) {
+			LOG.error("Initialization of the OGCFrontController failed. Config REST API is not available", e);
+		}
+	}
 
-    @Provider
-    public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
+	@Provider
+	public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
 
-        private final ObjectMapper mapper;
+		private final ObjectMapper mapper;
 
-        public ObjectMapperContextResolver() {
-            this.mapper = createObjectMapper();
-        }
+		public ObjectMapperContextResolver() {
+			this.mapper = createObjectMapper();
+		}
 
-        @Override
-        public ObjectMapper getContext( Class<?> type ) {
-            return mapper;
-        }
+		@Override
+		public ObjectMapper getContext(Class<?> type) {
+			return mapper;
+		}
 
-        private ObjectMapper createObjectMapper() {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setTimeZone( TimeZone.getDefault() );
-            return mapper;
-        }
-    }
+		private ObjectMapper createObjectMapper() {
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setTimeZone(TimeZone.getDefault());
+			return mapper;
+		}
+
+	}
 
 }

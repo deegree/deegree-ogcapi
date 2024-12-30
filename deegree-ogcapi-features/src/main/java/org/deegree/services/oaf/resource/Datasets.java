@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -59,60 +59,54 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets")
 public class Datasets {
 
-    @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+	@Inject
+	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    @GET
-    @Produces({ APPLICATION_JSON })
-    @Operation(hidden = true)
-    public Response datasetsJson(
-                    @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f") String format )
-                    throws InvalidParameterValue {
-        return datasets( uriInfo, format, JSON );
-    }
+	@GET
+	@Produces({ APPLICATION_JSON })
+	@Operation(hidden = true)
+	public Response datasetsJson(@Context UriInfo uriInfo,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
+			throws InvalidParameterValue {
+		return datasets(uriInfo, format, JSON);
+	}
 
-    @GET
-    @Produces({ TEXT_HTML })
-    @Operation(hidden = true)
-    public Response datasetsHtml(
-                    @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema(allowableValues = { "json", "html", "xml" }))
-                    @QueryParam("f") String format )
-                    throws InvalidParameterValue {
-        return datasets( uriInfo, format, HTML );
-    }
+	@GET
+	@Produces({ TEXT_HTML })
+	@Operation(hidden = true)
+	public Response datasetsHtml(@Context UriInfo uriInfo,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
+			throws InvalidParameterValue {
+		return datasets(uriInfo, format, HTML);
+	}
 
-    private Response datasets( UriInfo uriInfo, String formatParamValue,
-                               RequestFormat defaultFormat )
-                    throws InvalidParameterValue {
-        RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
-        if ( HTML.equals( requestFormat ) ) {
-            return Response.ok( getClass().getResourceAsStream( "/datasets.html" ), TEXT_HTML ).build();
-        }
-        LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        List<Link> links = linkBuilder.createDatasetsLinks();
-        List<Dataset> datasets = new ArrayList<>();
+	private Response datasets(UriInfo uriInfo, String formatParamValue, RequestFormat defaultFormat)
+			throws InvalidParameterValue {
+		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
+		if (HTML.equals(requestFormat)) {
+			return Response.ok(getClass().getResourceAsStream("/datasets.html"), TEXT_HTML).build();
+		}
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		List<Link> links = linkBuilder.createDatasetsLinks();
+		List<Dataset> datasets = new ArrayList<>();
 
-        OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
-        Map<String, OafDatasetConfiguration> datasetsConfigurations = oafDatasets.getDatasets();
-        datasetsConfigurations.forEach( ( id, oafDatasetConfiguration ) -> {
-            List<Link> datasetLinks = linkBuilder.createDatasetLinks( id );
-            String title = oafDatasetConfiguration.getServiceMetadata() == null ?
-                           null :
-                           oafDatasetConfiguration.getServiceMetadata().getTitle();
-            Dataset dataset = new Dataset( id, title, datasetLinks );
-            datasets.add( dataset );
-        } );
-        DatasetsConfiguration datasetsConfiguration = deegreeWorkspaceInitializer.getDatasetsConfiguration();
-        org.deegree.services.oaf.domain.dataset.Datasets allDatasets = new org.deegree.services.oaf.domain.dataset.Datasets()
-                        .withLinks( links )
-                        .withDatasets( datasets )
-                        .withDatasetsConfiguration( datasetsConfiguration );
-        return Response.ok( allDatasets, APPLICATION_JSON ).build();
-    }
+		OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
+		Map<String, OafDatasetConfiguration> datasetsConfigurations = oafDatasets.getDatasets();
+		datasetsConfigurations.forEach((id, oafDatasetConfiguration) -> {
+			List<Link> datasetLinks = linkBuilder.createDatasetLinks(id);
+			String title = oafDatasetConfiguration.getServiceMetadata() == null ? null
+					: oafDatasetConfiguration.getServiceMetadata().getTitle();
+			Dataset dataset = new Dataset(id, title, datasetLinks);
+			datasets.add(dataset);
+		});
+		DatasetsConfiguration datasetsConfiguration = deegreeWorkspaceInitializer.getDatasetsConfiguration();
+		org.deegree.services.oaf.domain.dataset.Datasets allDatasets = new org.deegree.services.oaf.domain.dataset.Datasets()
+			.withLinks(links)
+			.withDatasets(datasets)
+			.withDatasetsConfiguration(datasetsConfiguration);
+		return Response.ok(allDatasets, APPLICATION_JSON).build();
+	}
 
 }

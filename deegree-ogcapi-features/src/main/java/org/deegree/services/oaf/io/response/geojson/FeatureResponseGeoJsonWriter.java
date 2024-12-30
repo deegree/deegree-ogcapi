@@ -41,19 +41,19 @@ import java.lang.reflect.Type;
 @Produces("application/geo+json")
 public class FeatureResponseGeoJsonWriter extends AbstractFeatureResponseGeoJsonWriter<FeatureResponse> {
 
-    @Override
-    public boolean isWriteable( Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType ) {
-        return FeatureResponse.class == type;
-    }
+	@Override
+	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+		return FeatureResponse.class == type;
+	}
 
-    @Override
-    protected void writeContent( FeatureResponse feature, GeoJsonWriter geoJsonStreamWriter )
-                    throws IOException, TransformationException, UnknownCRSException, UnknownFeatureId {
-        geoJsonStreamWriter.startSingleFeature();
-        geoJsonStreamWriter.writeSingleFeature( feature.getFeature() );
-        writeLinks( feature.getLinks(), geoJsonStreamWriter );
-        writeCrs( feature.getResponseCrsName(), geoJsonStreamWriter );
-        geoJsonStreamWriter.endSingleFeature();
-    }
+	@Override
+	protected void writeContent(FeatureResponse feature, GeoJsonWriter geoJsonStreamWriter)
+			throws IOException, TransformationException, UnknownCRSException, UnknownFeatureId {
+		geoJsonStreamWriter.startSingleFeature();
+		geoJsonStreamWriter.writeSingleFeature(feature.getFeature());
+		writeLinks(feature.getLinks(), geoJsonStreamWriter);
+		writeCrs(feature.getResponseCrsName(), geoJsonStreamWriter);
+		geoJsonStreamWriter.endSingleFeature();
+	}
 
 }
