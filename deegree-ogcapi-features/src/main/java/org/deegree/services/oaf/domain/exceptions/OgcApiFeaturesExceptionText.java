@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -36,33 +36,34 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OgcApiFeaturesExceptionText {
 
-    @XmlElement(name = "ExceptionText", namespace = XML_CORE_NS_URL)
-    private String exceptionText;
+	@XmlElement(name = "ExceptionText", namespace = XML_CORE_NS_URL)
+	private String exceptionText;
 
-    @XmlAttribute
-    private String exceptionCode;
+	@XmlAttribute
+	private String exceptionCode;
 
-    public OgcApiFeaturesExceptionText() {
-    }
+	public OgcApiFeaturesExceptionText() {
+	}
 
-    public OgcApiFeaturesExceptionText( String exceptionText, String exceptionCode ) {
-        this.exceptionText = exceptionText;
-        this.exceptionCode = exceptionCode;
-    }
+	public OgcApiFeaturesExceptionText(String exceptionText, String exceptionCode) {
+		this.exceptionText = exceptionText;
+		this.exceptionCode = exceptionCode;
+	}
 
-    public String getExceptionText() {
-        return exceptionText;
-    }
+	public String getExceptionText() {
+		return exceptionText;
+	}
 
-    public void setExceptionText( String exceptionText ) {
-        this.exceptionText = exceptionText;
-    }
+	public void setExceptionText(String exceptionText) {
+		this.exceptionText = exceptionText;
+	}
 
-    public String getExceptionCode() {
-        return exceptionCode;
-    }
+	public String getExceptionCode() {
+		return exceptionCode;
+	}
 
-    public void setExceptionCode( String exceptionCode ) {
-        this.exceptionCode = exceptionCode;
-    }
+	public void setExceptionCode(String exceptionCode) {
+		this.exceptionCode = exceptionCode;
+	}
+
 }

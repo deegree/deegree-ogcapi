@@ -34,94 +34,92 @@ import java.util.Map;
  */
 public class FeaturesResponseBuilder {
 
-    private FeatureInputStream features;
+	private FeatureInputStream features;
 
-    private Feature feature;
+	private Feature feature;
 
-    private int numberOfFeaturesMatched;
+	private int numberOfFeaturesMatched;
 
-    private Map<String, String> featureTypeNsPrefixes;
+	private Map<String, String> featureTypeNsPrefixes;
 
-    private int numberOfFeatures;
+	private int numberOfFeatures;
 
-    private int startIndex;
+	private int startIndex;
 
-    private List<Link> links;
+	private List<Link> links;
 
-    private boolean isMaxFeaturesAndStartIndexApplicable;
+	private boolean isMaxFeaturesAndStartIndexApplicable;
 
-    private String responseCrsName;
+	private String responseCrsName;
 
-    private String namespaceURI;
+	private String namespaceURI;
 
-    private SchemaLocation schemaLocation;
+	private SchemaLocation schemaLocation;
 
-    private String featureId;
+	private String featureId;
 
-    public FeaturesResponseBuilder( FeatureInputStream features ) {
-        this.features = features;
-    }
+	public FeaturesResponseBuilder(FeatureInputStream features) {
+		this.features = features;
+	}
 
-    public FeaturesResponseBuilder( Feature feature ) {
-        this.feature = feature;
-    }
+	public FeaturesResponseBuilder(Feature feature) {
+		this.feature = feature;
+	}
 
-    public FeaturesResponseBuilder withFeatureTypeNsPrefixes( Map<String, String> featureTypeNsPrefixes ) {
-        this.featureTypeNsPrefixes = featureTypeNsPrefixes;
-        return this;
-    }
+	public FeaturesResponseBuilder withFeatureTypeNsPrefixes(Map<String, String> featureTypeNsPrefixes) {
+		this.featureTypeNsPrefixes = featureTypeNsPrefixes;
+		return this;
+	}
 
-    public FeaturesResponseBuilder withNumberOfFeatures( int numberOfFeatures ) {
-        this.numberOfFeatures = numberOfFeatures;
-        return this;
-    }
+	public FeaturesResponseBuilder withNumberOfFeatures(int numberOfFeatures) {
+		this.numberOfFeatures = numberOfFeatures;
+		return this;
+	}
 
-    public FeaturesResponseBuilder withNumberOfFeaturesMatched( int numberOfFeaturesMatched ) {
-        this.numberOfFeaturesMatched = numberOfFeaturesMatched;
-        return this;
-    }
+	public FeaturesResponseBuilder withNumberOfFeaturesMatched(int numberOfFeaturesMatched) {
+		this.numberOfFeaturesMatched = numberOfFeaturesMatched;
+		return this;
+	}
 
-    public FeaturesResponseBuilder withStartIndex( int startIndex ) {
-        this.startIndex = startIndex;
-        return this;
-    }
+	public FeaturesResponseBuilder withStartIndex(int startIndex) {
+		this.startIndex = startIndex;
+		return this;
+	}
 
-    public FeaturesResponseBuilder withLinks( List<Link> links ) {
-        this.links = links;
-        return this;
-    }
+	public FeaturesResponseBuilder withLinks(List<Link> links) {
+		this.links = links;
+		return this;
+	}
 
-    public FeaturesResponseBuilder withMaxFeaturesAndStartIndexApplicable(
-                    boolean maxFeaturesAndStartIndexApplicable ) {
-        isMaxFeaturesAndStartIndexApplicable = maxFeaturesAndStartIndexApplicable;
-        return this;
-    }
+	public FeaturesResponseBuilder withMaxFeaturesAndStartIndexApplicable(boolean maxFeaturesAndStartIndexApplicable) {
+		isMaxFeaturesAndStartIndexApplicable = maxFeaturesAndStartIndexApplicable;
+		return this;
+	}
 
-    public FeaturesResponseBuilder withResponseCrsName( String responseCrsName ) {
-        this.responseCrsName = responseCrsName;
-        return this;
-    }
+	public FeaturesResponseBuilder withResponseCrsName(String responseCrsName) {
+		this.responseCrsName = responseCrsName;
+		return this;
+	}
 
-    public FeaturesResponseBuilder withSchemaLocation( String namespaceURI, String schemaLocation ) {
-        if ( namespaceURI == null || schemaLocation == null )
-            throw new IllegalArgumentException( "namespacesURI and schemaLocation must be set" );
-        this.schemaLocation = new SchemaLocation( namespaceURI, schemaLocation );
-        return this;
-    }
+	public FeaturesResponseBuilder withSchemaLocation(String namespaceURI, String schemaLocation) {
+		if (namespaceURI == null || schemaLocation == null)
+			throw new IllegalArgumentException("namespacesURI and schemaLocation must be set");
+		this.schemaLocation = new SchemaLocation(namespaceURI, schemaLocation);
+		return this;
+	}
 
-    public FeaturesResponseBuilder withFeatureId( String featureId ) {
-        this.featureId = featureId;
-        return this;
-    }
+	public FeaturesResponseBuilder withFeatureId(String featureId) {
+		this.featureId = featureId;
+		return this;
+	}
 
-    public FeaturesResponse buildFeaturesResponse() {
-        return new FeaturesResponse( features, featureTypeNsPrefixes, numberOfFeatures, numberOfFeaturesMatched,
-                                     startIndex, links,
-                                     isMaxFeaturesAndStartIndexApplicable, responseCrsName, schemaLocation );
-    }
+	public FeaturesResponse buildFeaturesResponse() {
+		return new FeaturesResponse(features, featureTypeNsPrefixes, numberOfFeatures, numberOfFeaturesMatched,
+				startIndex, links, isMaxFeaturesAndStartIndexApplicable, responseCrsName, schemaLocation);
+	}
 
-    public FeatureResponse buildFeatureResponse() {
-        return new FeatureResponse( feature, featureTypeNsPrefixes, links,
-                                    responseCrsName, schemaLocation );
-    }
+	public FeatureResponse buildFeatureResponse() {
+		return new FeatureResponse(feature, featureTypeNsPrefixes, links, responseCrsName, schemaLocation);
+	}
+
 }

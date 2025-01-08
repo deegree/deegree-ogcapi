@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -61,153 +61,151 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class DeegreeWorkspaceInitializer {
 
-    private static final Logger LOG = getLogger( DeegreeWorkspaceInitializer.class );
+	private static final Logger LOG = getLogger(DeegreeWorkspaceInitializer.class);
 
-    private static final String APPSCHEMAS_PATH = "appschemas";
+	private static final String APPSCHEMAS_PATH = "appschemas";
 
-    private static Path pathToAppschemas;
+	private static Path pathToAppschemas;
 
-    private static DatasetsConfiguration datasetsConfiguration;
+	private static DatasetsConfiguration datasetsConfiguration;
 
-    private static OafDatasets oafConfiguration = new OafDatasets();
+	private static OafDatasets oafConfiguration = new OafDatasets();
 
-    private static Map<String, HtmlViewConfiguration> htmlViewConfigurations = new HashMap<>();
+	private static Map<String, HtmlViewConfiguration> htmlViewConfigurations = new HashMap<>();
 
-    private static HtmlViewConfiguration globalHtmlViewConfiguration;
-    
-    private static Map<String, List<ConfigureCollection>> additionalCollectionMap = new HashMap<>();
-    
-    private static Map<String, List<ConfigureCollections>> additionalCollectionsMap = new HashMap<>();
+	private static HtmlViewConfiguration globalHtmlViewConfiguration;
 
-    public void initialize() {
-        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-        initConfiguration( workspace.getNewWorkspace() );
-        pathToAppschemas = resolveAppschemasPath( workspace );
-    }
+	private static Map<String, List<ConfigureCollection>> additionalCollectionMap = new HashMap<>();
 
-    public void reinitialize() {
-        LOG.info( "Reinitialize workspace" );
-        clearConfigs();
-        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-        initConfiguration( workspace.getNewWorkspace() );
-        pathToAppschemas = resolveAppschemasPath( workspace );
-    }
+	private static Map<String, List<ConfigureCollections>> additionalCollectionsMap = new HashMap<>();
 
-    public OafDatasets getOafDatasets() {
-        return oafConfiguration;
-    }
+	public void initialize() {
+		DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+		initConfiguration(workspace.getNewWorkspace());
+		pathToAppschemas = resolveAppschemasPath(workspace);
+	}
 
-    /**
-     * @param datasetId
-     *                 the id of the dataset
-     * @return the {@link HtmlViewConfiguration}  of the dataset with the passed id, <code>null</code> if not available
-     */
-    public HtmlViewConfiguration getHtmlViewConfiguration( String datasetId ) {
-        if ( htmlViewConfigurations.containsKey( datasetId ) )
-            return htmlViewConfigurations.get( datasetId );
-        return null;
-    }
+	public void reinitialize() {
+		LOG.info("Reinitialize workspace");
+		clearConfigs();
+		DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+		initConfiguration(workspace.getNewWorkspace());
+		pathToAppschemas = resolveAppschemasPath(workspace);
+	}
 
-    /**
-     * @return the global {@link HtmlViewConfiguration}, <code>null</code> if not available
-     */
-    public HtmlViewConfiguration getGlobalHtmlViewConfiguration() {
-        return globalHtmlViewConfiguration;
-    }
+	public OafDatasets getOafDatasets() {
+		return oafConfiguration;
+	}
 
-    /**
-     * @return the datasets configuration, may be <code>null</code>
-     */
-    public DatasetsConfiguration getDatasetsConfiguration() {
-        return datasetsConfiguration;
-    }
+	/**
+	 * @param datasetId the id of the dataset
+	 * @return the {@link HtmlViewConfiguration} of the dataset with the passed id,
+	 * <code>null</code> if not available
+	 */
+	public HtmlViewConfiguration getHtmlViewConfiguration(String datasetId) {
+		if (htmlViewConfigurations.containsKey(datasetId))
+			return htmlViewConfigurations.get(datasetId);
+		return null;
+	}
 
-    /**
-     * @param path
-     *                 th erelative path to the appschema (relative to CURRENT_WORKSPCAE/appschemas)
-     * @return the path to the appschema, never <code>null</code>
-     * @throws UnknownAppschema
-     *                 if the path does not address an existing appschema relative to CURRENT_WORKSPCAE/appschemas
-     */
-    public Path getAppschemaFile( String path )
-                    throws UnknownAppschema {
-        Path appschema = pathToAppschemas.resolve( path );
-        if ( !Files.exists( appschema ) || !Files.isReadable( appschema ) )
-            throw new UnknownAppschema( path );
-        return appschema;
-    }
-    
+	/**
+	 * @return the global {@link HtmlViewConfiguration}, <code>null</code> if not
+	 * available
+	 */
+	public HtmlViewConfiguration getGlobalHtmlViewConfiguration() {
+		return globalHtmlViewConfiguration;
+	}
+
+	/**
+	 * @return the datasets configuration, may be <code>null</code>
+	 */
+	public DatasetsConfiguration getDatasetsConfiguration() {
+		return datasetsConfiguration;
+	}
+
+	/**
+	 * @param path th erelative path to the appschema (relative to
+	 * CURRENT_WORKSPCAE/appschemas)
+	 * @return the path to the appschema, never <code>null</code>
+	 * @throws UnknownAppschema if the path does not address an existing appschema
+	 * relative to CURRENT_WORKSPCAE/appschemas
+	 */
+	public Path getAppschemaFile(String path) throws UnknownAppschema {
+		Path appschema = pathToAppschemas.resolve(path);
+		if (!Files.exists(appschema) || !Files.isReadable(appschema))
+			throw new UnknownAppschema(path);
+		return appschema;
+	}
 
 	public static Map<String, List<ConfigureCollection>> getAdditionalCollectionMap() {
 		return additionalCollectionMap;
 	}
-	
+
 	public static Map<String, List<ConfigureCollections>> getAdditionalCollectionsMap() {
 		return additionalCollectionsMap;
 	}
 
-	public String createAppschemaUrl( UriInfo uriInfo, String uri ) {
-        Path uriPath = Paths.get( URI.create( uri ) );
-        if ( uriPath.startsWith( pathToAppschemas ) ) {
-            Path relativizeUriPath = pathToAppschemas.relativize( uriPath );
-            LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-            return linkBuilder.createSchemaLink( relativizeUriPath.toString() );
-        }
-        return null;
-    }
+	public String createAppschemaUrl(UriInfo uriInfo, String uri) {
+		Path uriPath = Paths.get(URI.create(uri));
+		if (uriPath.startsWith(pathToAppschemas)) {
+			Path relativizeUriPath = pathToAppschemas.relativize(uriPath);
+			LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+			return linkBuilder.createSchemaLink(relativizeUriPath.toString());
+		}
+		return null;
+	}
 
-    private void initConfiguration( Workspace newWorkspace ) {
-        initOafDatasets( newWorkspace );
-        initGlobalHtmlView( newWorkspace );
-        initDatasets( newWorkspace );
-    }
+	private void initConfiguration(Workspace newWorkspace) {
+		initOafDatasets(newWorkspace);
+		initGlobalHtmlView(newWorkspace);
+		initDatasets(newWorkspace);
+	}
 
-    private void initDatasets( Workspace newWorkspace ) {
-        List<ResourceIdentifier<DatasetsConfigResource>> datasetsResourceIdentifier = newWorkspace.getResourcesOfType(
-                        OgcApiDatasetsProvider.class );
-        if ( datasetsResourceIdentifier.size() > 1 )
-            LOG.warn( "Multiple datasets configurations are available. They are ignored!" );
-        if ( datasetsResourceIdentifier.size() == 1 ) {
-            String id = datasetsResourceIdentifier.get( 0 ).getId();
-            DatasetsConfigResource datasetsConfigResource = newWorkspace.getResource(
-                            OgcApiDatasetsProvider.class, id );
-            datasetsConfiguration = datasetsConfigResource.getDatasetsConfiguration();
-        }
-    }
+	private void initDatasets(Workspace newWorkspace) {
+		List<ResourceIdentifier<DatasetsConfigResource>> datasetsResourceIdentifier = newWorkspace
+			.getResourcesOfType(OgcApiDatasetsProvider.class);
+		if (datasetsResourceIdentifier.size() > 1)
+			LOG.warn("Multiple datasets configurations are available. They are ignored!");
+		if (datasetsResourceIdentifier.size() == 1) {
+			String id = datasetsResourceIdentifier.get(0).getId();
+			DatasetsConfigResource datasetsConfigResource = newWorkspace.getResource(OgcApiDatasetsProvider.class, id);
+			datasetsConfiguration = datasetsConfigResource.getDatasetsConfiguration();
+		}
+	}
 
-    private void initGlobalHtmlView( Workspace newWorkspace ) {
-        HtmlViewConfigResource globalHtmlViewConfigResource = newWorkspace.getResource(
-                        OgcApiConfigProvider.class,
-                        "htmlview" );
-        if ( globalHtmlViewConfigResource != null )
-            globalHtmlViewConfiguration = globalHtmlViewConfigResource.getHtmlViewConfiguration();
-    }
+	private void initGlobalHtmlView(Workspace newWorkspace) {
+		HtmlViewConfigResource globalHtmlViewConfigResource = newWorkspace.getResource(OgcApiConfigProvider.class,
+				"htmlview");
+		if (globalHtmlViewConfigResource != null)
+			globalHtmlViewConfiguration = globalHtmlViewConfigResource.getHtmlViewConfiguration();
+	}
 
-    private void initOafDatasets( Workspace newWorkspace ) {
-        List<ResourceIdentifier<Resource>> oafResourceIdentifiers = newWorkspace.getResourcesOfType(
-                        OgcApiProvider.class );
-        oafResourceIdentifiers.forEach( resourceResourceIdentifier -> {
-            String id = resourceResourceIdentifier.getId();
-            OafResource resource = (OafResource) newWorkspace.getResource( OgcApiProvider.class, id );
-            OafDatasetConfiguration oafDatasetConfiguration = resource.getOafConfiguration();
-            oafConfiguration.addDataset( id, oafDatasetConfiguration );
-            HtmlViewConfiguration htmlViewConfiguration = resource.getHtmlViewConfiguration();
-            if ( htmlViewConfiguration != null )
-                htmlViewConfigurations.put( id, htmlViewConfiguration );
-            additionalCollectionMap.put(id, resource.getAdditionalCollectionList());
-            additionalCollectionsMap.put(id, resource.getAdditionalCollectionsList());
-        } );
-    }
+	private void initOafDatasets(Workspace newWorkspace) {
+		List<ResourceIdentifier<Resource>> oafResourceIdentifiers = newWorkspace
+			.getResourcesOfType(OgcApiProvider.class);
+		oafResourceIdentifiers.forEach(resourceResourceIdentifier -> {
+			String id = resourceResourceIdentifier.getId();
+			OafResource resource = (OafResource) newWorkspace.getResource(OgcApiProvider.class, id);
+			OafDatasetConfiguration oafDatasetConfiguration = resource.getOafConfiguration();
+			oafConfiguration.addDataset(id, oafDatasetConfiguration);
+			HtmlViewConfiguration htmlViewConfiguration = resource.getHtmlViewConfiguration();
+			if (htmlViewConfiguration != null)
+				htmlViewConfigurations.put(id, htmlViewConfiguration);
+			additionalCollectionMap.put(id, resource.getAdditionalCollectionList());
+			additionalCollectionsMap.put(id, resource.getAdditionalCollectionsList());
+		});
+	}
 
-    private void clearConfigs() {
-        oafConfiguration = new OafDatasets();
-        htmlViewConfigurations.clear();
-        globalHtmlViewConfiguration = null;
-        datasetsConfiguration = null;
-    }
+	private void clearConfigs() {
+		oafConfiguration = new OafDatasets();
+		htmlViewConfigurations.clear();
+		globalHtmlViewConfiguration = null;
+		datasetsConfiguration = null;
+	}
 
-    private Path resolveAppschemasPath(DeegreeWorkspace workspace) {
-        File workspaceLocation = workspace.getLocation();
-        return Paths.get( workspaceLocation.toURI() ).resolve( APPSCHEMAS_PATH );
-    }
+	private Path resolveAppschemasPath(DeegreeWorkspace workspace) {
+		File workspaceLocation = workspace.getLocation();
+		return Paths.get(workspaceLocation.toURI()).resolve(APPSCHEMAS_PATH);
+	}
+
 }

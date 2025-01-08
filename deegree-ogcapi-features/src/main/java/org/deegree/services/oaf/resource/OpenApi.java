@@ -66,106 +66,94 @@ public class OpenApi {
 
 	private final boolean corsAllowAll = TunableParameter.get(PARAMETER_CORS_ALLOWALL, false);
 
-    private static final Logger LOG = getLogger( OpenApi.class );
+	private static final Logger LOG = getLogger(OpenApi.class);
 
-    @Context
-    private ServletContext servletContext;
+	@Context
+	private ServletContext servletContext;
 
-    @Inject
-    private OpenApiCreator openApiCreator;
+	@Inject
+	private OpenApiCreator openApiCreator;
 
-    @GET
-    @Produces({ APPLICATION_OPENAPI, APPLICATION_JSON })
-    @Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
-    @Tag(name = "Capabilities")
-    public Response getOpenApiOpenApiJson(
-                    @Context HttpHeaders headers,
-                    @Context UriInfo uriInfo,
-                    @PathParam("datasetId")
-                                    String datasetId )
-                    throws Exception {
-        return respondWithOpenApi( headers, uriInfo, datasetId, true );
-    }
-
-    @GET
-    @Produces({ APPLICATION_OPENAPI_YAML, APPLICATION_YAML })
-    @Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
-    @Tag(name = "Capabilities")
-    public Response getOpenApiOpenApiYaml(
-			@Context HttpHeaders headers,
-			@Context UriInfo uriInfo,
-			@PathParam("datasetId")
-                                    String datasetId )
-                    throws Exception {
-        return respondWithOpenApi( headers, uriInfo, datasetId, false );
-    }
-
-    private Response respondWithOpenApi(HttpHeaders headers, UriInfo uriInfo, String datasetId, boolean json) throws Exception {
-    	OpenAPI openApi = this.openApiCreator.createOpenApi( headers, uriInfo, datasetId );
-
-        if ( openApi == null )
-            return Response.status( 404 ).build();
-
-        String rendered;
-        if (json) {
-        	rendered = Json.mapper().writeValueAsString( openApi );
-        }
-        else {
-        	rendered = Yaml.mapper().writeValueAsString( openApi );
-        }
-
-        ResponseBuilder resp = Response.status( Response.Status.OK )
-        		.entity( rendered );
-        if (corsAllowAll) {
-        	resp.header( "Access-Control-Allow-Origin", "*" );
-        }
-        return resp.build();
+	@GET
+	@Produces({ APPLICATION_OPENAPI, APPLICATION_JSON })
+	@Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
+	@Tag(name = "Capabilities")
+	public Response getOpenApiOpenApiJson(@Context HttpHeaders headers, @Context UriInfo uriInfo,
+			@PathParam("datasetId") String datasetId) throws Exception {
+		return respondWithOpenApi(headers, uriInfo, datasetId, true);
 	}
 
 	@GET
-    @Produces({ TEXT_HTML })
-    @Operation(hidden = true)
-    public Response getOpenApiHtml() {
-        return getFile( "index.html" );
-    }
+	@Produces({ APPLICATION_OPENAPI_YAML, APPLICATION_YAML })
+	@Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
+	@Tag(name = "Capabilities")
+	public Response getOpenApiOpenApiYaml(@Context HttpHeaders headers, @Context UriInfo uriInfo,
+			@PathParam("datasetId") String datasetId) throws Exception {
+		return respondWithOpenApi(headers, uriInfo, datasetId, false);
+	}
 
-    @Operation(hidden = true)
-    @Path("/{path: .+\\.css$}")
-    @GET
-    public Response getCssFile(
-                            @PathParam("path")
-                                                    String path ) {
-        return getFile( path, "text/css" );
-    }
+	private Response respondWithOpenApi(HttpHeaders headers, UriInfo uriInfo, String datasetId, boolean json)
+			throws Exception {
+		OpenAPI openApi = this.openApiCreator.createOpenApi(headers, uriInfo, datasetId);
 
-    @Operation(hidden = true)
-    @Path("/{path: .+\\.js$}")
-    @GET
-    public Response getJsFile(
-                            @PathParam("path")
-                                                    String path ) {
-        return getFile( path , "text/javascript");
-    }
-    @Operation(hidden = true)
-    @Path("/{path: .+}")
-    @GET
-    public Response getFile(
-                    @PathParam("path")
-                                    String path ) {
-        return getFile( path, null );
-    }
+		if (openApi == null)
+			return Response.status(404).build();
 
-    private Response getFile( String path, String mimeType ) {
-        try {
-            if ( path.startsWith( "api/" ) )
-                path = path.substring( 4 );
-            String base = servletContext.getRealPath( "/swagger-ui/" );
-            File f = new File( String.format( "%s/%s", base, path ) );
-            return Response.ok(new FileInputStream( f ), mimeType).build();
-        } catch ( FileNotFoundException e ) {
-            LOG.warn( "Could not find requested file ", e );
-            return Response.status( HttpStatus.SC_NOT_FOUND ).build();
-        }
-    }
+		String rendered;
+		if (json) {
+			rendered = Json.mapper().writeValueAsString(openApi);
+		}
+		else {
+			rendered = Yaml.mapper().writeValueAsString(openApi);
+		}
+
+		ResponseBuilder resp = Response.status(Response.Status.OK).entity(rendered);
+		if (corsAllowAll) {
+			resp.header("Access-Control-Allow-Origin", "*");
+		}
+		return resp.build();
+	}
+
+	@GET
+	@Produces({ TEXT_HTML })
+	@Operation(hidden = true)
+	public Response getOpenApiHtml() {
+		return getFile("index.html");
+	}
+
+	@Operation(hidden = true)
+	@Path("/{path: .+\\.css$}")
+	@GET
+	public Response getCssFile(@PathParam("path") String path) {
+		return getFile(path, "text/css");
+	}
+
+	@Operation(hidden = true)
+	@Path("/{path: .+\\.js$}")
+	@GET
+	public Response getJsFile(@PathParam("path") String path) {
+		return getFile(path, "text/javascript");
+	}
+
+	@Operation(hidden = true)
+	@Path("/{path: .+}")
+	@GET
+	public Response getFile(@PathParam("path") String path) {
+		return getFile(path, null);
+	}
+
+	private Response getFile(String path, String mimeType) {
+		try {
+			if (path.startsWith("api/"))
+				path = path.substring(4);
+			String base = servletContext.getRealPath("/swagger-ui/");
+			File f = new File(String.format("%s/%s", base, path));
+			return Response.ok(new FileInputStream(f), mimeType).build();
+		}
+		catch (FileNotFoundException e) {
+			LOG.warn("Could not find requested file ", e);
+			return Response.status(HttpStatus.SC_NOT_FOUND).build();
+		}
+	}
 
 }

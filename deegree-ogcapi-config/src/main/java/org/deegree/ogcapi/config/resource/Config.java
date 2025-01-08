@@ -73,175 +73,165 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Path("/config")
 public class Config {
 
-    private static final Logger LOG = getLogger( Config.class );
+	private static final Logger LOG = getLogger(Config.class);
 
-    @Inject
-    private RestartOrUpdateHandler restartOrUpdateHandler;
+	@Inject
+	private RestartOrUpdateHandler restartOrUpdateHandler;
 
-    private static ApiKey token = new ApiKey();
+	private static ApiKey token = new ApiKey();
 
-    @GET
-    @Operation(description = "/config/download - download currently running workspace")
-    @Path("/download")
-    public Response download( @Context HttpServletRequest request ) {
-        token.validate( request );
-        StreamingOutput streamingOutput = outputStream -> {
-            try {
-                downloadWorkspace( outputStream );
-            } catch ( DownloadException e ) {
-                throw new WebApplicationException( e );
-            }
-        };
-        return Response.ok( streamingOutput, "application/zip" )
-                       .header( "Content-Disposition",
-                                "attachment; filename=" + OGCFrontController.getServiceWorkspace().getName() + ".zip" )
-                       .build();
-    }
+	@GET
+	@Operation(description = "/config/download - download currently running workspace")
+	@Path("/download")
+	public Response download(@Context HttpServletRequest request) {
+		token.validate(request);
+		StreamingOutput streamingOutput = outputStream -> {
+			try {
+				downloadWorkspace(outputStream);
+			}
+			catch (DownloadException e) {
+				throw new WebApplicationException(e);
+			}
+		};
+		return Response.ok(streamingOutput, "application/zip")
+			.header("Content-Disposition",
+					"attachment; filename=" + OGCFrontController.getServiceWorkspace().getName() + ".zip")
+			.build();
+	}
 
-    @GET
-    @Operation(description = "/config/download/<path> - download file in workspace")
-    @Path("/download/{path : (.+)?}")
-    public Response download( @Context HttpServletRequest request,
-                              @PathParam("path") String path )
-                    throws InvalidPathException {
-        token.validate( request );
-        File file = downloadFile( path );
-        if ( file.getName().endsWith( ".xml" ) )
-            return Response.ok( file, APPLICATION_XML_TYPE ).build();
-        else
-            return Response.ok( file, APPLICATION_OCTET_STREAM_TYPE ).build();
-    }
+	@GET
+	@Operation(description = "/config/download/<path> - download file in workspace")
+	@Path("/download/{path : (.+)?}")
+	public Response download(@Context HttpServletRequest request, @PathParam("path") String path)
+			throws InvalidPathException {
+		token.validate(request);
+		File file = downloadFile(path);
+		if (file.getName().endsWith(".xml"))
+			return Response.ok(file, APPLICATION_XML_TYPE).build();
+		else
+			return Response.ok(file, APPLICATION_OCTET_STREAM_TYPE).build();
+	}
 
-    @GET
-    @Operation(description = "/config/restart - restart currently running workspace")
-    @Path("/restart")
-    public Response restart( @Context HttpServletRequest request )
-                    throws RestartException {
-        token.validate( request );
+	@GET
+	@Operation(description = "/config/restart - restart currently running workspace")
+	@Path("/restart")
+	public Response restart(@Context HttpServletRequest request) throws RestartException {
+		token.validate(request);
 
-        String restart = Restart.restart();
-        afterRestartOrUpdate();
-        return Response.ok( restart, APPLICATION_OCTET_STREAM_TYPE ).build();
-    }
+		String restart = Restart.restart();
+		afterRestartOrUpdate();
+		return Response.ok(restart, APPLICATION_OCTET_STREAM_TYPE).build();
+	}
 
-    @GET
-    @Operation(description = "/config/restart/[path] - restarts all resources connected to the specified one\n"
-                             + "/config/restart/wsname - restart with workspace <wsname>")
-    @Path("/restart{path : (.+)?}")
-    public Response restart( @Context HttpServletRequest request,
-                             @PathParam("path") String path )
-                    throws RestartException {
-        token.validate( request );
-        Pair<DeegreeWorkspace, String> workspaceAndPath = getWorkspaceAndPath( path );
-        String restart = Restart.restart( workspaceAndPath.getFirst(), workspaceAndPath.getSecond() );
-        afterRestartOrUpdate();
-        return Response.ok( restart, APPLICATION_OCTET_STREAM_TYPE ).build();
-    }
+	@GET
+	@Operation(description = "/config/restart/[path] - restarts all resources connected to the specified one\n"
+			+ "/config/restart/wsname - restart with workspace <wsname>")
+	@Path("/restart{path : (.+)?}")
+	public Response restart(@Context HttpServletRequest request, @PathParam("path") String path)
+			throws RestartException {
+		token.validate(request);
+		Pair<DeegreeWorkspace, String> workspaceAndPath = getWorkspaceAndPath(path);
+		String restart = Restart.restart(workspaceAndPath.getFirst(), workspaceAndPath.getSecond());
+		afterRestartOrUpdate();
+		return Response.ok(restart, APPLICATION_OCTET_STREAM_TYPE).build();
+	}
 
-    @GET
-    @Operation(description =
-                    "/config/update - update currently running workspace, rescan config files and update resources")
-    @Path("/update")
-    public Response update( @Context HttpServletRequest request,
-                            @QueryParam("featureStoreId") String featureStoreId )
-                    throws UpdateException {
-        token.validate( request );
-        String update = Update.update();
-        afterRestartOrUpdate();
-        return Response.ok( update, TEXT_PLAIN ).build();
-    }
+	@GET
+	@Operation(
+			description = "/config/update - update currently running workspace, rescan config files and update resources")
+	@Path("/update")
+	public Response update(@Context HttpServletRequest request, @QueryParam("featureStoreId") String featureStoreId)
+			throws UpdateException {
+		token.validate(request);
+		String update = Update.update();
+		afterRestartOrUpdate();
+		return Response.ok(update, TEXT_PLAIN).build();
+	}
 
-    @GET
-    @Operation(description =
-                    "/config/update/bboxcache[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the currently running workspace, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed")
-    @Path("/update/bboxcache")
-    public Response updateBboxcache( @Context HttpServletRequest request,
-                                     @QueryParam("featureStoreId") String featureStoreId )
-                    throws BboxCacheUpdateException {
-        token.validate( request );
-        String log = UpdateBboxCache.updateBboxCache( request.getQueryString() );
-        return Response.ok( log, TEXT_PLAIN ).build();
-    }
+	@GET
+	@Operation(
+			description = "/config/update/bboxcache[?featureStoreId=] - recalculates the bounding boxes of all feature stores of the currently running workspace, with the parameter 'featureStoreId' a comma separated list of feature stores to update can be passed")
+	@Path("/update/bboxcache")
+	public Response updateBboxcache(@Context HttpServletRequest request,
+			@QueryParam("featureStoreId") String featureStoreId) throws BboxCacheUpdateException {
+		token.validate(request);
+		String log = UpdateBboxCache.updateBboxCache(request.getQueryString());
+		return Response.ok(log, TEXT_PLAIN).build();
+	}
 
-    @GET
-    @Operation(description = "/config/list - list currently running workspace")
-    @Path("/list")
-    public Response list( @Context HttpServletRequest request )
-                    throws InvalidPathException, UnsupportedWorkspaceException {
-        token.validate( request );
-        String fileList = List.list();
-        return Response.ok( fileList, TEXT_PLAIN ).build();
-    }
+	@GET
+	@Operation(description = "/config/list - list currently running workspace")
+	@Path("/list")
+	public Response list(@Context HttpServletRequest request)
+			throws InvalidPathException, UnsupportedWorkspaceException {
+		token.validate(request);
+		String fileList = List.list();
+		return Response.ok(fileList, TEXT_PLAIN).build();
+	}
 
-    @GET
-    @Operation(description = "/config/list[/path] - list directory in workspace of the currently running workspace")
-    @Path("/list/{path : (.+)?}")
-    public Response list( @Context HttpServletRequest request,
-                          @PathParam("path") String path )
-                    throws InvalidPathException {
-        token.validate( request );
-        String fileList = List.list( path );
-        return Response.ok( fileList, TEXT_PLAIN ).build();
-    }
+	@GET
+	@Operation(description = "/config/list[/path] - list directory in workspace of the currently running workspace")
+	@Path("/list/{path : (.+)?}")
+	public Response list(@Context HttpServletRequest request, @PathParam("path") String path)
+			throws InvalidPathException {
+		token.validate(request);
+		String fileList = List.list(path);
+		return Response.ok(fileList, TEXT_PLAIN).build();
+	}
 
-    @GET
-    @Operation(description = "/config/validate[/path] - validate currently running workspace")
-    @Path("/validate")
-    public Response validate( @Context HttpServletRequest request )
-                    throws ValidationException {
-        token.validate( request );
-        String validationResult = Validate.validate();
-        return Response.ok( validationResult, TEXT_PLAIN ).build();
-    }
+	@GET
+	@Operation(description = "/config/validate[/path] - validate currently running workspace")
+	@Path("/validate")
+	public Response validate(@Context HttpServletRequest request) throws ValidationException {
+		token.validate(request);
+		String validationResult = Validate.validate();
+		return Response.ok(validationResult, TEXT_PLAIN).build();
+	}
 
-    @GET
-    @Operation(description = "/config/validate[/path] - validate file in workspace")
-    @Path("/validate/{path : (.+)?}")
-    public Response validateR( @Context HttpServletRequest request,
-                               @PathParam("path") String path )
-                    throws ValidationException, InvalidPathException {
-        token.validate( request );
-        String validationResult = Validate.validate( path );
-        return Response.ok( validationResult, TEXT_PLAIN ).build();
-    }
+	@GET
+	@Operation(description = "/config/validate[/path] - validate file in workspace")
+	@Path("/validate/{path : (.+)?}")
+	public Response validateR(@Context HttpServletRequest request, @PathParam("path") String path)
+			throws ValidationException, InvalidPathException {
+		token.validate(request);
+		String validationResult = Validate.validate(path);
+		return Response.ok(validationResult, TEXT_PLAIN).build();
+	}
 
-    @PUT
-    @Operation(description = "/config/upload/path/file - upload file into current workspace")
-    @Path("/upload/{path : (.+)?}")
-    public Response upload( @Context HttpServletRequest request,
-                            @PathParam("path") String path )
-                    throws IOException, UploadException {
-        token.validate( request );
-        String upload = Upload.upload( path, request );
-        return Response.ok( upload, TEXT_PLAIN ).build();
-    }
+	@PUT
+	@Operation(description = "/config/upload/path/file - upload file into current workspace")
+	@Path("/upload/{path : (.+)?}")
+	public Response upload(@Context HttpServletRequest request, @PathParam("path") String path)
+			throws IOException, UploadException {
+		token.validate(request);
+		String upload = Upload.upload(path, request);
+		return Response.ok(upload, TEXT_PLAIN).build();
+	}
 
-    @DELETE
-    @Operation(description = "/config/delete - delete currently running workspace")
-    @Path("/delete")
-    public Response delete( @Context HttpServletRequest request )
-                    throws DeleteException {
-        token.validate( request );
-        String delete = Delete.delete();
-        return Response.ok( delete, TEXT_PLAIN ).build();
-    }
+	@DELETE
+	@Operation(description = "/config/delete - delete currently running workspace")
+	@Path("/delete")
+	public Response delete(@Context HttpServletRequest request) throws DeleteException {
+		token.validate(request);
+		String delete = Delete.delete();
+		return Response.ok(delete, TEXT_PLAIN).build();
+	}
 
-    @DELETE
-    @Operation(description = "/config/delete[/path] - delete file in workspace")
-    @Path("/delete/{path : (.+)?}")
-    public Response delete( @Context HttpServletRequest request,
-                            @PathParam("path") String path )
-                    throws InvalidPathException, DeleteException {
-        token.validate( request );
-        String delete = Delete.delete( path );
-        return Response.ok( delete, TEXT_PLAIN ).build();
-    }
+	@DELETE
+	@Operation(description = "/config/delete[/path] - delete file in workspace")
+	@Path("/delete/{path : (.+)?}")
+	public Response delete(@Context HttpServletRequest request, @PathParam("path") String path)
+			throws InvalidPathException, DeleteException {
+		token.validate(request);
+		String delete = Delete.delete(path);
+		return Response.ok(delete, TEXT_PLAIN).build();
+	}
 
-    private void afterRestartOrUpdate() {
-        if ( restartOrUpdateHandler != null ) {
-            LOG.info( "Handle after restart/update" );
-            restartOrUpdateHandler.afterRestartOrUpdate();
-        }
-    }
+	private void afterRestartOrUpdate() {
+		if (restartOrUpdateHandler != null) {
+			LOG.info("Handle after restart/update");
+			restartOrUpdateHandler.afterRestartOrUpdate();
+		}
+	}
 
 }

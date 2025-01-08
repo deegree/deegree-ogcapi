@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -54,95 +54,91 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.deegree.services.oaf.exceptions.ExceptionMediaTypeUtil.selectMediaType;
 
 /**
- * Checks the passed query parameters. If an unsupported query parameter is detected the requests aborts with a BAD_REQUEST.
+ * Checks the passed query parameters. If an unsupported query parameter is detected the
+ * requests aborts with a BAD_REQUEST.
  *
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 @Provider
 public class UnknownParameterFilter implements ContainerRequestFilter {
 
-    private static final String EXCEPTION_MSG = "Parameter with name '%s' is not specified.";
+	private static final String EXCEPTION_MSG = "Parameter with name '%s' is not specified.";
 
-    @Context
-    private ResourceInfo resourceInfo;
+	@Context
+	private ResourceInfo resourceInfo;
 
-    @Context
-    private HttpServletRequest servletRequest;
+	@Context
+	private HttpServletRequest servletRequest;
 
-    @Context
-    private Request request;
+	@Context
+	private Request request;
 
-    @Context
-    private UriInfo uriInfo;
+	@Context
+	private UriInfo uriInfo;
 
-    @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+	@Inject
+	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    @Override
-    public void filter( ContainerRequestContext requestContext )
-                    throws IOException {
-        Set<String> expectedParams = collectExpectedParamsFromAnnotations();
-        for (String param : OverrideAcceptFilter.QUERY_PARAMS) {
-        	expectedParams.add( param );
-        }
-        addFilterParamsIfRequired( expectedParams );
-        Set<String> requestParams = servletRequest.getParameterMap().keySet();
-        requestParams.forEach( param -> {
-            if ( !expectedParams.contains( param ) ) {
-                Response unknownParameterResponse = createUnknownParameterResponse( param );
-                requestContext.abortWith( unknownParameterResponse );
-            }
-        } );
-    }
+	@Override
+	public void filter(ContainerRequestContext requestContext) throws IOException {
+		Set<String> expectedParams = collectExpectedParamsFromAnnotations();
+		for (String param : OverrideAcceptFilter.QUERY_PARAMS) {
+			expectedParams.add(param);
+		}
+		addFilterParamsIfRequired(expectedParams);
+		Set<String> requestParams = servletRequest.getParameterMap().keySet();
+		requestParams.forEach(param -> {
+			if (!expectedParams.contains(param)) {
+				Response unknownParameterResponse = createUnknownParameterResponse(param);
+				requestContext.abortWith(unknownParameterResponse);
+			}
+		});
+	}
 
-    private Response createUnknownParameterResponse( String param ) {
-        MediaType selectedType = selectMediaType( request );
-        String message = String.format( EXCEPTION_MSG, param );
-        OgcApiFeaturesExceptionReport oafExceptionReport = new OgcApiFeaturesExceptionReport(
-                        message,
-                        BAD_REQUEST.getStatusCode() );
-        return Response
-                        .status( BAD_REQUEST )
-                        .entity( oafExceptionReport )
-                        .type( selectedType )
-                        .build();
-    }
+	private Response createUnknownParameterResponse(String param) {
+		MediaType selectedType = selectMediaType(request);
+		String message = String.format(EXCEPTION_MSG, param);
+		OgcApiFeaturesExceptionReport oafExceptionReport = new OgcApiFeaturesExceptionReport(message,
+				BAD_REQUEST.getStatusCode());
+		return Response.status(BAD_REQUEST).entity(oafExceptionReport).type(selectedType).build();
+	}
 
-    private Set<String> collectExpectedParamsFromAnnotations() {
-        Set<String> expectedParams = new HashSet<>();
-        Method method = resourceInfo.getResourceMethod();
-        for ( Annotation[] annotations : method.getParameterAnnotations() ) {
-            for ( Annotation annotation : annotations ) {
-                if ( annotation instanceof QueryParam ) {
-                    expectedParams.add( ( (QueryParam) annotation ).value() );
-                }
-            }
-        }
-        return expectedParams;
-    }
+	private Set<String> collectExpectedParamsFromAnnotations() {
+		Set<String> expectedParams = new HashSet<>();
+		Method method = resourceInfo.getResourceMethod();
+		for (Annotation[] annotations : method.getParameterAnnotations()) {
+			for (Annotation annotation : annotations) {
+				if (annotation instanceof QueryParam) {
+					expectedParams.add(((QueryParam) annotation).value());
+				}
+			}
+		}
+		return expectedParams;
+	}
 
-    private void addFilterParamsIfRequired( Set<String> expectedParams ) {
-        if ( resourceInfo.getResourceClass().isAssignableFrom( Features.class ) ) {
-            MultivaluedMap<String, String> pathParameters = uriInfo.getPathParameters();
-            String datasetId = pathParameters.get( "datasetId" ).get( 0 );
-            String collectionId = pathParameters.get( "collectionId" ).get( 0 );
+	private void addFilterParamsIfRequired(Set<String> expectedParams) {
+		if (resourceInfo.getResourceClass().isAssignableFrom(Features.class)) {
+			MultivaluedMap<String, String> pathParameters = uriInfo.getPathParameters();
+			String datasetId = pathParameters.get("datasetId").get(0);
+			String collectionId = pathParameters.get("collectionId").get(0);
 
-            try {
-                OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset(
-                                datasetId );
-                FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata( collectionId );
-                if ( featureTypeMetadata != null ) {
-                    List<FilterProperty> filterProperties = featureTypeMetadata.getFilterProperties();
-                    filterProperties.forEach( filterProperty -> {
-                        String filterName = filterProperty.getName().getLocalPart();
-                        expectedParams.add( filterName );
-                    } );
-                }
-            } catch ( UnknownDatasetId | UnknownCollectionId e ) {
-                // will be handled later
-            }
+			try {
+				OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets()
+					.getDataset(datasetId);
+				FeatureTypeMetadata featureTypeMetadata = oafConfiguration.getFeatureTypeMetadata(collectionId);
+				if (featureTypeMetadata != null) {
+					List<FilterProperty> filterProperties = featureTypeMetadata.getFilterProperties();
+					filterProperties.forEach(filterProperty -> {
+						String filterName = filterProperty.getName().getLocalPart();
+						expectedParams.add(filterName);
+					});
+				}
+			}
+			catch (UnknownDatasetId | UnknownCollectionId e) {
+				// will be handled later
+			}
 
-        }
-    }
+		}
+	}
 
 }

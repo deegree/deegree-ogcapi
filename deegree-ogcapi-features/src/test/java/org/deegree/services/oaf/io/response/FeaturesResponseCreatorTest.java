@@ -18,23 +18,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class FeaturesResponseCreatorTest {
 
-    @Test
-    public void createJsonResponseWithHeaders() {
-        FeaturesResponseCreator responseCreator = new FeaturesResponseCreator();
-        FeatureResponse featureResponse = createFeatureResponse();
-        Response response = responseCreator.createJsonResponseWithHeaders( featureResponse );
+	@Test
+	public void createJsonResponseWithHeaders() {
+		FeaturesResponseCreator responseCreator = new FeaturesResponseCreator();
+		FeatureResponse featureResponse = createFeatureResponse();
+		Response response = responseCreator.createJsonResponseWithHeaders(featureResponse);
 
-        assertThat( response.getStatus(), equalTo( 200 ) );
-        assertThat( response.getMediaType(), equalTo( APPLICATION_GEOJSON_TYPE.withCharset( UTF_8.name() ) ) );
-    }
+		assertThat(response.getStatus(), equalTo(200));
+		assertThat(response.getMediaType(), equalTo(APPLICATION_GEOJSON_TYPE.withCharset(UTF_8.name())));
+	}
 
-   private FeatureResponse createFeatureResponse() {
-        List<Link> links = Collections.singletonList(
-                new Link( "http://self", "self", "application/json", "title" ) );
-        FeatureInputStream featureStream = new EmptyFeatureInputStream();
-        Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
-        return new FeaturesResponseBuilder( featureStream ).withFeatureTypeNsPrefixes(
-                featureTypeNsPrefixes ).withLinks( links ).withResponseCrsName(
-                OgcApiFeaturesConstants.DEFAULT_CRS ).buildFeatureResponse();
-    }
+	private FeatureResponse createFeatureResponse() {
+		List<Link> links = Collections.singletonList(new Link("http://self", "self", "application/json", "title"));
+		FeatureInputStream featureStream = new EmptyFeatureInputStream();
+		Map<String, String> featureTypeNsPrefixes = Collections.emptyMap();
+		return new FeaturesResponseBuilder(featureStream).withFeatureTypeNsPrefixes(featureTypeNsPrefixes)
+			.withLinks(links)
+			.withResponseCrsName(OgcApiFeaturesConstants.DEFAULT_CRS)
+			.buildFeatureResponse();
+	}
+
 }

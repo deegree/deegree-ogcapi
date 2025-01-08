@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -73,80 +73,82 @@ import static org.mockito.Mockito.when;
  */
 public class FeatureTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( Feature.class, FeaturesResponseGmlWriter.class );
-        resourceConfig.register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind( mockDataAccess() ).to( DataAccess.class );
-                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
-            }
-        } );
-        return resourceConfig;
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		ResourceConfig resourceConfig = new ResourceConfig(Feature.class, FeaturesResponseGmlWriter.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(mockDataAccess()).to(DataAccess.class);
+				bind(mockWorkspaceInitializer()).to(DeegreeWorkspaceInitializer.class);
+			}
+		});
+		return resourceConfig;
+	}
 
-    @Test
-    public void test_FeatureDeclaration_Json_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections/test/items/42" ).request(
-                        APPLICATION_GEOJSON ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getHeaders().get( HEADER_CONTENT_CRS ).get( 0 ), is( "<" + DEFAULT_CRS + ">" ) );
-    }
+	@Test
+	public void test_FeatureDeclaration_Json_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections/test/items/42").request(APPLICATION_GEOJSON).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getHeaders().get(HEADER_CONTENT_CRS).get(0), is("<" + DEFAULT_CRS + ">"));
+	}
 
-    @Test
-    public void test_FeatureDeclaration_Gml_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_GML_TYPE ) );
-        MultivaluedMap<String, Object> headers = response.getHeaders();
-        assertThat( headers.get( HEADER_TIMESTAMP ).get( 0 ), is( notNullValue() ) );
-        assertThat( headers.get( HEADER_LINK ).size(), is( 1 ) );
-        assertThat( headers.get( HEADER_CONTENT_CRS ).get( 0 ), is( "<" + DEFAULT_CRS + ">" ) );
-    }
+	@Test
+	public void test_FeatureDeclaration_Gml_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections/test/items/42").request(APPLICATION_GML).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_GML_TYPE));
+		MultivaluedMap<String, Object> headers = response.getHeaders();
+		assertThat(headers.get(HEADER_TIMESTAMP).get(0), is(notNullValue()));
+		assertThat(headers.get(HEADER_LINK).size(), is(1));
+		assertThat(headers.get(HEADER_CONTENT_CRS).get(0), is("<" + DEFAULT_CRS + ">"));
+	}
 
-    @Test
-    public void test_FeatureDeclaration_Gml32_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML_32 ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_GML_32_TYPE ) );
-    }
+	@Test
+	public void test_FeatureDeclaration_Gml32_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections/test/items/42").request(APPLICATION_GML_32).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_GML_32_TYPE));
+	}
 
-    @Test
-    public void test_FeatureDeclaration_Gml32ProfileSF0_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML_SF0 ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_GML_SF0_TYPE ) );
-    }
+	@Test
+	public void test_FeatureDeclaration_Gml32ProfileSF0_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections/test/items/42").request(APPLICATION_GML_SF0).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_GML_SF0_TYPE));
+	}
 
-    @Test
-    public void test_FeatureDeclaration_Gml32ProfileSF2_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf/collections/test/items/42" ).request( APPLICATION_GML_SF2 ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_GML_SF2_TYPE ) );
-    }
+	@Test
+	public void test_FeatureDeclaration_Gml32ProfileSF2_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf/collections/test/items/42").request(APPLICATION_GML_SF2).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_GML_SF2_TYPE));
+	}
 
-    private DataAccess mockDataAccess() {
-        DataAccess testFactory = Mockito.mock( DataAccess.class );
-        Collection collection = createCollection();
-        Collections testCollection = createCollections( collection );
-        try {
-            when( testFactory.createCollections( any( OafDatasetConfiguration.class ),
-                                                 any( LinkBuilder.class ) ) ).thenReturn( testCollection );
-            when( testFactory.createCollection( any( OafDatasetConfiguration.class ), eq( "test" ),
-                                                any( LinkBuilder.class ) ) ).thenReturn( collection );
-            when( testFactory.retrieveFeatures( any( OafDatasetConfiguration.class ), eq( "test" ),
-                                                any( FeaturesRequest.class ),
-                                                any( LinkBuilder.class ) ) ).thenReturn( features() );
-            when( testFactory.retrieveFeature( any( OafDatasetConfiguration.class ), eq( "test" ), eq( "42" ),
-                                               eq( DEFAULT_CRS ), any( LinkBuilder.class ) ) ).thenReturn( feature() );
-            when( testFactory.retrieveFeature( any( OafDatasetConfiguration.class ), eq( "test" ), eq( "42" ),
-                                               isNull(), any( LinkBuilder.class ) ) ).thenReturn( feature() );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-        return testFactory;
-    }
+	private DataAccess mockDataAccess() {
+		DataAccess testFactory = Mockito.mock(DataAccess.class);
+		Collection collection = createCollection();
+		Collections testCollection = createCollections(collection);
+		try {
+			when(testFactory.createCollections(any(OafDatasetConfiguration.class), any(LinkBuilder.class)))
+				.thenReturn(testCollection);
+			when(testFactory.createCollection(any(OafDatasetConfiguration.class), eq("test"), any(LinkBuilder.class)))
+				.thenReturn(collection);
+			when(testFactory.retrieveFeatures(any(OafDatasetConfiguration.class), eq("test"),
+					any(FeaturesRequest.class), any(LinkBuilder.class)))
+				.thenReturn(features());
+			when(testFactory.retrieveFeature(any(OafDatasetConfiguration.class), eq("test"), eq("42"), eq(DEFAULT_CRS),
+					any(LinkBuilder.class)))
+				.thenReturn(feature());
+			when(testFactory.retrieveFeature(any(OafDatasetConfiguration.class), eq("test"), eq("42"), isNull(),
+					any(LinkBuilder.class)))
+				.thenReturn(feature());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return testFactory;
+	}
 
 }

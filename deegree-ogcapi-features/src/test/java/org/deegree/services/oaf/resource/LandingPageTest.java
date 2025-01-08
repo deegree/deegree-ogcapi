@@ -65,146 +65,141 @@ import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
  */
 public class LandingPageTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        enable( TestProperties.LOG_TRAFFIC );
-        ResourceConfig resourceConfig = new ResourceConfig( LandingPage.class, OgcApiFeaturesExceptionMapper.class );
-        resourceConfig.register( new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind( mockWorkspaceInitializer() ).to( DeegreeWorkspaceInitializer.class );
-                bindAsContract( OpenApiCreator.class );
-            }
-        } );
-        return resourceConfig;
-    }
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		ResourceConfig resourceConfig = new ResourceConfig(LandingPage.class, OgcApiFeaturesExceptionMapper.class);
+		resourceConfig.register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(mockWorkspaceInitializer()).to(DeegreeWorkspaceInitializer.class);
+				bindAsContract(OpenApiCreator.class);
+			}
+		});
+		return resourceConfig;
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Json_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).request( APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_JSON_TYPE ) );
-        assertThat( response.readEntity( String.class ), isJson() );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Json_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
+		assertThat(response.readEntity(String.class), isJson());
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Json_FormatXml_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).queryParam( "f", XML.name() ).request(
-                        APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_XML_TYPE ) );
-        String xml = response.readEntity( String.class );
-        assertThat( xml, hasXPath( "/core:LandingPage" ).withNamespaceContext( nsContext() ) );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Json_FormatXml_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").queryParam("f", XML.name()).request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_XML_TYPE));
+		String xml = response.readEntity(String.class);
+		assertThat(xml, hasXPath("/core:LandingPage").withNamespaceContext(nsContext()));
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Json_FormatHtml_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).queryParam( "f", HTML.name() ).request(
-                        APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( TEXT_HTML_TYPE ) );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Json_FormatHtml_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").queryParam("f", HTML.name()).request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(TEXT_HTML_TYPE));
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Xml_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).request( APPLICATION_XML ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_XML_TYPE ) );
-        String xml = response.readEntity( String.class );
-        assertThat( xml, hasXPath( "/core:LandingPage" ).withNamespaceContext( nsContext() ) );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Xml_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").request(APPLICATION_XML).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_XML_TYPE));
+		String xml = response.readEntity(String.class);
+		assertThat(xml, hasXPath("/core:LandingPage").withNamespaceContext(nsContext()));
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Xml_FormatJson_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).queryParam( "f", JSON.name() ).request( APPLICATION_XML ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_JSON_TYPE ) );
-        assertThat( response.readEntity( String.class ), isJson() );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Xml_FormatJson_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").queryParam("f", JSON.name()).request(APPLICATION_XML).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
+		assertThat(response.readEntity(String.class), isJson());
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Xml_FormatHtml_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).queryParam( "f", HTML.name() ).request( APPLICATION_XML ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( TEXT_HTML_TYPE ) );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Xml_FormatHtml_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").queryParam("f", HTML.name()).request(APPLICATION_XML).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(TEXT_HTML_TYPE));
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Html_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).request( TEXT_HTML_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( TEXT_HTML_TYPE ) );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Html_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").request(TEXT_HTML_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(TEXT_HTML_TYPE));
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Hml_FormatJson_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).queryParam( "f", JSON.name() ).request( TEXT_HTML_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_JSON_TYPE ) );
-        assertThat( response.readEntity( String.class ), isJson() );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Hml_FormatJson_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").queryParam("f", JSON.name()).request(TEXT_HTML_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
+		assertThat(response.readEntity(String.class), isJson());
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Hml_FormatXml_ShouldBeAvailable() {
-        Response response = target( "/datasets/oaf" ).queryParam( "f", XML.name() ).request( TEXT_HTML_TYPE ).get();
-        assertThat( response.getStatus(), is( 200 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_XML_TYPE ) );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Hml_FormatXml_ShouldBeAvailable() {
+		Response response = target("/datasets/oaf").queryParam("f", XML.name()).request(TEXT_HTML_TYPE).get();
+		assertThat(response.getStatus(), is(200));
+		assertThat(response.getMediaType(), is(APPLICATION_XML_TYPE));
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Json_UnknownDatasetId() {
-        Response response = target( "/datasets/unknown" ).request( APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 404 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_JSON_TYPE ) );
-        assertThat( response.readEntity( String.class ), isJson() );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Json_UnknownDatasetId() {
+		Response response = target("/datasets/unknown").request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(404));
+		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
+		assertThat(response.readEntity(String.class), isJson());
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Xml_UnknownDatasetId() {
-        Response response = target( "/datasets/unknown" ).request( APPLICATION_XML_TYPE ).get();
-        assertThat( response.getStatus(), is( 404 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_XML_TYPE ) );
-        String xml = response.readEntity( String.class );
-        assertThat( xml, hasXPath( "/core:ExceptionReport" ).withNamespaceContext( nsContext() ) );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Xml_UnknownDatasetId() {
+		Response response = target("/datasets/unknown").request(APPLICATION_XML_TYPE).get();
+		assertThat(response.getStatus(), is(404));
+		assertThat(response.getMediaType(), is(APPLICATION_XML_TYPE));
+		String xml = response.readEntity(String.class);
+		assertThat(xml, hasXPath("/core:ExceptionReport").withNamespaceContext(nsContext()));
+	}
 
-    @Test
-    public void test_LandingPageDeclaration_Json_UnknownFormat() {
-        Response response = target( "/datasets/oaf" ).queryParam( "f", "unknown" ).request(
-                        APPLICATION_JSON_TYPE ).get();
-        assertThat( response.getStatus(), is( 400 ) );
-        assertThat( response.getMediaType(), is( APPLICATION_JSON_TYPE ) );
-        assertThat( response.readEntity( String.class ), isJson() );
-    }
+	@Test
+	public void test_LandingPageDeclaration_Json_UnknownFormat() {
+		Response response = target("/datasets/oaf").queryParam("f", "unknown").request(APPLICATION_JSON_TYPE).get();
+		assertThat(response.getStatus(), is(400));
+		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
+		assertThat(response.readEntity(String.class), isJson());
+	}
 
-    @Test
-    public void test_LandingPage_Links() {
-        Response response = target( "/datasets/oaf" ).request( APPLICATION_XML ).get();
-        String xml = response.readEntity( String.class );
-        assertThat( xml, hasXPath( linkWith( SELF, APPLICATION_JSON ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( ALTERNATE, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( ALTERNATE, APPLICATION_XML ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml,
-                    hasXPath( linkWith( SERVICE_DESC, APPLICATION_OPENAPI ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( SERVICE_DOC, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( CONFORMANCE, APPLICATION_JSON ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( CONFORMANCE, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( CONFORMANCE, APPLICATION_XML ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( DATA, APPLICATION_JSON ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( DATA, TEXT_HTML ) ).withNamespaceContext( nsContext() ) );
-        assertThat( xml, hasXPath( linkWith( DATA, APPLICATION_XML ) ).withNamespaceContext( nsContext() ) );
-    }
+	@Test
+	public void test_LandingPage_Links() {
+		Response response = target("/datasets/oaf").request(APPLICATION_XML).get();
+		String xml = response.readEntity(String.class);
+		assertThat(xml, hasXPath(linkWith(SELF, APPLICATION_JSON)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(ALTERNATE, TEXT_HTML)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(ALTERNATE, APPLICATION_XML)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(SERVICE_DESC, APPLICATION_OPENAPI)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(SERVICE_DOC, TEXT_HTML)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(CONFORMANCE, APPLICATION_JSON)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(CONFORMANCE, TEXT_HTML)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(CONFORMANCE, APPLICATION_XML)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(DATA, APPLICATION_JSON)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(DATA, TEXT_HTML)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(DATA, APPLICATION_XML)).withNamespaceContext(nsContext()));
+	}
 
-    private String linkWith( LinkRelation self, String applicationJson ) {
-        return "/core:LandingPage/atom:link[@rel='" + self.getRel() +
-               "' and @type='" + applicationJson + "']";
-    }
+	private String linkWith(LinkRelation self, String applicationJson) {
+		return "/core:LandingPage/atom:link[@rel='" + self.getRel() + "' and @type='" + applicationJson + "']";
+	}
 
-    private Map<String, String> nsContext() {
-        Map<String, String> nsContext = new HashMap<>();
-        nsContext.put( "core", XML_CORE_NS_URL );
-        nsContext.put( "atom", XML_ATOM_NS_URL );
-        return nsContext;
-    }
+	private Map<String, String> nsContext() {
+		Map<String, String> nsContext = new HashMap<>();
+		nsContext.put("core", XML_CORE_NS_URL);
+		nsContext.put("atom", XML_ATOM_NS_URL);
+		return nsContext;
+	}
 
 }

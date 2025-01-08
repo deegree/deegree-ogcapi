@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,67 +35,68 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_ATOM_NS_URL;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Link {
 
-    @XmlAttribute
-    private String href;
+	@XmlAttribute
+	private String href;
 
-    @XmlAttribute
-    private String rel;
+	@XmlAttribute
+	private String rel;
 
-    @XmlAttribute
-    private String type;
+	@XmlAttribute
+	private String type;
 
-    @XmlAttribute
-    private String title;
+	@XmlAttribute
+	private String title;
 
-    public Link() {
-    }
+	public Link() {
+	}
 
-    public Link( String href, String rel, String type, String title ) {
-        this.href = href;
-        this.rel = rel;
-        this.type = type;
-        this.title = title;
-    }
+	public Link(String href, String rel, String type, String title) {
+		this.href = href;
+		this.rel = rel;
+		this.type = type;
+		this.title = title;
+	}
 
-    public Link( String href ) {
-        this.href = href;
-    }
+	public Link(String href) {
+		this.href = href;
+	}
 
-    public String getHref() {
-        return href;
-    }
+	public String getHref() {
+		return href;
+	}
 
-    public void setHref( String href ) {
-        this.href = href;
-    }
+	public void setHref(String href) {
+		this.href = href;
+	}
 
-    public String getRel() {
-        return rel;
-    }
+	public String getRel() {
+		return rel;
+	}
 
-    public void setRel( String rel ) {
-        this.rel = rel;
-    }
+	public void setRel(String rel) {
+		this.rel = rel;
+	}
 
-    public String getType() {
-        return type;
-    }
+	public String getType() {
+		return type;
+	}
 
-    public void setType( String type ) {
-        this.type = type;
-    }
+	public void setType(String type) {
+		this.type = type;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setTitle( String title ) {
-        this.title = title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    @Override
-    public String toString() {
-        return "Link{" + "href='" + href + '\'' + ", rel='" + rel + '\'' + ", type='" + type + '\'' + ", title='"
-               + title + '\'' + '}';
-    }
+	@Override
+	public String toString() {
+		return "Link{" + "href='" + href + '\'' + ", rel='" + rel + '\'' + ", type='" + type + '\'' + ", title='"
+				+ title + '\'' + '}';
+	}
+
 }

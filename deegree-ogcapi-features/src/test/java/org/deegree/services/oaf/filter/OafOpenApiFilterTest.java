@@ -77,152 +77,146 @@ public class OafOpenApiFilterTest {
         when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI));
     }
 
-    @Test
-    public void testFilterOperation()
-                            throws Exception {
-        OpenAPIV3Parser parser = new OpenAPIV3Parser();
-        URL resource = OafOpenApiFilterTest.class.getResource( "openapi.json" );
-        OpenAPI openAPI = parser.read( resource.toExternalForm() );
+	@Test
+	public void testFilterOperation() throws Exception {
+		OpenAPIV3Parser parser = new OpenAPIV3Parser();
+		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
+		OpenAPI openAPI = parser.read(resource.toExternalForm());
 
-        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer();
+		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer();
 
-        OafOpenApiFilter filter = new OafOpenApiFilter( uriInfo, "oaf", deegreeWorkspaceInitializer );
-        filter.filterOpenAPI( openAPI, null, null, null );
+		OafOpenApiFilter filter = new OafOpenApiFilter(uriInfo, "oaf", deegreeWorkspaceInitializer);
+		filter.filterOpenAPI(openAPI, null, null, null);
 
-        Paths paths = openAPI.getPaths();
+		Paths paths = openAPI.getPaths();
 
-        assertThat( paths.get( "/api" ), notNullValue() );
-        assertThat( paths.get( "/api" ), hasResponseMediaType( APPLICATION_OPENAPI, TEXT_HTML ) );
+		assertThat(paths.get("/api"), notNullValue());
+		assertThat(paths.get("/api"), hasResponseMediaType(APPLICATION_OPENAPI, TEXT_HTML));
 
-        assertThat( paths.get( "/conformance" ), notNullValue() );
-        assertThat( paths.get( "/conformance" ), hasResponseMediaType( APPLICATION_JSON, APPLICATION_XML, TEXT_HTML ) );
+		assertThat(paths.get("/conformance"), notNullValue());
+		assertThat(paths.get("/conformance"), hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-        assertThat( paths.get( "/collections" ), notNullValue() );
-        assertThat( paths.get( "/collections" ), hasResponseMediaType( APPLICATION_JSON, APPLICATION_XML, TEXT_HTML ) );
+		assertThat(paths.get("/collections"), notNullValue());
+		assertThat(paths.get("/collections"), hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-        assertThat( paths.get( "/collections/strassenbaumkataster" ), notNullValue() );
-        assertThat( paths.get( "/collections/strassenbaumkataster" ),
-                    hasResponseMediaType( APPLICATION_JSON, APPLICATION_XML, TEXT_HTML ) );
+		assertThat(paths.get("/collections/strassenbaumkataster"), notNullValue());
+		assertThat(paths.get("/collections/strassenbaumkataster"),
+				hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-        assertThat( paths.get( "/collections/strassenbaumkataster/items" ), notNullValue() );
-        assertThat( paths.get( "/collections/strassenbaumkataster/items" ),
-                    hasResponseMediaType( APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
-                                          APPLICATION_GML_SF2, TEXT_HTML ) );
+		assertThat(paths.get("/collections/strassenbaumkataster/items"), notNullValue());
+		assertThat(paths.get("/collections/strassenbaumkataster/items"), hasResponseMediaType(APPLICATION_GEOJSON,
+				APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2, TEXT_HTML));
 
-        assertThat( paths.get( "/collections/strassenbaumkataster/items/{featureId}" ), notNullValue() );
-        assertThat( paths.get( "/collections/strassenbaumkataster/items/{featureId}" ),
-                    hasResponseMediaType( APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
-                                          APPLICATION_GML_SF2, TEXT_HTML ) );
+		assertThat(paths.get("/collections/strassenbaumkataster/items/{featureId}"), notNullValue());
+		assertThat(paths.get("/collections/strassenbaumkataster/items/{featureId}"),
+				hasResponseMediaType(APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
+						APPLICATION_GML_SF2, TEXT_HTML));
 
 		List<Server> servers = openAPI.getServers();
 		assertThat(servers.size(), is(1));
 		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
-    }
+	}
 
-    @Test
-    public void testFilterOperation_WithPrimitiveList()
-                            throws Exception {
-        OpenAPIV3Parser parser = new OpenAPIV3Parser();
-        URL resource = OafOpenApiFilterTest.class.getResource( "openapi.json" );
-        OpenAPI openAPI = parser.read( resource.toExternalForm() );
+	@Test
+	public void testFilterOperation_WithPrimitiveList() throws Exception {
+		OpenAPIV3Parser parser = new OpenAPIV3Parser();
+		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
+		OpenAPI openAPI = parser.read(resource.toExternalForm());
 
-        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
-                                new QName( "http://www.deegree.org/app", "KitaEinrichtungen" ) );
+		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
+				new QName("http://www.deegree.org/app", "KitaEinrichtungen"));
 
-        OafOpenApiFilter filter = new OafOpenApiFilter( uriInfo, "oaf", deegreeWorkspaceInitializer );
-        filter.filterOpenAPI( openAPI, null, null, null );
+		OafOpenApiFilter filter = new OafOpenApiFilter(uriInfo, "oaf", deegreeWorkspaceInitializer);
+		filter.filterOpenAPI(openAPI, null, null, null);
 
-        Paths paths = openAPI.getPaths();
-        PathItem path = paths.get( "/collections/KitaEinrichtungen/items" );
-        assertThat( path, notNullValue() );
-        Schema schema = path.getGet().getResponses().getDefault().getContent().get(
-                                "application/geo+json" ).getSchema();
-        Map<String, Schema> properties = schema.getProperties();
-        assertThat( properties.get( "type" ).getType(), is( "string" ) );
-        assertThat( properties.get( "numberMatched" ).getType(), is( "integer" ) );
-        assertThat( properties.get( "numberReturned" ).getType(), is( "integer" ) );
-        assertThat( properties.get( "timeStamp" ).getType(), is( "string" ) );
-        assertThat( properties.get( "links" ).getType(), is( "array" ) );
+		Paths paths = openAPI.getPaths();
+		PathItem path = paths.get("/collections/KitaEinrichtungen/items");
+		assertThat(path, notNullValue());
+		Schema schema = path.getGet().getResponses().getDefault().getContent().get("application/geo+json").getSchema();
+		Map<String, Schema> properties = schema.getProperties();
+		assertThat(properties.get("type").getType(), is("string"));
+		assertThat(properties.get("numberMatched").getType(), is("integer"));
+		assertThat(properties.get("numberReturned").getType(), is("integer"));
+		assertThat(properties.get("timeStamp").getType(), is("string"));
+		assertThat(properties.get("links").getType(), is("array"));
 
-        Schema featuresSchema = (Schema) properties.get( "features" );
-        Map<String, Schema> featuresProperties = featuresSchema.getProperties();
+		Schema featuresSchema = (Schema) properties.get("features");
+		Map<String, Schema> featuresProperties = featuresSchema.getProperties();
 
-        assertThat( featuresProperties.get( "type" ).getType(), is( "string" ) );
-        assertThat( featuresProperties.get( "id" ).getType(), is( "string" ) );
-        assertThat( featuresProperties.get( "geometry" ).getType(), is( "object" ) );
-        assertThat( featuresProperties.get( "properties" ).getType(), is( "object" ) );
+		assertThat(featuresProperties.get("type").getType(), is("string"));
+		assertThat(featuresProperties.get("id").getType(), is("string"));
+		assertThat(featuresProperties.get("geometry").getType(), is("object"));
+		assertThat(featuresProperties.get("properties").getType(), is("object"));
 
-        Schema propertiesSchema = featuresProperties.get( "properties" );
-        ArraySchema leistungsnameSchema = (ArraySchema) propertiesSchema.getProperties().get( "Leistungsname" );
-        assertThat( leistungsnameSchema.getType(), is( "array" ) );
-        assertThat( leistungsnameSchema.getItems().getType(), is( "string" ) );
+		Schema propertiesSchema = featuresProperties.get("properties");
+		ArraySchema leistungsnameSchema = (ArraySchema) propertiesSchema.getProperties().get("Leistungsname");
+		assertThat(leistungsnameSchema.getType(), is("array"));
+		assertThat(leistungsnameSchema.getItems().getType(), is("string"));
 
 		List<Server> servers = openAPI.getServers();
 		assertThat(servers.size(), is(1));
 		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
-    }
+	}
 
-    @Test
-    public void testFilterOperation_WithComplexData()
-                            throws Exception {
-        OpenAPIV3Parser parser = new OpenAPIV3Parser();
-        URL resource = OafOpenApiFilterTest.class.getResource( "openapi.json" );
-        OpenAPI openAPI = parser.read( resource.toExternalForm() );
+	@Test
+	public void testFilterOperation_WithComplexData() throws Exception {
+		OpenAPIV3Parser parser = new OpenAPIV3Parser();
+		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
+		OpenAPI openAPI = parser.read(resource.toExternalForm());
 
-        DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
-                                new QName( "http://www.deegree.org/datasource/feature/sql", "Zuwanderung" ) );
+		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
+				new QName("http://www.deegree.org/datasource/feature/sql", "Zuwanderung"));
 
-        OafOpenApiFilter filter = new OafOpenApiFilter( uriInfo, "oaf", deegreeWorkspaceInitializer );
-        filter.filterOpenAPI( openAPI, null, null, null );
+		OafOpenApiFilter filter = new OafOpenApiFilter(uriInfo, "oaf", deegreeWorkspaceInitializer);
+		filter.filterOpenAPI(openAPI, null, null, null);
 
-        Paths paths = openAPI.getPaths();
-        PathItem path = paths.get( "/collections/Zuwanderung/items" );
-        assertThat( path, notNullValue() );
-        Schema schema = path.getGet().getResponses().getDefault().getContent().get(
-                                "application/geo+json" ).getSchema();
-        Schema featuresSchema = (Schema) schema.getProperties().get( "features" );
-        Schema propertiesSchema = (Schema) featuresSchema.getProperties().get( "properties" );
+		Paths paths = openAPI.getPaths();
+		PathItem path = paths.get("/collections/Zuwanderung/items");
+		assertThat(path, notNullValue());
+		Schema schema = path.getGet().getResponses().getDefault().getContent().get("application/geo+json").getSchema();
+		Schema featuresSchema = (Schema) schema.getProperties().get("features");
+		Schema propertiesSchema = (Schema) featuresSchema.getProperties().get("properties");
 
-        Schema wohnungslose_jepSchema = (Schema) propertiesSchema.getProperties().get( "wohnungslose_jep" );
-        Schema zeitreiheSchema = (Schema) wohnungslose_jepSchema.getProperties().get( "zeitreihe" );
+		Schema wohnungslose_jepSchema = (Schema) propertiesSchema.getProperties().get("wohnungslose_jep");
+		Schema zeitreiheSchema = (Schema) wohnungslose_jepSchema.getProperties().get("zeitreihe");
 
-        ArraySchema zeitreihenElementSchema = (ArraySchema) zeitreiheSchema.getProperties().get( "zeitreihen-element" );
-        assertThat( zeitreihenElementSchema.getType(), is( "array" ) );
-        Schema zeitreihenElementItems = zeitreihenElementSchema.getItems();
-        assertThat( ( (Schema) zeitreihenElementItems.getProperties().get( "wert" ) ).getType(), is( "string" ) );
-        assertThat( ( (Schema) zeitreihenElementItems.getProperties().get( "datum" ) ).getType(), is( "string" ) );
+		ArraySchema zeitreihenElementSchema = (ArraySchema) zeitreiheSchema.getProperties().get("zeitreihen-element");
+		assertThat(zeitreihenElementSchema.getType(), is("array"));
+		Schema zeitreihenElementItems = zeitreihenElementSchema.getItems();
+		assertThat(((Schema) zeitreihenElementItems.getProperties().get("wert")).getType(), is("string"));
+		assertThat(((Schema) zeitreihenElementItems.getProperties().get("datum")).getType(), is("string"));
 
-        ArraySchema countryListSchema = (ArraySchema) zeitreihenElementItems.getProperties().get( "country-list" );
-        assertThat( countryListSchema.getType(), is( "array" ) );
-        Schema countryListItems = countryListSchema.getItems();
-        ArraySchema countryComplexSchema = (ArraySchema) countryListItems.getProperties().get( "country-complex" );
-        Schema countryComplexItems = countryComplexSchema.getItems();
-        assertThat( ( (Schema) countryComplexItems.getProperties().get( "name" ) ).getType(), is( "string" ) );
-        assertThat( ( (Schema) countryComplexItems.getProperties().get( "pop" ) ).getType(), is( "number" ) );
+		ArraySchema countryListSchema = (ArraySchema) zeitreihenElementItems.getProperties().get("country-list");
+		assertThat(countryListSchema.getType(), is("array"));
+		Schema countryListItems = countryListSchema.getItems();
+		ArraySchema countryComplexSchema = (ArraySchema) countryListItems.getProperties().get("country-complex");
+		Schema countryComplexItems = countryComplexSchema.getItems();
+		assertThat(((Schema) countryComplexItems.getProperties().get("name")).getType(), is("string"));
+		assertThat(((Schema) countryComplexItems.getProperties().get("pop")).getType(), is("number"));
 
 		List<Server> servers = openAPI.getServers();
 		assertThat(servers.size(), is(1));
 		assertThat(servers.get(0).getUrl(), is("http://localhost:8081/deegree-services-oaf/datasets/oaf"));
-    }
+	}
 
-    private Matcher<PathItem> hasResponseMediaType( String... mediaTypes ) {
-        return new BaseMatcher<PathItem>() {
-            @Override
-            public boolean matches( Object o ) {
-                Content content = ( (PathItem) o ).getGet().getResponses().getDefault().getContent();
-                for ( String mediaType : mediaTypes ) {
-                    if ( !content.containsKey( mediaType ) )
-                        return false;
-                }
-                return true;
-            }
+	private Matcher<PathItem> hasResponseMediaType(String... mediaTypes) {
+		return new BaseMatcher<PathItem>() {
+			@Override
+			public boolean matches(Object o) {
+				Content content = ((PathItem) o).getGet().getResponses().getDefault().getContent();
+				for (String mediaType : mediaTypes) {
+					if (!content.containsKey(mediaType))
+						return false;
+				}
+				return true;
+			}
 
-            @Override
-            public void describeTo( Description description ) {
-                description.appendText( "At least one of the expected media types is not supported: " );
-                description.appendValue( mediaTypes );
-            }
-        };
-    }
+			@Override
+			public void describeTo(Description description) {
+				description.appendText("At least one of the expected media types is not supported: ");
+				description.appendValue(mediaTypes);
+			}
+		};
+	}
 
 }

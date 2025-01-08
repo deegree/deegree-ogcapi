@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -62,84 +62,72 @@ import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
 @Path("/datasets/{datasetId}")
 public class LandingPage {
 
-    @Inject
-    private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
+	@Inject
+	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-    @GET
-    @Produces({ APPLICATION_JSON })
-    @Operation(operationId = "landingPage", summary = "landing page", description = "Landing page of this dataset")
-    @Tag(name = "Capabilities")
-    @ApiResponse(description = "default response", content = @Content(schema = @Schema(implementation = LandingPage.class)))
-    public Response landingPageJson(
-                    @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
-                    @QueryParam("f") String format,
-                    @PathParam("datasetId") String datasetId )
-                    throws UnknownDatasetId, InvalidParameterValue {
-        return landingPage( uriInfo, datasetId, format, JSON );
-    }
+	@GET
+	@Produces({ APPLICATION_JSON })
+	@Operation(operationId = "landingPage", summary = "landing page", description = "Landing page of this dataset")
+	@Tag(name = "Capabilities")
+	@ApiResponse(description = "default response",
+			content = @Content(schema = @Schema(implementation = LandingPage.class)))
+	public Response landingPageJson(@Context UriInfo uriInfo,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
+			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
+		return landingPage(uriInfo, datasetId, format, JSON);
+	}
 
-    @GET
-    @Produces({ APPLICATION_XML })
-    @Tag(name = "Capabilities")
-    @Operation(hidden = true)
-    public Response landingPageJsonXml(
-                    @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
-                    @QueryParam("f") String format,
-                    @PathParam("datasetId") String datasetId )
-                    throws UnknownDatasetId, InvalidParameterValue {
-        return landingPage( uriInfo, datasetId, format, XML );
-    }
+	@GET
+	@Produces({ APPLICATION_XML })
+	@Tag(name = "Capabilities")
+	@Operation(hidden = true)
+	public Response landingPageJsonXml(@Context UriInfo uriInfo,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
+			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
+		return landingPage(uriInfo, datasetId, format, XML);
+	}
 
-    @GET
-    @Produces({ TEXT_HTML })
-    @Operation(hidden = true)
-    public Response landingPageHtml(
-                    @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
-                    @QueryParam("f") String format,
-                    @PathParam("datasetId") String datasetId )
-                    throws UnknownDatasetId, InvalidParameterValue {
-        return landingPage( uriInfo, datasetId, format, HTML );
-    }
+	@GET
+	@Produces({ TEXT_HTML })
+	@Operation(hidden = true)
+	public Response landingPageHtml(@Context UriInfo uriInfo,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
+			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
+		return landingPage(uriInfo, datasetId, format, HTML);
+	}
 
-    @GET
-    @Operation(hidden = true)
-    public Response landingPageOther(
-                    @Context UriInfo uriInfo,
-                    @Parameter(description = "The request output format.", style = ParameterStyle.FORM,
-                                    schema = @Schema (allowableValues =  {"json","html","xml"}))
-                    @QueryParam("f") String format,
-                    @PathParam("datasetId") String datasetId )
-                    throws UnknownDatasetId, InvalidParameterValue {
-        return landingPage( uriInfo, datasetId, format, JSON );
-    }
+	@GET
+	@Operation(hidden = true)
+	public Response landingPageOther(@Context UriInfo uriInfo,
+			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
+					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
+			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
+		return landingPage(uriInfo, datasetId, format, JSON);
+	}
 
-    private Response landingPage( UriInfo uriInfo, String datasetId, String formatParamValue,
-                                  RequestFormat defaultFormat )
-                    throws UnknownDatasetId, InvalidParameterValue {
-        OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset( datasetId );
-        RequestFormat requestFormat = byFormatParameter( formatParamValue, defaultFormat );
-        if ( HTML.equals( requestFormat ) ) {
-            return Response.ok( getClass().getResourceAsStream( "/landingpage.html" ), TEXT_HTML ).build();
-        }
+	private Response landingPage(UriInfo uriInfo, String datasetId, String formatParamValue,
+			RequestFormat defaultFormat) throws UnknownDatasetId, InvalidParameterValue {
+		OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
+		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
+		if (HTML.equals(requestFormat)) {
+			return Response.ok(getClass().getResourceAsStream("/landingpage.html"), TEXT_HTML).build();
+		}
 
-        DatasetMetadata metadata = dataset.getServiceMetadata();
+		DatasetMetadata metadata = dataset.getServiceMetadata();
 
-        LinkBuilder linkBuilder = new LinkBuilder( uriInfo );
-        List<Link> links = linkBuilder.createLandingPageLinks( datasetId, metadata );
-        org.deegree.services.oaf.domain.landingpage.LandingPage landingPage = new org.deegree.services.oaf.domain.landingpage.LandingPage(
-                        metadata.getTitle(), metadata.getDescription(), links );
-        landingPage.setContact( metadata.getCreatorContact() );
-        return Response.ok( landingPage, mediaTypeFromRequestFormat( requestFormat ) ).build();
-    }
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		List<Link> links = linkBuilder.createLandingPageLinks(datasetId, metadata);
+		org.deegree.services.oaf.domain.landingpage.LandingPage landingPage = new org.deegree.services.oaf.domain.landingpage.LandingPage(
+				metadata.getTitle(), metadata.getDescription(), links);
+		landingPage.setContact(metadata.getCreatorContact());
+		return Response.ok(landingPage, mediaTypeFromRequestFormat(requestFormat)).build();
+	}
 
-    private String mediaTypeFromRequestFormat( RequestFormat requestFormat ) {
-        return XML.equals( requestFormat ) ? APPLICATION_XML : APPLICATION_JSON;
-    }
+	private String mediaTypeFromRequestFormat(RequestFormat requestFormat) {
+		return XML.equals(requestFormat) ? APPLICATION_XML : APPLICATION_JSON;
+	}
 
 }

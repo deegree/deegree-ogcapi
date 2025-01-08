@@ -76,29 +76,29 @@ import static org.deegree.commons.utils.io.Zip.zip;
  */
 public class Download {
 
-    public static File downloadFile( String file )
-                    throws InvalidPathException {
-        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-        File f = new File( workspace.getLocation(), file );
-        if ( !f.exists() ) {
-            throw new InvalidPathException( workspace.getName(), file );
-        }
-        return f;
-    }
+	public static File downloadFile(String file) throws InvalidPathException {
+		DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+		File f = new File(workspace.getLocation(), file);
+		if (!f.exists()) {
+			throw new InvalidPathException(workspace.getName(), file);
+		}
+		return f;
+	}
 
-    public static void downloadWorkspace( OutputStream outputStream )
-                    throws DownloadException {
-        DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
-        File dir = workspace.getLocation();
-        ZipOutputStream out = null;
-        try {
-            out = new ZipOutputStream( outputStream );
-            zip( dir, out, null );
-        } catch ( IOException e ) {
-            throw new DownloadException( e );
-        } finally {
-            closeQuietly( out );
-        }
-    }
+	public static void downloadWorkspace(OutputStream outputStream) throws DownloadException {
+		DeegreeWorkspace workspace = OGCFrontController.getServiceWorkspace();
+		File dir = workspace.getLocation();
+		ZipOutputStream out = null;
+		try {
+			out = new ZipOutputStream(outputStream);
+			zip(dir, out, null);
+		}
+		catch (IOException e) {
+			throw new DownloadException(e);
+		}
+		finally {
+			closeQuietly(out);
+		}
+	}
 
 }

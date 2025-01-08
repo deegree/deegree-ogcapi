@@ -42,25 +42,22 @@ import static org.junit.Assert.assertThat;
  */
 public class ConformanceIT {
 
-    @Test
-    public void testConformanceToXml()
-                    throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance( Conformance.class );
+	@Test
+	public void testConformanceToXml() throws Exception {
+		JAXBContext jaxbContext = JAXBContext.newInstance(Conformance.class);
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-        Conformance conformance = new Conformance(
-                        Collections.singletonList( new Link( HTML.getConformanceClass() ) ) );
-        marshaller.marshal( conformance, bos );
+		Marshaller marshaller = jaxbContext.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		Conformance conformance = new Conformance(Collections.singletonList(new Link(HTML.getConformanceClass())));
+		marshaller.marshal(conformance, bos);
 
-        assertThat( bos.toString(), ValidationMatcher.valid( schemaFrom( XML_CORE_SCHEMA_URL ) ) );
-    }
+		assertThat(bos.toString(), ValidationMatcher.valid(schemaFrom(XML_CORE_SCHEMA_URL)));
+	}
 
-    private StreamSource schemaFrom( String url )
-                    throws IOException {
-        return new StreamSource( new URL( url ).openStream() );
-    }
+	private StreamSource schemaFrom(String url) throws IOException {
+		return new StreamSource(new URL(url).openStream());
+	}
 
 }
