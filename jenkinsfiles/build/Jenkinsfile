@@ -60,10 +60,11 @@ pipeline {
       }
       steps {
         echo 'Prepare release version ${REL_VERSION}'
-        withMaven(mavenSettingsConfig: 'mvn-server-settings', options: [junitPublisher(healthScaleFactor: 1.0)], publisherStrategy: 'EXPLICIT') {
-          sshagent(credentials: ['jenkins-ogcapi-ssh-key']) {
+        sshagent(credentials: ['jenkins-ogcapi-ssh-key']) {
+          withMaven(mavenSettingsConfig: 'mvn-server-settings', options: [junitPublisher(healthScaleFactor: 1.0)], publisherStrategy: 'EXPLICIT') {
             withCredentials([usernamePassword(credentialsId:'nexus-deploy', passwordVariable: 'PASSWORD_VAR', usernameVariable: 'USERNAME_VAR')]) {
-              sh 'mvn -Dresume=false -DreleaseVersion=${REL_VERSION} -DdevelopmentVersion=${DEV_VERSION} -Darguments="-Drepo.username=${USERNAME_VAR} -Drepo.password=${PASSWORD_VAR}" -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform'
+              sh 'mvn release:clean release:prepare -Dresume=false -DreleaseVersion=${REL_VERSION} -DdevelopmentVersion=${DEV_VERSION}'
+              sh 'mvn release:perform -DdeployAtEnd=true -Dgoals=deploy -Drepo.username=${USERNAME_VAR} -Drepo.password=${PASSWORD_VAR}'
             }
           }
         }
