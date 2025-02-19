@@ -212,7 +212,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.11.1</version>
+          <version>3.11.2</version>
           <configuration>
             <doclint>none</doclint>
           </configuration>
@@ -873,7 +873,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.1.24</version>
+        <version>2.1.25</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -929,10 +929,10 @@
     <java.version>11</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>2.41</jersey-version>
-    <swagger-version>2.2.27</swagger-version>
+    <swagger-version>2.2.28</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.16.2</jackson-version>
-    <deegree-version>3.5.8</deegree-version>
+    <deegree-version>3.5.10</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
     <log4j.version>2.23.1</log4j.version>
     <antlr.version>4.13.2</antlr.version>
@@ -1005,7 +1005,7 @@
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
-            <version>11.1.1</version>
+            <version>12.1.0</version>
             <configuration>
               <cveValidForHours>24</cveValidForHours>
               <knownExploitedEnabled>false</knownExploitedEnabled>
