@@ -71,7 +71,6 @@ The following browsers are supported:
 
 - Mozilla Firefox (80.0+), Google Chrome (85.0+), Microsoft Edge (79.0+)
 
-If you are *not* using one of the browser above, you should be able to access all resources provided
-by deegree OAF and use the HTML pages but it might not display the site as designed, nor provide you with the best user experience.
+If you are *not* using one of the browser above, you should be able to access all resources provided by deegree OAF and use the HTML pages, but it might not display the site as designed, nor provide you with the best user experience.
 
 Some browsers, particularly earlier versions, either do not or only partly support W3C standards and JavaScript. These browsers might not display the HTML pages properly. See the list of supported browsers by the https://vuejs.org/[Vue.js framework] for more information.

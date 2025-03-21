@@ -200,7 +200,6 @@ The next example shows a complete configuration for a dataset called "trees" wit
     <AddLink href="https://github.com/INSPIRE-MIF/XXX" rel="describedby" type="text/html" title="Encoding description"/>
   </ConfigureCollections>
 
-
 </deegreeOAF>
 ----
 <1> identifier of the feature store configuration, links to file _datasources/feature/trees.xml_
@@ -451,7 +450,7 @@ DELETE /config/delete[/path] - delete currently running workspace or file in wor
 The REST-API is enabled by default. To protect this interface from unauthorized use, it is automatically secured with a so-called API key. Each HTTP request requires that the API key contained in the file _config.apikey_ is transferred.
 
 A detailed documentation of the REST-API interface and how access is configured is described in section "deegree REST interface"
-of the https://download.deegree.org/documentation/3.4.17/html/#anchor-configuration-restapi[deegree webservices handbook].
+of the https://download.deegree.org/documentation/current/html/#anchor-configuration-restapi[deegree webservices handbook].
 
 === Allow access to OpenAPI document from all origins
 

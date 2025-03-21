@@ -17,10 +17,10 @@ toc::[]
 List of Authors: Jens Fitzke, Torsten Friebe, Lyn Goltz, Sabine Schmitz, Dirk Stenger.
 
 lat/lon - Gesellschaft für raumbezogene Informationssysteme mbH +
-info@lat-lon.de, http://www.lat-lon.de/ +
-Aennchenstraße 19, D-53177 Bonn, Germany +
+info@lat-lon.de, https://www.lat-lon.de/ +
+Im Ellig 1, D-53343 Wachtberg, Germany +
 
-(C) Copyright 2020-2024 lat/lon GmbH, Bonn, Germany.
+(C) Copyright 2020-2025 lat/lon GmbH, Bonn, Germany.
 
 include::intro.adoc[]
 
