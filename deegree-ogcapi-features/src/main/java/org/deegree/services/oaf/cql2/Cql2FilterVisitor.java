@@ -21,14 +21,10 @@
  */
 package org.deegree.services.oaf.cql2;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import org.deegree.commons.tom.datetime.ISO8601Converter;
 import org.deegree.commons.tom.primitive.BaseType;
 import org.deegree.commons.tom.primitive.PrimitiveType;
 import org.deegree.commons.tom.primitive.PrimitiveValue;
@@ -304,19 +300,12 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 
 	@Override
 	public Object visitDateInstantString(Cql2Parser.DateInstantStringContext ctx) {
-		return Date.from(LocalDate.parse(ctx.getText().substring(1, ctx.getText().length() - 1))
-			.atStartOfDay()
-			.atZone(ZoneId.systemDefault())
-			.toInstant());
+		return ISO8601Converter.parseDate(ctx.getText().substring(1, ctx.getText().length() - 1));
 	}
 
 	@Override
 	public Object visitTimestampInstant(Cql2Parser.TimestampInstantContext ctx) {
-		return Date.from(LocalDateTime
-			.parse(ctx.getText().substring(11, ctx.getText().length() - 2),
-					DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()))
-			.atZone(ZoneId.systemDefault())
-			.toInstant());
+		return ISO8601Converter.parseDateTime(ctx.getText().substring(11, ctx.getText().length() - 2));
 	}
 
 }

@@ -26,12 +26,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.deegree.commons.tom.TypedObjectNode;
+import org.deegree.commons.tom.datetime.Date;
+import org.deegree.commons.tom.datetime.DateTime;
 import org.deegree.commons.tom.primitive.PrimitiveValue;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.UnknownCRSException;
@@ -221,8 +222,7 @@ public class Cql2ParserTest {
 		assertTrue(primitiveValue instanceof PrimitiveValue);
 		Object value = ((PrimitiveValue) primitiveValue).getValue();
 		assertTrue(value instanceof Date);
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime((Date) value);
+		Calendar calendar = ((Date) value).getCalendar();
 		assertEquals(2025, calendar.get(Calendar.YEAR));
 		assertEquals(APRIL, calendar.get(Calendar.MONTH));
 		assertEquals(14, calendar.get(Calendar.DAY_OF_MONTH));
@@ -244,9 +244,8 @@ public class Cql2ParserTest {
 		TypedObjectNode primitiveValue = ((Literal<?>) date).getValue();
 		assertTrue(primitiveValue instanceof PrimitiveValue);
 		Object value = ((PrimitiveValue) primitiveValue).getValue();
-		assertTrue(value instanceof Date);
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime((Date) value);
+		assertTrue(value instanceof DateTime);
+		Calendar calendar = ((DateTime) value).getCalendar();
 		assertEquals(2025, calendar.get(Calendar.YEAR));
 		assertEquals(APRIL, calendar.get(Calendar.MONTH));
 		assertEquals(14, calendar.get(Calendar.DAY_OF_MONTH));
