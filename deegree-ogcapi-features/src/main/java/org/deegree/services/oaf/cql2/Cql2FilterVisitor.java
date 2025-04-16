@@ -21,8 +21,12 @@
  */
 package org.deegree.services.oaf.cql2;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.deegree.commons.tom.datetime.ISO8601Converter;
 import org.deegree.commons.tom.primitive.BaseType;
@@ -43,19 +47,27 @@ import org.deegree.geometry.primitive.LinearRing;
 import org.deegree.geometry.primitive.Point;
 import org.deegree.geometry.primitive.Polygon;
 import org.deegree.geometry.primitive.Ring;
+import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.slf4j.Logger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 public class Cql2FilterVisitor extends Cql2BaseVisitor {
 
+	private static final Logger LOG = getLogger(Cql2FilterVisitor.class);
+
 	private final ICRS filterCrs;
+
+	private final List<FilterProperty> filterProperties;
 
 	/**
 	 * @param filterCrs never <code>null</code>
+	 * @param filterProperties
 	 */
-	public Cql2FilterVisitor(ICRS filterCrs) {
+	public Cql2FilterVisitor(ICRS filterCrs, List<FilterProperty> filterProperties) {
 		this.filterCrs = filterCrs;
+		this.filterProperties = filterProperties;
 	}
 
 	@Override
@@ -119,6 +131,17 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 	@Override
 	public Object visitPropertyName(Cql2Parser.PropertyNameContext ctx) {
 		String text = ctx.getText();
+		List<QName> filterPropWithSameLocalName = filterProperties.stream()
+			.map(FilterProperty::getName)
+			.filter(name -> name.getLocalPart().equals(text))
+			.collect(Collectors.toList());
+		if (!filterPropWithSameLocalName.isEmpty()) {
+			if (filterPropWithSameLocalName.size() > 1)
+				LOG.warn("Found multiple filter properties with name {}: {}. Use {}", text,
+						filterPropWithSameLocalName.stream().map(QName::toString).collect(Collectors.joining()),
+						filterPropWithSameLocalName.get(0));
+			return new ValueReference(filterPropWithSameLocalName.get(0));
+		}
 		return new ValueReference(text, null);
 	}
 
