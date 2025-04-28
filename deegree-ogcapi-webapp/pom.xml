@@ -209,6 +209,7 @@
   <modules>
     <module>deegree-ogcapi-webapp-oracle</module>
     <module>deegree-ogcapi-webapp-postgres</module>
+    <module>deegree-ogcapi-webapp-mssql</module>
   </modules>
 
 </project>
