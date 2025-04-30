@@ -568,6 +568,11 @@
       </dependency>
       <dependency>
         <groupId>org.deegree</groupId>
+        <artifactId>deegree-sqldialect-mssql</artifactId>
+        <version>${deegree-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.deegree</groupId>
         <artifactId>deegree-connectionprovider-datasource</artifactId>
         <version>${deegree-version}</version>
       </dependency>
