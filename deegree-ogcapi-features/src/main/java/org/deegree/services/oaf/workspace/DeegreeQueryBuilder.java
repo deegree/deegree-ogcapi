@@ -21,6 +21,15 @@
  */
 package org.deegree.services.oaf.workspace;
 
+import static org.deegree.filter.MatchAction.ALL;
+import static org.deegree.filter.MatchAction.ANY;
+
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -65,15 +74,6 @@ import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.deegree.filter.MatchAction.ALL;
-import static org.deegree.filter.MatchAction.ANY;
 
 /**
  * Creates WFS-Queries out of {@link FeaturesRequest} and featureIds.
@@ -133,7 +133,7 @@ public class DeegreeQueryBuilder {
 		List<Operator> operators = new ArrayList<>();
 		operators.add(createBboxOperator(featuresRequest));
 		operators.add(createDatetimeOperator(featureTypeMetadata, featuresRequest));
-		operators.addAll(createFilterOperator(featuresRequest));
+		operators.addAll(createFilterOperator(featuresRequest, featureTypeMetadata));
 		return createFilter(operators);
 	}
 
@@ -147,7 +147,8 @@ public class DeegreeQueryBuilder {
 		return new OperatorFilter(and);
 	}
 
-	private List<Operator> createFilterOperator(FeaturesRequest featuresRequest) throws InternalQueryException {
+	private List<Operator> createFilterOperator(FeaturesRequest featuresRequest,
+			FeatureTypeMetadata featureTypeMetadata) throws InternalQueryException {
 		List<Operator> filterOperators = new ArrayList<>();
 		Map<FilterProperty, List<String>> filterRequestProperties = featuresRequest.getFilterRequestProperties();
 		if (filterRequestProperties != null) {
@@ -159,12 +160,13 @@ public class DeegreeQueryBuilder {
 			});
 		}
 		if (featuresRequest.getFilter() != null) {
-			filterOperators.add(parseCql2Filter(featuresRequest));
+			filterOperators.add(parseCql2Filter(featuresRequest, featureTypeMetadata));
 		}
 		return filterOperators;
 	}
 
-	private Operator parseCql2Filter(FeaturesRequest featuresRequest) throws InternalQueryException {
+	private Operator parseCql2Filter(FeaturesRequest featuresRequest, FeatureTypeMetadata featureTypeMetadata)
+			throws InternalQueryException {
 		CharStream input = new ANTLRInputStream(featuresRequest.getFilter());
 		Cql2Lexer lexer = new Cql2Lexer(input);
 		CommonTokenStream cts = new CommonTokenStream(lexer);
@@ -173,7 +175,8 @@ public class DeegreeQueryBuilder {
 		parser.removeErrorListeners();
 		parser.addErrorListener(new Cql2ErrorListener());
 		Cql2Parser.BooleanExpressionContext cql2 = parser.booleanExpression();
-		Cql2FilterVisitor visitor = new Cql2FilterVisitor(lookupCrs(featuresRequest.getFilterCrs()));
+		Cql2FilterVisitor visitor = new Cql2FilterVisitor(lookupCrs(featuresRequest.getFilterCrs()),
+				featureTypeMetadata.getFilterProperties());
 		return (Operator) visitor.visit(cql2);
 	}
 

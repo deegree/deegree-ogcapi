@@ -21,15 +21,31 @@
  */
 package org.deegree.services.oaf.cql2;
 
+import static java.util.Calendar.APRIL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import javax.xml.namespace.QName;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.deegree.commons.tom.TypedObjectNode;
+import org.deegree.commons.tom.datetime.Date;
+import org.deegree.commons.tom.datetime.DateTime;
+import org.deegree.commons.tom.primitive.BaseType;
+import org.deegree.commons.tom.primitive.PrimitiveValue;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
 import org.deegree.filter.Expression;
+import org.deegree.filter.expression.Literal;
 import org.deegree.filter.expression.ValueReference;
 import org.deegree.filter.spatial.Intersects;
+import org.deegree.filter.temporal.After;
 import org.deegree.geometry.Envelope;
 import org.deegree.geometry.Geometry;
 import org.deegree.geometry.multi.MultiGeometry;
@@ -39,10 +55,8 @@ import org.deegree.geometry.multi.MultiPolygon;
 import org.deegree.geometry.primitive.LineString;
 import org.deegree.geometry.primitive.Point;
 import org.deegree.geometry.primitive.Polygon;
+import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -196,6 +210,54 @@ public class Cql2ParserTest {
 		assertEquals(((Envelope) geometry).getMax().get(1), 33.288087, 0.0001);
 	}
 
+	@Test
+	public void test_parse_T_AFTER_date() throws UnknownCRSException {
+		String after = "T_AFTER(testDate,DATE('2025-04-14'))";
+		Object visit = parseCql2(after);
+
+		assertTrue(visit instanceof After);
+
+		Expression param1 = ((After) visit).getParameter1();
+		assertTrue(param1 instanceof ValueReference);
+		assertEquals("testDate", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
+
+		Expression date = ((After) visit).getParameter2();
+		assertTrue(date instanceof Literal);
+		TypedObjectNode primitiveValue = ((Literal<?>) date).getValue();
+		assertTrue(primitiveValue instanceof PrimitiveValue);
+		Object value = ((PrimitiveValue) primitiveValue).getValue();
+		assertTrue(value instanceof Date);
+		Calendar calendar = ((Date) value).getCalendar();
+		assertEquals(2025, calendar.get(Calendar.YEAR));
+		assertEquals(APRIL, calendar.get(Calendar.MONTH));
+		assertEquals(14, calendar.get(Calendar.DAY_OF_MONTH));
+	}
+
+	@Test
+	public void test_parse_T_AFTER_timestamp() throws UnknownCRSException {
+		String after = "T_AFTER(testDate,TIMESTAMP('2025-04-14T08:59:30Z'))";
+		Object visit = parseCql2(after);
+
+		assertTrue(visit instanceof After);
+
+		Expression param1 = ((After) visit).getParameter1();
+		assertTrue(param1 instanceof ValueReference);
+		assertEquals("testDate", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
+
+		Expression date = ((After) visit).getParameter2();
+		assertTrue(date instanceof Literal);
+		TypedObjectNode primitiveValue = ((Literal<?>) date).getValue();
+		assertTrue(primitiveValue instanceof PrimitiveValue);
+		Object value = ((PrimitiveValue) primitiveValue).getValue();
+		assertTrue(value instanceof DateTime);
+		Calendar calendar = ((DateTime) value).getCalendar();
+		assertEquals(2025, calendar.get(Calendar.YEAR));
+		assertEquals(APRIL, calendar.get(Calendar.MONTH));
+		assertEquals(14, calendar.get(Calendar.DAY_OF_MONTH));
+	}
+
 	private static Object parseCql2(String intersects) throws UnknownCRSException {
 		CharStream input = new ANTLRInputStream(intersects);
 		Cql2Lexer lexer = new Cql2Lexer(input);
@@ -207,7 +269,9 @@ public class Cql2ParserTest {
 		Cql2Parser.BooleanExpressionContext cql2 = parser.booleanExpression();
 
 		ICRS filterCrs = CRSManager.lookup("urn:ogc:def:crs:OGC:1.3:CRS84");
-		Cql2FilterVisitor visitor = new Cql2FilterVisitor(filterCrs);
+		List<FilterProperty> filterProperties = Collections
+			.singletonList(new FilterProperty(new QName("testDate"), BaseType.DATE));
+		Cql2FilterVisitor visitor = new Cql2FilterVisitor(filterCrs, filterProperties);
 		return visitor.visit(cql2);
 	}
 
