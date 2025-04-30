@@ -1,24 +1,23 @@
 == Introduction
 
-The deegree OGC API Features (OAF) implementation is compliant to the latest OGC Standards called
-http://docs.opengeospatial.org/is/17-069r3/17-069r3.html[OGC API - Features - Part 1: Core] and http://docs.opengeospatial.org/is/18-058/18-058.html[Part 2: Coordinate Reference Systems by Reference]. deegree OAF provides a server implementation that has been developed based on deegree's existing workspace concept using the API of https://www.deegree.org[deegree webservices]. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
+The deegree OGC API - Features (OAF) implementation is compliant to the latest OGC standards called https://ogcapi.ogc.org[OGC APIs]. deegree OAF provides a server implementation that has been developed based on deegree's existing workspace concept using the API of https://www.deegree.org[deegree webservices]. Compared to deegree webservices where spatial data is provided via services such as WFS and WMS with deegree OAF spatial data can be served with a resource-oriented approach.
 
 === OGC API family
 
 The OGC API family of standards are being developed to make it easy for anyone to provide geospatial data to the web. These standards build upon the legacy of the OGC Web Service standards (WMS, WFS, WCS, WPS, etc.), but define resource-centric APIs that take advantage of modern web development practices.
 
-Read more at http://www.ogcapi.org[www.ogcapi.org] about the new standards and their goals.
-The https://opengeospatial.github.io/e-learning/ogcapi-features/text/basic-index.html[OGC E-learning tutorial] provides a chapter about the new standards and explains the basic concepts.
+Read more at https://ogcapi.ogc.org/#intro[www.ogcapi.org] about the new standards and their goals.
+The https://opengeospatial.github.io/e-learning/ogcapi-features/text/basic-index.html[OGC E-learning tutorial] provides more information about the new standards and explains the basic concepts.
 
 === Features
 
-deegree OAF supports the following conformance classes:
+deegree OAF supports the following standards:
 
-* Core (Part 1)
-* Coordinate Reference Systems by Reference (Part 2)
-* Partly https://docs.ogc.org/DRAFTS/19-079r1.html[Filtering (Part 3)] with https://docs.ogc.org/DRAFTS/21-065.html[CQL2 functions] limited to `S_INTERSECTS`.
+* https://docs.opengeospatial.org/is/17-069r4/17-069r4.html[OGC API - Features - Part 1: Core]
+* https://docs.opengeospatial.org/is/18-058r1/18-058r1.html[OGC API - Features - Part 2: CRS by Reference]
+* https://docs.ogc.org/is/19-079r2/19-079r2.html[OGC API - Features - Part 3: Filtering] (Partly) with support for https://docs.ogc.org/is/21-065r2/21-065r2.html[CQL2] intersects function.
 
-Based on that requirements class deegree OAF provides implementations of representations for spatial data using encodings such as:
+The deegree OAF provides implementations of representations for spatial data using encodings such as:
 
 * HTML,
 * GeoJSON,
@@ -51,11 +50,11 @@ deegree OAF was built on top of the robust API and configuration concept of http
 
 For simplicity, this document consistently uses:
 
-- "OGC API" to refer to the family of standards for geospatial Web APIs.
+- "OGC API" to refer to the family of standards for geospatial Web APIs specified by the OGC.
 
-- "OGC API - Features" to refer to the standard OGC API - Features.
+- "OAPI-F" to refer to the standard OGC API - Features, including Part: 1, 2 , and 3.
 
-- "deegree OAF" to refer to the implementation of "OGC API - Features" based on deegree.
+- "deegree OAF" to refer to the implementation of OGC API standards based on deegree.
 
 Furthermore the following terms are used in this document:
 
@@ -63,7 +62,7 @@ Furthermore the following terms are used in this document:
 Is a collection of data. In the context of deegree OAF a dataset is the set of feature types provided by a feature store. It is identified by it's _{datasetId}_.
 
 === datasource
-Is a source containing data retrieved from a file or a database. In the context of deegree OAF a datasource can be a feature store implementation. Which feature store implementations are supported is explaind in section <<config_feature_store>>.
+Is a source containing data retrieved from a file or a database. In the context of deegree OAF a datasource can be a feature store implementation. Which feature store implementations are supported is explained in section <<config_feature_store>>.
 
 === feature
 Is an abstraction of real world phenomena. In the context of deegree OAF it is a spatial entity stored in a datasource. It is identified by it's _{featureId}_.
