@@ -15,7 +15,7 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
 LABEL maintainer="deegree TMC <tmc@deegree.org>"
 
 # set deegree OAF version
-ENV DEEGREE_OAF_VERSION=1.3.4
+ENV DEEGREE_OAF_VERSION=1.3.5
 
 # tomcat port
 EXPOSE 8080
