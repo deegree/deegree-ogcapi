@@ -56,8 +56,7 @@ public class FeaturesResponseCreator {
 	public Response createJsonResponseWithHeaders(AbstractFeatureResponse featureResponse) {
 		Response.ResponseBuilder response = Response.ok(featureResponse);
 		response.header(HEADER_CONTENT_CRS, asContentCrsHeader(featureResponse))
-			.header(HttpHeaders.CONTENT_TYPE, APPLICATION_GEOJSON_TYPE.withCharset(StandardCharsets.UTF_8.name()))
-			.encoding(StandardCharsets.UTF_8.name());
+			.header(HttpHeaders.CONTENT_TYPE, APPLICATION_GEOJSON_TYPE.withCharset(StandardCharsets.UTF_8.name()));
 
 		return response.build();
 	}
