@@ -55,8 +55,8 @@ import org.deegree.services.ogcapi.features.DateTimePropertyType;
 import org.deegree.services.ogcapi.features.DeegreeOAF;
 import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection;
 import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollections;
+import org.deegree.services.ogcapi.features.GeometryPropertyType;
 import org.deegree.workspace.Resource;
-import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.ResourceInitException;
 import org.deegree.workspace.ResourceMetadata;
 import org.deegree.workspace.Workspace;
@@ -255,10 +255,12 @@ public class OafResource implements Resource {
 		if (!name.getNamespaceURI().equals(GMLNS) && !name.getNamespaceURI().equals(GML3_2_NS)) {
 			try {
 				QName dateTimeProperty = getDateTimeProperty(name);
+				Pair<QName, Boolean> geometryProperty = getGeometryProperty(name);
 				org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata = metadata != null
 						? metadata.getDatasetMetadata(name) : null;
 				FeatureTypeMetadata ftMetadata = createFeatureTypeMetadata(featureStore, name, dateTimeProperty,
-						datasetMetadata);
+						geometryProperty != null ? geometryProperty.getFirst() : null,
+						geometryProperty != null ? geometryProperty.getSecond() : false, datasetMetadata);
 				featureTypeNames.put(name.getLocalPart(), ftMetadata);
 			}
 			catch (FeatureStoreException e) {
@@ -268,6 +270,7 @@ public class OafResource implements Resource {
 	}
 
 	private FeatureTypeMetadata createFeatureTypeMetadata(FeatureStore featureStore, QName name, QName dateTimeProperty,
+			QName geometryProperty, boolean skipExportAsWkt,
 			org.deegree.commons.ows.metadata.DatasetMetadata datasetMetadata) throws FeatureStoreException {
 		FeatureType featureType = featureStore.getSchema().getFeatureType(name);
 		List<FilterProperty> filterProperties = parseFilterProperties(featureType);
@@ -279,6 +282,8 @@ public class OafResource implements Resource {
 		String[] storageCrsCodes = featureStore.getStorageCrs() != null
 				? featureStore.getStorageCrs().getOrignalCodeStrings() : null;
 		return new FeatureTypeMetadata(name).dateTimeProperty(dateTimeProperty)
+			.geometryProperty(geometryProperty)
+			.skipGeometryExportAsWkt(skipExportAsWkt)
 			.extent(extent)
 			.title(title)
 			.description(description)
@@ -316,8 +321,25 @@ public class OafResource implements Resource {
 			return null;
 		if (configuredProperties.size() > 1)
 			throw new InvalidConfigurationException("Multiple datetime properties for feature type " + name
-					+ " found, Currently only one datetime properties per feature type is supported");
+					+ " found. Currently only one datetime property per feature type is supported");
 		return configuredProperties.get(0).getPropertyName();
+	}
+
+	private Pair<QName, Boolean> getGeometryProperty(QName name) throws InvalidConfigurationException {
+		DeegreeOAF.GeometryProperties geometryProperties = config.getGeometryProperties();
+		if (geometryProperties == null)
+			return null;
+		List<GeometryPropertyType> configuredProperties = geometryProperties.getGeometryProperty()
+			.stream()
+			.filter(dtp -> name.equals(dtp.getFeatureTypeName()))
+			.collect(Collectors.toList());
+		if (configuredProperties.isEmpty())
+			return null;
+		if (configuredProperties.size() > 1)
+			throw new InvalidConfigurationException("Multiple geometry properties for feature type " + name
+					+ " found. Currently only one geometry property per feature type is supported");
+		return new Pair<>(configuredProperties.get(0).getPropertyName(),
+				configuredProperties.get(0).isSkipExportAsWkt());
 	}
 
 	private Extent createExtent(FeatureStore featureStore, QName featureTypeName, QName dateTimeProperty)
