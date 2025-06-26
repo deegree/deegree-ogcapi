@@ -16,6 +16,13 @@
     </DateTimeProperty>
   </DateTimeProperties>
 
+  <GeometryProperties>
+    <GeometryProperty skipExportAsWkt="true">
+      <FeatureTypeName xmlns:app="http://www.deegree.org/app">app:FeatureType</FeatureTypeName>
+      <PropertyName xmlns:app="http://deegree.org/app">app:geom1</PropertyName>
+    </GeometryProperty>
+  </GeometryProperties>
+
   <Metadata>
     <ProviderLicense>
       <Name>Tst</Name>
