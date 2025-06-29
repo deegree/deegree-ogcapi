@@ -206,6 +206,8 @@ public class DeegreeDataAccess implements DataAccess {
 		String schemaLocation = linkBuilder.createSchemaLink(datasetId, collectionId);
 		String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
 		return new FeaturesResponseBuilder(features).withFeatureTypeNsPrefixes(featureTypeNsPrefixes)
+			.withGeometryProperty(featureTypeMetadata.getGeometryProperty())
+			.withSkipGeometryExportAsWkt(featureTypeMetadata.isSkipGeometryExportAsWkt())
 			.withNumberOfFeatures(limit)
 			.withNumberOfFeaturesMatched(numberOfFeaturesMatched)
 			.withStartIndex(offset)
