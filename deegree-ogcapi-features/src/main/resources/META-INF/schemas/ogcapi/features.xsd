@@ -23,6 +23,13 @@
             </sequence>
           </complexType>
         </element>
+        <element name="GeometryProperties" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="GeometryProperty" type="oaf:GeometryPropertyType" maxOccurs="unbounded"/>
+            </sequence>
+          </complexType>
+        </element>
         <element name="HtmlViewId" type="string" minOccurs="0"/>
         <element name="Metadata" type="oaf:MetadataType" minOccurs="0"/>
         <element name="ConfigureCollection" minOccurs="0" maxOccurs="unbounded">
@@ -59,6 +66,14 @@
       <element name="FeatureTypeName" type="QName"/>
       <element name="PropertyName" type="QName"/>
     </sequence>
+  </complexType>
+
+  <complexType name="GeometryPropertyType">
+    <sequence>
+      <element name="FeatureTypeName" type="QName"/>
+      <element name="PropertyName" type="QName"/>
+    </sequence>
+    <attribute name="skipExportAsWkt" type="boolean" default="false"/>
   </complexType>
 
   <complexType name="MetadataType">
