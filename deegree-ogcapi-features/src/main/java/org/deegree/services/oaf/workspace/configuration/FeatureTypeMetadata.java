@@ -38,6 +38,10 @@ public class FeatureTypeMetadata {
 
 	private QName dateTimeProperty;
 
+	private QName geometryProperty;
+
+	private boolean skipGeometryExportAsWkt;
+
 	private Extent extent;
 
 	private String title;
@@ -60,6 +64,16 @@ public class FeatureTypeMetadata {
 
 	public FeatureTypeMetadata dateTimeProperty(QName dateTimeProperty) {
 		this.dateTimeProperty = dateTimeProperty;
+		return this;
+	}
+
+	public FeatureTypeMetadata geometryProperty(QName geometryProperty) {
+		this.geometryProperty = geometryProperty;
+		return this;
+	}
+
+	public FeatureTypeMetadata skipGeometryExportAsWkt(boolean skipGeometryExportAsWkt) {
+		this.skipGeometryExportAsWkt = skipGeometryExportAsWkt;
 		return this;
 	}
 
@@ -113,6 +127,14 @@ public class FeatureTypeMetadata {
 
 	public QName getDateTimeProperty() {
 		return dateTimeProperty;
+	}
+
+	public QName getGeometryProperty() {
+		return geometryProperty;
+	}
+
+	public boolean isSkipGeometryExportAsWkt() {
+		return skipGeometryExportAsWkt;
 	}
 
 	public String getTitle() {

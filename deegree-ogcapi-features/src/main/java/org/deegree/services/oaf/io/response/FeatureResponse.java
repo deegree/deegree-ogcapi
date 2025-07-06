@@ -21,6 +21,8 @@
  */
 package org.deegree.services.oaf.io.response;
 
+import javax.xml.namespace.QName;
+
 import org.deegree.feature.Feature;
 import org.deegree.services.oaf.io.SchemaLocation;
 import org.deegree.services.oaf.link.Link;
@@ -35,9 +37,9 @@ public class FeatureResponse extends AbstractFeatureResponse {
 
 	private final Feature feature;
 
-	FeatureResponse(Feature feature, Map<String, String> featureTypeNsPrefixes, List<Link> links,
-			String responseCrsName, SchemaLocation schemaLocation) {
-		super(featureTypeNsPrefixes, responseCrsName, schemaLocation, links);
+	FeatureResponse(Feature feature, Map<String, String> featureTypeNsPrefixes, QName geometryProperty,
+			boolean skipGeometryExportAsWkt, List<Link> links, String responseCrsName, SchemaLocation schemaLocation) {
+		super(featureTypeNsPrefixes, geometryProperty, skipGeometryExportAsWkt, responseCrsName, schemaLocation, links);
 		this.feature = feature;
 	}
 

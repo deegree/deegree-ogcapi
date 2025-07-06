@@ -21,6 +21,8 @@
  */
 package org.deegree.services.oaf.io.response;
 
+import javax.xml.namespace.QName;
+
 import org.deegree.feature.Feature;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.services.oaf.io.SchemaLocation;
@@ -41,6 +43,10 @@ public class FeaturesResponseBuilder {
 	private int numberOfFeaturesMatched;
 
 	private Map<String, String> featureTypeNsPrefixes;
+
+	private QName geometryProperty;
+
+	private boolean skipGeometryExportAsWkt;
 
 	private int numberOfFeatures;
 
@@ -68,6 +74,16 @@ public class FeaturesResponseBuilder {
 
 	public FeaturesResponseBuilder withFeatureTypeNsPrefixes(Map<String, String> featureTypeNsPrefixes) {
 		this.featureTypeNsPrefixes = featureTypeNsPrefixes;
+		return this;
+	}
+
+	public FeaturesResponseBuilder withGeometryProperty(QName geometryProperty) {
+		this.geometryProperty = geometryProperty;
+		return this;
+	}
+
+	public FeaturesResponseBuilder withSkipGeometryExportAsWkt(boolean skipGeometryExportAsWkt) {
+		this.skipGeometryExportAsWkt = skipGeometryExportAsWkt;
 		return this;
 	}
 
@@ -114,12 +130,14 @@ public class FeaturesResponseBuilder {
 	}
 
 	public FeaturesResponse buildFeaturesResponse() {
-		return new FeaturesResponse(features, featureTypeNsPrefixes, numberOfFeatures, numberOfFeaturesMatched,
-				startIndex, links, isMaxFeaturesAndStartIndexApplicable, responseCrsName, schemaLocation);
+		return new FeaturesResponse(features, featureTypeNsPrefixes, geometryProperty, skipGeometryExportAsWkt,
+				numberOfFeatures, numberOfFeaturesMatched, startIndex, links, isMaxFeaturesAndStartIndexApplicable,
+				responseCrsName, schemaLocation);
 	}
 
 	public FeatureResponse buildFeatureResponse() {
-		return new FeatureResponse(feature, featureTypeNsPrefixes, links, responseCrsName, schemaLocation);
+		return new FeatureResponse(feature, featureTypeNsPrefixes, geometryProperty, skipGeometryExportAsWkt, links,
+				responseCrsName, schemaLocation);
 	}
 
 }

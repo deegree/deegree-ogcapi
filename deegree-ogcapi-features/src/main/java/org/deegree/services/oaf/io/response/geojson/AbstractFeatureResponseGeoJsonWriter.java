@@ -46,7 +46,8 @@ public abstract class AbstractFeatureResponseGeoJsonWriter<T extends AbstractFea
 	public void writeTo(T feature, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream out) throws WebApplicationException {
 		try (Writer writer = new PrintWriter(out, false, UTF_8);
-				GeoJsonWriter geoJsonStreamWriter = new GeoJsonWriter(writer, asCrs(feature))) {
+				GeoJsonWriter geoJsonStreamWriter = new GeoJsonWriter(writer, asCrs(feature),
+						feature.getGeometryProperty(), feature.isSkipGeometryExportAsWkt())) {
 			writeContent(feature, geoJsonStreamWriter);
 		}
 		catch (Exception e) {
@@ -58,7 +59,7 @@ public abstract class AbstractFeatureResponseGeoJsonWriter<T extends AbstractFea
 	protected abstract void writeContent(T feature, GeoJsonWriter geoJsonStreamWriter)
 			throws IOException, TransformationException, UnknownCRSException, UnknownFeatureId;
 
-	protected ICRS asCrs(T feature) {
+	private ICRS asCrs(T feature) {
 		if (feature.getResponseCrsName() != null) {
 			CRSRef ref = CRSManager.getCRSRef(feature.getResponseCrsName());
 			ref.getReferencedObject(); // test if exists

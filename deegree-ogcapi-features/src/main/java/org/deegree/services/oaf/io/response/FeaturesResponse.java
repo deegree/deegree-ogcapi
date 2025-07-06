@@ -21,6 +21,8 @@
  */
 package org.deegree.services.oaf.io.response;
 
+import javax.xml.namespace.QName;
+
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.services.oaf.io.SchemaLocation;
 import org.deegree.services.oaf.link.Link;
@@ -43,10 +45,11 @@ public class FeaturesResponse extends AbstractFeatureResponse {
 
 	private final boolean isMaxFeaturesAndStartIndexApplicable;
 
-	FeaturesResponse(FeatureInputStream features, Map<String, String> featureTypeNsPrefixes, int numberOfFeatures,
-			int numberOfFeaturesMatched, int startIndex, List<Link> links, boolean isMaxFeaturesAndStartIndexApplicable,
-			String responseCrsName, SchemaLocation schemaLocation) {
-		super(featureTypeNsPrefixes, responseCrsName, schemaLocation, links);
+	FeaturesResponse(FeatureInputStream features, Map<String, String> featureTypeNsPrefixes, QName geometryProperty,
+			boolean skipGeometryExportAsWkt, int numberOfFeatures, int numberOfFeaturesMatched, int startIndex,
+			List<Link> links, boolean isMaxFeaturesAndStartIndexApplicable, String responseCrsName,
+			SchemaLocation schemaLocation) {
+		super(featureTypeNsPrefixes, geometryProperty, skipGeometryExportAsWkt, responseCrsName, schemaLocation, links);
 		this.features = features;
 		this.numberOfFeatures = numberOfFeatures;
 		this.numberOfFeaturesMatched = numberOfFeaturesMatched;
