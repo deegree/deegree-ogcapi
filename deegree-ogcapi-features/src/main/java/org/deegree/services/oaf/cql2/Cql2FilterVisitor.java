@@ -26,6 +26,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.deegree.commons.tom.datetime.ISO8601Converter;
@@ -47,7 +48,6 @@ import org.deegree.geometry.primitive.LinearRing;
 import org.deegree.geometry.primitive.Point;
 import org.deegree.geometry.primitive.Polygon;
 import org.deegree.geometry.primitive.Ring;
-import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.slf4j.Logger;
 
 /**
@@ -59,13 +59,13 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 
 	private final ICRS filterCrs;
 
-	private final List<FilterProperty> filterProperties;
+	private final Set<QName> filterProperties;
 
 	/**
 	 * @param filterCrs never <code>null</code>
 	 * @param filterProperties
 	 */
-	public Cql2FilterVisitor(ICRS filterCrs, List<FilterProperty> filterProperties) {
+	public Cql2FilterVisitor(ICRS filterCrs, Set<QName> filterProperties) {
 		this.filterCrs = filterCrs;
 		this.filterProperties = filterProperties;
 	}
@@ -132,7 +132,6 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 	public Object visitPropertyName(Cql2Parser.PropertyNameContext ctx) {
 		String text = ctx.getText();
 		List<QName> filterPropWithSameLocalName = filterProperties.stream()
-			.map(FilterProperty::getName)
 			.filter(name -> name.getLocalPart().equals(text))
 			.collect(Collectors.toList());
 		if (!filterPropWithSameLocalName.isEmpty()) {
@@ -142,7 +141,7 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 						filterPropWithSameLocalName.get(0));
 			return new ValueReference(filterPropWithSameLocalName.get(0));
 		}
-		return new ValueReference(text, null);
+		throw new IllegalArgumentException("Property with name " + text + " is not supported.");
 	}
 
 	@Override
