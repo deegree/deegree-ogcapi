@@ -66,9 +66,11 @@ public class DatasetMetadata {
 		if (metadata != null) {
 			this.title = getTitle(metadata);
 			this.description = getDescription(metadata);
+			parseProviderContact(metadata.getServiceProvider());
+		}
+		if (configMetadata != null) {
 			parseLicenses(configMetadata);
 			parseDatasetContact(configMetadata);
-			parseProviderContact(metadata.getServiceProvider());
 			parseMetadataUrls(configMetadata);
 		}
 	}
