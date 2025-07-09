@@ -1,8 +1,8 @@
-FROM eclipse-temurin:11 as builder
+FROM maven:3-eclipse-temurin-11 AS builder
 # Multi stage build - https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 
 # install maven and unzip
-RUN apt-get update && apt-get install -y --no-install-recommends maven unzip
+RUN apt-get update && apt-get install -y --no-install-recommends unzip
 
 # prepare folders
 RUN mkdir /build && mkdir /target
@@ -17,7 +17,7 @@ RUN cd /build/ && \
 # add to image...
 FROM tomcat:9.0-jdk11-temurin-jammy
 
-ENV LANG en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 # add build info labels that can be set on build
 # see also https://github.com/opencontainers/image-spec/blob/master/annotations.md
