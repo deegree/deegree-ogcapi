@@ -842,13 +842,13 @@
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.10.2</version>
+        <version>2.10.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-matchers</artifactId>
-        <version>2.9.1</version>
+        <version>2.10.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -878,7 +878,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.1.29</version>
+        <version>2.1.31</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -934,10 +934,10 @@
     <java.version>11</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>2.41</jersey-version>
-    <swagger-version>2.2.32</swagger-version>
+    <swagger-version>2.2.34</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.16.2</jackson-version>
-    <deegree-version>3.5.13</deegree-version>
+    <deegree-version>3.5.14</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
     <log4j.version>2.23.1</log4j.version>
     <antlr.version>4.13.2</antlr.version>
