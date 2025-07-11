@@ -177,9 +177,11 @@ public class DeegreeQueryBuilder {
 		parser.removeErrorListeners();
 		parser.addErrorListener(new Cql2ErrorListener());
 		Cql2Parser.BooleanExpressionContext cql2 = parser.booleanExpression();
-		Set<QName> propertyNames = AppSchemas.collectProperyNames(featureTypeMetadata.getFeatureType().getSchema(),
-				featureTypeMetadata.getName());
-		Cql2FilterVisitor visitor = new Cql2FilterVisitor(lookupCrs(featuresRequest.getFilterCrs()), propertyNames);
+		Cql2FilterVisitor visitor = new Cql2FilterVisitor(lookupCrs(featuresRequest.getFilterCrs()),
+				featureTypeMetadata.getFilterProperties()
+					.stream()
+					.map(FilterProperty::getName)
+					.collect(Collectors.toSet()));
 		return (Operator) visitor.visit(cql2);
 	}
 

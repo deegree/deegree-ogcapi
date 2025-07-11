@@ -591,6 +591,10 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 				return "integer";
 			case BOOLEAN:
 				return "boolean";
+			case DATE:
+				return "date";
+			case DATE_TIME:
+				return "date-time";
 			case STRING:
 			default:
 				return "string";
