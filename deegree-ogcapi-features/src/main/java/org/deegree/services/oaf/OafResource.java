@@ -50,6 +50,7 @@ import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.services.oaf.workspace.configuration.FilterPropertyType;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.ogcapi.features.DateTimePropertyType;
 import org.deegree.services.ogcapi.features.DeegreeOAF;
@@ -298,7 +299,10 @@ public class OafResource implements Resource {
 				PrimitiveType primitiveType = ((SimplePropertyType) propertyDeclaration).getPrimitiveType();
 				BaseType baseType = primitiveType.getBaseType();
 				QName propertyName = propertyDeclaration.getName();
-				filterProperties.add(new FilterProperty(propertyName, baseType));
+				filterProperties.add(new FilterProperty(propertyName, FilterPropertyType.fromBaseType(baseType)));
+			}
+			else if (propertyDeclaration instanceof org.deegree.feature.types.property.GeometryPropertyType) {
+				filterProperties.add(new FilterProperty(propertyDeclaration.getName(), FilterPropertyType.GEOMETRY));
 			}
 		});
 		return filterProperties;
