@@ -21,8 +21,6 @@
  */
 package org.deegree.services.oaf.workspace.configuration;
 
-import org.deegree.commons.tom.primitive.BaseType;
-
 import javax.xml.namespace.QName;
 
 /**
@@ -32,9 +30,9 @@ public class FilterProperty {
 
 	private QName name;
 
-	private BaseType type;
+	private FilterPropertyType type;
 
-	public FilterProperty(QName name, BaseType type) {
+	public FilterProperty(QName name, FilterPropertyType type) {
 		this.name = name;
 		this.type = type;
 	}
@@ -43,7 +41,7 @@ public class FilterProperty {
 		return name;
 	}
 
-	public BaseType getType() {
+	public FilterPropertyType getType() {
 		return type;
 	}
 

@@ -22,7 +22,6 @@
 package org.deegree.services.oaf.workspace;
 
 import org.deegree.commons.tom.TypedObjectNode;
-import org.deegree.commons.tom.primitive.BaseType;
 import org.deegree.feature.persistence.query.Query;
 import org.deegree.filter.Filter;
 import org.deegree.filter.Operator;
@@ -41,6 +40,7 @@ import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.io.request.FeaturesRequestBuilder;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.services.oaf.workspace.configuration.FilterPropertyType;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
@@ -219,7 +219,8 @@ public class DeegreeQueryBuilderTest {
 	@Test
 	public void test_CreateQueryWithSingleFilter() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(BaseType.STRING, "value");
+		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
+				"value");
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
 			.build();
@@ -233,7 +234,8 @@ public class DeegreeQueryBuilderTest {
 	@Test
 	public void test_CreateQueryWithSingleFilter_Wildcard() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(BaseType.STRING, "value*");
+		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
+				"value*");
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
 			.build();
@@ -247,7 +249,7 @@ public class DeegreeQueryBuilderTest {
 	@Test
 	public void test_CreateQueryWithSingleFilter_IntegerEqualTo() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(BaseType.INTEGER, "10");
+		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER, "10");
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
 			.build();
@@ -263,7 +265,8 @@ public class DeegreeQueryBuilderTest {
 	@Test
 	public void test_CreateQueryWithSingleFilter_DecimalGreaterThan() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(BaseType.DECIMAL, ">9.56");
+		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.DECIMAL,
+				">9.56");
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
 			.build();
@@ -280,7 +283,8 @@ public class DeegreeQueryBuilderTest {
 	@Test
 	public void test_CreateQueryWithSingleFilter_DoubleLessThan() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(BaseType.DOUBLE, "<5.89");
+		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.DOUBLE,
+				"<5.89");
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
 			.build();
@@ -297,7 +301,8 @@ public class DeegreeQueryBuilderTest {
 	@Test
 	public void test_CreateQueryWithSingleFilter_IntegerGreaterThanOrEqualTo() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(BaseType.INTEGER, ">=10");
+		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER,
+				">=10");
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
 			.build();
@@ -314,7 +319,8 @@ public class DeegreeQueryBuilderTest {
 	@Test
 	public void test_CreateQueryWithSingleFilter_IntegerLessThanOrEqualTo() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(BaseType.INTEGER, "<=10");
+		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER,
+				"<=10");
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
 			.build();
@@ -332,7 +338,7 @@ public class DeegreeQueryBuilderTest {
 	public void test_CreateQueryWithSingleFilterMultipleValues() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = new MultivaluedHashMap<>();
-		filterParameters.put(new FilterProperty(new QName("http://deegree.org/oaf", "name"), BaseType.STRING),
+		filterParameters.put(new FilterProperty(new QName("http://deegree.org/oaf", "name"), FilterPropertyType.STRING),
 				Arrays.asList("value1", "value2"));
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
@@ -353,8 +359,9 @@ public class DeegreeQueryBuilderTest {
 	@Test
 	public void test_CreateQueryWithMultipleFilter() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(BaseType.STRING, "value");
-		filterParameters.put(new FilterProperty(new QName("http://deegree.org/oaf", "age"), BaseType.INTEGER),
+		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
+				"value");
+		filterParameters.put(new FilterProperty(new QName("http://deegree.org/oaf", "age"), FilterPropertyType.INTEGER),
 				Collections.singletonList("15"));
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
 			.withQueryableParameters(filterParameters)
@@ -372,7 +379,7 @@ public class DeegreeQueryBuilderTest {
 		assertThat(second, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
 	}
 
-	private Map<FilterProperty, List<String>> createSingleFilterParams(BaseType type, String value) {
+	private Map<FilterProperty, List<String>> createSingleFilterParams(FilterPropertyType type, String value) {
 		Map<FilterProperty, List<String>> filterParameters = new MultivaluedHashMap<>();
 		QName name = new QName("http://deegree.org/oaf", "name");
 		FilterProperty filterProperty = new FilterProperty(name, type);

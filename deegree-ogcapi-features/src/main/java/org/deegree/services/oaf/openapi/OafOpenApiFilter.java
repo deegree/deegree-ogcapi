@@ -55,6 +55,7 @@ import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.services.oaf.workspace.configuration.FilterPropertyType;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.slf4j.Logger;
@@ -232,7 +233,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 		if (filterProperties == null)
 			return;
 		List<Parameter> parameters = pathItem.getGet().getParameters();
-		filterProperties.forEach(filterProperty -> {
+		filterProperties.stream().filter(fp -> fp.getType() != FilterPropertyType.GEOMETRY).forEach(filterProperty -> {
 			Parameter filterParameter = new Parameter().name(filterProperty.getName().getLocalPart())
 				.description(descriptionByParameterType(filterProperty))
 				.in("query")
@@ -582,7 +583,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 	}
 
 	private String mapToParameterType(FilterProperty filterProperty) {
-		BaseType type = filterProperty.getType();
+		FilterPropertyType type = filterProperty.getType();
 		switch (type) {
 			case DOUBLE:
 			case DECIMAL:
@@ -602,7 +603,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 	}
 
 	private String descriptionByParameterType(FilterProperty filterProperty) {
-		BaseType type = filterProperty.getType();
+		FilterPropertyType type = filterProperty.getType();
 		switch (type) {
 			case DOUBLE:
 			case DECIMAL:

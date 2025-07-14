@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.xml.namespace.QName;
 import java.util.Calendar;
-import java.util.Set;
+import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -53,6 +53,8 @@ import org.deegree.geometry.multi.MultiPolygon;
 import org.deegree.geometry.primitive.LineString;
 import org.deegree.geometry.primitive.Point;
 import org.deegree.geometry.primitive.Polygon;
+import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.services.oaf.workspace.configuration.FilterPropertyType;
 import org.junit.Test;
 
 /**
@@ -215,6 +217,12 @@ public class Cql2ParserTest {
 		assertEquals(((Envelope) geometry).getMax().get(1), 33.288087, 0.0001);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void test_parse_S_INTERSECTS_nonGeomProperty() throws UnknownCRSException {
+		String intersects = "S_INTERSECTS(testString,BBOX(36.319836,32.288087,37.319836,33.288087))";
+		parseCql2(intersects);
+	}
+
 	@Test
 	public void test_parse_T_AFTER_date() throws UnknownCRSException {
 		String after = "T_AFTER(testDate,DATE('2025-04-14'))";
@@ -263,6 +271,13 @@ public class Cql2ParserTest {
 		assertEquals(14, calendar.get(Calendar.DAY_OF_MONTH));
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void test_parse_T_AFTER_nonDateProperty() throws UnknownCRSException {
+		String after = "T_AFTER(testString,TIMESTAMP('2025-04-14T08:59:30Z'))";
+		parseCql2(after);
+
+	}
+
 	private static Object parseCql2(String intersects) throws UnknownCRSException {
 		CharStream input = new ANTLRInputStream(intersects);
 		Cql2Lexer lexer = new Cql2Lexer(input);
@@ -274,7 +289,10 @@ public class Cql2ParserTest {
 		Cql2Parser.BooleanExpressionContext cql2 = parser.booleanExpression();
 
 		ICRS filterCrs = CRSManager.lookup("urn:ogc:def:crs:OGC:1.3:CRS84");
-		Set<QName> filterProperties = Set.of(new QName("testDate"), new QName("geometry"));
+		List<FilterProperty> filterProperties = List.of(
+				new FilterProperty(new QName("testDate"), FilterPropertyType.DATE),
+				new FilterProperty(new QName("testString"), FilterPropertyType.STRING),
+				new FilterProperty(new QName("geometry"), FilterPropertyType.GEOMETRY));
 		Cql2FilterVisitor visitor = new Cql2FilterVisitor(filterCrs, filterProperties);
 		return visitor.visit(cql2);
 	}

@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -39,7 +38,6 @@ import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
 import org.deegree.feature.persistence.query.Query;
-import org.deegree.feature.types.AppSchemas;
 import org.deegree.filter.Expression;
 import org.deegree.filter.Filter;
 import org.deegree.filter.IdFilter;
@@ -178,10 +176,7 @@ public class DeegreeQueryBuilder {
 		parser.addErrorListener(new Cql2ErrorListener());
 		Cql2Parser.BooleanExpressionContext cql2 = parser.booleanExpression();
 		Cql2FilterVisitor visitor = new Cql2FilterVisitor(lookupCrs(featuresRequest.getFilterCrs()),
-				featureTypeMetadata.getFilterProperties()
-					.stream()
-					.map(FilterProperty::getName)
-					.collect(Collectors.toSet()));
+				featureTypeMetadata.getFilterProperties());
 		return (Operator) visitor.visit(cql2);
 	}
 
