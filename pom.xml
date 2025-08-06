@@ -937,7 +937,7 @@
     <swagger-version>2.2.34</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.16.2</jackson-version>
-    <deegree-version>3.5.14</deegree-version>
+    <deegree-version>3.5.15</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
     <log4j.version>2.23.1</log4j.version>
     <antlr.version>4.13.2</antlr.version>
