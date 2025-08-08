@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 
 import javax.xml.namespace.QName;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -36,7 +35,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.deegree.commons.tom.TypedObjectNode;
 import org.deegree.commons.tom.datetime.Date;
 import org.deegree.commons.tom.datetime.DateTime;
-import org.deegree.commons.tom.primitive.BaseType;
 import org.deegree.commons.tom.primitive.PrimitiveValue;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.UnknownCRSException;
@@ -56,6 +54,7 @@ import org.deegree.geometry.primitive.LineString;
 import org.deegree.geometry.primitive.Point;
 import org.deegree.geometry.primitive.Polygon;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.services.oaf.workspace.configuration.FilterPropertyType;
 import org.junit.Test;
 
 /**
@@ -72,7 +71,8 @@ public class Cql2ParserTest {
 
 		Expression param1 = ((Intersects) visit).getParam1();
 		assertTrue(param1 instanceof ValueReference);
-		assertEquals(((ValueReference) param1).getAsText(), "geometry");
+		assertEquals("geometry", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
 
 		Geometry geometry = ((Intersects) visit).getGeometry();
 		assertTrue(geometry instanceof Point);
@@ -90,7 +90,8 @@ public class Cql2ParserTest {
 
 		Expression param1 = ((Intersects) visit).getParam1();
 		assertTrue(param1 instanceof ValueReference);
-		assertEquals(((ValueReference) param1).getAsText(), "geometry");
+		assertEquals("geometry", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
 
 		Geometry geometry = ((Intersects) visit).getGeometry();
 		assertTrue(geometry instanceof LineString);
@@ -106,7 +107,8 @@ public class Cql2ParserTest {
 
 		Expression param1 = ((Intersects) visit).getParam1();
 		assertTrue(param1 instanceof ValueReference);
-		assertEquals(((ValueReference) param1).getAsText(), "geometry");
+		assertEquals("geometry", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
 
 		Geometry geometry = ((Intersects) visit).getGeometry();
 		assertTrue(geometry instanceof Polygon);
@@ -123,7 +125,8 @@ public class Cql2ParserTest {
 
 		Expression param1 = ((Intersects) visit).getParam1();
 		assertTrue(param1 instanceof ValueReference);
-		assertEquals(((ValueReference) param1).getAsText(), "geometry");
+		assertEquals("geometry", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
 
 		Geometry geometry = ((Intersects) visit).getGeometry();
 		assertTrue(geometry instanceof MultiPoint);
@@ -143,7 +146,8 @@ public class Cql2ParserTest {
 
 		Expression param1 = ((Intersects) visit).getParam1();
 		assertTrue(param1 instanceof ValueReference);
-		assertEquals(((ValueReference) param1).getAsText(), "geometry");
+		assertEquals("geometry", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
 
 		Geometry geometry = ((Intersects) visit).getGeometry();
 		assertTrue(geometry instanceof MultiLineString);
@@ -161,7 +165,8 @@ public class Cql2ParserTest {
 
 		Expression param1 = ((Intersects) visit).getParam1();
 		assertTrue(param1 instanceof ValueReference);
-		assertEquals(((ValueReference) param1).getAsText(), "geometry");
+		assertEquals("geometry", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
 
 		Geometry geometry = ((Intersects) visit).getGeometry();
 		assertTrue(geometry instanceof MultiPolygon);
@@ -181,7 +186,8 @@ public class Cql2ParserTest {
 
 		Expression param1 = ((Intersects) visit).getParam1();
 		assertTrue(param1 instanceof ValueReference);
-		assertEquals(((ValueReference) param1).getAsText(), "geometry");
+		assertEquals("geometry", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
 
 		Geometry geometry = ((Intersects) visit).getGeometry();
 		assertTrue(geometry instanceof MultiGeometry);
@@ -200,7 +206,8 @@ public class Cql2ParserTest {
 
 		Expression param1 = ((Intersects) visit).getParam1();
 		assertTrue(param1 instanceof ValueReference);
-		assertEquals(((ValueReference) param1).getAsText(), "geometry");
+		assertEquals("geometry", ((ValueReference) param1).getAsQName().getLocalPart());
+		assertEquals("", ((ValueReference) param1).getAsQName().getNamespaceURI());
 
 		Geometry geometry = ((Intersects) visit).getGeometry();
 		assertTrue(geometry instanceof Envelope);
@@ -208,6 +215,12 @@ public class Cql2ParserTest {
 		assertEquals(((Envelope) geometry).getMin().get(1), 32.288087, 0.0001);
 		assertEquals(((Envelope) geometry).getMax().get(0), 37.319836, 0.0001);
 		assertEquals(((Envelope) geometry).getMax().get(1), 33.288087, 0.0001);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void test_parse_S_INTERSECTS_nonGeomProperty() throws UnknownCRSException {
+		String intersects = "S_INTERSECTS(testString,BBOX(36.319836,32.288087,37.319836,33.288087))";
+		parseCql2(intersects);
 	}
 
 	@Test
@@ -258,6 +271,13 @@ public class Cql2ParserTest {
 		assertEquals(14, calendar.get(Calendar.DAY_OF_MONTH));
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void test_parse_T_AFTER_nonDateProperty() throws UnknownCRSException {
+		String after = "T_AFTER(testString,TIMESTAMP('2025-04-14T08:59:30Z'))";
+		parseCql2(after);
+
+	}
+
 	private static Object parseCql2(String intersects) throws UnknownCRSException {
 		CharStream input = new ANTLRInputStream(intersects);
 		Cql2Lexer lexer = new Cql2Lexer(input);
@@ -269,8 +289,10 @@ public class Cql2ParserTest {
 		Cql2Parser.BooleanExpressionContext cql2 = parser.booleanExpression();
 
 		ICRS filterCrs = CRSManager.lookup("urn:ogc:def:crs:OGC:1.3:CRS84");
-		List<FilterProperty> filterProperties = Collections
-			.singletonList(new FilterProperty(new QName("testDate"), BaseType.DATE));
+		List<FilterProperty> filterProperties = List.of(
+				new FilterProperty(new QName("testDate"), FilterPropertyType.DATE),
+				new FilterProperty(new QName("testString"), FilterPropertyType.STRING),
+				new FilterProperty(new QName("geometry"), FilterPropertyType.GEOMETRY));
 		Cql2FilterVisitor visitor = new Cql2FilterVisitor(filterCrs, filterProperties);
 		return visitor.visit(cql2);
 	}

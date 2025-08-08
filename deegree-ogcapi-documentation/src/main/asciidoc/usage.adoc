@@ -184,7 +184,7 @@ The following query parameters are supported when using HTTP GET:
 |`limit` |integer |10 |Limit the numbers of items per page
 |`offset` |integer |0 |Start index of items
 |`bulk` |boolean |true |Applicable for features resource only, can be combined with parameter `f`
-|`filter`|String |S_INTERSECTS({spatialQueryable},{spatialInstance}) |Filter limited to `S_INTERSECTS` with first operand `{spatialQueryable}` defining the property name and the second operand `{spatialInstance}` the basic spatial data type point or bounding box.
+|`filter`|String |S_INTERSECTS({spatialQueryable},{spatialInstance}), T_AFTER({temporalQueryable},{temporalInstance}) |Filter limited to `S_INTERSECTS` with first operand `{spatialQueryable}` defining the property name and the second operand `{spatialInstance}` the basic spatial data type point or bounding box. Filter limited to `T_AFTER` with first operand `{temporalQueryable}` defining the property name and the second operand `{temporalInstance}` with a date `DATE('2026-01-01')` or datetime `TIMESTAMP('2025-04-14T08:59:30Z')`. Available `{temporalQueryable}` are listed as additionale queryable in the  <<openapi>> document (type `date` or `date-time`), see note below.
 |`filter-lang`|String |cql2-text |Defines the filtering language, indicates that the value of the `filter` parameter is the text encoding of CQL2, can be combined with parameter `filter`
 |`filter-crs`|String | EPSG:4326 |Allows clients to assert which CRS is being used to encode geometric values in a `filter` expression, can be combined with parameter `filter`
 |===
