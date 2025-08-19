@@ -21,6 +21,8 @@
  */
 package org.deegree.services.oaf;
 
+import org.apache.xerces.xs.XSComplexTypeDefinition;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.deegree.commons.ows.metadata.MetadataUrl;
 import org.deegree.commons.tom.gml.property.PropertyType;
 import org.deegree.commons.tom.ows.LanguageString;
@@ -35,9 +37,11 @@ import org.deegree.feature.persistence.FeatureStoreException;
 import org.deegree.feature.persistence.FeatureStoreProvider;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
+import org.deegree.feature.types.property.CustomPropertyType;
 import org.deegree.feature.types.property.SimplePropertyType;
 import org.deegree.geometry.Envelope;
 import org.deegree.geometry.GeometryTransformer;
+import org.deegree.gml.schema.GMLSchemaInfoSet;
 import org.deegree.services.metadata.OWSMetadataProvider;
 import org.deegree.services.metadata.provider.OWSMetadataProviderProvider;
 import org.deegree.services.oaf.config.htmlview.HtmlViewConfigResource;
@@ -57,7 +61,6 @@ import org.deegree.services.ogcapi.features.DeegreeOAF;
 import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection;
 import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollections;
 import org.deegree.workspace.Resource;
-import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.ResourceInitException;
 import org.deegree.workspace.ResourceMetadata;
 import org.deegree.workspace.Workspace;
@@ -295,11 +298,23 @@ public class OafResource implements Resource {
 
 		List<PropertyType> propertyDeclarations = featureType.getPropertyDeclarations();
 		propertyDeclarations.forEach(propertyDeclaration -> {
-			if (propertyDeclaration instanceof SimplePropertyType) {
+			if (GMLSchemaInfoSet.isGMLNamespace(propertyDeclaration.getName().getNamespaceURI())) {
+				LOG.debug("Skip property in GML namepace ({})", propertyDeclaration.getName());
+			}
+			else if (propertyDeclaration instanceof SimplePropertyType) {
 				PrimitiveType primitiveType = ((SimplePropertyType) propertyDeclaration).getPrimitiveType();
 				BaseType baseType = primitiveType.getBaseType();
 				QName propertyName = propertyDeclaration.getName();
 				filterProperties.add(new FilterProperty(propertyName, FilterPropertyType.fromBaseType(baseType)));
+			}
+			else if (propertyDeclaration instanceof CustomPropertyType) {
+				XSComplexTypeDefinition xsdValueType = ((CustomPropertyType) propertyDeclaration).getXSDValueType();
+				XSTypeDefinition baseType = xsdValueType.getBaseType();
+				FilterPropertyType filterPropertyType = FilterPropertyType.fromXsdTypeDefinition(baseType);
+				if (filterPropertyType != null) {
+					QName propertyName = propertyDeclaration.getName();
+					filterProperties.add(new FilterProperty(propertyName, filterPropertyType));
+				}
 			}
 			else if (propertyDeclaration instanceof org.deegree.feature.types.property.GeometryPropertyType) {
 				filterProperties.add(new FilterProperty(propertyDeclaration.getName(), FilterPropertyType.GEOMETRY));
