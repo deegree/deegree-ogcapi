@@ -199,12 +199,13 @@ The next example shows a complete configuration for a dataset called "trees" wit
     <MetadataURL format="text/html">http://example.metadata.org/path_to_html/1234</MetadataURL> <!--12-->
   </Metadata>
 
-  <ConfigureCollection id="SimpleFeature"> <!--13-->
-    <AddLink href="https://inspire.ec.europa.eu/featureconcept/XXX" rel="tag" type="text/html" title="Feature concept XXX"/>
+  <ConfigureCollection id="TreeFeature"> <!--13-->
+    <AddLink href="https://inspire.ec.europa.eu/featureconcept/" rel="tag" type="text/html" title="Feature concept for trees"/>
   </ConfigureCollection>
 
-  <ConfigureCollections> <!--14-->
-    <AddLink href="https://github.com/INSPIRE-MIF/XXX" rel="describedby" type="text/html" title="Encoding description"/>
+  <ConfigureCollections>
+    <AddLink href="https://github.com/INSPIRE-MIF/" rel="describedby" type="text/html" title="Encoding example"/> <!--14-->
+    <AddLink href="https://schemas.deegree.org/trees.xsd" rel="describedby" type="application/xml" title="GML application schema for trees"/> <!--15-->
   </ConfigureCollections>
 
 </deegreeOAF>
@@ -223,6 +224,7 @@ The next example shows a complete configuration for a dataset called "trees" wit
 <12> metadata link in format `text/html` for the dataset (optional)
 <13> configure additional links for an individual collection. In the example, an additional link to the INSPIRE feature concept for the collection is provided (optional) (required by INSPIRE)
 <14> configure additional links for all collections. In the example, an additional link to the alternative encoding description for collections is provided (optional) (recommended by INSPIRE)
+<15> configure additional links for all collections. In the example, an additional link to the GML application schema is provided (optional) (used by tools such as QGIS and GDAL)
 
 NOTE: The dataset configuration file must be stored in the subdirectory _ogcapi/_. The file is mandatory.
 
