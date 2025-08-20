@@ -1,5 +1,6 @@
 package org.deegree.services.oaf.workspace.configuration;
 
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.deegree.commons.tom.primitive.BaseType;
 
 /**
@@ -22,6 +23,35 @@ public enum FilterPropertyType {
 		catch (IllegalArgumentException e) {
 			return STRING;
 		}
+	}
+
+	/**
+	 * @param typeDefinition may be <code>null</code> (returns null)
+	 * @return FilterPropertyType derived from XSTypeDefinition, <code>null</code>> of not
+	 * a mappable type
+	 */
+	public static FilterPropertyType fromXsdTypeDefinition(XSTypeDefinition typeDefinition) {
+		if (typeDefinition != null) {
+			String type = typeDefinition.getName();
+			switch (type) {
+				case "string":
+				case "anyURI":
+					return STRING;
+				case "boolean":
+					return BOOLEAN;
+				case "decimal":
+					return DECIMAL;
+				case "integer":
+					return INTEGER;
+				case "dateTime":
+					return DATE_TIME;
+				case "time":
+					return TIME;
+				case "date":
+					return DATE;
+			}
+		}
+		return null;
 	}
 
 }
