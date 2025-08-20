@@ -21,11 +21,16 @@
  */
 package org.deegree.services.oaf.cql2;
 
+import static org.deegree.services.oaf.workspace.configuration.FilterPropertyType.DATE;
+import static org.deegree.services.oaf.workspace.configuration.FilterPropertyType.DATE_TIME;
+import static org.deegree.services.oaf.workspace.configuration.FilterPropertyType.TIME;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.deegree.commons.tom.datetime.ISO8601Converter;
@@ -48,6 +53,7 @@ import org.deegree.geometry.primitive.Point;
 import org.deegree.geometry.primitive.Polygon;
 import org.deegree.geometry.primitive.Ring;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.services.oaf.workspace.configuration.FilterPropertyType;
 import org.slf4j.Logger;
 
 /**
@@ -121,9 +127,10 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 		SpatialOperator.SubType type = SpatialOperator.SubType.valueOf(spatialFunctionType);
 		switch (type) {
 			case INTERSECTS:
-				Expression propeName = (Expression) ctx.geomExpression().get(0).accept(this);
+				Expression propName = checkExpressionType((Expression) ctx.geomExpression().get(0).accept(this),
+						FilterPropertyType.GEOMETRY);
 				Geometry geometry = (Geometry) ctx.geomExpression().get(1).accept(this);
-				return new Intersects(propeName, geometry);
+				return new Intersects(propName, geometry);
 		}
 		throw new Cql2UnsupportedExpressionException("Unsupported geometry type " + type);
 	}
@@ -132,8 +139,8 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 	public Object visitPropertyName(Cql2Parser.PropertyNameContext ctx) {
 		String text = ctx.getText();
 		List<QName> filterPropWithSameLocalName = filterProperties.stream()
+			.filter(propName -> propName.getName().getLocalPart().equals(text))
 			.map(FilterProperty::getName)
-			.filter(name -> name.getLocalPart().equals(text))
 			.collect(Collectors.toList());
 		if (!filterPropWithSameLocalName.isEmpty()) {
 			if (filterPropWithSameLocalName.size() > 1)
@@ -142,7 +149,7 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 						filterPropWithSameLocalName.get(0));
 			return new ValueReference(filterPropWithSameLocalName.get(0));
 		}
-		return new ValueReference(text, null);
+		throw new IllegalArgumentException("Property with name " + text + " is not supported.");
 	}
 
 	@Override
@@ -288,7 +295,8 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 		TemporalOperator.SubType type = TemporalOperator.SubType.valueOf(temporalFunctionType);
 		switch (type) {
 			case AFTER:
-				Expression propName = (Expression) ctx.temporalExpression(0).propertyName().accept(this);
+				Expression propName = checkExpressionType(
+						(Expression) ctx.temporalExpression(0).propertyName().accept(this), DATE, DATE_TIME, TIME);
 				Expression dateValue = (Expression) ctx.temporalExpression(1).temporalInstance().accept(this);
 				return new After(propName, dateValue);
 		}
@@ -329,6 +337,23 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 	@Override
 	public Object visitTimestampInstant(Cql2Parser.TimestampInstantContext ctx) {
 		return ISO8601Converter.parseDateTime(ctx.getText().substring(11, ctx.getText().length() - 2));
+	}
+
+	private Expression checkExpressionType(Expression expression, FilterPropertyType... filterPropertyTypes)
+			throws IllegalArgumentException {
+		if (expression instanceof ValueReference) {
+			Optional<FilterProperty> filterProperty = filterProperties.stream()
+				.filter(fp -> fp.getName().equals(((ValueReference) expression).getAsQName()))
+				.findFirst();
+			if (filterProperty.isPresent()
+					&& Arrays.stream(filterPropertyTypes).noneMatch(fp -> fp == filterProperty.get().getType()))
+				throw new IllegalArgumentException(
+						"Property " + filterProperty.get().getName() + " is not of one of the expected types "
+								+ Arrays.stream(filterPropertyTypes)
+									.map(FilterPropertyType::name)
+									.collect(Collectors.joining(",")));
+		}
+		return expression;
 	}
 
 }
