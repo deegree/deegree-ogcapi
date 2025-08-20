@@ -38,10 +38,10 @@ import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownFeatureId;
+import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.io.response.FeatureResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponseBuilder;
-import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.link.Link;
 import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.link.NextLink;
@@ -116,6 +116,8 @@ public class DeegreeDataAccess implements DataAccess {
 			Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes(featureStore);
 			String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
 			return new FeaturesResponseBuilder(firstFeature).withFeatureTypeNsPrefixes(featureTypeNsPrefixes)
+				.withGeometryProperty(featureTypeMetadata.getGeometryProperty())
+				.withSkipGeometryExportAsWkt(featureTypeMetadata.isSkipGeometryExportAsWkt())
 				.withLinks(links)
 				.withResponseCrsName(crs)
 				.withSchemaLocation(namespaceURI, schemaLocation)
@@ -179,6 +181,8 @@ public class DeegreeDataAccess implements DataAccess {
 		String schemaLocation = linkBuilder.createSchemaLink(datasetId, collectionId);
 		String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
 		return new FeaturesResponseBuilder(features).withFeatureTypeNsPrefixes(featureTypeNsPrefixes)
+			.withGeometryProperty(featureTypeMetadata.getGeometryProperty())
+			.withSkipGeometryExportAsWkt(featureTypeMetadata.isSkipGeometryExportAsWkt())
 			.withNumberOfFeatures(limit)
 			.withNumberOfFeaturesMatched(numberOfFeaturesMatched)
 			.withStartIndex(offset)
@@ -202,6 +206,8 @@ public class DeegreeDataAccess implements DataAccess {
 		String schemaLocation = linkBuilder.createSchemaLink(datasetId, collectionId);
 		String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();
 		return new FeaturesResponseBuilder(features).withFeatureTypeNsPrefixes(featureTypeNsPrefixes)
+			.withGeometryProperty(featureTypeMetadata.getGeometryProperty())
+			.withSkipGeometryExportAsWkt(featureTypeMetadata.isSkipGeometryExportAsWkt())
 			.withNumberOfFeatures(limit)
 			.withNumberOfFeaturesMatched(numberOfFeaturesMatched)
 			.withStartIndex(offset)
