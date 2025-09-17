@@ -24,11 +24,11 @@ package org.deegree.services.oaf.domain.landingpage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.deegree.services.oaf.link.Link;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xmlunit.matchers.ValidationMatcher;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,17 +37,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_URL;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class LandingPageIT {
+class LandingPageIT {
 
 	@Test
-	public void testLandingPageToXml() throws Exception {
+	void landingPageToXml() throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(LandingPage.class);
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -61,7 +61,7 @@ public class LandingPageIT {
 	}
 
 	@Test
-	public void testLandingPageToJson() throws Exception {
+	void landingPageToJson() throws Exception {
 		LandingPage landingPage = createLandingPage();
 		ObjectMapper objectMapper = new ObjectMapper();
 		String actual = objectMapper.writeValueAsString(landingPage);

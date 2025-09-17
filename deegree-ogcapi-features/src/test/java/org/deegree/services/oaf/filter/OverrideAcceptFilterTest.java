@@ -28,16 +28,16 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
@@ -46,7 +46,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Test overriding filter for overriding format via query parameter or extension.
  */
-public class OverrideAcceptFilterTest extends JerseyTest {
+class OverrideAcceptFilterTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
@@ -64,35 +64,35 @@ public class OverrideAcceptFilterTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_Header() {
+	void header() {
 		Response response = target("/datasets/oaf/collections/test").request(APPLICATION_JSON_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
 	}
 
 	@Test
-	public void test_Extension() {
+	void extension() {
 		Response response = target("/datasets/oaf/collections/test.xml").request().get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
 	}
 
 	@Test
-	public void test_ExtensionFallback() {
+	void extension_fallback() {
 		Response response = target("/datasets/oaf/collections/test.xkcd").request(APPLICATION_JSON_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
 	}
 
 	@Test
-	public void test_QueryParam_Accept() {
+	void query_param_accept() {
 		Response response = target("/datasets/oaf/collections/test").queryParam("accept", "xml").request().get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
 	}
 
 	@Test
-	public void test_QueryParamMediaType_Accept() {
+	void query_param_media_type_accept() {
 		Response response = target("/datasets/oaf/collections/test").queryParam("accept", APPLICATION_XML)
 			.request()
 			.get();
@@ -101,21 +101,21 @@ public class OverrideAcceptFilterTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_QueryParam_f_xml() {
+	void query_param_f_xml() {
 		Response response = target("/datasets/oaf/collections/test").queryParam("f", "xml").request().get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
 	}
 
 	@Test
-	public void test_QueryParam_f_json() {
+	void query_param_f_json() {
 		Response response = target("/datasets/oaf/collections/test").queryParam("f", "json").request().get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
 	}
 
 	@Test
-	public void test_Priorities() {
+	void priorities() {
 		Response response = target("/datasets/oaf/collections/test.html").queryParam("accept", "xml")
 			.request(APPLICATION_JSON_TYPE)
 			.get();
@@ -124,7 +124,7 @@ public class OverrideAcceptFilterTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_PriorityExtension() {
+	void priority_extension() {
 		Response response = target("/datasets/oaf/collections/test.html").request(APPLICATION_JSON_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(TEXT_HTML));

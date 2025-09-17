@@ -23,7 +23,7 @@ package org.deegree.services.oaf.workspace;
 
 import org.deegree.ogcapi.config.resource.RestartOrUpdateHandler;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>

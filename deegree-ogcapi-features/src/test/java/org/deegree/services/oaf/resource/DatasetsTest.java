@@ -27,17 +27,17 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-public class DatasetsTest extends JerseyTest {
+class DatasetsTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
@@ -54,14 +54,14 @@ public class DatasetsTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_DatatsetsDeclaration_JSON_ShouldBeAvailable() {
+	void datatsets_declaration_json_should_be_available() {
 		Response response = target("/datasets").request(MediaType.APPLICATION_JSON_TYPE).get();
 		String json = response.readEntity(String.class);
 		assertThat(response.getStatus(), is(200));
 	}
 
 	@Test
-	public void test_DatatsetsDeclaration_HTML_ShouldBeAvailable() {
+	void datatsets_declaration_html_should_be_available() {
 		Response response = target("/datasets").request(MediaType.APPLICATION_JSON_TYPE).get();
 		String json = response.readEntity(String.class);
 		assertThat(response.getStatus(), is(200));

@@ -25,15 +25,15 @@ import org.deegree.commons.ows.metadata.MetadataUrl;
 import org.deegree.services.oaf.domain.License;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;

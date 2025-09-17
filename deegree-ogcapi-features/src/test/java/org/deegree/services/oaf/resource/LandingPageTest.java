@@ -29,20 +29,20 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static javax.ws.rs.core.MediaType.TEXT_HTML_TYPE;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML_TYPE;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_ATOM_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
@@ -57,13 +57,13 @@ import static org.deegree.services.oaf.link.LinkRelation.SELF;
 import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DESC;
 import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DOC;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class LandingPageTest extends JerseyTest {
+class LandingPageTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
@@ -80,7 +80,7 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Json_ShouldBeAvailable() {
+	void landing_page_declaration_json_should_be_available() {
 		Response response = target("/datasets/oaf").request(APPLICATION_JSON_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
@@ -88,7 +88,7 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Json_FormatXml_ShouldBeAvailable() {
+	void landing_page_declaration_json_format_xml_should_be_available() {
 		Response response = target("/datasets/oaf").queryParam("f", XML.name()).request(APPLICATION_JSON_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_XML_TYPE));
@@ -97,14 +97,14 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Json_FormatHtml_ShouldBeAvailable() {
+	void landing_page_declaration_json_format_html_should_be_available() {
 		Response response = target("/datasets/oaf").queryParam("f", HTML.name()).request(APPLICATION_JSON_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(TEXT_HTML_TYPE));
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Xml_ShouldBeAvailable() {
+	void landing_page_declaration_xml_should_be_available() {
 		Response response = target("/datasets/oaf").request(APPLICATION_XML).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_XML_TYPE));
@@ -113,7 +113,7 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Xml_FormatJson_ShouldBeAvailable() {
+	void landing_page_declaration_xml_format_json_should_be_available() {
 		Response response = target("/datasets/oaf").queryParam("f", JSON.name()).request(APPLICATION_XML).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
@@ -121,21 +121,21 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Xml_FormatHtml_ShouldBeAvailable() {
+	void landing_page_declaration_xml_format_html_should_be_available() {
 		Response response = target("/datasets/oaf").queryParam("f", HTML.name()).request(APPLICATION_XML).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(TEXT_HTML_TYPE));
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Html_ShouldBeAvailable() {
+	void landing_page_declaration_html_should_be_available() {
 		Response response = target("/datasets/oaf").request(TEXT_HTML_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(TEXT_HTML_TYPE));
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Hml_FormatJson_ShouldBeAvailable() {
+	void landing_page_declaration_hml_format_json_should_be_available() {
 		Response response = target("/datasets/oaf").queryParam("f", JSON.name()).request(TEXT_HTML_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
@@ -143,14 +143,14 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Hml_FormatXml_ShouldBeAvailable() {
+	void landing_page_declaration_hml_format_xml_should_be_available() {
 		Response response = target("/datasets/oaf").queryParam("f", XML.name()).request(TEXT_HTML_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_XML_TYPE));
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Json_UnknownDatasetId() {
+	void landing_page_declaration_json_unknown_dataset_id() {
 		Response response = target("/datasets/unknown").request(APPLICATION_JSON_TYPE).get();
 		assertThat(response.getStatus(), is(404));
 		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
@@ -158,7 +158,7 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Xml_UnknownDatasetId() {
+	void landing_page_declaration_xml_unknown_dataset_id() {
 		Response response = target("/datasets/unknown").request(APPLICATION_XML_TYPE).get();
 		assertThat(response.getStatus(), is(404));
 		assertThat(response.getMediaType(), is(APPLICATION_XML_TYPE));
@@ -167,7 +167,7 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPageDeclaration_Json_UnknownFormat() {
+	void landing_page_declaration_json_unknown_format() {
 		Response response = target("/datasets/oaf").queryParam("f", "unknown").request(APPLICATION_JSON_TYPE).get();
 		assertThat(response.getStatus(), is(400));
 		assertThat(response.getMediaType(), is(APPLICATION_JSON_TYPE));
@@ -175,7 +175,7 @@ public class LandingPageTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_LandingPage_Links() {
+	void landing_page_links() {
 		Response response = target("/datasets/oaf").request(APPLICATION_XML).get();
 		String xml = response.readEntity(String.class);
 		assertThat(xml, hasXPath(linkWith(SELF, APPLICATION_JSON)).withNamespaceContext(nsContext()));

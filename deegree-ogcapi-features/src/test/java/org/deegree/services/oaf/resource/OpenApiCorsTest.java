@@ -24,25 +24,25 @@ package org.deegree.services.oaf.resource;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 import org.deegree.services.oaf.OgcApiFeaturesMediaType;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test OpenApi resource with CORS header enabled.
  */
-public class OpenApiCorsTest extends OpenApiTest {
+class OpenApiCorsTest extends OpenApiTest {
 
-	@BeforeClass
-	public static void setProperties() {
+	@BeforeAll
+	static void setProperties() {
 		System.setProperty(OpenApi.PARAMETER_CORS_ALLOWALL, "true");
 	}
 
-	@AfterClass
-	public static void resetProperties() {
+	@AfterAll
+	static void resetProperties() {
 		System.setProperty(OpenApi.PARAMETER_CORS_ALLOWALL, "");
 	}
 
@@ -50,7 +50,6 @@ public class OpenApiCorsTest extends OpenApiTest {
 	 * Test that when enabled a CORS header is returned.
 	 */
 	@Test
-	@Override
 	public void test_OpenApiCorsHeader() {
 		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get();
 		assertThat(response.getHeaderString("Access-Control-Allow-Origin"), is("*"));

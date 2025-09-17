@@ -21,10 +21,10 @@
  */
 package org.deegree.ogcapi.config.exceptions;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -35,7 +35,7 @@ public class InvalidPathException extends ConfigException {
 	private static final String EXCEPTION_MSG = "No such file in workspace: '%s' -> '%s'";
 
 	public InvalidPathException(String workspaceName, String fileName) {
-		super(String.format(EXCEPTION_MSG, workspaceName, fileName));
+		super(EXCEPTION_MSG.formatted(workspaceName, fileName));
 	}
 
 	@Override

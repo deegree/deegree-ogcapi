@@ -7,38 +7,38 @@ import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.glassfish.jersey.internal.util.collection.StringKeyIgnoreCaseMultivaluedMap;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class LinkBuilderTest {
+class LinkBuilderTest {
 
 	private String BASE_URI = "http://localhost:8081/deegree-services-oaf";
 
 	@Test
-	public void test_createCollectionsLinks() throws URISyntaxException, UnknownDatasetId {
+	void create_collections_links() throws URISyntaxException, UnknownDatasetId {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
@@ -56,7 +56,7 @@ public class LinkBuilderTest {
 	}
 
 	@Test
-	public void test_createCollectionInCollectionsLinks() throws URISyntaxException {
+	void create_collection_in_collections_links() throws URISyntaxException {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
@@ -84,7 +84,7 @@ public class LinkBuilderTest {
 	}
 
 	@Test
-	public void test_createCollectionLinks() throws URISyntaxException {
+	void create_collection_links() throws URISyntaxException {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster";
 		String path = "datasets/oaf/collections/strassenbaumkataster";
 
@@ -111,7 +111,7 @@ public class LinkBuilderTest {
 	}
 
 	@Test
-	public void test_createFeaturesLinks() throws URISyntaxException {
+	void create_features_links() throws URISyntaxException {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
@@ -135,7 +135,7 @@ public class LinkBuilderTest {
 	}
 
 	@Test
-	public void test_createFeaturesLinksWithParams() throws URISyntaxException {
+	void create_features_links_with_params() throws URISyntaxException {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items?offset=10&limit=10";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
@@ -160,7 +160,7 @@ public class LinkBuilderTest {
 	}
 
 	@Test
-	public void test_createSchemaLink() throws URISyntaxException {
+	void create_schema_link() throws URISyntaxException {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/appschema";
 		String path = "datasets/oaf/collections/strassenbaumkataster/appschema";
 

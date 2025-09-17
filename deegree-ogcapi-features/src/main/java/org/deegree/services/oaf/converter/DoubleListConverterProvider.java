@@ -21,9 +21,9 @@
  */
 package org.deegree.services.oaf.converter;
 
-import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverterProvider;
+import jakarta.ws.rs.ext.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -44,12 +44,12 @@ public class DoubleListConverterProvider implements ParamConverterProvider {
 	}
 
 	private <T> boolean isListWithDoubles(Class<T> aClass, Type type) {
-		if (List.class.isAssignableFrom(aClass) && type instanceof ParameterizedType) {
-			Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+		if (List.class.isAssignableFrom(aClass) && type instanceof ParameterizedType parameterizedType) {
+			Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 			if (actualTypeArguments.length == 1) {
 				Type actualTypeArgument = actualTypeArguments[0];
-				if (actualTypeArgument instanceof Class
-						&& ((Class) actualTypeArgument).isAssignableFrom(Double.class)) {
+				if (actualTypeArgument instanceof Class class1
+						&& class1.isAssignableFrom(Double.class)) {
 					return true;
 				}
 			}

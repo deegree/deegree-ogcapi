@@ -42,12 +42,11 @@ import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
 import org.slf4j.Logger;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,7 +145,7 @@ public class DeegreeWorkspaceInitializer {
 	}
 
 	public String createAppschemaUrl(UriInfo uriInfo, String uri) {
-		Path uriPath = Paths.get(URI.create(uri));
+		Path uriPath = Path.of(URI.create(uri));
 		if (uriPath.startsWith(pathToAppschemas)) {
 			Path relativizeUriPath = pathToAppschemas.relativize(uriPath);
 			LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
@@ -205,7 +204,7 @@ public class DeegreeWorkspaceInitializer {
 
 	private Path resolveAppschemasPath(DeegreeWorkspace workspace) {
 		File workspaceLocation = workspace.getLocation();
-		return Paths.get(workspaceLocation.toURI()).resolve(APPSCHEMAS_PATH);
+		return Path.of(workspaceLocation.toURI()).resolve(APPSCHEMAS_PATH);
 	}
 
 }

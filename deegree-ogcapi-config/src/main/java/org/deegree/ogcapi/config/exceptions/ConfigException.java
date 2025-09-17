@@ -21,10 +21,10 @@
  */
 package org.deegree.ogcapi.config.exceptions;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
+import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>

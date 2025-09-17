@@ -23,7 +23,7 @@ package org.deegree.services.oaf.converter;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

@@ -29,7 +29,7 @@ public class UpdateException extends ConfigException {
 	private static final String EXCEPTION_MSG = "Error while updating: '%s'";
 
 	public UpdateException(Exception reason) {
-		super(String.format(EXCEPTION_MSG, reason));
+		super(EXCEPTION_MSG.formatted(reason));
 	}
 
 }

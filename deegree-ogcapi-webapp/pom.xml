@@ -185,6 +185,10 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-junit</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.deegree</groupId>
       <artifactId>deegree-featurestore-simplesql</artifactId>
       <scope>runtime</scope>

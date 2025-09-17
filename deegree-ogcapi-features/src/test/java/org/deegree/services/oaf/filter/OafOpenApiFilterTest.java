@@ -21,9 +21,9 @@
  */
 package org.deegree.services.oaf.filter;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
@@ -33,12 +33,12 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENA
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
@@ -58,27 +58,27 @@ import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class OafOpenApiFilterTest {
+class OafOpenApiFilterTest {
 
 	private static final String BASE_URI = "http://localhost:8081/deegree-services-oaf";
 
 	@Mock
 	static UriInfo uriInfo = mock(UriInfo.class);
 
-	@BeforeClass
-    public static void mockUriInfo(){
+	@BeforeAll
+	static void mockUriInfo(){
         when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI));
     }
 
 	@Test
-	public void testFilterOperation() throws Exception {
+	void filterOperation() throws Exception {
 		OpenAPIV3Parser parser = new OpenAPIV3Parser();
 		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
 		OpenAPI openAPI = parser.read(resource.toExternalForm());
@@ -118,7 +118,7 @@ public class OafOpenApiFilterTest {
 	}
 
 	@Test
-	public void testFilterOperation_WithPrimitiveList() throws Exception {
+	void filterOperationWithPrimitiveList() throws Exception {
 		OpenAPIV3Parser parser = new OpenAPIV3Parser();
 		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
 		OpenAPI openAPI = parser.read(resource.toExternalForm());
@@ -159,7 +159,7 @@ public class OafOpenApiFilterTest {
 	}
 
 	@Test
-	public void testFilterOperation_WithComplexData() throws Exception {
+	void filterOperationWithComplexData() throws Exception {
 		OpenAPIV3Parser parser = new OpenAPIV3Parser();
 		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
 		OpenAPI openAPI = parser.read(resource.toExternalForm());

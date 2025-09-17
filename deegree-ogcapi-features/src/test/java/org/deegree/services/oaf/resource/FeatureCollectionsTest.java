@@ -27,22 +27,22 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Response;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeatureCollectionsTest extends JerseyTest {
+class FeatureCollectionsTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
@@ -59,14 +59,14 @@ public class FeatureCollectionsTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_CollectionsDeclaration_Json_ShouldBeAvailable() {
+	void collections_declaration_json_should_be_available() {
 		Response response = target("/datasets/oaf/collections").request(APPLICATION_JSON_TYPE).get();
 
 		assertThat(response.getStatus(), is(200));
 	}
 
 	@Test
-	public void test_CollectionsDeclaration_Xml_ShouldBeAvailable() {
+	void collections_declaration_xml_should_be_available() {
 		Response response = target("/datasets/oaf/collections").request(APPLICATION_XML).get();
 
 		assertThat(response.getStatus(), is(200));

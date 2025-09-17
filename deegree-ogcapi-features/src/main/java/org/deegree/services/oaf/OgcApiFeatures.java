@@ -33,12 +33,12 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.Provider;
 import java.util.TimeZone;
 
 import static org.slf4j.LoggerFactory.getLogger;

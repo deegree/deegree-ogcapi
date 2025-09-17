@@ -30,26 +30,26 @@ import java.util.List;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class DeegreeDataAccessTest {
+class DeegreeDataAccessTest {
 
 	@Test
-	public void test_selectCrsCode_ETRS89() throws UnknownCRSException {
+	void select_crs_code_etrs89() throws UnknownCRSException {
 		String lookupCode = "http://www.opengis.net/def/crs/EPSG/0/4258";
 		String code = selectCode(lookupCode, Arrays.asList(lookupCode));
 		assertThat(code, is(lookupCode));
 	}
 
 	@Test
-	public void test_selectCrsCode_WGS84() throws UnknownCRSException {
+	void select_crs_code_wgs84() throws UnknownCRSException {
 		String lookupCode = "http://www.opengis.net/def/crs/EPSG/0/4326";
 		String code = selectCode(lookupCode, Arrays.asList(lookupCode));
 		assertThat(code, is(lookupCode));
 	}
 
 	@Test
-	public void test_selectCrsCode_ETRS89_AlternateCode() throws UnknownCRSException {
+	void select_crs_code_etrs89_alternate_code() throws UnknownCRSException {
 		String lookupCode = "urn:ogc:def:crs:EPSG::4258";
 		String allowedCode = "http://www.opengis.net/def/crs/EPSG/0/4258";
 		String code = selectCode(lookupCode, Arrays.asList(allowedCode));
@@ -57,7 +57,7 @@ public class DeegreeDataAccessTest {
 	}
 
 	@Test
-	public void test_selectCrsCode_NoMatch() throws UnknownCRSException {
+	void select_crs_code_no_match() throws UnknownCRSException {
 		String lookupCode = "http://www.opengis.net/def/crs/EPSG/0/4326";
 		ICRS crs = CRSManager.lookup(lookupCode);
 		String code = selectCode(lookupCode, Arrays.asList("EPSG:12345"));

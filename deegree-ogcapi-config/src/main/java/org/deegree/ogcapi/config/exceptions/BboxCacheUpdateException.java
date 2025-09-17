@@ -29,7 +29,7 @@ public class BboxCacheUpdateException extends ConfigException {
 	private static final String EXCEPTION_MSG = "Error while updating bbox cache: '%s'";
 
 	public BboxCacheUpdateException(Exception e) {
-		super(String.format(EXCEPTION_MSG, e));
+		super(EXCEPTION_MSG.formatted(e));
 	}
 
 }

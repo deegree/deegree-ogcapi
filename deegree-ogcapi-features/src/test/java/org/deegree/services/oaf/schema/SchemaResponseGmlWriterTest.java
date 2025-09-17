@@ -7,14 +7,16 @@ import org.deegree.gml.schema.GMLAppSchemaReader;
 import org.deegree.gml.schema.GMLSchemaInfoSet;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.xmlunit.matchers.EvaluateXPathMatcher;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.deegree.gml.GMLVersion.GML_32;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.endsWith;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,8 +37,9 @@ import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-@RunWith(MockitoJUnitRunner.class)
-public class SchemaResponseGmlWriterTest {
+@MockitoSettings(strictness = Strictness.WARN)
+@ExtendWith(MockitoExtension.class)
+class SchemaResponseGmlWriterTest {
 
 	private static final String KITA_XSD = "../io/schema/kita.xsd";
 
@@ -47,7 +50,7 @@ public class SchemaResponseGmlWriterTest {
 	private static final QName ZUZUEGE_FT = new QName("http://www.deegree.org/datasource/feature/sql", "Zuzuege");
 
 	@InjectMocks
-	SchemaResponseGmlWriter schemaResponseGmlWriter = new SchemaResponseGmlWriter();
+	SchemaResponseGmlWriter schemaResponseGmlWriter;
 
 	@Mock
 	DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer();
@@ -56,7 +59,7 @@ public class SchemaResponseGmlWriterTest {
 	UriInfo uriInfo = mock(UriInfo.class);
 
 	@Test
-	public void testWriteTo_ExistingSchema_ExactlyOneSchema() throws Exception {
+	void writeToExistingSchemaExactlyOneSchema() throws Exception {
 		SchemaResponse schemaResponse = createExistingSchemaResponse(KITA_FT, KITA_XSD);
 		OutputStream bos = new ByteArrayOutputStream();
 		schemaResponseGmlWriter.writeTo(schemaResponse, null, null, null, null, null, bos);
@@ -66,7 +69,7 @@ public class SchemaResponseGmlWriterTest {
 	}
 
 	@Test
-	public void testWriteTo_ExistingSchema_WithReferencedSchema() throws Exception {
+	void writeToExistingSchemaWithReferencedSchema() throws Exception {
 		SchemaResponse schemaResponse = createExistingSchemaResponse(ZUZUEGE_FT, ZUZUEGE_XSD);
 		OutputStream bos = new ByteArrayOutputStream();
 		schemaResponseGmlWriter.writeTo(schemaResponse, null, null, null, null, null, bos);
@@ -75,18 +78,18 @@ public class SchemaResponseGmlWriterTest {
 		// The schemeLocation is currently not translated (s. mockWorkspaceInitializer())
 		// TODO: fix mocking
 		assertThat(exportedXsd,
-				EvaluateXPathMatcher
-					.hasXPath("//xs:schema/xs:include[1]/@schemaLocation",
-							CoreMatchers.endsWith("micado_kennzahlen_v1_2.xsd"))
-					.withNamespaceContext(nsContext()));
+			EvaluateXPathMatcher
+				.hasXPath("//xs:schema/xs:include[1]/@schemaLocation",
+					CoreMatchers.endsWith("micado_kennzahlen_v1_2.xsd"))
+				.withNamespaceContext(nsContext()));
 		assertThat(exportedXsd,
-				EvaluateXPathMatcher
-					.hasXPath("//xs:schema/xs:include[2]/@schemaLocation", CoreMatchers.endsWith("zeitreihen_v1.xsd"))
-					.withNamespaceContext(nsContext()));
+			EvaluateXPathMatcher
+				.hasXPath("//xs:schema/xs:include[2]/@schemaLocation", CoreMatchers.endsWith("zeitreihen_v1.xsd"))
+				.withNamespaceContext(nsContext()));
 	}
 
 	private SchemaResponse createExistingSchemaResponse(QName ftName, String xsdResource)
-			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		String xsd = SchemaResponseGmlWriterTest.class.getResource(xsdResource).toString();
 		GMLSchemaInfoSet gmlSchemaInfoSet = new GMLSchemaInfoSet(GML_32, xsd);
 		FeatureType featureType = createFeatureType(ftName, xsdResource);
@@ -94,7 +97,7 @@ public class SchemaResponseGmlWriterTest {
 	}
 
 	private static FeatureType createFeatureType(QName ftName, String xsdResource)
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		String schemaURL = SchemaResponseGmlWriterTest.class.getResource(xsdResource).toString();
 		GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader(GML_32, null, schemaURL);
 		AppSchema schema = xsdAdapter.extractAppSchema();

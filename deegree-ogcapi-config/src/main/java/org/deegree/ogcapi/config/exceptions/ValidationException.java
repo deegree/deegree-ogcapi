@@ -29,7 +29,7 @@ public class ValidationException extends ConfigException {
 	private static final String EXCEPTION_MSG = "Error while validating: '%s'";
 
 	public ValidationException(Exception e) {
-		super(String.format(EXCEPTION_MSG, e));
+		super(EXCEPTION_MSG.formatted(e));
 	}
 
 }

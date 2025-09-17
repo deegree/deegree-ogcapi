@@ -21,9 +21,9 @@
  */
 package org.deegree.services.oaf.exceptions;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -37,7 +37,7 @@ public class UnknownAppschema extends OgcApiFeaturesException {
 	}
 
 	public UnknownAppschema(String appschemaPath) {
-		super(String.format(EXCEPTION_MSG, appschemaPath));
+		super(EXCEPTION_MSG.formatted(appschemaPath));
 	}
 
 	@Override

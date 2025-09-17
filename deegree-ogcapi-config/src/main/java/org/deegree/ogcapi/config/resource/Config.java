@@ -44,24 +44,24 @@ import org.deegree.services.config.ApiKey;
 import org.deegree.services.controller.OGCFrontController;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.IOException;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
+import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.deegree.ogcapi.config.actions.Download.downloadFile;
 import static org.deegree.ogcapi.config.actions.Download.downloadWorkspace;
 import static org.deegree.services.config.actions.Utils.getWorkspaceAndPath;
@@ -124,8 +124,9 @@ public class Config {
 	}
 
 	@GET
-	@Operation(description = "/config/restart/[path] - restarts all resources connected to the specified one\n"
-			+ "/config/restart/wsname - restart with workspace <wsname>")
+	@Operation(description = """
+			/config/restart/[path] - restarts all resources connected to the specified one
+			/config/restart/wsname - restart with workspace <wsname>""")
 	@Path("/restart{path : (.+)?}")
 	public Response restart(@Context HttpServletRequest request, @PathParam("path") String path)
 			throws RestartException {

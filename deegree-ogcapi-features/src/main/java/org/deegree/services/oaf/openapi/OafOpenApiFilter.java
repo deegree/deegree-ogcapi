@@ -60,8 +60,8 @@ import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
-import javax.ws.rs.core.UriInfo;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,8 +70,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
 import static org.apache.xerces.xs.XSConstants.ELEMENT_DECLARATION;
 import static org.apache.xerces.xs.XSConstants.MODEL_GROUP;
 import static org.apache.xerces.xs.XSTypeDefinition.SIMPLE_TYPE;
@@ -308,8 +308,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 				.name(propertyType.getName().getLocalPart())
 				.type("array");
 		}
-		if (propertyType instanceof CustomPropertyType && !isGmlProperty(propertyType)) {
-			XSComplexTypeDefinition xsdValueType = ((CustomPropertyType) propertyType).getXSDValueType();
+		if (propertyType instanceof CustomPropertyType customPropertyType && !isGmlProperty(propertyType)) {
+			XSComplexTypeDefinition xsdValueType = customPropertyType.getXSDValueType();
 			XSParticle particle = xsdValueType.getParticle();
 
 			if (isMaxOccursGreaterThanOne(propertyType)) {
@@ -367,8 +367,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 		XSObjectList particles = modelGroup.getParticles();
 		for (int particleIndex = 0; particleIndex < particles.getLength(); particleIndex++) {
 			XSObject item = particles.item(particleIndex);
-			if (item instanceof XSParticle)
-				addParticle(schema, (XSParticle) item);
+			if (item instanceof XSParticle particle)
+				addParticle(schema, particle);
 		}
 	}
 
@@ -616,8 +616,8 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 	}
 
 	private String mapToPropertyType(PropertyType propertyType) {
-		if (propertyType instanceof SimplePropertyType) {
-			PrimitiveType primitiveType = ((SimplePropertyType) propertyType).getPrimitiveType();
+		if (propertyType instanceof SimplePropertyType simplePropertyType) {
+			PrimitiveType primitiveType = simplePropertyType.getPrimitiveType();
 			BaseType baseType = primitiveType.getBaseType();
 			return mapToPropertyType(baseType);
 		}

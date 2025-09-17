@@ -30,18 +30,18 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
+import java.io.File;
 import java.io.IOException;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
@@ -59,14 +59,14 @@ import static org.mockito.Mockito.when;
  */
 public class OpenApiTest extends JerseyTest {
 
-	@ClassRule
-	public static TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@TempDir
+	public static File temporaryFolder;
 
-	@BeforeClass
-	public static void copyToTmpFolder() throws IOException {
-		temporaryFolder.newFile("swagger-ui-bundle.css");
-		temporaryFolder.newFile("swagger-ui-bundle.js");
-		temporaryFolder.newFile("index.html");
+	@BeforeAll
+	static void copyToTmpFolder() throws IOException {
+		newFile(temporaryFolder, "swagger-ui-bundle.css");
+		newFile(temporaryFolder, "swagger-ui-bundle.js");
+		newFile(temporaryFolder, "index.html");
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class OpenApiTest extends JerseyTest {
 		enable(TestProperties.LOG_TRAFFIC);
 		ServletContext servletContext = mock(ServletContext.class);
 		when(servletContext.getContextPath()).thenReturn("");
-		when(servletContext.getRealPath("/swagger-ui/")).thenReturn(temporaryFolder.getRoot().toString());
+		when(servletContext.getRealPath("/swagger-ui/")).thenReturn(temporaryFolder.toString());
 		ServletConfig servletConfig = mock(ServletConfig.class);
 		when(servletConfig.getServletContext()).thenReturn(servletContext);
 		ResourceConfig resourceConfig = new ResourceConfig();
@@ -95,13 +95,13 @@ public class OpenApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_OpenApiDeclarationShouldBeAvailable() {
+	void open_api_declaration_should_be_available() {
 		int status = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get().getStatus();
 		assertThat(status, is(200));
 	}
 
 	@Test
-	public void test_OpenApiDeclarationAliasShouldBeAvailable() {
+	void open_api_declaration_alias_should_be_available() {
 		int status = target("/datasets/oaf/openapi").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI)
 			.get()
 			.getStatus();
@@ -109,27 +109,27 @@ public class OpenApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_OpenApiHtmlShouldBeAvailable() {
+	void open_api_html_should_be_available() {
 		int status = target("/datasets/oaf/api").request(MediaType.TEXT_HTML).get().getStatus();
 		assertThat(status, is(200));
 	}
 
 	@Test
-	public void test_OpenApiYamlShouldBeAvailable() {
+	void open_api_yaml_should_be_available() {
 		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_YAML_TYPE).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(OgcApiFeaturesMediaType.APPLICATION_YAML));
 	}
 
 	@Test
-	public void test_OpenApiCssShouldReturnCorrectMimeType() {
+	void open_api_css_should_return_correct_mime_type() {
 		Response response = target("/datasets/oaf/api/swagger-ui-bundle.css").request().get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType().toString(), is("text/css"));
 	}
 
 	@Test
-	public void test_OpenApiJavascriptShouldReturnCorrectMimeType() {
+	void open_api_javascript_should_return_correct_mime_type() {
 		Response response = target("/datasets/oaf/api/swagger-ui-bundle.js").request().get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType().toString(), is("text/javascript"));
@@ -139,13 +139,13 @@ public class OpenApiTest extends JerseyTest {
 	 * Test that by default there is no CORS header returned.
 	 */
 	@Test
-	public void test_OpenApiCorsHeader() {
+	void open_api_cors_header() {
 		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get();
 		assertThat(response.getHeaderString("Access-Control-Allow-Origin"), is(nullValue()));
 	}
 
 	@Test
-	public void test_OpenApiContent() {
+	void open_api_content() {
 		String json = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI)
 			.get(String.class);
 
@@ -158,6 +158,12 @@ public class OpenApiTest extends JerseyTest {
 		assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster/items"));
 		assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster/items/{featureId}"));
 		assertThat(json, hasJsonPath("$.paths./api"));
+	}
+
+	private static File newFile(File parent, String child) throws IOException {
+		File result = new File(parent, child);
+		result.createNewFile();
+		return result;
 	}
 
 }

@@ -21,24 +21,24 @@
  */
 package org.deegree.services.oaf.link;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class NextLinkTest {
+class NextLinkTest {
 
 	@Test
-	public void testCreateLink_firstPage() {
+	void createLinkFirstPage() {
 		NextLink nextLink = new NextLink(10, 2, 0);
 
 		UriInfo uriInfo = createUriInfo("http://localhost:8080/oafcollections/buildings/items?limit=2");
@@ -48,7 +48,7 @@ public class NextLinkTest {
 	}
 
 	@Test
-	public void testCreateLink_secondPage() {
+	void createLinkSecondPage() {
 		NextLink nextLink = new NextLink(10, 2, 2);
 
 		UriInfo uriInfo = createUriInfo("http://localhost:8080/oafcollections/buildings/items?limit=2&offset=2");
@@ -58,7 +58,7 @@ public class NextLinkTest {
 	}
 
 	@Test
-	public void testCreateLink_lastPage() {
+	void createLinkLastPage() {
 		NextLink nextLink = new NextLink(10, 2, 8);
 
 		UriInfo uriInfo = createUriInfo("http://localhost:8080/oafcollections/buildings/items?limit=2&offset=8");

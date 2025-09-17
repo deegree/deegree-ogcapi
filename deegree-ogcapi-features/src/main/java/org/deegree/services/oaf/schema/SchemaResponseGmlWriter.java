@@ -7,15 +7,15 @@ import org.deegree.services.oaf.OgcApiFeatures;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Provider;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -25,7 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.gml.GMLVersion.GML_32;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -84,11 +84,11 @@ public class SchemaResponseGmlWriter implements MessageBodyWriter<SchemaResponse
 
 	private void write(SchemaResponse schemaResponse, XMLStreamWriter writer, FeatureType featureType)
 			throws XMLStreamException, IOException {
-		if (schemaResponse instanceof GeneratedSchemaResponse) {
-			write((GeneratedSchemaResponse) schemaResponse, writer, featureType);
+		if (schemaResponse instanceof GeneratedSchemaResponse response1) {
+			write(response1, writer, featureType);
 		}
-		else if (schemaResponse instanceof ExistingSchemaResponse) {
-			write((ExistingSchemaResponse) schemaResponse, writer, featureType);
+		else if (schemaResponse instanceof ExistingSchemaResponse response) {
+			write(response, writer, featureType);
 		}
 		else {
 			throw new IllegalArgumentException("SchemaResponse could not be handled");
