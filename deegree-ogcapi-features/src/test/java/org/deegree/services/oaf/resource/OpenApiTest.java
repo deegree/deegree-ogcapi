@@ -49,8 +49,8 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -141,7 +141,7 @@ public class OpenApiTest extends JerseyTest {
 	@Test
 	void open_api_cors_header() {
 		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get();
-		assertThat(response.getHeaderString("Access-Control-Allow-Origin"), is(nullValue()));
+		assertNull(response.getHeaderString("Access-Control-Allow-Origin"));
 	}
 
 	@Test

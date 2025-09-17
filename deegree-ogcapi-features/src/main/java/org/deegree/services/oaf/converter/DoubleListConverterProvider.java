@@ -48,8 +48,7 @@ public class DoubleListConverterProvider implements ParamConverterProvider {
 			Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 			if (actualTypeArguments.length == 1) {
 				Type actualTypeArgument = actualTypeArguments[0];
-				if (actualTypeArgument instanceof Class class1
-						&& class1.isAssignableFrom(Double.class)) {
+				if (actualTypeArgument instanceof Class class1 && class1.isAssignableFrom(Double.class)) {
 					return true;
 				}
 			}

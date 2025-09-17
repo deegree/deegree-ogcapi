@@ -32,8 +32,8 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_S
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -73,9 +73,10 @@ class OafOpenApiFilterTest {
 	static UriInfo uriInfo = mock(UriInfo.class);
 
 	@BeforeAll
-	static void mockUriInfo(){
-        when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI));
-    }
+	static void mockUriInfo() {
+		when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI), UriBuilder.fromUri(BASE_URI),
+				UriBuilder.fromUri(BASE_URI));
+	}
 
 	@Test
 	void filterOperation() throws Exception {
@@ -90,24 +91,24 @@ class OafOpenApiFilterTest {
 
 		Paths paths = openAPI.getPaths();
 
-		assertThat(paths.get("/api"), notNullValue());
+		assertNotNull(paths.get("/api"));
 		assertThat(paths.get("/api"), hasResponseMediaType(APPLICATION_OPENAPI, TEXT_HTML));
 
-		assertThat(paths.get("/conformance"), notNullValue());
+		assertNotNull(paths.get("/conformance"));
 		assertThat(paths.get("/conformance"), hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-		assertThat(paths.get("/collections"), notNullValue());
+		assertNotNull(paths.get("/collections"));
 		assertThat(paths.get("/collections"), hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-		assertThat(paths.get("/collections/strassenbaumkataster"), notNullValue());
+		assertNotNull(paths.get("/collections/strassenbaumkataster"));
 		assertThat(paths.get("/collections/strassenbaumkataster"),
 				hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-		assertThat(paths.get("/collections/strassenbaumkataster/items"), notNullValue());
+		assertNotNull(paths.get("/collections/strassenbaumkataster/items"));
 		assertThat(paths.get("/collections/strassenbaumkataster/items"), hasResponseMediaType(APPLICATION_GEOJSON,
 				APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2, TEXT_HTML));
 
-		assertThat(paths.get("/collections/strassenbaumkataster/items/{featureId}"), notNullValue());
+		assertNotNull(paths.get("/collections/strassenbaumkataster/items/{featureId}"));
 		assertThat(paths.get("/collections/strassenbaumkataster/items/{featureId}"),
 				hasResponseMediaType(APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
 						APPLICATION_GML_SF2, TEXT_HTML));
@@ -131,7 +132,7 @@ class OafOpenApiFilterTest {
 
 		Paths paths = openAPI.getPaths();
 		PathItem path = paths.get("/collections/KitaEinrichtungen/items");
-		assertThat(path, notNullValue());
+		assertNotNull(path);
 		Schema schema = path.getGet().getResponses().getDefault().getContent().get("application/geo+json").getSchema();
 		Map<String, Schema> properties = schema.getProperties();
 		assertThat(properties.get("type").getType(), is("string"));
@@ -172,7 +173,7 @@ class OafOpenApiFilterTest {
 
 		Paths paths = openAPI.getPaths();
 		PathItem path = paths.get("/collections/Zuwanderung/items");
-		assertThat(path, notNullValue());
+		assertNotNull(path);
 		Schema schema = path.getGet().getResponses().getDefault().getContent().get("application/geo+json").getSchema();
 		Schema featuresSchema = (Schema) schema.getProperties().get("features");
 		Schema propertiesSchema = (Schema) featuresSchema.getProperties().get("properties");

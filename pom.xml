@@ -689,7 +689,7 @@
       <dependency>
         <groupId>jakarta.xml.bind</groupId>
         <artifactId>jakarta.xml.bind-api</artifactId>
-        <version>4.0.2</version>
+        <version>4.0.4</version>
       </dependency>
       <dependency>
         <groupId>org.glassfish.jaxb</groupId>
@@ -940,7 +940,7 @@
     <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
     <java.version>17</java.version>
     <site.dir>${user.home}/Sites</site.dir>
-    <jersey-version>3.1.10</jersey-version>
+    <jersey-version>3.1.11</jersey-version>
     <swagger-version>2.2.34</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.16.2</jackson-version>
@@ -968,7 +968,7 @@
           <plugin>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-maven-plugin</artifactId>
-            <version>4.9.3.2</version>
+            <version>4.9.6.0</version>
             <configuration>
               <xmlOutput>true</xmlOutput>
               <findbugsXmlWithMessages>true</findbugsXmlWithMessages>

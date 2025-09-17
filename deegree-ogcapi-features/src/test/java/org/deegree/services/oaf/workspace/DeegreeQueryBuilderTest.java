@@ -60,8 +60,8 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.FIRST;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.UNLIMITED;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -90,7 +90,7 @@ class DeegreeQueryBuilderTest {
 		Filter filter = query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter, is(nullValue()));
+		assertNull(filter);
 	}
 
 	@Test
@@ -214,8 +214,8 @@ class DeegreeQueryBuilderTest {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfigurationWithoutDatetime());
 		String datetime = "2019-10-08T10:42:52Z";
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
-		assertThrows(InvalidConfigurationException.class, () ->
-			deegreeQueryBuilder.createQuery(FT_METADATA_NODATETIME, featureRequest));
+		assertThrows(InvalidConfigurationException.class,
+				() -> deegreeQueryBuilder.createQuery(FT_METADATA_NODATETIME, featureRequest));
 	}
 
 	@Test
@@ -230,7 +230,7 @@ class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 	}
 
 	@Test
@@ -245,7 +245,7 @@ class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsLike.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLike.class));
 	}
 
 	@Test
@@ -259,7 +259,7 @@ class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsEqualTo) filter.getOperator()).getParameter2()).getValue();
 		assertThat(valueParam2, is(10.0));
 	}
@@ -276,7 +276,7 @@ class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsGreaterThan.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsGreaterThan.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsGreaterThan) filter.getOperator()).getParameter2())
 			.getValue();
 		assertThat(valueParam2, is(9.56));
@@ -294,7 +294,7 @@ class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsLessThan.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLessThan.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsLessThan) filter.getOperator()).getParameter2())
 			.getValue();
 		assertThat(valueParam2, is(5.89));
@@ -312,7 +312,7 @@ class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsGreaterThanOrEqualTo.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsGreaterThanOrEqualTo.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsGreaterThanOrEqualTo) filter.getOperator())
 			.getParameter2()).getValue();
 		assertThat(valueParam2, is(10.0));
@@ -330,7 +330,7 @@ class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsLessThanOrEqualTo.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLessThanOrEqualTo.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsLessThanOrEqualTo) filter.getOperator()).getParameter2())
 			.getValue();
 		assertThat(valueParam2, is(10.0));
@@ -352,10 +352,10 @@ class DeegreeQueryBuilderTest {
 		assertThat(filter.getOperator().getType(), is(LOGICAL));
 
 		Operator first = ((And) filter.getOperator()).getParameter(0);
-		assertThat(first, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(first, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 
 		Operator second = ((And) filter.getOperator()).getParameter(1);
-		assertThat(second, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(second, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 	}
 
 	@Test
@@ -375,10 +375,10 @@ class DeegreeQueryBuilderTest {
 		assertThat(filter.getOperator().getType(), is(LOGICAL));
 
 		Operator first = ((And) filter.getOperator()).getParameter(0);
-		assertThat(first, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(first, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 
 		Operator second = ((And) filter.getOperator()).getParameter(1);
-		assertThat(second, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(second, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 	}
 
 	private Map<FilterProperty, List<String>> createSingleFilterParams(FilterPropertyType type, String value) {

@@ -63,8 +63,8 @@ import static org.deegree.services.oaf.TestData.feature;
 import static org.deegree.services.oaf.TestData.features;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -102,7 +102,7 @@ class FeaturesTest extends JerseyTest {
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_GML_TYPE));
 		MultivaluedMap<String, Object> headers = response.getHeaders();
-		assertThat(headers.get(HEADER_TIMESTAMP).get(0), is(notNullValue()));
+		assertNotNull(headers.get(HEADER_TIMESTAMP).get(0));
 		assertThat(headers.get(HEADER_NUMBER_RETURNED).get(0), is("10"));
 		assertThat(headers.get(HEADER_NUMBER_MATCHED).get(0), is("100"));
 		assertThat(headers.get(HEADER_LINK).size(), is(1));

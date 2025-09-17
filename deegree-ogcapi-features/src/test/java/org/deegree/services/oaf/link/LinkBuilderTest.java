@@ -1,7 +1,6 @@
 package org.deegree.services.oaf.link;
 
 import org.deegree.services.oaf.TestData;
-import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.glassfish.jersey.internal.util.collection.StringKeyIgnoreCaseMultivaluedMap;
@@ -38,7 +37,7 @@ class LinkBuilderTest {
 	private String BASE_URI = "http://localhost:8081/deegree-services-oaf";
 
 	@Test
-	void create_collections_links() throws URISyntaxException, UnknownDatasetId {
+	void create_collections_links() throws Exception {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
@@ -56,7 +55,7 @@ class LinkBuilderTest {
 	}
 
 	@Test
-	void create_collection_in_collections_links() throws URISyntaxException {
+	void create_collection_in_collections_links() throws Exception {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
@@ -84,7 +83,7 @@ class LinkBuilderTest {
 	}
 
 	@Test
-	void create_collection_links() throws URISyntaxException {
+	void create_collection_links() throws Exception {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster";
 		String path = "datasets/oaf/collections/strassenbaumkataster";
 
@@ -111,7 +110,7 @@ class LinkBuilderTest {
 	}
 
 	@Test
-	void create_features_links() throws URISyntaxException {
+	void create_features_links() throws Exception {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
@@ -135,7 +134,7 @@ class LinkBuilderTest {
 	}
 
 	@Test
-	void create_features_links_with_params() throws URISyntaxException {
+	void create_features_links_with_params() throws Exception {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items?offset=10&limit=10";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
@@ -160,7 +159,7 @@ class LinkBuilderTest {
 	}
 
 	@Test
-	void create_schema_link() throws URISyntaxException {
+	void create_schema_link() throws Exception {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/appschema";
 		String path = "datasets/oaf/collections/strassenbaumkataster/appschema";
 

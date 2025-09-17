@@ -78,18 +78,18 @@ class SchemaResponseGmlWriterTest {
 		// The schemeLocation is currently not translated (s. mockWorkspaceInitializer())
 		// TODO: fix mocking
 		assertThat(exportedXsd,
-			EvaluateXPathMatcher
-				.hasXPath("//xs:schema/xs:include[1]/@schemaLocation",
-					CoreMatchers.endsWith("micado_kennzahlen_v1_2.xsd"))
-				.withNamespaceContext(nsContext()));
+				EvaluateXPathMatcher
+					.hasXPath("//xs:schema/xs:include[1]/@schemaLocation",
+							CoreMatchers.endsWith("micado_kennzahlen_v1_2.xsd"))
+					.withNamespaceContext(nsContext()));
 		assertThat(exportedXsd,
-			EvaluateXPathMatcher
-				.hasXPath("//xs:schema/xs:include[2]/@schemaLocation", CoreMatchers.endsWith("zeitreihen_v1.xsd"))
-				.withNamespaceContext(nsContext()));
+				EvaluateXPathMatcher
+					.hasXPath("//xs:schema/xs:include[2]/@schemaLocation", CoreMatchers.endsWith("zeitreihen_v1.xsd"))
+					.withNamespaceContext(nsContext()));
 	}
 
 	private SchemaResponse createExistingSchemaResponse(QName ftName, String xsdResource)
-		throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		String xsd = SchemaResponseGmlWriterTest.class.getResource(xsdResource).toString();
 		GMLSchemaInfoSet gmlSchemaInfoSet = new GMLSchemaInfoSet(GML_32, xsd);
 		FeatureType featureType = createFeatureType(ftName, xsdResource);
@@ -97,7 +97,7 @@ class SchemaResponseGmlWriterTest {
 	}
 
 	private static FeatureType createFeatureType(QName ftName, String xsdResource)
-		throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		String schemaURL = SchemaResponseGmlWriterTest.class.getResource(xsdResource).toString();
 		GMLAppSchemaReader xsdAdapter = new GMLAppSchemaReader(GML_32, null, schemaURL);
 		AppSchema schema = xsdAdapter.extractAppSchema();

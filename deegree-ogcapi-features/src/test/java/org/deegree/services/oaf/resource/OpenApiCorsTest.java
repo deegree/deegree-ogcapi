@@ -50,7 +50,7 @@ class OpenApiCorsTest extends OpenApiTest {
 	 * Test that when enabled a CORS header is returned.
 	 */
 	@Test
-	public void test_OpenApiCorsHeader() {
+	void test_OpenApiCorsHeader() {
 		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get();
 		assertThat(response.getHeaderString("Access-Control-Allow-Origin"), is("*"));
 	}
