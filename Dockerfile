@@ -1,4 +1,4 @@
-FROM maven:3-eclipse-temurin-11 AS builder
+FROM maven:3-eclipse-temurin-17 AS builder
 # Multi stage build - https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 
 # install maven and unzip
@@ -15,7 +15,7 @@ RUN cd /build/ && \
   unzip -o /build/deegree-ogcapi.war -d /target
 
 # add to image...
-FROM tomcat:9.0-jdk11-temurin-jammy
+FROM tomcat:10-jdk17-temurin-noble
 
 ENV LANG=en_US.UTF-8
 
