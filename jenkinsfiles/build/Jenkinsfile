@@ -12,8 +12,8 @@ pipeline {
     MAVEN_OPTS='-Djava.awt.headless=true -Xmx4096m'
   }
   parameters {
-    string name: 'REL_VERSION', defaultValue: "1.3.x", description: 'Next release version'
-    string name: 'DEV_VERSION', defaultValue: "1.3.x-SNAPSHOT", description: 'Next snapshot version'
+    string name: 'REL_VERSION', defaultValue: "2.0.x", description: 'Next release version'
+    string name: 'DEV_VERSION', defaultValue: "2.0.x-SNAPSHOT", description: 'Next snapshot version'
     booleanParam name: 'PERFORM_RELEASE', defaultValue: false, description: 'Perform release build (on main branch only)'
   }
   stages {
