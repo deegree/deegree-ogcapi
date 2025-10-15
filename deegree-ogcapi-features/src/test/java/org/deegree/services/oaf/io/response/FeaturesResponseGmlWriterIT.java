@@ -31,7 +31,7 @@ import org.deegree.gml.GMLInputFactory;
 import org.deegree.gml.GMLStreamReader;
 import org.deegree.services.oaf.io.response.gml.FeaturesResponseGmlWriter;
 import org.deegree.services.oaf.link.Link;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
@@ -50,21 +50,21 @@ import static org.deegree.gml.GMLVersion.GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_SCHEMA_URL;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.xmlunit.matchers.EvaluateXPathMatcher.hasXPath;
 import static org.xmlunit.matchers.ValidationMatcher.valid;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeaturesResponseGmlWriterIT {
+class FeaturesResponseGmlWriterIT {
 
 	private static final String NAMESPACE_URI = "http://deegree.org/app";
 
 	private static final String SCHEMA_LOCATION = "http://schemalocation/datasets/dataset/collections/collection/appschema";
 
 	@Test
-	public void testWriteTo() throws Exception {
+	void writeTo() throws Exception {
 		FeaturesResponseGmlWriter featureResponeWriter = new FeaturesResponseGmlWriter();
 		FeaturesResponse featureResponse = createFeatureResponse();
 		OutputStream bos = new ByteArrayOutputStream();
@@ -86,7 +86,7 @@ public class FeaturesResponseGmlWriterIT {
 	}
 
 	@Test
-	public void testWriteTo_EPSG25832() throws Exception {
+	void writeToEPSG25832() throws Exception {
 		String requestCrs = "EPSG:25832";
 		FeaturesResponseGmlWriter featureResponeWriter = new FeaturesResponseGmlWriter();
 		FeaturesResponse featureResponse = createFeatureResponse(requestCrs);
@@ -109,7 +109,7 @@ public class FeaturesResponseGmlWriterIT {
 	}
 
 	@Test
-	public void testWriteTo_EmptyFeatureResponse() throws Exception {
+	void writeToEmptyFeatureResponse() throws Exception {
 		FeaturesResponseGmlWriter featureResponeWriter = new FeaturesResponseGmlWriter();
 		FeaturesResponse featureResponse = createEmptyFeatureResponse();
 		OutputStream bos = new ByteArrayOutputStream();

@@ -43,9 +43,9 @@ import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.FilterPropertyType;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.hamcrest.CoreMatchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedHashMap;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,15 +60,16 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.FIRST;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.UNLIMITED;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class DeegreeQueryBuilderTest {
+class DeegreeQueryBuilderTest {
 
 	private static final QName FT_NAME = new QName("test");
 
@@ -82,18 +83,18 @@ public class DeegreeQueryBuilderTest {
 	private static final String COLLECTION_ID = "collectionid";
 
 	@Test
-	public void test_CreateQueryWithEmptyRequest() throws Exception {
+	void create_query_with_empty_request() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		Filter filter = query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter, is(nullValue()));
+		assertNull(filter);
 	}
 
 	@Test
-	public void test_CreateQueryWithBulkOverridingLimitAndOffset() throws Exception {
+	void create_query_with_bulk_overriding_limit_and_offset() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withLimit(10)
 			.withOffset(10)
@@ -106,7 +107,7 @@ public class DeegreeQueryBuilderTest {
 	}
 
 	@Test
-	public void test_CreateQueryWithBBoxParameter() throws Exception {
+	void create_query_with_bbox_parameter() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		List<Double> bbox = createBbox();
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withBbox(bbox, null).build();
@@ -118,7 +119,7 @@ public class DeegreeQueryBuilderTest {
 	}
 
 	@Test
-	public void test_CreateQueryWithBBoxAndDatetimeParameter() throws Exception {
+	void create_query_with_bbox_and_datetime_parameter() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		List<Double> bbox = createBbox();
 		String datetime = "2019-10-08T10:42:52Z";
@@ -133,7 +134,7 @@ public class DeegreeQueryBuilderTest {
 	}
 
 	@Test
-	public void test_CreateQueryWithDatetimeParameter_Datetime() throws Exception {
+	void create_query_with_datetime_parameter_datetime() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		String datetime = "2019-10-08T10:42:52Z";
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
@@ -151,7 +152,7 @@ public class DeegreeQueryBuilderTest {
 	}
 
 	@Test
-	public void test_CreateQueryWithDatetimeParameter_Interval() throws Exception {
+	void create_query_with_datetime_parameter_interval() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		String datetime = "2019-10-08T10:42:52Z/2019-10-10T10:42:52Z";
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
@@ -163,7 +164,7 @@ public class DeegreeQueryBuilderTest {
 	}
 
 	@Test
-	public void test_CreateQueryWithDatetimeParameter_IntervalOpenEnd() throws Exception {
+	void create_query_with_datetime_parameter_interval_open_end() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		String datetime = "2019-10-08T10:42:52Z/";
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
@@ -186,7 +187,7 @@ public class DeegreeQueryBuilderTest {
 	}
 
 	@Test
-	public void test_CreateQueryWithDatetimeParameter_IntervalOpenStart() throws Exception {
+	void create_query_with_datetime_parameter_interval_open_start() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		String datetime = "../2019-10-10T10:42:52Z";
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
@@ -208,16 +209,17 @@ public class DeegreeQueryBuilderTest {
 		assertThat(firstLevelSecond.getType(), is(COMPARISON));
 	}
 
-	@Test(expected = InvalidConfigurationException.class)
-	public void test_CreateQueryWithBBoxAndDatetimeParameter_NoDatetimeConfigured() throws Exception {
+	@Test
+	void create_query_with_bbox_and_datetime_parameter_no_datetime_configured() {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfigurationWithoutDatetime());
 		String datetime = "2019-10-08T10:42:52Z";
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
-		deegreeQueryBuilder.createQuery(FT_METADATA_NODATETIME, featureRequest);
+		assertThrows(InvalidConfigurationException.class,
+				() -> deegreeQueryBuilder.createQuery(FT_METADATA_NODATETIME, featureRequest));
 	}
 
 	@Test
-	public void test_CreateQueryWithSingleFilter() throws Exception {
+	void create_query_with_single_filter() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
 				"value");
@@ -228,11 +230,11 @@ public class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 	}
 
 	@Test
-	public void test_CreateQueryWithSingleFilter_Wildcard() throws Exception {
+	void create_query_with_single_filter_wildcard() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
 				"value*");
@@ -243,11 +245,11 @@ public class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsLike.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLike.class));
 	}
 
 	@Test
-	public void test_CreateQueryWithSingleFilter_IntegerEqualTo() throws Exception {
+	void create_query_with_single_filter_integer_equal_to() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER, "10");
 		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
@@ -257,13 +259,13 @@ public class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsEqualTo) filter.getOperator()).getParameter2()).getValue();
 		assertThat(valueParam2, is(10.0));
 	}
 
 	@Test
-	public void test_CreateQueryWithSingleFilter_DecimalGreaterThan() throws Exception {
+	void create_query_with_single_filter_decimal_greater_than() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.DECIMAL,
 				">9.56");
@@ -274,14 +276,14 @@ public class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsGreaterThan.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsGreaterThan.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsGreaterThan) filter.getOperator()).getParameter2())
 			.getValue();
 		assertThat(valueParam2, is(9.56));
 	}
 
 	@Test
-	public void test_CreateQueryWithSingleFilter_DoubleLessThan() throws Exception {
+	void create_query_with_single_filter_double_less_than() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.DOUBLE,
 				"<5.89");
@@ -292,14 +294,14 @@ public class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsLessThan.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLessThan.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsLessThan) filter.getOperator()).getParameter2())
 			.getValue();
 		assertThat(valueParam2, is(5.89));
 	}
 
 	@Test
-	public void test_CreateQueryWithSingleFilter_IntegerGreaterThanOrEqualTo() throws Exception {
+	void create_query_with_single_filter_integer_greater_than_or_equal_to() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER,
 				">=10");
@@ -310,14 +312,14 @@ public class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsGreaterThanOrEqualTo.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsGreaterThanOrEqualTo.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsGreaterThanOrEqualTo) filter.getOperator())
 			.getParameter2()).getValue();
 		assertThat(valueParam2, is(10.0));
 	}
 
 	@Test
-	public void test_CreateQueryWithSingleFilter_IntegerLessThanOrEqualTo() throws Exception {
+	void create_query_with_single_filter_integer_less_than_or_equal_to() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER,
 				"<=10");
@@ -328,14 +330,14 @@ public class DeegreeQueryBuilderTest {
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), is(CoreMatchers.instanceOf(PropertyIsLessThanOrEqualTo.class)));
+		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLessThanOrEqualTo.class));
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsLessThanOrEqualTo) filter.getOperator()).getParameter2())
 			.getValue();
 		assertThat(valueParam2, is(10.0));
 	}
 
 	@Test
-	public void test_CreateQueryWithSingleFilterMultipleValues() throws Exception {
+	void create_query_with_single_filter_multiple_values() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = new MultivaluedHashMap<>();
 		filterParameters.put(new FilterProperty(new QName("http://deegree.org/oaf", "name"), FilterPropertyType.STRING),
@@ -350,14 +352,14 @@ public class DeegreeQueryBuilderTest {
 		assertThat(filter.getOperator().getType(), is(LOGICAL));
 
 		Operator first = ((And) filter.getOperator()).getParameter(0);
-		assertThat(first, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(first, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 
 		Operator second = ((And) filter.getOperator()).getParameter(1);
-		assertThat(second, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(second, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 	}
 
 	@Test
-	public void test_CreateQueryWithMultipleFilter() throws Exception {
+	void create_query_with_multiple_filter() throws Exception {
 		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
 				"value");
@@ -373,10 +375,10 @@ public class DeegreeQueryBuilderTest {
 		assertThat(filter.getOperator().getType(), is(LOGICAL));
 
 		Operator first = ((And) filter.getOperator()).getParameter(0);
-		assertThat(first, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(first, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 
 		Operator second = ((And) filter.getOperator()).getParameter(1);
-		assertThat(second, is(CoreMatchers.instanceOf(PropertyIsEqualTo.class)));
+		assertThat(second, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
 	}
 
 	private Map<FilterProperty, List<String>> createSingleFilterParams(FilterPropertyType type, String value) {

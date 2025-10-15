@@ -341,9 +341,9 @@ public class Cql2FilterVisitor extends Cql2BaseVisitor {
 
 	private Expression checkExpressionType(Expression expression, FilterPropertyType... filterPropertyTypes)
 			throws IllegalArgumentException {
-		if (expression instanceof ValueReference) {
+		if (expression instanceof ValueReference reference) {
 			Optional<FilterProperty> filterProperty = filterProperties.stream()
-				.filter(fp -> fp.getName().equals(((ValueReference) expression).getAsQName()))
+				.filter(fp -> fp.getName().equals(reference.getAsQName()))
 				.findFirst();
 			if (filterProperty.isPresent()
 					&& Arrays.stream(filterPropertyTypes).noneMatch(fp -> fp == filterProperty.get().getType()))

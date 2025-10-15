@@ -61,8 +61,8 @@ import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.ogcapi.config.exceptions.UploadException;
 import org.deegree.services.controller.OGCFrontController;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 

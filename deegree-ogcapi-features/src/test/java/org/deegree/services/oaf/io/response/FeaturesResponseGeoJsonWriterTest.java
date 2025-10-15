@@ -31,7 +31,7 @@ import org.deegree.services.oaf.OgcApiFeaturesConstants;
 import org.deegree.services.oaf.io.response.geojson.FeaturesResponseGeoJsonWriter;
 import org.deegree.services.oaf.link.Link;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -44,15 +44,15 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasNoJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static org.deegree.gml.GMLVersion.GML_32;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeaturesResponseGeoJsonWriterTest {
+class FeaturesResponseGeoJsonWriterTest {
 
 	@Test
-	public void testWriteTo() throws Exception {
+	void writeTo() throws Exception {
 		FeaturesResponseGeoJsonWriter featureResponeWriter = new FeaturesResponseGeoJsonWriter();
 		FeaturesResponse featureResponse = createFeatureResponse();
 		OutputStream bos = new ByteArrayOutputStream();
@@ -68,7 +68,7 @@ public class FeaturesResponseGeoJsonWriterTest {
 	}
 
 	@Test
-	public void testWriteTo_EmptyFeatureResponse() {
+	void writeToEmptyFeatureResponse() {
 		FeaturesResponseGeoJsonWriter featureResponeWriter = new FeaturesResponseGeoJsonWriter();
 		FeaturesResponse featureResponse = createEmptyFeaturesResponse();
 		OutputStream bos = new ByteArrayOutputStream();

@@ -21,7 +21,7 @@
  */
 package org.deegree.services.oaf.exceptions;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>

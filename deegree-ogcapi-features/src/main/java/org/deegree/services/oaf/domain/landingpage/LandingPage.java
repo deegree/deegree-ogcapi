@@ -24,9 +24,9 @@ package org.deegree.services.oaf.domain.landingpage;
 import org.deegree.services.oaf.domain.OafDomainResource;
 import org.deegree.services.oaf.link.Link;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_ATOM_NS_URL;

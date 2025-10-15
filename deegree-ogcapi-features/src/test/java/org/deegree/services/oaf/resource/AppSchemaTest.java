@@ -28,20 +28,20 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.Map;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
-public class AppSchemaTest extends JerseyTest {
+class AppSchemaTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
@@ -59,7 +59,7 @@ public class AppSchemaTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_AppSchemaDeclaration_Xml_ShouldBeAvailable() {
+	void app_schema_declaration_xml_should_be_available() {
 		final String xml = target("/datasets/oaf/collections/KitaEinrichtungen/appschema").request(APPLICATION_XML)
 			.get(String.class);
 

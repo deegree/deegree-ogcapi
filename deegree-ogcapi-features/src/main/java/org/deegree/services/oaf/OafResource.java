@@ -307,14 +307,14 @@ public class OafResource implements Resource {
 			if (GMLSchemaInfoSet.isGMLNamespace(propertyDeclaration.getName().getNamespaceURI())) {
 				LOG.debug("Skip property in GML namepace ({})", propertyDeclaration.getName());
 			}
-			else if (propertyDeclaration instanceof SimplePropertyType) {
-				PrimitiveType primitiveType = ((SimplePropertyType) propertyDeclaration).getPrimitiveType();
+			else if (propertyDeclaration instanceof SimplePropertyType type1) {
+				PrimitiveType primitiveType = type1.getPrimitiveType();
 				BaseType baseType = primitiveType.getBaseType();
 				QName propertyName = propertyDeclaration.getName();
 				filterProperties.add(new FilterProperty(propertyName, FilterPropertyType.fromBaseType(baseType)));
 			}
-			else if (propertyDeclaration instanceof CustomPropertyType) {
-				XSComplexTypeDefinition xsdValueType = ((CustomPropertyType) propertyDeclaration).getXSDValueType();
+			else if (propertyDeclaration instanceof CustomPropertyType type) {
+				XSComplexTypeDefinition xsdValueType = type.getXSDValueType();
 				XSTypeDefinition baseType = xsdValueType.getBaseType();
 				FilterPropertyType filterPropertyType = FilterPropertyType.fromXsdTypeDefinition(baseType);
 				if (filterPropertyType != null) {

@@ -4,28 +4,27 @@ import org.deegree.feature.stream.EmptyFeatureInputStream;
 import org.deegree.feature.stream.FeatureInputStream;
 import org.deegree.services.oaf.OgcApiFeaturesConstants;
 import org.deegree.services.oaf.link.Link;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON_TYPE;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FeaturesResponseCreatorTest {
+class FeaturesResponseCreatorTest {
 
 	@Test
-	public void createJsonResponseWithHeaders() {
+	void createJsonResponseWithHeaders() {
 		FeaturesResponseCreator responseCreator = new FeaturesResponseCreator();
 		FeatureResponse featureResponse = createFeatureResponse();
 		Response response = responseCreator.createJsonResponseWithHeaders(featureResponse);
 
-		assertThat(response.getStatus(), equalTo(200));
-		assertThat(response.getMediaType(), equalTo(APPLICATION_GEOJSON_TYPE.withCharset(UTF_8.name())));
+		assertEquals(200, response.getStatus());
+		assertEquals(response.getMediaType(), APPLICATION_GEOJSON_TYPE.withCharset(UTF_8.name()));
 	}
 
 	private FeatureResponse createFeatureResponse() {

@@ -26,18 +26,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.deegree.services.oaf.exceptions.UnknownAppschema;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>

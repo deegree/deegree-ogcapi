@@ -11,7 +11,7 @@ The installation of these components must be done prior of this installation.
 
 The server hosting the service should have at least 4 GB of free memory and more than 2 CPU cores available.
 
-NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 11] with https://tomcat.apache.org/download-90.cgi[Apache Tomcat 9] is the recommended runtime environment.
+NOTE: https://adoptopenjdk.net/[AdoptOpenJDK 17] with https://tomcat.apache.org/download-10.cgi[Apache Tomcat 10] is the recommended runtime environment.
 
 === Download
 

@@ -22,26 +22,26 @@
 package org.deegree.services.oaf.domain.exeptions;
 
 import org.deegree.services.oaf.domain.exceptions.OgcApiFeaturesExceptionReport;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xmlunit.matchers.ValidationMatcher;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_URL;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class OgcApiFeaturesExceptionReportIT {
+class OgcApiFeaturesExceptionReportIT {
 
 	@Test
-	public void testExceptionToXml() throws Exception {
+	void exceptionToXml() throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(OgcApiFeaturesExceptionReport.class);
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();

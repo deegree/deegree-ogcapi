@@ -23,12 +23,12 @@ package org.deegree.services.oaf.domain.collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xmlunit.matchers.ValidationMatcher;
 import org.xmlunit.validation.Validator;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,17 +40,17 @@ import java.util.TimeZone;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_URL;
 import static org.deegree.services.oaf.TestData.createCollection;
 import static org.deegree.services.oaf.TestData.createCollections;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class CollectionsIT {
+class CollectionsIT {
 
 	@Test
-	public void testCollectionsToXml() throws Exception {
+	void collectionsToXml() throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Collections.class);
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -64,7 +64,7 @@ public class CollectionsIT {
 	}
 
 	@Test
-	public void testCollectionsToJson() throws Exception {
+	void collectionsToJson() throws Exception {
 		Collections collections = createCollections();
 		ObjectMapper objectMapper = new ObjectMapper();
 		// set time zone to correctly interpret value from test data converted to
@@ -76,7 +76,7 @@ public class CollectionsIT {
 	}
 
 	@Test
-	public void testCollectionToJson() throws Exception {
+	void collectionToJson() throws Exception {
 		Collection collection = createCollection();
 		ObjectMapper objectMapper = new ObjectMapper();
 		// set time zone to correctly interpret value from test data converted to

@@ -24,24 +24,24 @@ package org.deegree.services.oaf.resource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_ATOM_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
 import static org.deegree.services.oaf.domain.conformance.ConformanceClass.CORE;
 import static org.deegree.services.oaf.domain.conformance.ConformanceClass.OPENAPI30;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
-public class ConformanceTest extends JerseyTest {
+class ConformanceTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
@@ -50,7 +50,7 @@ public class ConformanceTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_ConformanceDeclaration_Json_ShouldBeAvailable() {
+	void conformance_declaration_json_should_be_available() {
 		final String json = target("/datasets/oaf/conformance").request(APPLICATION_JSON_TYPE).get(String.class);
 
 		assertThat(json, hasJsonPath("$.conformsTo", hasItem(CORE.getConformanceClass())));
@@ -58,7 +58,7 @@ public class ConformanceTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_ConformanceDeclaration_Xml_ShouldBeAvailable() {
+	void conformance_declaration_xml_should_be_available() {
 		final String xml = target("/datasets/oaf/conformance").request(APPLICATION_XML).get(String.class);
 
 		assertThat(xml, hasXPath("//core:ConformsTo/atom:link[@href = '" + CORE.getConformanceClass() + "']")

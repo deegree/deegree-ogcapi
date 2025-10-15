@@ -26,8 +26,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.deegree.services.oaf.domain.OafDomainResource;
 import org.deegree.services.oaf.link.Link;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.stream.Collectors;
 

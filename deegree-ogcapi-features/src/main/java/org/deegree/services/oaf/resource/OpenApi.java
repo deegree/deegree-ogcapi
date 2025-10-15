@@ -31,23 +31,23 @@ import org.deegree.commons.utils.TunableParameter;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.UriInfo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI_YAML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_YAML;
@@ -147,7 +147,7 @@ public class OpenApi {
 			if (path.startsWith("api/"))
 				path = path.substring(4);
 			String base = servletContext.getRealPath("/swagger-ui/");
-			File f = new File(String.format("%s/%s", base, path));
+			File f = new File("%s/%s".formatted(base, path));
 			return Response.ok(new FileInputStream(f), mimeType).build();
 		}
 		catch (FileNotFoundException e) {

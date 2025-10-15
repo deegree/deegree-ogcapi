@@ -26,19 +26,19 @@ import org.deegree.services.oaf.config.htmlview.HtmlViewConfiguration;
 import org.deegree.services.oaf.domain.html.HtmlPageConfiguration;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -67,7 +67,7 @@ public class Global {
 	@Path("/js/{path: .+\\.js$}")
 	@GET
 	public Response getVueFile(@PathParam("path") String path) {
-		return Response.ok(getClass().getResourceAsStream(String.format("/js/%s", path)), "text/javascript").build();
+		return Response.ok(getClass().getResourceAsStream("/js/%s".formatted(path)), "text/javascript").build();
 	}
 
 	@Operation(hidden = true)

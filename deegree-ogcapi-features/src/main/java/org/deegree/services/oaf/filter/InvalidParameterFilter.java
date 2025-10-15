@@ -24,20 +24,20 @@ package org.deegree.services.oaf.filter;
 import org.deegree.services.oaf.domain.exceptions.OgcApiFeaturesExceptionReport;
 import org.deegree.services.oaf.resource.Features;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.deegree.services.oaf.exceptions.ExceptionMediaTypeUtil.selectMediaType;
 
 /**
@@ -89,7 +89,7 @@ public class InvalidParameterFilter implements ContainerRequestFilter {
 	private Response createInvalidParameterResponse(String param, List<String> queryParam) {
 		String queryParamString = queryParam.stream().collect(Collectors.joining(","));
 		MediaType selectedType = selectMediaType(request);
-		String message = String.format(EXCEPTION_MSG, param, queryParamString);
+		String message = EXCEPTION_MSG.formatted(param, queryParamString);
 		OgcApiFeaturesExceptionReport oafExceptionReport = new OgcApiFeaturesExceptionReport(message,
 				BAD_REQUEST.getStatusCode());
 		return Response.status(BAD_REQUEST).entity(oafExceptionReport).type(selectedType).build();

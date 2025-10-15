@@ -35,12 +35,12 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.HEADER_CONTENT_CRS;
@@ -63,8 +63,8 @@ import static org.deegree.services.oaf.TestData.feature;
 import static org.deegree.services.oaf.TestData.features;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -72,7 +72,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class FeaturesTest extends JerseyTest {
+class FeaturesTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
@@ -90,19 +90,19 @@ public class FeaturesTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_FeaturesDeclaration_Json_ShouldBeAvailable() {
+	void features_declaration_json_should_be_available() {
 		Response response = target("/datasets/oaf/collections/test/items").request(APPLICATION_GEOJSON).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getHeaders().get(HEADER_CONTENT_CRS).get(0), is("<" + DEFAULT_CRS + ">"));
 	}
 
 	@Test
-	public void test_FeaturesDeclaration_Gml_ShouldBeAvailable() {
+	void features_declaration_gml_should_be_available() {
 		Response response = target("/datasets/oaf/collections/test/items").request(APPLICATION_GML).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_GML_TYPE));
 		MultivaluedMap<String, Object> headers = response.getHeaders();
-		assertThat(headers.get(HEADER_TIMESTAMP).get(0), is(notNullValue()));
+		assertNotNull(headers.get(HEADER_TIMESTAMP).get(0));
 		assertThat(headers.get(HEADER_NUMBER_RETURNED).get(0), is("10"));
 		assertThat(headers.get(HEADER_NUMBER_MATCHED).get(0), is("100"));
 		assertThat(headers.get(HEADER_LINK).size(), is(1));
@@ -110,21 +110,21 @@ public class FeaturesTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_FeaturesDeclaration_Gml32_ShouldBeAvailable() {
+	void features_declaration_gml32_should_be_available() {
 		Response response = target("/datasets/oaf/collections/test/items").request(APPLICATION_GML_32).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_GML_32_TYPE));
 	}
 
 	@Test
-	public void test_FeaturesDeclaration_Gml32ProfileSF0_ShouldBeAvailable() {
+	void features_declaration_gml32_profile_sf0_should_be_available() {
 		Response response = target("/datasets/oaf/collections/test/items").request(APPLICATION_GML_SF0).get();
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getMediaType(), is(APPLICATION_GML_SF0_TYPE));
 	}
 
 	@Test
-	public void test_FeaturesDeclaration_Gml32ProfileSF2_ShouldBeAvailable() {
+	void features_declaration_gml32_profile_sf2_should_be_available() {
 		Response response = target("/datasets/oaf/collections/test/items").request(APPLICATION_GML_SF2).get();
 		assertThat(response.getStatus(), is(200));
 		MultivaluedMap<String, Object> headers = response.getHeaders();
@@ -132,7 +132,7 @@ public class FeaturesTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_Features_FilterLang() {
+	void features_filter_lang() {
 		Response response = target("/datasets/oaf/collections/test/items")
 			.queryParam("filter-lang", FilterLang.CQL2_TEXT.getType())
 			.request(APPLICATION_GML_SF2)
@@ -141,7 +141,7 @@ public class FeaturesTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_Features_FilterLangInvalid() {
+	void features_filter_lang_invalid() {
 		Response response = target("/datasets/oaf/collections/test/items").queryParam("filter-lang", "unknown")
 			.request(APPLICATION_GML_SF2)
 			.get();

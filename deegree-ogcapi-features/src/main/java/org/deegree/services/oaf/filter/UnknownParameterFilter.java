@@ -30,19 +30,19 @@ import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.Provider;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -50,7 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.deegree.services.oaf.exceptions.ExceptionMediaTypeUtil.selectMediaType;
 
 /**
@@ -97,7 +97,7 @@ public class UnknownParameterFilter implements ContainerRequestFilter {
 
 	private Response createUnknownParameterResponse(String param) {
 		MediaType selectedType = selectMediaType(request);
-		String message = String.format(EXCEPTION_MSG, param);
+		String message = EXCEPTION_MSG.formatted(param);
 		OgcApiFeaturesExceptionReport oafExceptionReport = new OgcApiFeaturesExceptionReport(message,
 				BAD_REQUEST.getStatusCode());
 		return Response.status(BAD_REQUEST).entity(oafExceptionReport).type(selectedType).build();
@@ -108,8 +108,8 @@ public class UnknownParameterFilter implements ContainerRequestFilter {
 		Method method = resourceInfo.getResourceMethod();
 		for (Annotation[] annotations : method.getParameterAnnotations()) {
 			for (Annotation annotation : annotations) {
-				if (annotation instanceof QueryParam) {
-					expectedParams.add(((QueryParam) annotation).value());
+				if (annotation instanceof QueryParam param) {
+					expectedParams.add(param.value());
 				}
 			}
 		}

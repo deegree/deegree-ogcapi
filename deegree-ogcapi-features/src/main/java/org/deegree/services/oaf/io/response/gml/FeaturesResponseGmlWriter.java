@@ -36,12 +36,12 @@ import org.deegree.services.oaf.io.response.AbstractFeatureResponse;
 import org.deegree.services.oaf.io.response.FeatureResponse;
 import org.deegree.services.oaf.io.response.FeaturesResponse;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Provider;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -94,11 +94,11 @@ public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeat
 			xmlStreamWriter.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation",
 					createSchemaLocation(features));
 
-			if (features instanceof FeatureResponse && ((FeatureResponse) features).getFeature() != null) {
-				writeFeature(((FeatureResponse) features).getFeature(), xmlStreamWriter, featureWriter);
+			if (features instanceof FeatureResponse response1 && response1.getFeature() != null) {
+				writeFeature(response1.getFeature(), xmlStreamWriter, featureWriter);
 			}
-			else if (features instanceof FeaturesResponse) {
-				writeFeatures(((FeaturesResponse) features).getFeatures(), xmlStreamWriter, featureWriter);
+			else if (features instanceof FeaturesResponse response) {
+				writeFeatures(response.getFeatures(), xmlStreamWriter, featureWriter);
 			}
 
 			xmlStreamWriter.writeEndElement();

@@ -21,7 +21,7 @@
  */
 package org.deegree.services.oaf;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -44,7 +44,7 @@ public class SchemaLocation {
 	}
 
 	public String asXmlSchemaLocation() {
-		return String.format("%s %s", namespaceURI, schemaLocation);
+		return "%s %s".formatted(namespaceURI, schemaLocation);
 	}
 
 }

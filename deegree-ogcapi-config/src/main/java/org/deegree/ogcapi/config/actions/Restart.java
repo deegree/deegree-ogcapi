@@ -63,7 +63,7 @@ import org.deegree.workspace.ResourceIdentifier;
 import org.deegree.workspace.Workspace;
 import org.deegree.workspace.WorkspaceUtils;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;

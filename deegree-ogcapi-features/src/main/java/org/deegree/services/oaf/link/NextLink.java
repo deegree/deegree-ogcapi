@@ -21,8 +21,8 @@
  */
 package org.deegree.services.oaf.link;
 
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>

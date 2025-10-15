@@ -26,32 +26,32 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 import javax.xml.namespace.QName;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AppSchemaFileTest extends JerseyTest {
 
-	@ClassRule
-	public static TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@TempDir
+	public static File temporaryFolder;
 
 	private static Path pathToXsd;
 
-	@BeforeClass
-	public static void initXsd() throws IOException {
-		pathToXsd = Paths.get(temporaryFolder.newFile("kita.xsd").toURI());
+	@BeforeAll
+	static void initXsd() throws IOException {
+		pathToXsd = Path.of(newFile(temporaryFolder, "kita.xsd").toURI());
 	}
 
 	@Override
@@ -69,10 +69,16 @@ public class AppSchemaFileTest extends JerseyTest {
 	}
 
 	@Test
-	public void test_AppSchemaFileDeclaration_Xml_ShouldBeAvailable() {
+	void app_schema_file_declaration_xml_should_be_available() {
 		int statusCode = target("/appschemas/kita.xsd").request(APPLICATION_XML).get().getStatus();
 
 		assertThat(statusCode, is(200));
+	}
+
+	private static File newFile(File parent, String child) throws IOException {
+		File result = new File(parent, child);
+		result.createNewFile();
+		return result;
 	}
 
 }

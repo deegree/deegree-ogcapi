@@ -21,9 +21,9 @@
  */
 package org.deegree.services.oaf.filter;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
@@ -32,13 +32,13 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_S
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_OPENAPI;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
@@ -58,27 +58,28 @@ import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
-public class OafOpenApiFilterTest {
+class OafOpenApiFilterTest {
 
 	private static final String BASE_URI = "http://localhost:8081/deegree-services-oaf";
 
 	@Mock
 	static UriInfo uriInfo = mock(UriInfo.class);
 
-	@BeforeClass
-    public static void mockUriInfo(){
-        when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI),UriBuilder.fromUri(BASE_URI));
-    }
+	@BeforeAll
+	static void mockUriInfo() {
+		when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI), UriBuilder.fromUri(BASE_URI),
+				UriBuilder.fromUri(BASE_URI));
+	}
 
 	@Test
-	public void testFilterOperation() throws Exception {
+	void filterOperation() throws Exception {
 		OpenAPIV3Parser parser = new OpenAPIV3Parser();
 		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
 		OpenAPI openAPI = parser.read(resource.toExternalForm());
@@ -90,24 +91,24 @@ public class OafOpenApiFilterTest {
 
 		Paths paths = openAPI.getPaths();
 
-		assertThat(paths.get("/api"), notNullValue());
+		assertNotNull(paths.get("/api"));
 		assertThat(paths.get("/api"), hasResponseMediaType(APPLICATION_OPENAPI, TEXT_HTML));
 
-		assertThat(paths.get("/conformance"), notNullValue());
+		assertNotNull(paths.get("/conformance"));
 		assertThat(paths.get("/conformance"), hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-		assertThat(paths.get("/collections"), notNullValue());
+		assertNotNull(paths.get("/collections"));
 		assertThat(paths.get("/collections"), hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-		assertThat(paths.get("/collections/strassenbaumkataster"), notNullValue());
+		assertNotNull(paths.get("/collections/strassenbaumkataster"));
 		assertThat(paths.get("/collections/strassenbaumkataster"),
 				hasResponseMediaType(APPLICATION_JSON, APPLICATION_XML, TEXT_HTML));
 
-		assertThat(paths.get("/collections/strassenbaumkataster/items"), notNullValue());
+		assertNotNull(paths.get("/collections/strassenbaumkataster/items"));
 		assertThat(paths.get("/collections/strassenbaumkataster/items"), hasResponseMediaType(APPLICATION_GEOJSON,
 				APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2, TEXT_HTML));
 
-		assertThat(paths.get("/collections/strassenbaumkataster/items/{featureId}"), notNullValue());
+		assertNotNull(paths.get("/collections/strassenbaumkataster/items/{featureId}"));
 		assertThat(paths.get("/collections/strassenbaumkataster/items/{featureId}"),
 				hasResponseMediaType(APPLICATION_GEOJSON, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0,
 						APPLICATION_GML_SF2, TEXT_HTML));
@@ -118,7 +119,7 @@ public class OafOpenApiFilterTest {
 	}
 
 	@Test
-	public void testFilterOperation_WithPrimitiveList() throws Exception {
+	void filterOperationWithPrimitiveList() throws Exception {
 		OpenAPIV3Parser parser = new OpenAPIV3Parser();
 		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
 		OpenAPI openAPI = parser.read(resource.toExternalForm());
@@ -131,7 +132,7 @@ public class OafOpenApiFilterTest {
 
 		Paths paths = openAPI.getPaths();
 		PathItem path = paths.get("/collections/KitaEinrichtungen/items");
-		assertThat(path, notNullValue());
+		assertNotNull(path);
 		Schema schema = path.getGet().getResponses().getDefault().getContent().get("application/geo+json").getSchema();
 		Map<String, Schema> properties = schema.getProperties();
 		assertThat(properties.get("type").getType(), is("string"));
@@ -159,7 +160,7 @@ public class OafOpenApiFilterTest {
 	}
 
 	@Test
-	public void testFilterOperation_WithComplexData() throws Exception {
+	void filterOperationWithComplexData() throws Exception {
 		OpenAPIV3Parser parser = new OpenAPIV3Parser();
 		URL resource = OafOpenApiFilterTest.class.getResource("openapi.json");
 		OpenAPI openAPI = parser.read(resource.toExternalForm());
@@ -172,7 +173,7 @@ public class OafOpenApiFilterTest {
 
 		Paths paths = openAPI.getPaths();
 		PathItem path = paths.get("/collections/Zuwanderung/items");
-		assertThat(path, notNullValue());
+		assertNotNull(path);
 		Schema schema = path.getGet().getResponses().getDefault().getContent().get("application/geo+json").getSchema();
 		Schema featuresSchema = (Schema) schema.getProperties().get("features");
 		Schema propertiesSchema = (Schema) featuresSchema.getProperties().get("properties");
