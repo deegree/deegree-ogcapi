@@ -22,6 +22,7 @@
 package org.deegree.services.oaf.workspace.configuration;
 
 import org.deegree.commons.ows.metadata.MetadataUrl;
+import org.deegree.cql2.FilterProperty;
 import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.types.FeatureType;
 import org.deegree.services.oaf.domain.collections.Extent;

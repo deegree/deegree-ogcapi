@@ -42,7 +42,7 @@ import org.deegree.services.oaf.domain.FilterLang;
 import org.deegree.services.oaf.workspace.DataAccess;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
-import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.cql2.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 import jakarta.inject.Inject;
