@@ -1,14 +1,14 @@
 [[configuration]]
 == Configuration
 
-This section describes how to configure the deegree OAF webapp.
+This section describes how to configure the deegree ogcapi webapp.
 
-IMPORTANT: deegree OAF is under development, and new configuration options may be added in future releases. For the latest configuration options please consult the example workspace provided with the release version!
+IMPORTANT: deegree ogcapi is under development, and new configuration options may be added in future releases. For the latest configuration options please consult the example workspace provided with the release version!
 
 [[config_workspace]]
-=== OAF workspace
+=== ogcapi workspace
 
-The deegree workspace is the modular, resource-oriented and extensible configuration concept used by deegree. The deegree OAF workspace is an extension of the standard deegree workspace. A deegree OAF workspace can contain additional configuration files specific to deegree OAF.
+The deegree workspace is the modular, resource-oriented and extensible configuration concept used by deegree. The deegree ogcapi workspace is an extension of the standard deegree workspace. A deegree ogcapi workspace can contain additional configuration files specific to deegree ogcapi.
 
 The directory structure and related files are described by the following example. This example consists out of two datasets called _trees_ and _streets_ which data is stored within a PostgreSQL/PostGIS database. The following directory structure shows the files used in this example:
 
@@ -37,7 +37,7 @@ The directory structure and related files are described by the following example
         └── trees_metadata.xml    # <18>
 ----
 <1> config file with APIKEY required to access REST-API (optional)
-<2> config file maps deegree OAF workspace to deegree OAF webapp (mandatory)
+<2> config file maps deegree ogcapi workspace to deegree ogcapi webapp (mandatory)
 <3> the workspace root directory (mandatory)
 <4> subdirectory must contain at least one feature store configuration
 <5> a feature store with id _streets_
@@ -55,26 +55,26 @@ The directory structure and related files are described by the following example
 <17> metadata configuration for dataset streets (optional)
 <18> metadata configuration for dataset trees (optional)
 
-IMPORTANT: The path to the deegree OAF workspace directory can be set by the environment variable `DEEGREE_WORKSPACE_ROOT`. The deegree OAF workspace may contain service configuration files for deegree webservices such as WFS and WMS but those services won't be available with deegree OAF webapp!
+IMPORTANT: The path to the deegree ogcapi workspace directory can be set by the environment variable `DEEGREE_WORKSPACE_ROOT`. The deegree ogcapi workspace may contain service configuration files for deegree webservices such as  WFS and WMS but those services won't be available with deegree ogcapi webapp!
 
 More information about deegree's workspace concept is available in the https://download.deegree.org/documentation/current/html/#_the_deegree_workspace[deegree webservices handbook].
 There you will find more information about the feature store configuration and the https://download.deegree.org/documentation/current/html/#anchor-configuration-jdbc[JDBC connection configuration].
 
 === Configuration files
 
-The deegree OAF workspace adds the following directories to a standard deegree workspace:
+The deegree ogcapi workspace adds the following directories to a standard deegree workspace:
 
 - _ogcapi/_: subdirectory with *dataset configuration* files (required)
 - _html/_: subdirectory with *HTML encoding configuration* files (optional)
 
-A deegree OAF workspace uses the following directories of a standard deegree workspace:
+A deegree ogcapi workspace uses the following directories of a standard deegree workspace:
 
 - _datasources/feature/_: feature store configuration files
 - _jdbc/_: JDBC connection configuration files
 - _services/_: metadata configuration files
 - _config.apikey_: security configuration file in the root directory of the workspace
 
-The following chapters describe how to setup a deegree OAF workspace by the given example.
+The following chapters describe how to setup a deegree ogcapi workspace by the given example.
 
 [[config_datasets]]
 ==== Datasets configuration
@@ -319,10 +319,10 @@ The following excerpt of the _streets_metadata.xml_ shows which options are avai
 
 </deegreeServicesMetadata>
 ----
-<1> information about the service, in the context of OAF it is used per dataset and is shown on the landing page
+<1> information about the service, in the context of ogcapi it is used per dataset and is shown on the landing page
 <2> supports CDATA section with HTML elements
-<3> service metadata link, in the context of OAF this link is used in the collection view link of the metadata
-<4> service metadata link in format `text/html`, in the context of OAF this link is used in the collection view linking to the HTML representation of the metadata.
+<3> service metadata link, in the context of ogcapi this link is used in the collection view link of the metadata
+<4> service metadata link in format `text/html`, in the context of ogcapi this link is used in the collection view linking to the HTML representation of the metadata.
 <5> Use this element when you have a metadata record for the defined feature collection, otherwise define the link to the metadata record on the dataset level as described in chapter <<config_dataset>> for the element `<MetadataURL/>`.
 <6> feature collection name which links to the feature type configured, here the {collectionId}.
 <7> title of the feature collection, used in HTML encoding instead of the {collectionId}
@@ -337,7 +337,7 @@ NOTE: The content of this file is returned under the resources _/datasets/{datas
 [[config_feature_store]]
 ==== Feature store configuration
 
-Currently, deegree OAF supports the following feature stores:
+Currently, deegree ogcapi supports the following feature stores:
 
 - `SQLFeatureStore` - retrieves data from a database supporting an extended mapping
 - `SimpleSQLFeatureStore` - retrieves data from a database using a single table mapping
@@ -442,7 +442,7 @@ NOTE: The content of this file is returned under the resources _/datasets/{datas
 [[config_restapi]]
 === deegree config REST-API
 
-deegree OAF provides a REST-API for configuration purposes. As in https://download.deegree.org/documentation/current/html/#anchor-configuration-restapi[deegree webservices] a client can use the REST interface to manage the configuration. The following operations are supported:
+deegree ogcapi provides a REST-API for configuration purposes. As in https://download.deegree.org/documentation/current/html/#anchor-configuration-restapi[deegree webservices] a client can use the REST interface to manage the configuration. The following operations are supported:
 
 ```
 [HTTP METHOD] [RESOURCE] - [DESCRIPTION]

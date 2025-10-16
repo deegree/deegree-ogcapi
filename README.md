@@ -3,13 +3,15 @@
 | [![Build Status](https://buildserver.deegree.org/buildStatus/icon?job=deegree-ogcapi-BUILD)](https://buildserver.deegree.org/view/deegree-ogcapi/job/deegree-ogcapi-BUILD/) | [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/deegree/deegree-ogcapi?sort=semver)](https://github.com/deegree/deegree-ogcapi/releases/latest) | [![License](https://img.shields.io/badge/License-LGPL%20v2.1-blue.svg)](https://www.gnu.org/licenses/lgpl-2.1) |
 
 # deegree-ogcapi
-The deegree OGC API Features (deegree ogcapi) implementation is compliant to the latest [OGC Standards called OGC API - Features](https://ogcapi.ogc.org/) based on [deegree webservices API](https://github.com/deegree/deegree3).
+The deegree ogcapi (OGC API - Features) implementation is compliant to the latest [OGC Standard called OGC API - Features](https://ogcapi.ogc.org/) based on [deegree webservices API](https://github.com/deegree/deegree3).
 
 ## User documentation
 The user documentation (e.g. "How to set up deegree ogcapi?") can be found in the [user manual](./deegree-ogcapi-documentation/src/main/asciidoc/index.adoc).
 
 ## Developer documentation
-To build deegree ogcapi you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) or higher and [Apache Maven 3.9.x](https://maven.apache.org/). Then run the following command to build the project:
+
+### Building deegree ogcapi
+To build deegree ogcapi you need to install a [JDK 17](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) or higher and [Apache Maven 3.9.x](https://maven.apache.org/). Then run the following command to build the project:
 
 ```shell
 mvn clean install
@@ -40,7 +42,7 @@ To start a Docker container with the name *ogcapi* on port 8080 run the followin
 docker run --name ogcapi -d -p 8080:8080 deegree/deegree-ogcapi:latest
 ```
 
-By default the application runs in the root context, so you can then access the Datasets overview page at <http://localhost:8080/datasets>.
+By default, the application runs in the root context, so you can then access the Datasets overview page at <http://localhost:8080/datasets>.
 
 The container expects the configuration for the default workspace, the API key and the workspace folders at `/workspaces`.
 You can mount a folder to this location or use a volume.
@@ -50,7 +52,7 @@ See the [Docker CLI documentation](https://docs.docker.com/engine/reference/comm
 
 #### Configure the context path
 
-By default using the Docker image deegree ogcapi is served at the root context (`/`).
+By default, using the Docker image deegree ogcapi is served at the root context (`/`).
 
 You can use the environment variable `DEEGREE_CONTEXT_PATH` to use a different context path.
 
@@ -65,7 +67,7 @@ So if you for instance configure `DEEGREE_CONTEXT_PATH` as `deegree#is#awesome` 
 
 #### Configure an API key
 
-By default deegree will generate a random API key if it does not find one.
+By default, deegree will generate a random API key if it does not find one.
 
 In some cases it can be helpful to set a specific API key when running a container. This can be done using the `DEEGREE_API_KEY` environment variable.
 
@@ -82,21 +84,29 @@ The `CATALINA_OPTS` variable allows to configure Java runtime options for runnin
 To specify a system property add an argument like this to `CATALINA_OPTS`: `-D<name>=<value>`
 In the example `<name>` is a placeholder for the name of the system property to set, while `<value>` is a placeholder for the value to set for the system property.
 
+## Support Matrix
+
+Versions of Java, Tomcat and Databases supported by which versions of deegree ogcapi:
+
+| deegree | Java SE |  Jakarta EE  | Tomcat | PostgreSQL/PostGIS | Oracle (Spatial) | MS SQL Server |
+|---------|:-------:|:------------:|:------:|:------------------:|:----------------:|:-------------:|
+| 2.0     |   17+   | Servlet 6.0+ | 10.1+  |     16.0+/3.4+     |   19c,21c,23ai   |   2016-2022   |
+| 1.3     |   11    | Servlet 3.1+ |  9.0+  |     12.0+/3.0+     |   18c,19c,21c    |   2012-2019   |
 
 ## License
 deegree ogcapi is distributed under the [GNU Lesser General Public License, Version 2.1 (LGPL 2.1)](LICENSE).
 
 ## Contribution guidelines
-First off all, thank you for taking the time to contribute to deegree ogcapi project! :+1: :tada:
+First of all, thank you for taking the time to contribute to deegree ogcapi project! :+1: :tada:
 
-By participating you are expected to uphold the [OSGeo deegree contribution guidelines](https://github.com/deegree/deegree3/blob/master/CONTRIB.md).
+By participating you are expected to uphold the [OSGeo deegree contribution guidelines](https://github.com/deegree/deegree3/blob/master/CONTRIBUTING.md).
 
 ## Sponsors
 ### Initial sponsor and implementation partner 
 
 <p align="center">
   <a href="https://geoinfo.hamburg.de/" target="_blank">
-    <img width="260px" src="sponsor_lgv.png">
+    <img width="260" alt="Sponsor logo LGV" src="sponsor_lgv.png">
   </a>
 </p>
 
@@ -104,11 +114,11 @@ By participating you are expected to uphold the [OSGeo deegree contribution guid
 
 <p align="center">
   <a href="https://www.geobasis-bb.de/" target="_blank">
-    <img width="130px" src="sponsor_lgb.jpg">
+    <img width="130" alt="Sponsor logo LGB" src="sponsor_lgb.jpg">
   </a>
 </p>
 
 ### Sponsoring 
 Use [GitHub Sponsors](https://github.com/sponsors/OSGeo) to donate via GitHub or you can submit your donation via [PayPal](https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=NWV8QNKA36YGL&source=url).
 
-The OSGeo Treasurer will contact you to acknowledge your sponsorship. Please have a logo ready for your organization if you wish to be recognized publicly.
+The OSGeo Treasurer will get in contact with you to acknowledge your sponsorship. Please have a logo ready for your organization if you wish to be recognized publicly.
