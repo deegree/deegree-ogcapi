@@ -30,10 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.deegree.commons.tom.TypedObjectNode;
+import org.deegree.cql2.CQL2FilterParser;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
@@ -63,16 +61,12 @@ import org.deegree.filter.temporal.TemporalOperator;
 import org.deegree.geometry.Envelope;
 import org.deegree.geometry.SimpleGeometryFactory;
 import org.deegree.protocol.wfs.getfeature.TypeName;
-import org.deegree.services.oaf.cql2.Cql2ErrorListener;
-import org.deegree.services.oaf.cql2.Cql2FilterVisitor;
-import org.deegree.services.oaf.cql2.Cql2Lexer;
-import org.deegree.services.oaf.cql2.Cql2Parser;
 import org.deegree.services.oaf.exceptions.InternalQueryException;
 import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
-import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.cql2.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 /**
@@ -160,6 +154,7 @@ public class DeegreeQueryBuilder {
 			});
 		}
 		if (featuresRequest.getFilter() != null) {
+
 			filterOperators.add(parseCql2Filter(featuresRequest, featureTypeMetadata));
 		}
 		return filterOperators;
@@ -167,17 +162,9 @@ public class DeegreeQueryBuilder {
 
 	private Operator parseCql2Filter(FeaturesRequest featuresRequest, FeatureTypeMetadata featureTypeMetadata)
 			throws InternalQueryException {
-		CharStream input = new ANTLRInputStream(featuresRequest.getFilter());
-		Cql2Lexer lexer = new Cql2Lexer(input);
-		CommonTokenStream cts = new CommonTokenStream(lexer);
-		cts.fill();
-		Cql2Parser parser = new Cql2Parser(cts);
-		parser.removeErrorListeners();
-		parser.addErrorListener(new Cql2ErrorListener());
-		Cql2Parser.BooleanExpressionContext cql2 = parser.booleanExpression();
-		Cql2FilterVisitor visitor = new Cql2FilterVisitor(lookupCrs(featuresRequest.getFilterCrs()),
-				featureTypeMetadata.getFilterProperties());
-		return (Operator) visitor.visit(cql2);
+		List<FilterProperty> filterProperties = featureTypeMetadata.getFilterProperties();
+		return CQL2FilterParser.parseCql2Filter(featuresRequest.getFilter(), lookupCrs(featuresRequest.getFilterCrs()),
+				filterProperties);
 	}
 
 	private ComparisonOperator createFilterOperator(FilterProperty filterProperty, String value) {

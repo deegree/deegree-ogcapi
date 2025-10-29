@@ -21,7 +21,7 @@
  */
 package org.deegree.services.oaf.io.request;
 
-import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.cql2.FilterProperty;
 
 import java.util.List;
 import java.util.Map;
