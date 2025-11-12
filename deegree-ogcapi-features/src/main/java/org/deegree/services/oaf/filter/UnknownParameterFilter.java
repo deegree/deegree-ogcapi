@@ -21,13 +21,13 @@
  */
 package org.deegree.services.oaf.filter;
 
+import org.deegree.cql2.FilterProperty;
 import org.deegree.services.oaf.domain.exceptions.OgcApiFeaturesExceptionReport;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.resource.Features;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
-import org.deegree.services.oaf.workspace.configuration.FilterProperty;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 import jakarta.inject.Inject;

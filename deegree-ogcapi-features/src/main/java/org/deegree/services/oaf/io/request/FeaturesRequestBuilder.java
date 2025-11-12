@@ -24,7 +24,7 @@ package org.deegree.services.oaf.io.request;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
-import org.deegree.services.oaf.workspace.configuration.FilterProperty;
+import org.deegree.cql2.FilterProperty;
 
 import java.util.List;
 import java.util.Map;
