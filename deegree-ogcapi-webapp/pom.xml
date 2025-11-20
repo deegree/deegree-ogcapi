@@ -79,23 +79,6 @@
               </goals>
             </execution>
           </executions>
-          <dependencies>
-            <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-api</artifactId>
-              <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.logging.log4j</groupId>
-              <artifactId>log4j-core</artifactId>
-              <version>${log4j.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.logging.log4j</groupId>
-              <artifactId>log4j-slf4j-impl</artifactId>
-              <version>${log4j.version}</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <!-- Download Swagger UI webjar. -->
@@ -214,6 +197,18 @@
       <artifactId>deegree-connectionprovider-datasource</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.deegree</groupId>
+      <artifactId>deegree-core-logging-autoconfigure</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      </dependency>
   </dependencies>
 
   <modules>
