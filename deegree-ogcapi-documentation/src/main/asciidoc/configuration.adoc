@@ -466,3 +466,16 @@ of the https://download.deegree.org/documentation/current/html/#anchor-configura
 
 In case you want to avoid any issues when using the OpenAPI document from other locations due to CORS, you can enable allowing all origins specifically for accessing the OpenAPI document.
 To enable this set the system property ```deegree.oaf.openapi.cors.allow_all``` to _true_.
+
+[[config_logging]]
+=== Logging configuration
+
+The deegree ogcapi is using the https://logback.qos.ch/[Logback Project] for logging. By default, deegree ogcapi uses
+the deegree autoconfiguration submodule. This module can log to the console and to files, adjust log patterns, and define
+log levels for various components of deegree ogcapi and its dependencies. If more advanced or customized logging is required,
+you can supply a Logback XML configuration file, which disables autoconfiguration and enables even complex logging setups.
+
+TIP: Place your `logback.xml` file in the classpath of the deegree ogcapi application to provide your custom logging configuration.
+
+Further details on configuring both the autoconfiguration module and a file-based Logback setup can be found in the
+https://download.deegree.org/documentation/current/html/#anchor-logging-configuration[documentation for deegree webservices].
