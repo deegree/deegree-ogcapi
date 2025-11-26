@@ -1,5 +1,5 @@
 # This file is available under the following license:
-# under LGPL 2.1 (LICENSE.TXT) Copyright 2023 Torsten Friebe <tfr@users.sourceforge.net>
+# under LGPL 2.1 (LICENSE.TXT) Copyright 2023-2025 Torsten Friebe <tfr@users.sourceforge.net>
 name: Docker Image CI
 
 on:
@@ -7,9 +7,14 @@ on:
     - cron: "0 1 * * *"
 
 jobs:
-  build-1_3:
+  build_v1:
     # if: contains(github.event.head_commit.message, 'publish')
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        dialect: [ "oracle", "mssql", "postgres" ]
+        version: [ "1.3.9" ]
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
@@ -19,10 +24,20 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push v1.3
-        uses: docker/build-push-action@v4
+      - name: Build and push images for v1.3
+        if: startsWith(matrix.version, '1.3')
+        uses: docker/build-push-action@v6
         with:
           context: ./docker/1.3
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: deegree/deegree-ogcapi:1.3,deegree/deegree-ogcapi:1.3.9,deegree/deegree-ogcapi:latest
+          tags: | 
+            deegree/deegree-ogcapi-${{ matrix.dialect }}:${{ matrix.version }}
+            deegree/deegree-ogcapi-${{ matrix.dialect }}:1.3
+            deegree/deegree-ogcapi-${{ matrix.dialect }}:latest
+          build-args: |
+            DEEGREE_VERSION=${{ matrix.version }}
+            DIALECT=${{ matrix.dialect }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+            VCS_URL=${{ github.repositoryUrl }}
