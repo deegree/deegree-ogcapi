@@ -793,14 +793,15 @@
         <scope>runtime</scope>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>${log4j.version}</version>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-core-logging-autoconfigure</artifactId>
+        <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${log4j.version}</version>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-core-test-logging</artifactId>
+        <version>${deegree-version}</version>
+        <scope>test</scope>
       </dependency>
       <!-- test -->
       <dependency>
@@ -927,8 +928,8 @@
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.16.2</jackson-version>
     <deegree-version>3.6.2</deegree-version>
-    <slf4j.version>1.7.36</slf4j.version>
-    <log4j.version>2.23.1</log4j.version>
+    <slf4j.version>2.0.17</slf4j.version>
+    <logback.version>1.5.19</logback.version>
     <antlr.version>4.13.2</antlr.version>
   </properties>
 
