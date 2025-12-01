@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.deegree</groupId>
   <artifactId>deegree-ogcapi</artifactId>
-  <version>2.0.1-SNAPSHOT</version>
+  <version>2.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>deegree OGC API</name>
   <description>deegree OGC API implementation</description>
@@ -465,6 +465,19 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>2.9.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>makeAggregateBom</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -609,11 +622,6 @@
         <groupId>org.deegree</groupId>
         <artifactId>deegree-protocol-wfs</artifactId>
         <version>${deegree-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-collections4</artifactId>
-        <version>4.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
@@ -798,14 +806,15 @@
         <scope>runtime</scope>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>${log4j.version}</version>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-core-logging-autoconfigure</artifactId>
+        <version>${deegree-version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${log4j.version}</version>
+        <groupId>org.deegree</groupId>
+        <artifactId>deegree-core-test-logging</artifactId>
+        <version>${deegree-version}</version>
+        <scope>test</scope>
       </dependency>
       <!-- test -->
       <dependency>
