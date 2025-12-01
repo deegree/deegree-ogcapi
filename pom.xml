@@ -87,7 +87,7 @@
         <plugin>
           <groupId>org.jvnet.jaxb</groupId>
           <artifactId>jaxb-maven-plugin</artifactId>
-          <version>4.0.11</version>
+          <version>4.0.12</version>
           <executions>
             <execution>
               <goals>
@@ -119,7 +119,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.7.1</version>
+          <version>3.8.0</version>
           <configuration>
             <tarLongFileMode>gnu</tarLongFileMode>
           </configuration>
@@ -127,7 +127,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.9.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -148,7 +148,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
-          <version>2.18.0</version>
+          <version>2.20.1</version>
         </plugin>
         <!-- reporting and site -->
         <plugin>
@@ -176,22 +176,22 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>3.4.0</version>
+          <version>3.5.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.14.0</version>
+          <version>3.14.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.4.2</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.4.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -201,7 +201,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.11.2</version>
+          <version>3.12.0</version>
           <configuration>
             <doclint>none</doclint>
           </configuration>
@@ -209,12 +209,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>3.1.1</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
-          <version>2.1.0</version>
+          <version>2.2.1</version>
         </plugin>
         <!-- git describe -->
         <plugin>
@@ -230,7 +230,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>3.6.2</version>
         </plugin>
         <plugin>
           <groupId>org.antlr</groupId>
@@ -449,7 +449,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>2.6.0</version>
+        <version>2.7.0</version>
       </plugin>
       <plugin>
         <groupId>io.spring.javaformat</groupId>
@@ -692,7 +692,7 @@
       <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
-        <version>4.0.5</version>
+        <version>4.0.6</version>
         <scope>runtime</scope>
       </dependency>
       <!-- swagger -->
@@ -811,7 +811,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.14.0</version>
+        <version>5.14.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -866,7 +866,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.1.34</version>
+        <version>2.1.36</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -928,10 +928,10 @@
     <java.version>17</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>3.1.11</jersey-version>
-    <swagger-version>2.2.37</swagger-version>
+    <swagger-version>2.2.41</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.16.2</jackson-version>
-    <deegree-version>3.6.2</deegree-version>
+    <deegree-version>3.6.4</deegree-version>
     <slf4j.version>1.7.36</slf4j.version>
     <log4j.version>2.23.1</log4j.version>
     <antlr.version>4.13.2</antlr.version>
@@ -955,7 +955,7 @@
           <plugin>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-maven-plugin</artifactId>
-            <version>4.9.6.0</version>
+            <version>4.9.8.2</version>
             <configuration>
               <xmlOutput>true</xmlOutput>
               <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
@@ -965,7 +965,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.26.0</version>
+            <version>3.28.0</version>
             <configuration>
               <linkXref>true</linkXref>
               <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
@@ -1004,7 +1004,7 @@
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
-            <version>12.1.3</version>
+            <version>12.1.9</version>
             <configuration>
               <nvdValidForHours>24</nvdValidForHours>
               <knownExploitedEnabled>false</knownExploitedEnabled>
