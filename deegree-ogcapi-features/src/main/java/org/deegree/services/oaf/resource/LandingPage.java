@@ -21,6 +21,16 @@
  */
 package org.deegree.services.oaf.resource;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
+import static org.deegree.services.oaf.RequestFormat.HTML;
+import static org.deegree.services.oaf.RequestFormat.JSON;
+import static org.deegree.services.oaf.RequestFormat.XML;
+import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
+
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
@@ -28,15 +38,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.deegree.services.oaf.RequestFormat;
-import org.deegree.services.oaf.exceptions.InvalidParameterValue;
-import org.deegree.services.oaf.exceptions.UnknownDatasetId;
-import org.deegree.services.oaf.link.Link;
-import org.deegree.services.oaf.link.LinkBuilder;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
-import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -46,15 +47,14 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import java.util.List;
-
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
-import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
-import static org.deegree.services.oaf.RequestFormat.HTML;
-import static org.deegree.services.oaf.RequestFormat.JSON;
-import static org.deegree.services.oaf.RequestFormat.XML;
-import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
+import org.deegree.services.oaf.RequestFormat;
+import org.deegree.services.oaf.exceptions.InvalidParameterValue;
+import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.link.Link;
+import org.deegree.services.oaf.link.LinkBuilder;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -75,7 +75,7 @@ public class LandingPage {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
-		return landingPage(uriInfo, datasetId, format, JSON);
+		return landingPage(uriInfo, datasetId, format, JSON, APPLICATION_JSON);
 	}
 
 	@GET
@@ -86,7 +86,7 @@ public class LandingPage {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
-		return landingPage(uriInfo, datasetId, format, XML);
+		return landingPage(uriInfo, datasetId, format, XML, APPLICATION_XML);
 	}
 
 	@GET
@@ -96,7 +96,7 @@ public class LandingPage {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
-		return landingPage(uriInfo, datasetId, format, HTML);
+		return landingPage(uriInfo, datasetId, format, HTML, TEXT_HTML);
 	}
 
 	@GET
@@ -105,11 +105,11 @@ public class LandingPage {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
-		return landingPage(uriInfo, datasetId, format, JSON);
+		return landingPage(uriInfo, datasetId, format, JSON, APPLICATION_JSON);
 	}
 
 	private Response landingPage(UriInfo uriInfo, String datasetId, String formatParamValue,
-			RequestFormat defaultFormat) throws UnknownDatasetId, InvalidParameterValue {
+			RequestFormat defaultFormat, String requestedMediaTyp) throws UnknownDatasetId, InvalidParameterValue {
 		OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
 		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
 		if (HTML.equals(requestFormat)) {
@@ -118,7 +118,7 @@ public class LandingPage {
 
 		DatasetMetadata metadata = dataset.getServiceMetadata();
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, requestedMediaTyp);
 		List<Link> links = linkBuilder.createLandingPageLinks(datasetId, metadata);
 		org.deegree.services.oaf.domain.landingpage.LandingPage landingPage = new org.deegree.services.oaf.domain.landingpage.LandingPage(
 				metadata.getTitle(), metadata.getDescription(), links);

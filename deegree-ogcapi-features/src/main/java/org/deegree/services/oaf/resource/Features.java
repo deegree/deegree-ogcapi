@@ -21,6 +21,20 @@
  */
 package org.deegree.services.oaf.resource;
 
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
+import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
+import static org.deegree.services.oaf.RequestFormat.HTML;
+import static org.deegree.services.oaf.RequestFormat.JSON;
+import static org.deegree.services.oaf.RequestFormat.XML;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
@@ -28,23 +42,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.deegree.services.oaf.RequestFormat;
-import org.deegree.services.oaf.exceptions.InternalQueryException;
-import org.deegree.services.oaf.exceptions.InvalidParameterValue;
-import org.deegree.services.oaf.exceptions.UnknownCollectionId;
-import org.deegree.services.oaf.exceptions.UnknownDatasetId;
-import org.deegree.services.oaf.io.response.FeaturesResponse;
-import org.deegree.services.oaf.io.response.FeaturesResponseCreator;
-import org.deegree.services.oaf.io.request.FeaturesRequest;
-import org.deegree.services.oaf.io.request.FeaturesRequestBuilder;
-import org.deegree.services.oaf.link.LinkBuilder;
-import org.deegree.services.oaf.domain.FilterLang;
-import org.deegree.services.oaf.workspace.DataAccess;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
-import org.deegree.cql2.FilterProperty;
-import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -56,20 +53,23 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
-import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GEOJSON;
-import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
-import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
-import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
-import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
-import static org.deegree.services.oaf.RequestFormat.HTML;
-import static org.deegree.services.oaf.RequestFormat.JSON;
-import static org.deegree.services.oaf.RequestFormat.XML;
-import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
+import org.deegree.cql2.FilterProperty;
+import org.deegree.services.oaf.RequestFormat;
+import org.deegree.services.oaf.RequestedMediaType;
+import org.deegree.services.oaf.domain.FilterLang;
+import org.deegree.services.oaf.exceptions.InternalQueryException;
+import org.deegree.services.oaf.exceptions.InvalidParameterValue;
+import org.deegree.services.oaf.exceptions.UnknownCollectionId;
+import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.io.request.FeaturesRequest;
+import org.deegree.services.oaf.io.request.FeaturesRequestBuilder;
+import org.deegree.services.oaf.io.response.FeaturesResponse;
+import org.deegree.services.oaf.io.response.FeaturesResponseCreator;
+import org.deegree.services.oaf.link.LinkBuilder;
+import org.deegree.services.oaf.workspace.DataAccess;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -128,8 +128,10 @@ public class Features {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, JSON, APPLICATION_GEOJSON,
+				APPLICATION_GEOJSON);
 		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, format, JSON);
+				filterLang, filterCrs, crs, requestedMediaType);
 	}
 
 	@GET
@@ -169,8 +171,9 @@ public class Features {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, XML, acceptHeader, APPLICATION_GML);
 		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, format, XML, acceptHeader);
+				filterLang, filterCrs, crs, requestedMediaType);
 	}
 
 	@GET
@@ -210,8 +213,9 @@ public class Features {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML, TEXT_HTML);
 		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, format, HTML);
+				filterLang, filterCrs, crs, requestedMediaType);
 	}
 
 	@GET
@@ -250,24 +254,17 @@ public class Features {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML, TEXT_HTML);
 		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, format, JSON);
+				filterLang, filterCrs, crs, requestedMediaType);
 	}
 
 	private Response features(UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
 			boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter, String filterLang,
-			String filterCrs, String crs, String format, RequestFormat defaultFormat)
-			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
-		return features(uriInfo, datasetId, collectionId, limit, offset, isBulkUpload, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, format, defaultFormat, null);
-	}
-
-	private Response features(UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-			boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter, String filterLang,
-			String filterCrs, String crs, String formatParamValue, RequestFormat defaultFormat, String acceptHeader)
+			String filterCrs, String crs, RequestedMediaType requestedMediaType)
 			throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
 		FilterLang.fromType(filterLang);
-		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
+		RequestFormat requestFormat = requestedMediaType.getRequestFormat();
 		OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
 		oafConfiguration.checkCollection(collectionId);
 		if (HTML.equals(requestFormat)) {
@@ -286,11 +283,12 @@ public class Features {
 			.withQueryableParameters(filterParameters)
 			.withFilter(filter, filterCrs)
 			.build();
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, requestedMediaType.getSelfMediaType());
 		FeaturesResponse featureResponse = dataAccess.retrieveFeatures(oafConfiguration, collectionId, featuresRequest,
 				linkBuilder);
 		if (XML.equals(requestFormat)) {
-			return featureResponseCreator.createGmlResponseWithHeaders(featureResponse, acceptHeader);
+			return featureResponseCreator.createGmlResponseWithHeaders(featureResponse,
+					requestedMediaType.requestedMediaType());
 		}
 		return featureResponseCreator.createJsonResponseWithHeaders(featureResponse);
 	}

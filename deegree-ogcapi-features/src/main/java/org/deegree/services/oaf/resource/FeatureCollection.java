@@ -21,6 +21,17 @@
  */
 package org.deegree.services.oaf.resource;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
+import static org.deegree.services.oaf.RequestFormat.HTML;
+import static org.deegree.services.oaf.RequestFormat.JSON;
+import static org.deegree.services.oaf.RequestFormat.XML;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
@@ -28,7 +39,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import org.deegree.services.oaf.RequestFormat;
+import org.deegree.services.oaf.RequestedMediaType;
 import org.deegree.services.oaf.domain.collections.Collection;
 import org.deegree.services.oaf.domain.collections.Collections;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
@@ -41,28 +62,6 @@ import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.ogcapi.features.AddLink;
 import org.deegree.services.ogcapi.features.DeegreeOAF.ConfigureCollection;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
-
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
-import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
-import static org.deegree.services.oaf.RequestFormat.HTML;
-import static org.deegree.services.oaf.RequestFormat.JSON;
-import static org.deegree.services.oaf.RequestFormat.XML;
-import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -88,7 +87,8 @@ public class FeatureCollection {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@Context UriInfo uriInfo) throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
-		return collection(datasetId, collectionId, uriInfo, format, JSON);
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, JSON, APPLICATION_JSON);
+		return collection(datasetId, collectionId, uriInfo, requestedMediaType);
 	}
 
 	@GET
@@ -99,7 +99,8 @@ public class FeatureCollection {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@Context UriInfo uriInfo) throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
-		return collection(datasetId, collectionId, uriInfo, format, XML);
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, XML, APPLICATION_XML);
+		return collection(datasetId, collectionId, uriInfo, requestedMediaType);
 	}
 
 	@GET
@@ -110,7 +111,8 @@ public class FeatureCollection {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@Context UriInfo uriInfo) throws UnknownCollectionId, InvalidParameterValue, UnknownDatasetId {
-		return collection(datasetId, collectionId, uriInfo, format, HTML);
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML);
+		return collection(datasetId, collectionId, uriInfo, requestedMediaType);
 	}
 
 	@GET
@@ -120,18 +122,19 @@ public class FeatureCollection {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@Context UriInfo uriInfo) throws UnknownCollectionId, InvalidParameterValue, UnknownDatasetId {
-		return collection(datasetId, collectionId, uriInfo, format, JSON);
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, JSON, APPLICATION_JSON);
+		return collection(datasetId, collectionId, uriInfo, requestedMediaType);
 	}
 
-	private Response collection(String datasetId, String collectionId, UriInfo uriInfo, String formatParamValue,
-			RequestFormat defaultFormat) throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
-		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
+	private Response collection(String datasetId, String collectionId, UriInfo uriInfo,
+			RequestedMediaType requestedMediaTyp) throws UnknownCollectionId, UnknownDatasetId, InvalidParameterValue {
+		RequestFormat requestFormat = requestedMediaTyp.getRequestFormat();
 		OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
 		oafConfiguration.checkCollection(collectionId);
 		if (HTML.equals(requestFormat)) {
 			return Response.ok(getClass().getResourceAsStream("/collection.html"), TEXT_HTML).build();
 		}
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, requestedMediaTyp.getSelfMediaType());
 		Collection collection = dataAccess.createCollection(oafConfiguration, collectionId, linkBuilder);
 		addAdditionalCollectionLinks(datasetId, collection);
 

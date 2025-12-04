@@ -21,21 +21,6 @@
  */
 package org.deegree.services.oaf.resource;
 
-import org.deegree.services.oaf.exceptions.OgcApiFeaturesExceptionMapper;
-import org.deegree.services.oaf.link.LinkRelation;
-import org.deegree.services.oaf.openapi.OpenApiCreator;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.glassfish.jersey.test.TestProperties;
-import org.junit.jupiter.api.Test;
-
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
@@ -59,6 +44,21 @@ import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DOC;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Response;
+import org.deegree.services.oaf.exceptions.OgcApiFeaturesExceptionMapper;
+import org.deegree.services.oaf.link.LinkRelation;
+import org.deegree.services.oaf.openapi.OpenApiCreator;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.TestProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -178,9 +178,9 @@ class LandingPageTest extends JerseyTest {
 	void landing_page_links() {
 		Response response = target("/datasets/oaf").request(APPLICATION_XML).get();
 		String xml = response.readEntity(String.class);
-		assertThat(xml, hasXPath(linkWith(SELF, APPLICATION_JSON)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(SELF, APPLICATION_XML)).withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath(linkWith(ALTERNATE, APPLICATION_JSON)).withNamespaceContext(nsContext()));
 		assertThat(xml, hasXPath(linkWith(ALTERNATE, TEXT_HTML)).withNamespaceContext(nsContext()));
-		assertThat(xml, hasXPath(linkWith(ALTERNATE, APPLICATION_XML)).withNamespaceContext(nsContext()));
 		assertThat(xml, hasXPath(linkWith(SERVICE_DESC, APPLICATION_OPENAPI)).withNamespaceContext(nsContext()));
 		assertThat(xml, hasXPath(linkWith(SERVICE_DOC, TEXT_HTML)).withNamespaceContext(nsContext()));
 		assertThat(xml, hasXPath(linkWith(CONFORMANCE, APPLICATION_JSON)).withNamespaceContext(nsContext()));

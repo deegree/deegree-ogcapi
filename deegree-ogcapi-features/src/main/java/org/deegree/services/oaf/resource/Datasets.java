@@ -21,20 +21,19 @@
  */
 package org.deegree.services.oaf.resource;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
+import static org.deegree.services.oaf.RequestFormat.HTML;
+import static org.deegree.services.oaf.RequestFormat.JSON;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.deegree.services.oaf.RequestFormat;
-import org.deegree.services.oaf.config.datasets.DatasetsConfiguration;
-import org.deegree.services.oaf.domain.dataset.Dataset;
-import org.deegree.services.oaf.exceptions.InvalidParameterValue;
-import org.deegree.services.oaf.link.Link;
-import org.deegree.services.oaf.link.LinkBuilder;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-import org.deegree.services.oaf.workspace.configuration.OafDatasets;
-
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -43,15 +42,15 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
-import static org.deegree.services.oaf.RequestFormat.HTML;
-import static org.deegree.services.oaf.RequestFormat.JSON;
-import static org.deegree.services.oaf.RequestFormat.byFormatParameter;
+import org.deegree.services.oaf.RequestedMediaType;
+import org.deegree.services.oaf.config.datasets.DatasetsConfiguration;
+import org.deegree.services.oaf.domain.dataset.Dataset;
+import org.deegree.services.oaf.exceptions.InvalidParameterValue;
+import org.deegree.services.oaf.link.Link;
+import org.deegree.services.oaf.link.LinkBuilder;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
+import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -69,7 +68,8 @@ public class Datasets {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue {
-		return datasets(uriInfo, format, JSON);
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, JSON, APPLICATION_JSON);
+		return datasets(uriInfo, requestedMediaType);
 	}
 
 	@GET
@@ -79,16 +79,15 @@ public class Datasets {
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue {
-		return datasets(uriInfo, format, HTML);
+		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML);
+		return datasets(uriInfo, requestedMediaType);
 	}
 
-	private Response datasets(UriInfo uriInfo, String formatParamValue, RequestFormat defaultFormat)
-			throws InvalidParameterValue {
-		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
-		if (HTML.equals(requestFormat)) {
+	private Response datasets(UriInfo uriInfo, RequestedMediaType requestedMediaType) throws InvalidParameterValue {
+		if (HTML.equals(requestedMediaType.getRequestFormat())) {
 			return Response.ok(getClass().getResourceAsStream("/datasets.html"), TEXT_HTML).build();
 		}
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, requestedMediaType.getSelfMediaType());
 		List<Link> links = linkBuilder.createDatasetsLinks();
 		List<Dataset> datasets = new ArrayList<>();
 

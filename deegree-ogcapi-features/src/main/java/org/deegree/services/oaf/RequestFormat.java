@@ -37,7 +37,7 @@ public enum RequestFormat {
 		for (RequestFormat requestFormat : values())
 			if (requestFormat.name().equalsIgnoreCase(format))
 				return requestFormat;
-		throw new InvalidParameterValue("f", "Supported values are: JSON, HTML");
+		throw new InvalidParameterValue("f", "Supported values are: JSON, HTML, XML");
 	}
 
 }
