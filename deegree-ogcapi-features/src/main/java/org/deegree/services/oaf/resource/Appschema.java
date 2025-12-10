@@ -21,13 +21,33 @@
  */
 package org.deegree.services.oaf.resource;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static java.util.stream.Collectors.toMap;
+import static org.deegree.gml.GMLVersion.GML_32;
+
+import javax.xml.namespace.QName;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
 import org.deegree.gml.schema.GMLSchemaInfoSet;
-import org.deegree.services.oaf.exceptions.UnknownAppschema;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
 import org.deegree.services.oaf.link.LinkBuilder;
@@ -38,27 +58,6 @@ import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
-import javax.xml.namespace.QName;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import static java.util.stream.Collectors.toMap;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
-import static org.deegree.gml.GMLVersion.GML_32;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -76,7 +75,7 @@ public class Appschema {
 	@Tag(name = "Schema")
 	public Response appschema(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
 			@PathParam("collectionId") String collectionId) throws UnknownDatasetId, UnknownCollectionId {
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, APPLICATION_XML);
 		OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
 		OafDatasetConfiguration dataset = oafDatasets.getDataset(datasetId);
 		FeatureTypeMetadata featureTypeMetadata = dataset.getFeatureTypeMetadata(collectionId);

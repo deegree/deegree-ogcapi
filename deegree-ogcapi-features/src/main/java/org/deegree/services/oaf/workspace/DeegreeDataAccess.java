@@ -111,7 +111,7 @@ public class DeegreeDataAccess implements DataAccess {
 			Feature firstFeature = retrieveRequestedFeature(featureId, featureStore, queryById);
 
 			String datasetId = oafConfiguration.getId();
-			List<Link> links = linkBuilder.createFeatureLinks(datasetId, collectionId, featureId);
+			List<Link> links = linkBuilder.createFeatureLinks(datasetId, collectionId);
 			String schemaLocation = linkBuilder.createSchemaLink(datasetId, collectionId);
 			Map<String, String> featureTypeNsPrefixes = getFeatureTypeNsPrefixes(featureStore);
 			String namespaceURI = featureTypeMetadata.getName().getNamespaceURI();

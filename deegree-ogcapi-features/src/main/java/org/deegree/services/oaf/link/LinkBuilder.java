@@ -21,15 +21,6 @@
  */
 package org.deegree.services.oaf.link;
 
-import org.deegree.commons.ows.metadata.MetadataUrl;
-import org.deegree.services.oaf.domain.License;
-import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
-
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.core.UriInfo;
-import java.util.ArrayList;
-import java.util.List;
-
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
@@ -53,6 +44,16 @@ import static org.deegree.services.oaf.link.LinkRelation.SELF;
 import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DESC;
 import static org.deegree.services.oaf.link.LinkRelation.SERVICE_DOC;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
+import org.deegree.commons.ows.metadata.MetadataUrl;
+import org.deegree.services.oaf.domain.License;
+import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
+
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
@@ -60,8 +61,26 @@ public class LinkBuilder {
 
 	private final UriInfo uriInfo;
 
+	private final String requestedMediaType;
+
+	private static final Map<String, String> AVAILABLE_LINKS = Map.of(APPLICATION_JSON, "this document as JSON",
+			TEXT_HTML, "this document as HTML", APPLICATION_XML, "this document as XML");
+
+	private static final Map<String, String> AVAILABLE_DATASET_LINKS = Map.of(APPLICATION_JSON, "this document",
+			TEXT_HTML, "this document as HTML");
+
+	private static final Map<String, String> AVAILABLE_GEO_LINKS = Map.of(APPLICATION_GEOJSON, "this document as JSON",
+			TEXT_HTML, "this document as HTML", APPLICATION_GML, "this document as GML", APPLICATION_GML_32,
+			"this document as GML", APPLICATION_GML_SF0, "this document as GML", APPLICATION_GML_SF2,
+			"this document as GML");
+
 	public LinkBuilder(UriInfo uriInfo) {
+		this(uriInfo, null);
+	}
+
+	public LinkBuilder(UriInfo uriInfo, String requestedMediaType) {
 		this.uriInfo = uriInfo;
+		this.requestedMediaType = requestedMediaType;
 	}
 
 	/**
@@ -70,8 +89,7 @@ public class LinkBuilder {
 	public List<Link> createDatasetsLinks() {
 		List<Link> links = new ArrayList<>();
 		String selfUri = getSelfUri();
-		links.add(new Link(selfUri, SELF.getRel(), APPLICATION_JSON, "this document"));
-		links.add(new Link(selfUri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML"));
+		addLinks(links, selfUri, AVAILABLE_DATASET_LINKS);
 		return links;
 	}
 
@@ -95,7 +113,7 @@ public class LinkBuilder {
 	public List<Link> createLandingPageLinks(String datasetId, DatasetMetadata metadata) {
 		List<Link> links = new ArrayList<>();
 		String selfUri = getSelfUri();
-		addSelfAndAlternateLinks(links, selfUri);
+		addLinks(links, selfUri, AVAILABLE_LINKS);
 		String apiHref = createBaseUriBuilder(datasetId).path("api").toString();
 		addServiceDesc(links, apiHref);
 
@@ -112,7 +130,7 @@ public class LinkBuilder {
 	public List<Link> createCollectionsLinks(String datasetId, DatasetMetadata metadata) {
 		ArrayList<Link> links = new ArrayList<>();
 		String selfUri = getSelfUri();
-		addSelfAndAlternateLinks(links, selfUri);
+		addLinks(links, selfUri, AVAILABLE_LINKS);
 		addMetadataLinks(metadata, links);
 		addLicenseLink(datasetId, metadata, links);
 		return links;
@@ -124,7 +142,7 @@ public class LinkBuilder {
 		List<String> collectionsParams = uriInfo.getPathParameters().get("collectionId");
 		boolean collectionRequested = collectionsParams != null && !collectionsParams.isEmpty();
 		if (collectionRequested) {
-			addSelfAndAlternateLinks(links, selfUri);
+			addLinks(links, selfUri, AVAILABLE_LINKS);
 		}
 		else {
 			String collectionHref = createBaseUriBuilder(datasetId).path("collections").path(collectionId).toString();
@@ -163,39 +181,33 @@ public class LinkBuilder {
 	public List<Link> createFeaturesLinks(String datasetId, String collectionId, NextLink nextLink) {
 		List<Link> links = new ArrayList<>();
 		String selfUri = createSelfUriWithQueryParametersWExceptFormat();
-		addSelfAndAlternateGeo(links, selfUri);
+		addLinks(links, selfUri, AVAILABLE_GEO_LINKS);
 		if (nextLink != null) {
 			String nextUri = nextLink.createUri(uriInfo);
 			if (nextUri != null)
-				links.add(new Link(nextUri, NEXT.getRel(), APPLICATION_GEOJSON, "next page"));
+				links.add(new Link(nextUri, NEXT.getRel(), requestedMediaType, "next page"));
 		}
 		String collectionUri = createBaseUriBuilder(datasetId).path("collections").path(collectionId).toString();
 		addCollection(links, collectionUri);
 		return links;
 	}
 
-	public List<Link> createFeatureLinks(String datasetId, String collectionId, String featureId) {
+	public List<Link> createFeatureLinks(String datasetId, String collectionId) {
 		List<Link> links = new ArrayList<>();
 		String selfUri = getSelfUri();
-		addSelfAndAlternateGeo(links, selfUri);
+		addLinks(links, selfUri, AVAILABLE_GEO_LINKS);
 		String collectionUri = createBaseUriBuilder(datasetId).path("collections").path(collectionId).toString();
 		addCollection(links, collectionUri);
 		return links;
 	}
 
-	private void addSelfAndAlternateLinks(List<Link> links, String uri) {
-		links.add(new Link(uri, SELF.getRel(), APPLICATION_JSON, "this document as JSON"));
-		links.add(new Link(uri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML"));
-		links.add(new Link(uri, ALTERNATE.getRel(), APPLICATION_XML, "this document as XML"));
-	}
-
-	private void addSelfAndAlternateGeo(List<Link> links, String uri) {
-		links.add(new Link(uri, SELF.getRel(), APPLICATION_GEOJSON, "this document as JSON"));
-		links.add(new Link(uri, ALTERNATE.getRel(), TEXT_HTML, "this document as HTML"));
-		links.add(new Link(uri, ALTERNATE.getRel(), APPLICATION_GML, "this document as GML"));
-		links.add(new Link(uri, ALTERNATE.getRel(), APPLICATION_GML_32, "this document as GML"));
-		links.add(new Link(uri, ALTERNATE.getRel(), APPLICATION_GML_SF0, "this document as GML"));
-		links.add(new Link(uri, ALTERNATE.getRel(), APPLICATION_GML_SF2, "this document as GML"));
+	private void addLinks(List<Link> links, String uri, Map<String, String> applicationGeoLinks) {
+		applicationGeoLinks.forEach((k, v) -> {
+			if (k.equals(requestedMediaType))
+				links.add(new Link(uri, SELF.getRel(), k, v));
+			else
+				links.add(new Link(uri, ALTERNATE.getRel(), k, v));
+		});
 	}
 
 	private void addEnclosureLinks(List<Link> links, String uri) {
