@@ -126,7 +126,7 @@ Example URL: http://localhost:8080/deegree-ogcapi/datasets/streets/?f=xml
 See section <<query_parameter>> for more information about supported other query parameters.
 
 The corresponding GML schema file is provided under the resource of each Feature collection _datasets/{datasetId}/collections/{collectionId}/appschema_.
-Example URL: https://localhost:8080/deegree-ogcapi/datasets/streets/collections/streets/appschema
+Example URL: http://localhost:8080/deegree-ogcapi/datasets/streets/collections/streets/appschema
 
 [[html_encoding]]
 === Using the HTML interface
