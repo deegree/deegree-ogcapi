@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>deegree-ogcapi-webapp-nodriver</artifactId>
   <packaging>war</packaging>
-  <name>deegree-ogcapi-webapp-no-driver</name>
+  <name>deegree-ogcapi-webapp-nodriver</name>
   <description>Webapps for OGC API Implementations without database driver</description>
 
   <parent>
