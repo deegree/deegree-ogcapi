@@ -74,7 +74,7 @@ A deegree ogcapi workspace uses the following directories of a standard deegree 
 - _services/_: metadata configuration files
 - _config.apikey_: security configuration file in the root directory of the workspace
 
-The following chapters describe how to setup a deegree ogcapi workspace by the given example.
+The following chapters describe how to set up a deegree ogcapi workspace by the given example.
 
 [[config_datasets]]
 ==== Datasets configuration
@@ -86,7 +86,7 @@ To provide general information about the datasets provider the following configu
 ----
 <Datasets xmlns="http://www.deegree.org/ogcapi/datasets"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  https://schemas.deegree.org/ogcapi/1.3/datasets.xsd">
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/datasets  https://schemas.deegree.org/ogcapi/2.0/datasets.xsd">
   <Title>Datasets Title</Title>
   <Description>Datasets Description</Description> <!--1-->
   <Contact>
@@ -132,7 +132,7 @@ Each dataset is configured in a separate file. The following example shows a min
 ----
 <deegreeOAF xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/ogcapi/features https://schemas.deegree.org/ogcapi/1.3/features.xsd">
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features https://schemas.deegree.org/ogcapi/2.0/features.xsd">
 
   <FeatureStoreId>streets</FeatureStoreId>  <!--1-->
 
@@ -156,7 +156,7 @@ The next example shows a complete configuration for a dataset called "trees" wit
 ----
 <deegreeOAF xmlns="http://www.deegree.org/ogcapi/features"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.deegree.org/ogcapi/features https://schemas.deegree.org/ogcapi/1.3/features.xsd">
+            xsi:schemaLocation="http://www.deegree.org/ogcapi/features https://schemas.deegree.org/ogcapi/2.0/features.xsd">
 
   <FeatureStoreId>trees</FeatureStoreId>  <!--1-->
 
@@ -235,7 +235,7 @@ This configuration file can contain the following elements:
 |Option |Cardinality |Value |Description
 |FeatureStoreId |0..n |String |Identifier of a feature store, see <<config_feature_store>> which implementations are supported. This identifier also defines the _{collectionId}_
 |QueryCRS |0..n |String |The CRS codes supported, `CRS84` must be provided as the first element
-|DateTimeProperties |0..1 |Complex |Configuration of date and time properties, see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_parameter_datetime[parameter datetime in the OGC API specification] for more information
+|DateTimeProperties |0..1 |Complex |Configuration of date and time properties, see https://docs.ogc.org/is/17-069r3/17-069r3.html#_parameter_datetime[parameter datetime in the OGC API specification] for more information
 |HtmlViewId |0..1 |String |Identifier of the HTML encoding configuration, see <<config_htmlview>> for more information
 |Metadata |0..1 |Complex |Configuration of the dataset metadata provided on the dataset's landing page
 |ConfigureCollection |0..1 |Complex |Custom configuration for an individual collection
@@ -299,7 +299,7 @@ The following excerpt of the _streets_metadata.xml_ shows which options are avai
 ----
 <deegreeServicesMetadata xmlns="http://www.deegree.org/services/metadata"
                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                         xsi:schemaLocation="http://www.deegree.org/services/metadata https://schemas.deegree.org/3.5/services/metadata/metadata.xsd">
+                         xsi:schemaLocation="http://www.deegree.org/services/metadata https://schemas.deegree.org/core/3.6/services/metadata/metadata.xsd">
 
   <ServiceIdentification> <!--1-->
     <Title>deegree OGC API - Features</Title>
@@ -348,6 +348,7 @@ The Storage CRS defined in the feature store configuration is used to return the
 
 The supported databases for `SQLFeatureStore` and `SimpleSQLFeatureStore` are:
 
+- Microsoft SQL Server
 - Oracle database
 - PostgreSQL/PostGIS database.
 
@@ -386,7 +387,7 @@ To configure the HTML encoding a configuration file can be used. The following e
 ----
 <HtmlView xmlns="http://www.deegree.org/ogcapi/htmlview"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview https://schemas.deegree.org/ogcapi/1.3/htmlview.xsd">
+          xsi:schemaLocation="http://www.deegree.org/ogcapi/htmlview https://schemas.deegree.org/ogcapi/2.0/htmlview.xsd">
 
   <CssFile>../html/lgv.css</CssFile>  <!--1-->
   <LegalNoticeUrl>https://www.hamburg.de/legalNotice/</LegalNoticeUrl> <!--2-->
@@ -425,14 +426,14 @@ This configuration file can contain the following elements:
 |Map |0..1 |Complex |Configuration for the base map
 |===
 
-The element ```<Map/>``` has the following subelements:
+The element `<Map/>` has the following subelements:
 
 [width="100%",cols="25%,15%,20%,40%",options="header",]
 |===
 |Option |Cardinality |Value |Description
-|WMSUrl |1 |URL |WMS service endpoint URL, default: http://sg.geodatenzentrum.de/wms_dtk250. Use the attribute `version` to specify the WMS version
+|WMSUrl |1 |URL |WMS service endpoint URL, default: https://sg.geodatenzentrum.de/wms_dtk250. Use the attribute `version` to specify the WMS version
 |WMSLayers |1 |String |Name of the layer, default: dtk250
-|CrsProj4Definition |1 |String |Use the attribute `code` to set the EPSG code, and the value element for the https://proj.org[PROJ] definition as provided by http://epsg.io.
+|CrsProj4Definition |1 |String |Use the attribute `code` to set the EPSG code, and the value element for the https://proj.org[PROJ] definition as provided by https://epsg.io.
 |===
 
 Additional information about the option `CssFile`: The following elements can be configured using a CSS file: the background color of header and footer, images in header and footer, links to help, legal notice, and privacy policy.
@@ -444,7 +445,8 @@ NOTE: The content of this file is returned under the resources _/datasets/{datas
 
 deegree ogcapi provides a REST-API for configuration purposes. As in https://download.deegree.org/documentation/current/html/#anchor-configuration-restapi[deegree webservices] a client can use the REST interface to manage the configuration. The following operations are supported:
 
-```
+[source]
+----
 [HTTP METHOD] [RESOURCE] - [DESCRIPTION]
 GET /config/download[/path] - download currently running workspace or file in workspace
 GET /config/restart - restart currently running workspace
@@ -455,7 +457,7 @@ GET /config/list[/path] - list currently running workspace or directory in works
 GET /config/validate[/path] - validate currently running workspace or file in workspace
 PUT /config/upload/path/file - upload file into current workspace
 DELETE /config/delete[/path] - delete currently running workspace or file in workspace
-```
+----
 
 The REST-API is enabled by default. To protect this interface from unauthorized use, it is automatically secured with a so-called API key. Each HTTP request requires that the API key contained in the file _config.apikey_ is transferred.
 
@@ -465,7 +467,7 @@ of the https://download.deegree.org/documentation/current/html/#anchor-configura
 === Allow access to OpenAPI document from all origins
 
 In case you want to avoid any issues when using the OpenAPI document from other locations due to CORS, you can enable allowing all origins specifically for accessing the OpenAPI document.
-To enable this set the system property ```deegree.oaf.openapi.cors.allow_all``` to _true_.
+To enable this set the system property `deegree.oaf.openapi.cors.allow_all` to _true_.
 
 [[config_logging]]
 === Logging configuration

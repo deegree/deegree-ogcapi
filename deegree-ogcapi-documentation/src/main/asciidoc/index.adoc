@@ -14,13 +14,13 @@ toc::[]
 
 == Preambel
 
-List of Authors: Jens Fitzke, Torsten Friebe, Lyn Goltz, Sabine Schmitz, Dirk Stenger.
+List of Authors: Jens Fitzke, Torsten Friebe, Lyn Goltz, Sabine Schmitz, Dirk Stenger and Julian Zilz.
 
 lat/lon - Gesellschaft für raumbezogene Informationssysteme mbH +
 info@lat-lon.de, https://www.lat-lon.de/ +
 Im Ellig 1, D-53343 Wachtberg, Germany +
 
-(C) Copyright 2020-2025 lat/lon GmbH, Bonn, Germany.
+(C) Copyright 2020-2026 lat/lon GmbH, Wachtberg, Germany.
 
 include::intro.adoc[]
 
