@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>deegree-ogcapi-webapp-postgres</artifactId>
+  <artifactId>deegree-ogcapi-webapp-full</artifactId>
   <packaging>war</packaging>
-  <name>deegree-ogcapi-webapp-postgres</name>
-  <description>Webapps for OGC API Implementations with Postgres modules</description>
+  <name>deegree-ogcapi-webapp-full</name>
+  <description>Webapps for OGC API Implementations with Postgres, Oracle and Microsoft SQL modules</description>
 
   <parent>
     <groupId>org.deegree</groupId>
@@ -36,6 +36,16 @@
     <dependency>
       <groupId>org.deegree</groupId>
       <artifactId>deegree-sqldialect-postgis</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.deegree</groupId>
+      <artifactId>deegree-sqldialect-oracle</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.deegree</groupId>
+      <artifactId>deegree-sqldialect-mssql</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>

@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>deegree-ogcapi-webapp-oracle</artifactId>
+  <artifactId>deegree-ogcapi-webapp-nodriver</artifactId>
   <packaging>war</packaging>
-  <name>deegree-ogcapi-webapp-oracle</name>
-  <description>Webapps for OGC API Implementations with Oracle modules</description>
+  <name>deegree-ogcapi-webapp-no-driver</name>
+  <description>Webapps for OGC API Implementations without database driver</description>
 
   <parent>
     <groupId>org.deegree</groupId>
@@ -35,8 +35,36 @@
   <dependencies>
     <dependency>
       <groupId>org.deegree</groupId>
+      <artifactId>deegree-sqldialect-postgis</artifactId>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.deegree</groupId>
       <artifactId>deegree-sqldialect-oracle</artifactId>
       <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.oracle.database.jdbc</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.deegree</groupId>
+      <artifactId>deegree-sqldialect-mssql</artifactId>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
