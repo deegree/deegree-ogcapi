@@ -11,7 +11,7 @@ COPY ./ /build/
 # build and extract deegree
 RUN cd /build/ && \
   mvn clean install -B -DskipTests && \
-  cp /build/deegree-ogcapi-webapp/deegree-ogcapi-webapp-postgres/target/deegree-ogcapi-webapp-postgres-*.war /build/deegree-ogcapi.war && \
+  cp /build/deegree-ogcapi-webapp/deegree-ogcapi-webapp-all/target/deegree-ogcapi-webapp-all-*.war /build/deegree-ogcapi.war && \
   unzip -o /build/deegree-ogcapi.war -d /target
 
 # add to image...
