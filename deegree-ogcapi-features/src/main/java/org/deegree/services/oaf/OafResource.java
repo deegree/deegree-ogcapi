@@ -136,7 +136,8 @@ public class OafResource implements Resource {
 			boolean useExistingGMLSchema = config.isUseExistingGMLSchema() != null ? config.isUseExistingGMLSchema()
 					: true;
 			this.oafConfiguration = new OafDatasetConfiguration(id, featureTypeMetadata, datasetMetadata, supportedCrs,
-					useExistingGMLSchema);
+					useExistingGMLSchema,
+					config.getQueryMaxItems() != null ? config.getQueryMaxItems().intValue() : 1000);
 			this.htmlViewConfiguration = getHtmlViewConfig(workspace);
 
 			this.additionalCollectionList = config.getConfigureCollection();

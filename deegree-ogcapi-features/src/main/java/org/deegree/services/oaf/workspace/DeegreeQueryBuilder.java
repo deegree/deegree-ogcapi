@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import org.deegree.commons.tom.TypedObjectNode;
 import org.deegree.cql2.CQL2FilterParser;
+import org.deegree.cql2.FilterProperty;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
@@ -66,8 +67,6 @@ import org.deegree.services.oaf.exceptions.InvalidConfigurationException;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.services.oaf.io.request.FeaturesRequest;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
-import org.deegree.cql2.FilterProperty;
-import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 /**
  * Creates WFS-Queries out of {@link FeaturesRequest} and featureIds.
@@ -88,10 +87,7 @@ public class DeegreeQueryBuilder {
 
 	private static final String ESCAPE_CHAR = "/";
 
-	private final OafDatasetConfiguration oafConfiguration;
-
-	DeegreeQueryBuilder(OafDatasetConfiguration oafConfiguration) {
-		this.oafConfiguration = oafConfiguration;
+	DeegreeQueryBuilder() {
 	}
 
 	/**

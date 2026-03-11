@@ -274,7 +274,7 @@ public class Features {
 		Map<FilterProperty, List<String>> filterParameters = findQueryableParameters(datasetId, collectionId,
 				uriInfo.getQueryParameters());
 
-		FeaturesRequest featuresRequest = new FeaturesRequestBuilder(collectionId).withLimit(limit)
+		FeaturesRequest featuresRequest = new FeaturesRequestBuilder(collectionId, oafConfiguration).withLimit(limit)
 			.withOffset(offset)
 			.withBulkUpload(isBulkUpload)
 			.withBbox(bbox, bboxCrs)

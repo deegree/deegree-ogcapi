@@ -62,6 +62,8 @@ import org.slf4j.Logger;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -172,6 +174,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 				TEXT_HTML);
 		addMediaTypes(feature, APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2,
 				TEXT_HTML);
+		updateLimitParamMaximum(features);
 
 		Map<String, FeatureTypeMetadata> featureTypeMetadatas = datasetConfiguration.getFeatureTypeMetadata();
 		featureTypeMetadatas.entrySet().forEach(featureTypeMetadata -> {
@@ -209,6 +212,16 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 		});
 		paths.clear();
 		paths.putAll(pathItemsWithAdaptedPath);
+	}
+
+	private void updateLimitParamMaximum(PathItem features) {
+		Optional<Parameter> limitParam = features.getGet()
+			.getParameters()
+			.stream()
+			.filter(param -> "limit".equals(param.getName()))
+			.findFirst();
+		if (limitParam.isPresent())
+			limitParam.get().getSchema().setMaximum(BigDecimal.valueOf(datasetConfiguration.getQueryMaxItems()));
 	}
 
 	private void addMediaTypes(PathItem pathItem, String... mediaTypes) {

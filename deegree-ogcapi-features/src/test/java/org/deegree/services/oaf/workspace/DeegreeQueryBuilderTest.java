@@ -65,6 +65,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -84,19 +85,20 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_empty_request() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).build();
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration(42)).build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		Filter filter = query.getFilter();
 
+		assertThat(query.getMaxFeatures(), is(42));
 		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
 		assertNull(filter);
 	}
 
 	@Test
 	void create_query_with_bulk_overriding_limit_and_offset() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withLimit(10)
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration()).withLimit(10)
 			.withOffset(10)
 			.withBulkUpload(true)
 			.build();
@@ -108,9 +110,11 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_bbox_parameter() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		List<Double> bbox = createBbox();
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withBbox(bbox, null).build();
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
+			.withBbox(bbox, null)
+			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -120,10 +124,11 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_bbox_and_datetime_parameter() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		List<Double> bbox = createBbox();
 		String datetime = "2019-10-08T10:42:52Z";
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withBbox(bbox, DEFAULT_CRS)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
+			.withBbox(bbox, DEFAULT_CRS)
 			.withDatetime(datetime)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -135,9 +140,11 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_datetime_parameter_datetime() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		String datetime = "2019-10-08T10:42:52Z";
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
+			.withDatetime(datetime)
+			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -153,9 +160,11 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_datetime_parameter_interval() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		String datetime = "2019-10-08T10:42:52Z/2019-10-10T10:42:52Z";
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
+			.withDatetime(datetime)
+			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -165,9 +174,11 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_datetime_parameter_interval_open_end() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		String datetime = "2019-10-08T10:42:52Z/";
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
+			.withDatetime(datetime)
+			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -188,9 +199,11 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_datetime_parameter_interval_open_start() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		String datetime = "../2019-10-10T10:42:52Z";
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
+			.withDatetime(datetime)
+			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
@@ -211,19 +224,21 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_bbox_and_datetime_parameter_no_datetime_configured() {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfigurationWithoutDatetime());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		String datetime = "2019-10-08T10:42:52Z";
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID).withDatetime(datetime).build();
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
+			.withDatetime(datetime)
+			.build();
 		assertThrows(InvalidConfigurationException.class,
 				() -> deegreeQueryBuilder.createQuery(FT_METADATA_NODATETIME, featureRequest));
 	}
 
 	@Test
 	void create_query_with_single_filter() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
 				"value");
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -235,10 +250,10 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_single_filter_wildcard() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
 				"value*");
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -250,9 +265,9 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_single_filter_integer_equal_to() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER, "10");
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -266,10 +281,10 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_single_filter_decimal_greater_than() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.DECIMAL,
 				">9.56");
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -284,10 +299,10 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_single_filter_double_less_than() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.DOUBLE,
 				"<5.89");
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -302,10 +317,10 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_single_filter_integer_greater_than_or_equal_to() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER,
 				">=10");
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -320,10 +335,10 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_single_filter_integer_less_than_or_equal_to() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.INTEGER,
 				"<=10");
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -338,11 +353,11 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_single_filter_multiple_values() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = new MultivaluedHashMap<>();
 		filterParameters.put(new FilterProperty(new QName("http://deegree.org/oaf", "name"), FilterPropertyType.STRING),
 				Arrays.asList("value1", "value2"));
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -360,12 +375,12 @@ class DeegreeQueryBuilderTest {
 
 	@Test
 	void create_query_with_multiple_filter() throws Exception {
-		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder(mockOafConfiguration());
+		DeegreeQueryBuilder deegreeQueryBuilder = new DeegreeQueryBuilder();
 		Map<FilterProperty, List<String>> filterParameters = createSingleFilterParams(FilterPropertyType.STRING,
 				"value");
 		filterParameters.put(new FilterProperty(new QName("http://deegree.org/oaf", "age"), FilterPropertyType.INTEGER),
 				Collections.singletonList("15"));
-		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID)
+		FeaturesRequest featureRequest = new FeaturesRequestBuilder(COLLECTION_ID, mockOafConfiguration())
 			.withQueryableParameters(filterParameters)
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
@@ -389,19 +404,17 @@ class DeegreeQueryBuilderTest {
 		return filterParameters;
 	}
 
-	private OafDatasetConfiguration mockOafConfiguration() {
+	private OafDatasetConfiguration mockOafConfiguration(int limit) {
 		OafDatasetConfiguration mock = mock(OafDatasetConfiguration.class);
 		Map<String, FeatureTypeMetadata> ftNames = Collections.singletonMap(FT_NAME.getLocalPart(), FT_METADATA);
 		doReturn(ftNames).when(mock).getFeatureTypeMetadata();
+		if (limit > 0)
+			when(mock.getQueryMaxItems()).thenReturn(limit);
 		return mock;
 	}
 
-	private OafDatasetConfiguration mockOafConfigurationWithoutDatetime() {
-		OafDatasetConfiguration mock = mock(OafDatasetConfiguration.class);
-		Map<String, FeatureTypeMetadata> ftNames = Collections.singletonMap(FT_NAME.getLocalPart(),
-				FT_METADATA_NODATETIME);
-		doReturn(ftNames).when(mock).getFeatureTypeMetadata();
-		return mock;
+	private OafDatasetConfiguration mockOafConfiguration() {
+		return mockOafConfiguration(-1);
 	}
 
 	private List<Double> createBbox() {

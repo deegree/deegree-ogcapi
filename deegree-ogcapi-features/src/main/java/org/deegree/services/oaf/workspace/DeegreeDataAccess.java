@@ -88,7 +88,7 @@ public class DeegreeDataAccess implements DataAccess {
 		String crs = validateAndRetrieveCrs(featuresRequest.getResponseCrs());
 		FeatureStore featureStore = featureTypeMetadata.getFeatureStore();
 		try {
-			DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder(oafConfiguration);
+			DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder();
 			Query query = queryBuilder.createQuery(featureTypeMetadata, featuresRequest);
 			return retrieveFeatures(oafConfiguration, featureTypeMetadata, collectionId, featuresRequest, linkBuilder,
 					crs, featureStore, query);
@@ -106,7 +106,7 @@ public class DeegreeDataAccess implements DataAccess {
 		String crs = validateAndRetrieveCrs(responseCrs);
 		FeatureStore featureStore = featureTypeMetadata.getFeatureStore();
 		try {
-			DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder(oafConfiguration);
+			DeegreeQueryBuilder queryBuilder = new DeegreeQueryBuilder();
 			Query queryById = queryBuilder.createQueryById(featureTypeMetadata.getName(), featureId);
 			Feature firstFeature = retrieveRequestedFeature(featureId, featureStore, queryById);
 

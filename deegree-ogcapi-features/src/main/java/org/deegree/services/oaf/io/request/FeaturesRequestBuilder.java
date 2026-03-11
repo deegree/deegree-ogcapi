@@ -25,6 +25,7 @@ import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.cs.persistence.CRSManager;
 import org.deegree.services.oaf.exceptions.InvalidParameterValue;
 import org.deegree.cql2.FilterProperty;
+import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,8 @@ import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 public class FeaturesRequestBuilder {
+
+	private final OafDatasetConfiguration oafConfiguration;
 
 	private String collectionId;
 
@@ -58,15 +61,17 @@ public class FeaturesRequestBuilder {
 
 	private String filterCrs;
 
-	public FeaturesRequestBuilder(String collectionId) {
+	public FeaturesRequestBuilder(String collectionId, OafDatasetConfiguration oafConfiguration) {
 		this.collectionId = collectionId;
+		this.oafConfiguration = oafConfiguration;
+		withLimit(oafConfiguration.getQueryMaxItems());
 	}
 
 	public FeaturesRequestBuilder withLimit(int limit) {
 		if (limit <= 0)
 			this.limit = 10;
-		else if (limit > 1000)
-			this.limit = 1000;
+		else if (limit > oafConfiguration.getQueryMaxItems())
+			this.limit = oafConfiguration.getQueryMaxItems();
 		else
 			this.limit = limit;
 		return this;
