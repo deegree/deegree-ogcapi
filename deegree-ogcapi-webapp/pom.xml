@@ -212,7 +212,7 @@
   </dependencies>
 
   <modules>
-    <module>deegree-ogcapi-webapp-full</module>
+    <module>deegree-ogcapi-webapp-all</module>
     <module>deegree-ogcapi-webapp-nodriver</module>
   </modules>
 
