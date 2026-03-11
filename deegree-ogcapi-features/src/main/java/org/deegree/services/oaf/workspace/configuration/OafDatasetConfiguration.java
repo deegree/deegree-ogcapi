@@ -21,10 +21,8 @@
  */
 package org.deegree.services.oaf.workspace.configuration;
 
-import org.deegree.feature.persistence.FeatureStore;
 import org.deegree.services.oaf.exceptions.UnknownCollectionId;
 
-import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Map;
 
@@ -45,13 +43,17 @@ public class OafDatasetConfiguration {
 
 	private final boolean useExistingGMLSchema;
 
+	private final int queryMaxItems;
+
 	public OafDatasetConfiguration(String id, Map<String, FeatureTypeMetadata> featureTypeMetadata,
-			DatasetMetadata serviceMetadata, List<String> suppportedCrs, boolean useExistingGMLSchema) {
+			DatasetMetadata serviceMetadata, List<String> suppportedCrs, boolean useExistingGMLSchema,
+			int queryMaxItems) {
 		this.id = id;
 		this.featureTypeMetadata = featureTypeMetadata;
 		this.serviceMetadata = serviceMetadata;
 		this.suppportedCrs = suppportedCrs;
 		this.useExistingGMLSchema = useExistingGMLSchema;
+		this.queryMaxItems = queryMaxItems;
 	}
 
 	/**
@@ -112,6 +114,10 @@ public class OafDatasetConfiguration {
 	 */
 	public boolean isUseExistingGMLSchema() {
 		return useExistingGMLSchema;
+	}
+
+	public int getQueryMaxItems() {
+		return queryMaxItems;
 	}
 
 	@Override

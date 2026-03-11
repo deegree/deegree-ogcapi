@@ -106,6 +106,7 @@ public class TestData {
 			OafDatasetConfiguration oafConfiguration = mock(OafDatasetConfiguration.class);
 			DatasetMetadata serviceMetadata = mock(DatasetMetadata.class);
 			when(oafConfiguration.getServiceMetadata()).thenReturn(serviceMetadata);
+			when(oafConfiguration.getQueryMaxItems()).thenReturn(50);
 
 			Map<String, FeatureTypeMetadata> featureTypeMetadata = new HashMap<>();
 			FeatureTypeMetadata ftm = new FeatureTypeMetadata(featureTypeName);

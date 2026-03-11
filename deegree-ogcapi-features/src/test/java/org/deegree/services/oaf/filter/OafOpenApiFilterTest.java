@@ -37,10 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
-import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +50,8 @@ import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.parser.OpenAPIV3Parser;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 import org.deegree.services.oaf.openapi.OafOpenApiFilter;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.hamcrest.BaseMatcher;
@@ -107,6 +106,16 @@ class OafOpenApiFilterTest {
 		assertNotNull(paths.get("/collections/strassenbaumkataster/items"));
 		assertThat(paths.get("/collections/strassenbaumkataster/items"), hasResponseMediaType(APPLICATION_GEOJSON,
 				APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2, TEXT_HTML));
+		assertThat(paths.get("/collections/strassenbaumkataster/items")
+			.getGet()
+			.getParameters()
+			.stream()
+			.filter(param -> "limit".equals(param.getName()))
+			.findFirst()
+			.get()
+			.getSchema()
+			.getMaximum()
+			.intValue(), is(50));
 
 		assertNotNull(paths.get("/collections/strassenbaumkataster/items/{featureId}"));
 		assertThat(paths.get("/collections/strassenbaumkataster/items/{featureId}"),
