@@ -212,9 +212,8 @@
   </dependencies>
 
   <modules>
-    <module>deegree-ogcapi-webapp-oracle</module>
-    <module>deegree-ogcapi-webapp-postgres</module>
-    <module>deegree-ogcapi-webapp-mssql</module>
+    <module>deegree-ogcapi-webapp-all</module>
+    <module>deegree-ogcapi-webapp-nodriver</module>
   </modules>
 
 </project>
