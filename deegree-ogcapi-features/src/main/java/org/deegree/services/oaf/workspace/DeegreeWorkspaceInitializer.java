@@ -21,6 +21,7 @@
  */
 package org.deegree.services.oaf.workspace;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.deegree.commons.config.DeegreeWorkspace;
 import org.deegree.services.controller.OGCFrontController;
 import org.deegree.services.oaf.OafResource;
@@ -144,11 +145,11 @@ public class DeegreeWorkspaceInitializer {
 		return additionalCollectionsMap;
 	}
 
-	public String createAppschemaUrl(UriInfo uriInfo, String uri) {
+	public String createAppschemaUrl(UriInfo uriInfo, HttpServletRequest request, String uri) {
 		Path uriPath = Path.of(URI.create(uri));
 		if (uriPath.startsWith(pathToAppschemas)) {
 			Path relativizeUriPath = pathToAppschemas.relativize(uriPath);
-			LinkBuilder linkBuilder = new LinkBuilder(uriInfo);
+			LinkBuilder linkBuilder = new LinkBuilder(uriInfo, request);
 			return linkBuilder.createSchemaLink(relativizeUriPath.toString());
 		}
 		return null;

@@ -1,21 +1,9 @@
 package org.deegree.services.oaf.schema;
 
-import org.deegree.feature.types.FeatureType;
-import org.deegree.gml.schema.GMLAppSchemaWriter;
-import org.deegree.gml.schema.GMLSchemaInfoSet;
-import org.deegree.services.oaf.OgcApiFeatures;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.slf4j.Logger;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static org.deegree.gml.GMLVersion.GML_32;
+import static org.slf4j.LoggerFactory.getLogger;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.UriInfo;
-import jakarta.ws.rs.ext.MessageBodyWriter;
-import jakarta.ws.rs.ext.Provider;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -25,9 +13,21 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
-import static org.deegree.gml.GMLVersion.GML_32;
-import static org.slf4j.LoggerFactory.getLogger;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Provider;
+import org.deegree.feature.types.FeatureType;
+import org.deegree.gml.schema.GMLAppSchemaWriter;
+import org.deegree.gml.schema.GMLSchemaInfoSet;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.slf4j.Logger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -43,6 +43,9 @@ public class SchemaResponseGmlWriter implements MessageBodyWriter<SchemaResponse
 
 	@Context
 	private UriInfo uriInfo;
+
+	@Context
+	private HttpServletRequest request;
 
 	@Override
 	public boolean isWriteable(Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType) {
@@ -109,7 +112,7 @@ public class SchemaResponseGmlWriter implements MessageBodyWriter<SchemaResponse
 		String featureTypeNamespaceURI = featureType.getName().getNamespaceURI();
 		GMLSchemaInfoSet gmlSchema = schemaResponse.getGmlSchema();
 		GMLAppSchemaWriter.export(writer, gmlSchema, featureTypeNamespaceURI, uri -> {
-			String appschemaUri = deegreeWorkspaceInitializer.createAppschemaUrl(uriInfo, uri);
+			String appschemaUri = deegreeWorkspaceInitializer.createAppschemaUrl(uriInfo, request, uri);
 			if (appschemaUri != null)
 				return appschemaUri;
 			return uri;

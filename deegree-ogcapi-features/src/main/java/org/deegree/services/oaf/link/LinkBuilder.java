@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 import org.deegree.commons.ows.metadata.MetadataUrl;
@@ -60,6 +61,8 @@ import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 public class LinkBuilder {
 
 	private final UriInfo uriInfo;
+
+	private final HttpServletRequest request;
 
 	private final String requestedMediaType;
 
@@ -74,12 +77,13 @@ public class LinkBuilder {
 			"this document as GML", APPLICATION_GML_SF0, "this document as GML", APPLICATION_GML_SF2,
 			"this document as GML");
 
-	public LinkBuilder(UriInfo uriInfo) {
-		this(uriInfo, null);
+	public LinkBuilder(UriInfo uriInfo, HttpServletRequest request) {
+		this(uriInfo, request, null);
 	}
 
-	public LinkBuilder(UriInfo uriInfo, String requestedMediaType) {
+	public LinkBuilder(UriInfo uriInfo, HttpServletRequest request, String requestedMediaType) {
 		this.uriInfo = uriInfo;
+		this.request = request;
 		this.requestedMediaType = requestedMediaType;
 	}
 
@@ -175,7 +179,7 @@ public class LinkBuilder {
 	}
 
 	public String createSchemaLink(String path) {
-		return uriInfo.getBaseUriBuilder().path("appschemas").path(path).toString();
+		return overwriteWithHeaderValues(uriInfo.getBaseUriBuilder()).path("appschemas").path(path).toString();
 	}
 
 	public List<Link> createFeaturesLinks(String datasetId, String collectionId, NextLink nextLink) {
@@ -270,20 +274,60 @@ public class LinkBuilder {
 	}
 
 	private String getSelfUri() {
-		return uriInfo.getBaseUriBuilder().path(uriInfo.getPath()).toString();
+		return overwriteWithHeaderValues(uriInfo.getBaseUriBuilder()).path(uriInfo.getPath()).toString();
 	}
 
 	private String createSelfUriWithQueryParametersWExceptFormat() {
-		return uriInfo.getRequestUriBuilder().replaceQueryParam("f", null).toString();
+		return overwriteWithHeaderValues(uriInfo.getRequestUriBuilder()).replaceQueryParam("f", null).toString();
 	}
 
 	private UriBuilder createBaseUriBuilder(String datasetId) {
-		return uriInfo.getBaseUriBuilder().path("datasets").path(datasetId);
+		return overwriteWithHeaderValues(uriInfo.getBaseUriBuilder()).path("datasets").path(datasetId);
 	}
 
 	private Link createMetadataLink(MetadataUrl metadataUrl, String title) {
 		String type = metadataUrl.getFormat() != null ? metadataUrl.getFormat() : APPLICATION_XML;
 		return new Link(metadataUrl.getUrl(), DESCRIBEDBY.getRel(), type, title);
+	}
+
+	private UriBuilder overwriteWithHeaderValues(UriBuilder baseUriBuilder) {
+		if (request == null)
+			return baseUriBuilder;
+		String xForwardedProto = request.getHeader("X-Forwarded-Proto");
+		String xForwardedPort = request.getHeader("X-Forwarded-Port");
+		String xForwardedHost = request.getHeader("X-Forwarded-Host");
+
+		String proto = parseProtocol(xForwardedProto);
+		String host = parseHost(xForwardedHost);
+		String port = parsePort(xForwardedPort, xForwardedHost);
+		if (proto != null && !proto.isBlank())
+			baseUriBuilder.scheme(proto);
+		if (host != null && !host.isBlank())
+			baseUriBuilder.host(host);
+		if (port != null && !port.isBlank())
+			baseUriBuilder.port(Integer.parseInt(port));
+		return baseUriBuilder;
+	}
+
+	private String parseProtocol(String xForwardedProto) {
+		if (xForwardedProto != null && !xForwardedProto.isEmpty())
+			return xForwardedProto;
+		return null;
+	}
+
+	private String parseHost(String xForwardedHost) {
+		if (xForwardedHost != null && xForwardedHost.contains(":"))
+			return xForwardedHost.substring(0, xForwardedHost.indexOf(":"));
+		return xForwardedHost;
+	}
+
+	private String parsePort(String xForwardedPort, String xForwardedHost) {
+		if (xForwardedPort != null && !xForwardedPort.isEmpty())
+			return xForwardedPort;
+		else if (xForwardedHost != null && xForwardedHost.contains(":")
+				&& (xForwardedHost.lastIndexOf(":") + 1) < xForwardedHost.length())
+			return xForwardedHost.substring(xForwardedHost.lastIndexOf(":") + 1);
+		return null;
 	}
 
 }

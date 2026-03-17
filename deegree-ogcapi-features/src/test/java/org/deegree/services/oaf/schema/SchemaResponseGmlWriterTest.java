@@ -1,5 +1,24 @@
 package org.deegree.services.oaf.schema;
 
+import static org.deegree.gml.GMLVersion.GML_32;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.endsWith;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
+import javax.xml.namespace.QName;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
@@ -15,24 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.xmlunit.matchers.EvaluateXPathMatcher;
-
-import jakarta.ws.rs.core.UriInfo;
-import javax.xml.namespace.QName;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.deegree.gml.GMLVersion.GML_32;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.endsWith;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -111,10 +112,12 @@ class SchemaResponseGmlWriterTest {
 	private DeegreeWorkspaceInitializer mockWorkspaceInitializer() {
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock(DeegreeWorkspaceInitializer.class);
 		lenient()
-			.when(deegreeWorkspaceInitializer.createAppschemaUrl(eq(uriInfo), endsWith("micado_kennzahlen_v1_2.xsd")))
+			.when(deegreeWorkspaceInitializer.createAppschemaUrl(eq(uriInfo), any(HttpServletRequest.class),
+					endsWith("micado_kennzahlen_v1_2.xsd")))
 			.thenReturn("http.//test.de/micado_kennzahlen_v1_2.xsd");
 		lenient()
-			.when(deegreeWorkspaceInitializer.createAppschemaUrl(any(UriInfo.class), endsWith("zeitreihen_v1.xsd")))
+			.when(deegreeWorkspaceInitializer.createAppschemaUrl(any(UriInfo.class), any(HttpServletRequest.class),
+					endsWith("zeitreihen_v1.xsd")))
 			.thenReturn("http.//test.de/zeitreihen_v1.xsd");
 		return deegreeWorkspaceInitializer;
 	}

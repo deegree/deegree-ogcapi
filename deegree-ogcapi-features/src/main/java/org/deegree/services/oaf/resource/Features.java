@@ -43,6 +43,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
@@ -90,8 +91,8 @@ public class Features {
 	@Operation(operationId = "features", summary = "retrieves features of collection {collectionId}",
 			description = "Retrieves the features of the collection with the id {collectionId}")
 	@Tag(name = "Data")
-	public Response featuresGeoJson(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
-			@PathParam("collectionId") String collectionId,
+	public Response featuresGeoJson(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
 			@Parameter(
 					description = "Limits the number of items presented in the response document. Ignored if bulk is true.",
 					style = ParameterStyle.FORM,
@@ -130,15 +131,16 @@ public class Features {
 			throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, JSON, APPLICATION_GEOJSON,
 				APPLICATION_GEOJSON);
-		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, requestedMediaType);
+		return features(uriInfo, servletRequest, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime,
+				filter, filterLang, filterCrs, crs, requestedMediaType);
 	}
 
 	@GET
 	@Produces({ APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2 })
 	@Operation(hidden = true)
-	public Response featuresGml(@Context UriInfo uriInfo, @HeaderParam("Accept") String acceptHeader,
-			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
+	public Response featuresGml(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
+			@HeaderParam("Accept") String acceptHeader, @PathParam("datasetId") String datasetId,
+			@PathParam("collectionId") String collectionId,
 			@Parameter(
 					description = "Limits the number of items presented in the response document. Ignored if bulk=true.",
 					style = ParameterStyle.FORM,
@@ -172,15 +174,15 @@ public class Features {
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, XML, acceptHeader, APPLICATION_GML);
-		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, requestedMediaType);
+		return features(uriInfo, servletRequest, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime,
+				filter, filterLang, filterCrs, crs, requestedMediaType);
 	}
 
 	@GET
 	@Produces({ TEXT_HTML })
 	@Operation(hidden = true)
-	public Response featuresHtml(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
-			@PathParam("collectionId") String collectionId,
+	public Response featuresHtml(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
 			@Parameter(
 					description = "Limits the number of items presented in the response document. Ignored if bulk=true.",
 					style = ParameterStyle.FORM,
@@ -214,14 +216,14 @@ public class Features {
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML, TEXT_HTML);
-		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, requestedMediaType);
+		return features(uriInfo, servletRequest, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime,
+				filter, filterLang, filterCrs, crs, requestedMediaType);
 	}
 
 	@GET
 	@Operation(hidden = true)
-	public Response featuresOther(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
-			@PathParam("collectionId") String collectionId,
+	public Response featuresOther(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
 			@Parameter(
 					description = "Limits the number of items presented in the response document. Ignored if bulk=true.",
 					style = ParameterStyle.FORM,
@@ -255,13 +257,13 @@ public class Features {
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML, TEXT_HTML);
-		return features(uriInfo, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime, filter,
-				filterLang, filterCrs, crs, requestedMediaType);
+		return features(uriInfo, servletRequest, datasetId, collectionId, limit, offset, bulk, bbox, bboxCrs, datetime,
+				filter, filterLang, filterCrs, crs, requestedMediaType);
 	}
 
-	private Response features(UriInfo uriInfo, String datasetId, String collectionId, int limit, int offset,
-			boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime, String filter, String filterLang,
-			String filterCrs, String crs, RequestedMediaType requestedMediaType)
+	private Response features(UriInfo uriInfo, HttpServletRequest servletRequest, String datasetId, String collectionId,
+			int limit, int offset, boolean isBulkUpload, List<Double> bbox, String bboxCrs, String datetime,
+			String filter, String filterLang, String filterCrs, String crs, RequestedMediaType requestedMediaType)
 			throws UnknownDatasetId, InvalidParameterValue, UnknownCollectionId, InternalQueryException {
 		FilterLang.fromType(filterLang);
 		RequestFormat requestFormat = requestedMediaType.getRequestFormat();
@@ -283,7 +285,7 @@ public class Features {
 			.withQueryableParameters(filterParameters)
 			.withFilter(filter, filterCrs)
 			.build();
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, requestedMediaType.getSelfMediaType());
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, servletRequest, requestedMediaType.getSelfMediaType());
 		FeaturesResponse featureResponse = dataAccess.retrieveFeatures(oafConfiguration, collectionId, featuresRequest,
 				linkBuilder);
 		if (XML.equals(requestFormat)) {

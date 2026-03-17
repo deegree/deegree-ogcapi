@@ -35,6 +35,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -64,30 +65,31 @@ public class Datasets {
 	@GET
 	@Produces({ APPLICATION_JSON })
 	@Operation(hidden = true)
-	public Response datasetsJson(@Context UriInfo uriInfo,
+	public Response datasetsJson(@Context UriInfo uriInfo, HttpServletRequest servletRequest,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, JSON, APPLICATION_JSON);
-		return datasets(uriInfo, requestedMediaType);
+		return datasets(uriInfo, servletRequest, requestedMediaType);
 	}
 
 	@GET
 	@Produces({ TEXT_HTML })
 	@Operation(hidden = true)
-	public Response datasetsHtml(@Context UriInfo uriInfo,
+	public Response datasetsHtml(@Context UriInfo uriInfo, HttpServletRequest servletRequest,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML);
-		return datasets(uriInfo, requestedMediaType);
+		return datasets(uriInfo, servletRequest, requestedMediaType);
 	}
 
-	private Response datasets(UriInfo uriInfo, RequestedMediaType requestedMediaType) throws InvalidParameterValue {
+	private Response datasets(UriInfo uriInfo, HttpServletRequest servletRequest, RequestedMediaType requestedMediaType)
+			throws InvalidParameterValue {
 		if (HTML.equals(requestedMediaType.getRequestFormat())) {
 			return Response.ok(getClass().getResourceAsStream("/datasets.html"), TEXT_HTML).build();
 		}
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, requestedMediaType.getSelfMediaType());
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, servletRequest, requestedMediaType.getSelfMediaType());
 		List<Link> links = linkBuilder.createDatasetsLinks();
 		List<Dataset> datasets = new ArrayList<>();
 

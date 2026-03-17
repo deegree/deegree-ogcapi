@@ -37,6 +37,7 @@ import java.util.Set;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -73,9 +74,10 @@ public class Appschema {
 	@Operation(operationId = "appschema", summary = "retrieve GML application schema of collection {collectionId}",
 			description = "Retrieves the GML application schema of the collection with the id {collectionId}. The GML application schema describes the structure of the XML representation of the features.")
 	@Tag(name = "Schema")
-	public Response appschema(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
-			@PathParam("collectionId") String collectionId) throws UnknownDatasetId, UnknownCollectionId {
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, APPLICATION_XML);
+	public Response appschema(@Context UriInfo uriInfo, @Context HttpServletRequest request,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId)
+			throws UnknownDatasetId, UnknownCollectionId {
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, request, APPLICATION_XML);
 		OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
 		OafDatasetConfiguration dataset = oafDatasets.getDataset(datasetId);
 		FeatureTypeMetadata featureTypeMetadata = dataset.getFeatureTypeMetadata(collectionId);
