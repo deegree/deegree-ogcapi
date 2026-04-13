@@ -487,12 +487,12 @@ and the specified header values
 ----
 
 deegree would report _https://www.mysecondgeoportal.com:8088/my-ogcapi/datasets_. The URL path is kept as in the request URL. Host, port, protocol and context path are replaced by the values from the header.
-If `X-Forwarded-Port`, `X-Forwarded-Proto` or `X-Forwarded-Prefix` are missing the values are taken from the request URL, deegree would report
+If `X-Forwarded-Port`, `X-Forwarded-Proto`, or `X-Forwarded-Prefix` are missing, the values are taken from the request URL, and deegree would report
 _http://www.mysecondgeoportal.com/deegree-ogcapi/datasets_.
-If `X-Forwarded-Prefix` is empty, the context path is removed from the URL and deegree would report
+If `X-Forwarded-Prefix` is empty, the context path is removed from the URL, and deegree would report
 _https://www.mysecondgeoportal.com:8088/datasets_.
 
-This behavior is useful when the deegree webservice can be requested via different URLs.
+This behavior is useful when the deegree ogcapi can be requested via different URLs.
 
 === Allow access to OpenAPI document from all origins
 
