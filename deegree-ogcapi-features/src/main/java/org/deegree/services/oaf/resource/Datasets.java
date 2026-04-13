@@ -65,7 +65,7 @@ public class Datasets {
 	@GET
 	@Produces({ APPLICATION_JSON })
 	@Operation(hidden = true)
-	public Response datasetsJson(@Context UriInfo uriInfo, HttpServletRequest servletRequest,
+	public Response datasetsJson(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue {
@@ -76,7 +76,7 @@ public class Datasets {
 	@GET
 	@Produces({ TEXT_HTML })
 	@Operation(hidden = true)
-	public Response datasetsHtml(@Context UriInfo uriInfo, HttpServletRequest servletRequest,
+	public Response datasetsHtml(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format)
 			throws InvalidParameterValue {

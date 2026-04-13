@@ -15,13 +15,16 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.PathSegment;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.deegree.services.oaf.TestData;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
@@ -42,8 +45,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_JSON);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_JSON);
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
 		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
 			.getDataset("oaf")
@@ -61,8 +64,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_XML);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_XML);
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
 		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
 			.getDataset("oaf")
@@ -80,7 +83,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path), httpRequest(), APPLICATION_JSON);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path), httpRequest("/deegree-services-oaf"),
+				APPLICATION_JSON);
 		List<Link> collectionLinks = linkBuilder.createCollectionLinks("oaf", "strassenbaumkataster",
 				Collections.emptyList());
 
@@ -108,8 +112,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster";
 		String path = "datasets/oaf/collections/strassenbaumkataster";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_JSON);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_JSON);
 		List<Link> collectionLinks = linkBuilder.createCollectionLinks("oaf", "strassenbaumkataster",
 				Collections.emptyList());
 
@@ -136,8 +140,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster";
 		String path = "datasets/oaf/collections/strassenbaumkataster";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_XML);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_XML);
 		List<Link> collectionLinks = linkBuilder.createCollectionLinks("oaf", "strassenbaumkataster",
 				Collections.emptyList());
 
@@ -164,8 +168,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_GEOJSON);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_GEOJSON);
 		NextLink nextLink = new NextLink(1000, 10, 0);
 		List<Link> featuresLinks = linkBuilder.createFeaturesLinks("oaf", "strassenbaumkataster", nextLink);
 
@@ -189,8 +193,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_GML);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_GML);
 		NextLink nextLink = new NextLink(1000, 10, 0);
 		List<Link> featuresLinks = linkBuilder.createFeaturesLinks("oaf", "strassenbaumkataster", nextLink);
 
@@ -214,8 +218,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items?offset=10&limit=10";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_GEOJSON);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_GEOJSON);
 		NextLink nextLink = new NextLink(1000, 10, 10);
 		List<Link> featuresLinks = linkBuilder.createFeaturesLinks("oaf", "strassenbaumkataster", nextLink);
 
@@ -240,8 +244,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_GEOJSON);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_GEOJSON);
 		List<Link> featureLinks = linkBuilder.createFeatureLinks("oaf", "strassenbaumkataster");
 
 		assertThat(featureLinks.size(), is(9));
@@ -263,8 +267,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/items";
 		String path = "datasets/oaf/collections/strassenbaumkataster/items";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"), httpRequest(),
-				APPLICATION_GML_32);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest("/deegree-services-oaf"), APPLICATION_GML_32);
 		List<Link> featureLinks = linkBuilder.createFeatureLinks("oaf", "strassenbaumkataster");
 
 		assertThat(featureLinks.size(), is(9));
@@ -286,7 +290,8 @@ class LinkBuilderTest {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster/appschema";
 		String path = "datasets/oaf/collections/strassenbaumkataster/appschema";
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path), httpRequest(), APPLICATION_JSON);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path), httpRequest("/deegree-services-oaf"),
+				APPLICATION_JSON);
 		String schemaLink = linkBuilder.createSchemaLink("oaf", "otherFeatureType");
 
 		assertThat(schemaLink,
@@ -299,7 +304,7 @@ class LinkBuilderTest {
 		String path = "datasets/oaf/collections";
 
 		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
-				httpRequest("https", "example.org", "7077"), APPLICATION_JSON);
+				httpRequest("https", "example.org", "7077", "/deegree-services-oaf"), APPLICATION_JSON);
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
 		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
 			.getDataset("oaf")
@@ -320,7 +325,7 @@ class LinkBuilderTest {
 		String path = "datasets/oaf/collections";
 
 		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
-				httpRequest(null, "example.org", null), APPLICATION_JSON);
+				httpRequest(null, "example.org", null, "/deegree-services-oaf"), APPLICATION_JSON);
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
 		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
 			.getDataset("oaf")
@@ -336,12 +341,54 @@ class LinkBuilderTest {
 	}
 
 	@Test
+	void create_links_xForwardedHostWithContextPath() throws Exception {
+		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
+		String path = "datasets/oaf/collections";
+
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest(null, "example.org", null, "ogc-api", "/deegree-services-oaf"), APPLICATION_JSON);
+		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
+		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
+			.getDataset("oaf")
+			.getServiceMetadata();
+		List<Link> collectionsLinks = linkBuilder.createCollectionsLinks("oaf", datasetMetadata);
+
+		String expectedUri = "http://example.org:8081/ogc-api/datasets/oaf/collections";
+
+		assertThat(collectionsLinks.size(), is(3));
+		assertThat(collectionsLinks, hasLinkWith("self", APPLICATION_JSON, expectedUri));
+		assertThat(collectionsLinks, hasLinkWith("alternate", APPLICATION_XML, expectedUri));
+		assertThat(collectionsLinks, hasLinkWith("alternate", TEXT_HTML, expectedUri));
+	}
+
+	@Test
+	void create_links_xForwardedHostWithEmptyContextPath() throws Exception {
+		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
+		String path = "datasets/oaf/collections";
+
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
+				httpRequest(null, "example.org", null, "", "/deegree-services-oaf"), APPLICATION_JSON);
+		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
+		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
+			.getDataset("oaf")
+			.getServiceMetadata();
+		List<Link> collectionsLinks = linkBuilder.createCollectionsLinks("oaf", datasetMetadata);
+
+		String expectedUri = "http://example.org:8081/datasets/oaf/collections";
+
+		assertThat(collectionsLinks.size(), is(3));
+		assertThat(collectionsLinks, hasLinkWith("self", APPLICATION_JSON, expectedUri));
+		assertThat(collectionsLinks, hasLinkWith("alternate", APPLICATION_XML, expectedUri));
+		assertThat(collectionsLinks, hasLinkWith("alternate", TEXT_HTML, expectedUri));
+	}
+
+	@Test
 	void create_links_xForwardedPort() throws Exception {
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
 		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
-				httpRequest(null, null, "7077"), APPLICATION_JSON);
+				httpRequest(null, null, "7077", "/deegree-services-oaf"), APPLICATION_JSON);
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
 		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
 			.getDataset("oaf")
@@ -362,7 +409,7 @@ class LinkBuilderTest {
 		String path = "datasets/oaf/collections";
 
 		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
-				httpRequest("https", null, null), APPLICATION_JSON);
+				httpRequest("https", null, null, "/deegree-services-oaf"), APPLICATION_JSON);
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
 		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
 			.getDataset("oaf")
@@ -383,7 +430,7 @@ class LinkBuilderTest {
 		String path = "datasets/oaf/collections";
 
 		LinkBuilder linkBuilder = new LinkBuilder(uriInfo(uri, path, "strassenbaumkataster"),
-				httpRequest("https", "example.org:7077", null), APPLICATION_JSON);
+				httpRequest("https", "example.org:7077", null, "/deegree-services-oaf"), APPLICATION_JSON);
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = TestData.mockWorkspaceInitializer();
 		DatasetMetadata datasetMetadata = deegreeWorkspaceInitializer.getOafDatasets()
 			.getDataset("oaf")
@@ -405,6 +452,8 @@ class LinkBuilderTest {
 	private UriInfo uriInfo(String uri, String path, String collectionId) throws URISyntaxException {
 		UriInfo uriInfo = mock(UriInfo.class);
 		when(uriInfo.getPath()).thenReturn(path);
+		when(uriInfo.getPathSegments()).thenReturn(
+				Arrays.stream(path.split("/")).toList().stream().map(LinkBuilderTest::createPathSegment).toList());
 		MultivaluedMap<String, String> pathParameters = new StringKeyIgnoreCaseMultivaluedMap<>();
 		if (collectionId != null)
 			pathParameters.add("collectionId", collectionId);
@@ -418,15 +467,44 @@ class LinkBuilderTest {
 		return uriInfo;
 	}
 
-	private HttpServletRequest httpRequest() {
-		return mock(HttpServletRequest.class);
+	private static @NonNull PathSegment createPathSegment(String p) {
+		return new PathSegment() {
+			@Override
+			public String getPath() {
+				return p;
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getMatrixParameters() {
+				return null;
+			}
+		};
 	}
 
-	private HttpServletRequest httpRequest(String xForwardedProto, String xForwardedHost, String xForwardedPort) {
+	private HttpServletRequest httpRequest(String oldContextPath) {
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getContextPath()).thenReturn(oldContextPath);
+		return request;
+	}
+
+	private HttpServletRequest httpRequest(String xForwardedProto, String xForwardedHost, String xForwardedPort,
+			String oldContextPath) {
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		when(request.getHeader("X-Forwarded-Proto")).thenReturn(xForwardedProto);
 		when(request.getHeader("X-Forwarded-Host")).thenReturn(xForwardedHost);
 		when(request.getHeader("X-Forwarded-Port")).thenReturn(xForwardedPort);
+		when(request.getContextPath()).thenReturn(oldContextPath);
+		return request;
+	}
+
+	private HttpServletRequest httpRequest(String xForwardedProto, String xForwardedHost, String xForwardedPort,
+			String xForwardedPrefix, String oldContextPath) {
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("X-Forwarded-Proto")).thenReturn(xForwardedProto);
+		when(request.getHeader("X-Forwarded-Host")).thenReturn(xForwardedHost);
+		when(request.getHeader("X-Forwarded-Port")).thenReturn(xForwardedPort);
+		when(request.getHeader("X-Forwarded-Prefix")).thenReturn(xForwardedPrefix);
+		when(request.getContextPath()).thenReturn(oldContextPath);
 		return request;
 	}
 

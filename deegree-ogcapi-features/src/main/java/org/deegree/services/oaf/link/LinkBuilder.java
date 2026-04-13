@@ -62,8 +62,6 @@ public class LinkBuilder {
 
 	private final UriInfo uriInfo;
 
-	private final HttpServletRequest request;
-
 	private final String requestedMediaType;
 
 	private static final Map<String, String> AVAILABLE_LINKS = Map.of(APPLICATION_JSON, "this document as JSON",
@@ -82,8 +80,7 @@ public class LinkBuilder {
 	}
 
 	public LinkBuilder(UriInfo uriInfo, HttpServletRequest request, String requestedMediaType) {
-		this.uriInfo = uriInfo;
-		this.request = request;
+		this.uriInfo = new UriInfoWithHeaderFromRequest(uriInfo, request);
 		this.requestedMediaType = requestedMediaType;
 	}
 
@@ -179,12 +176,12 @@ public class LinkBuilder {
 	}
 
 	public String createSchemaLink(String path) {
-		return overwriteWithHeaderValues(uriInfo.getBaseUriBuilder()).path("appschemas").path(path).toString();
+		return uriInfo.getBaseUriBuilder().path("appschemas").path(path).toString();
 	}
 
 	public List<Link> createFeaturesLinks(String datasetId, String collectionId, NextLink nextLink) {
 		List<Link> links = new ArrayList<>();
-		String selfUri = createSelfUriWithQueryParametersWExceptFormat();
+		String selfUri = createSelfUriWithQueryParametersExceptFormat();
 		addLinks(links, selfUri, AVAILABLE_GEO_LINKS);
 		if (nextLink != null) {
 			String nextUri = nextLink.createUri(uriInfo);
@@ -274,60 +271,20 @@ public class LinkBuilder {
 	}
 
 	private String getSelfUri() {
-		return overwriteWithHeaderValues(uriInfo.getBaseUriBuilder()).path(uriInfo.getPath()).toString();
+		return uriInfo.getRequestUriBuilder().toString();
 	}
 
-	private String createSelfUriWithQueryParametersWExceptFormat() {
-		return overwriteWithHeaderValues(uriInfo.getRequestUriBuilder()).replaceQueryParam("f", null).toString();
+	private String createSelfUriWithQueryParametersExceptFormat() {
+		return uriInfo.getRequestUriBuilder().replaceQueryParam("f", null).toString();
 	}
 
 	private UriBuilder createBaseUriBuilder(String datasetId) {
-		return overwriteWithHeaderValues(uriInfo.getBaseUriBuilder()).path("datasets").path(datasetId);
+		return uriInfo.getBaseUriBuilder().path("datasets").path(datasetId);
 	}
 
 	private Link createMetadataLink(MetadataUrl metadataUrl, String title) {
 		String type = metadataUrl.getFormat() != null ? metadataUrl.getFormat() : APPLICATION_XML;
 		return new Link(metadataUrl.getUrl(), DESCRIBEDBY.getRel(), type, title);
-	}
-
-	private UriBuilder overwriteWithHeaderValues(UriBuilder baseUriBuilder) {
-		if (request == null)
-			return baseUriBuilder;
-		String xForwardedProto = request.getHeader("X-Forwarded-Proto");
-		String xForwardedPort = request.getHeader("X-Forwarded-Port");
-		String xForwardedHost = request.getHeader("X-Forwarded-Host");
-
-		String proto = parseProtocol(xForwardedProto);
-		String host = parseHost(xForwardedHost);
-		String port = parsePort(xForwardedPort, xForwardedHost);
-		if (proto != null && !proto.isBlank())
-			baseUriBuilder.scheme(proto);
-		if (host != null && !host.isBlank())
-			baseUriBuilder.host(host);
-		if (port != null && !port.isBlank())
-			baseUriBuilder.port(Integer.parseInt(port));
-		return baseUriBuilder;
-	}
-
-	private String parseProtocol(String xForwardedProto) {
-		if (xForwardedProto != null && !xForwardedProto.isEmpty())
-			return xForwardedProto;
-		return null;
-	}
-
-	private String parseHost(String xForwardedHost) {
-		if (xForwardedHost != null && xForwardedHost.contains(":"))
-			return xForwardedHost.substring(0, xForwardedHost.indexOf(":"));
-		return xForwardedHost;
-	}
-
-	private String parsePort(String xForwardedPort, String xForwardedHost) {
-		if (xForwardedPort != null && !xForwardedPort.isEmpty())
-			return xForwardedPort;
-		else if (xForwardedHost != null && xForwardedHost.contains(":")
-				&& (xForwardedHost.lastIndexOf(":") + 1) < xForwardedHost.length())
-			return xForwardedHost.substring(xForwardedHost.lastIndexOf(":") + 1);
-		return null;
 	}
 
 }
