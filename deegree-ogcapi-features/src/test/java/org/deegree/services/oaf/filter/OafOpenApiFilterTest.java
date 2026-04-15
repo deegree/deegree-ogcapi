@@ -50,8 +50,7 @@ import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.parser.OpenAPIV3Parser;
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.core.UriInfo;
+import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.openapi.OafOpenApiFilter;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.hamcrest.BaseMatcher;
@@ -69,12 +68,11 @@ class OafOpenApiFilterTest {
 	private static final String BASE_URI = "http://localhost:8081/deegree-services-oaf";
 
 	@Mock
-	static UriInfo uriInfo = mock(UriInfo.class);
+	static LinkBuilder linkBuilder = mock(LinkBuilder.class);
 
 	@BeforeAll
 	static void mockUriInfo() {
-		when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromUri(BASE_URI), UriBuilder.fromUri(BASE_URI),
-				UriBuilder.fromUri(BASE_URI));
+		when(linkBuilder.createDatasetLinkUrl("oaf")).thenReturn(BASE_URI + "/datasets/oaf");
 	}
 
 	@Test
@@ -85,7 +83,7 @@ class OafOpenApiFilterTest {
 
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer();
 
-		OafOpenApiFilter filter = new OafOpenApiFilter(uriInfo, "oaf", deegreeWorkspaceInitializer);
+		OafOpenApiFilter filter = new OafOpenApiFilter(linkBuilder, "oaf", deegreeWorkspaceInitializer);
 		filter.filterOpenAPI(openAPI, null, null, null);
 
 		Paths paths = openAPI.getPaths();
@@ -136,7 +134,7 @@ class OafOpenApiFilterTest {
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
 				new QName("http://www.deegree.org/app", "KitaEinrichtungen"));
 
-		OafOpenApiFilter filter = new OafOpenApiFilter(uriInfo, "oaf", deegreeWorkspaceInitializer);
+		OafOpenApiFilter filter = new OafOpenApiFilter(linkBuilder, "oaf", deegreeWorkspaceInitializer);
 		filter.filterOpenAPI(openAPI, null, null, null);
 
 		Paths paths = openAPI.getPaths();
@@ -177,7 +175,7 @@ class OafOpenApiFilterTest {
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mockWorkspaceInitializer(
 				new QName("http://www.deegree.org/datasource/feature/sql", "Zuwanderung"));
 
-		OafOpenApiFilter filter = new OafOpenApiFilter(uriInfo, "oaf", deegreeWorkspaceInitializer);
+		OafOpenApiFilter filter = new OafOpenApiFilter(linkBuilder, "oaf", deegreeWorkspaceInitializer);
 		filter.filterOpenAPI(openAPI, null, null, null);
 
 		Paths paths = openAPI.getPaths();

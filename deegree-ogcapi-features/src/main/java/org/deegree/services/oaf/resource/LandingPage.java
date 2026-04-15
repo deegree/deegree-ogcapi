@@ -39,6 +39,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -71,45 +72,46 @@ public class LandingPage {
 	@Tag(name = "Capabilities")
 	@ApiResponse(description = "default response",
 			content = @Content(schema = @Schema(implementation = LandingPage.class)))
-	public Response landingPageJson(@Context UriInfo uriInfo,
+	public Response landingPageJson(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
-		return landingPage(uriInfo, datasetId, format, JSON, APPLICATION_JSON);
+		return landingPage(uriInfo, servletRequest, datasetId, format, JSON, APPLICATION_JSON);
 	}
 
 	@GET
 	@Produces({ APPLICATION_XML })
 	@Tag(name = "Capabilities")
 	@Operation(hidden = true)
-	public Response landingPageJsonXml(@Context UriInfo uriInfo,
+	public Response landingPageJsonXml(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
-		return landingPage(uriInfo, datasetId, format, XML, APPLICATION_XML);
+		return landingPage(uriInfo, servletRequest, datasetId, format, XML, APPLICATION_XML);
 	}
 
 	@GET
 	@Produces({ TEXT_HTML })
 	@Operation(hidden = true)
-	public Response landingPageHtml(@Context UriInfo uriInfo,
+	public Response landingPageHtml(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
-		return landingPage(uriInfo, datasetId, format, HTML, TEXT_HTML);
+		return landingPage(uriInfo, servletRequest, datasetId, format, HTML, TEXT_HTML);
 	}
 
 	@GET
 	@Operation(hidden = true)
-	public Response landingPageOther(@Context UriInfo uriInfo,
+	public Response landingPageOther(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
 					schema = @Schema(allowableValues = { "json", "html", "xml" })) @QueryParam("f") String format,
 			@PathParam("datasetId") String datasetId) throws UnknownDatasetId, InvalidParameterValue {
-		return landingPage(uriInfo, datasetId, format, JSON, APPLICATION_JSON);
+		return landingPage(uriInfo, servletRequest, datasetId, format, JSON, APPLICATION_JSON);
 	}
 
-	private Response landingPage(UriInfo uriInfo, String datasetId, String formatParamValue,
-			RequestFormat defaultFormat, String requestedMediaTyp) throws UnknownDatasetId, InvalidParameterValue {
+	private Response landingPage(UriInfo uriInfo, HttpServletRequest servletRequest, String datasetId,
+			String formatParamValue, RequestFormat defaultFormat, String requestedMediaTyp)
+			throws UnknownDatasetId, InvalidParameterValue {
 		OafDatasetConfiguration dataset = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
 		RequestFormat requestFormat = byFormatParameter(formatParamValue, defaultFormat);
 		if (HTML.equals(requestFormat)) {
@@ -118,7 +120,7 @@ public class LandingPage {
 
 		DatasetMetadata metadata = dataset.getServiceMetadata();
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, requestedMediaTyp);
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, servletRequest, requestedMediaTyp);
 		List<Link> links = linkBuilder.createLandingPageLinks(datasetId, metadata);
 		org.deegree.services.oaf.domain.landingpage.LandingPage landingPage = new org.deegree.services.oaf.domain.landingpage.LandingPage(
 				metadata.getTitle(), metadata.getDescription(), links);

@@ -37,6 +37,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
@@ -79,8 +80,9 @@ public class Feature {
 	@Operation(operationId = "feature", summary = "retrieves feature of collection {collectionId}",
 			description = "Retrieves one single feature of the collection with the id {collectionId}")
 	@Tag(name = "Data")
-	public Response featureJson(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
-			@PathParam("collectionId") String collectionId, @PathParam("featureId") String featureId,
+	public Response featureJson(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
+			@PathParam("featureId") String featureId,
 			@Parameter(description = "The coordinate reference system of the response geometries.",
 					style = ParameterStyle.FORM) @QueryParam("crs") String crs,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
@@ -88,15 +90,16 @@ public class Feature {
 			throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId,
 			UnknownFeatureId {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, JSON, APPLICATION_GEOJSON);
-		return feature(uriInfo, datasetId, collectionId, featureId, crs, requestedMediaType);
+		return feature(uriInfo, servletRequest, datasetId, collectionId, featureId, crs, requestedMediaType);
 	}
 
 	@GET
 	@Produces({ APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2 })
 	@Operation(hidden = true)
 	public Response featureGml(@Context Request request, @Context UriInfo uriInfo,
-			@HeaderParam("Accept") String acceptHeader, @PathParam("datasetId") String datasetId,
-			@PathParam("collectionId") String collectionId, @PathParam("featureId") String featureId,
+			@Context HttpServletRequest servletRequest, @HeaderParam("Accept") String acceptHeader,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
+			@PathParam("featureId") String featureId,
 			@Parameter(description = "The coordinate reference system of the response geometries.",
 					style = ParameterStyle.FORM) @QueryParam("crs") String crs,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
@@ -104,14 +107,15 @@ public class Feature {
 			throws UnknownCollectionId, InternalQueryException, InvalidParameterValue, UnknownDatasetId,
 			UnknownFeatureId {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, XML, acceptHeader, APPLICATION_GML);
-		return feature(uriInfo, datasetId, collectionId, featureId, crs, requestedMediaType);
+		return feature(uriInfo, servletRequest, datasetId, collectionId, featureId, crs, requestedMediaType);
 	}
 
 	@GET
 	@Produces({ TEXT_HTML })
 	@Operation(hidden = true)
-	public Response featureHtml(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
-			@PathParam("collectionId") String collectionId, @PathParam("featureId") String featureId,
+	public Response featureHtml(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
+			@PathParam("featureId") String featureId,
 			@Parameter(description = "The coordinate reference system of the response geometries.",
 					style = ParameterStyle.FORM) @QueryParam("crs") String crs,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
@@ -119,13 +123,14 @@ public class Feature {
 			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException,
 			UnknownFeatureId {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML);
-		return feature(uriInfo, datasetId, collectionId, featureId, crs, requestedMediaType);
+		return feature(uriInfo, servletRequest, datasetId, collectionId, featureId, crs, requestedMediaType);
 	}
 
 	@GET
 	@Operation(hidden = true)
-	public Response featureOther(@Context UriInfo uriInfo, @PathParam("datasetId") String datasetId,
-			@PathParam("collectionId") String collectionId, @PathParam("featureId") String featureId,
+	public Response featureOther(@Context UriInfo uriInfo, @Context HttpServletRequest servletRequest,
+			@PathParam("datasetId") String datasetId, @PathParam("collectionId") String collectionId,
+			@PathParam("featureId") String featureId,
 			@Parameter(description = "The coordinate reference system of the response geometries.",
 					style = ParameterStyle.FORM) @QueryParam("crs") String crs,
 			@Parameter(description = "The request output format.", style = ParameterStyle.FORM,
@@ -133,19 +138,19 @@ public class Feature {
 			throws InvalidParameterValue, UnknownDatasetId, UnknownCollectionId, InternalQueryException,
 			UnknownFeatureId {
 		RequestedMediaType requestedMediaType = new RequestedMediaType(format, HTML, TEXT_HTML);
-		return feature(uriInfo, datasetId, collectionId, featureId, crs, requestedMediaType);
+		return feature(uriInfo, servletRequest, datasetId, collectionId, featureId, crs, requestedMediaType);
 	}
 
-	private Response feature(UriInfo uriInfo, String datasetId, String collectionId, String featureId, String crs,
-			RequestedMediaType requestedMediaType) throws UnknownCollectionId, InternalQueryException,
-			InvalidParameterValue, UnknownDatasetId, UnknownFeatureId {
+	private Response feature(UriInfo uriInfo, HttpServletRequest servletRequest, String datasetId, String collectionId,
+			String featureId, String crs, RequestedMediaType requestedMediaType) throws UnknownCollectionId,
+			InternalQueryException, InvalidParameterValue, UnknownDatasetId, UnknownFeatureId {
 		OafDatasetConfiguration oafConfiguration = deegreeWorkspaceInitializer.getOafDatasets().getDataset(datasetId);
 		oafConfiguration.checkCollection(collectionId);
 		if (HTML.equals(requestedMediaType.getRequestFormat())) {
 			return Response.ok(getClass().getResourceAsStream("/feature.html"), TEXT_HTML).build();
 		}
 
-		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, requestedMediaType.getSelfMediaType());
+		LinkBuilder linkBuilder = new LinkBuilder(uriInfo, servletRequest, requestedMediaType.getSelfMediaType());
 		FeatureResponse featureResponse = dataAccess.retrieveFeature(oafConfiguration, collectionId, featureId, crs,
 				linkBuilder);
 		if (XML.equals(requestedMediaType.getRequestFormat())) {

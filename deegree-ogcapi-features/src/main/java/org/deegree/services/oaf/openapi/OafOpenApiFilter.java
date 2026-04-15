@@ -26,6 +26,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
@@ -34,6 +35,7 @@ import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.servers.Server;
+import jakarta.inject.Inject;
 import org.apache.xerces.xs.XSComplexTypeDefinition;
 import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSModelGroup;
@@ -52,6 +54,7 @@ import org.deegree.feature.types.property.GeometryPropertyType;
 import org.deegree.feature.types.property.SimplePropertyType;
 import org.deegree.gml.GMLVersion;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.cql2.FilterProperty;
@@ -59,9 +62,6 @@ import org.deegree.cql2.FilterPropertyType;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
 import org.deegree.services.oaf.workspace.configuration.OafDatasets;
 import org.slf4j.Logger;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.UriInfo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -121,7 +121,7 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 
 	public static final String GEOMETRY_PROPERTY_NAME = "geometry";
 
-	private final UriInfo uriInfo;
+	private final LinkBuilder linkBuilder;
 
 	private final String datasetId;
 
@@ -130,9 +130,9 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 	@Inject
 	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-	public OafOpenApiFilter(UriInfo uriInfo, String datasetId, DeegreeWorkspaceInitializer deegreeWorkspaceInitializer)
-			throws UnknownDatasetId {
-		this.uriInfo = uriInfo;
+	public OafOpenApiFilter(LinkBuilder linkBuilder, String datasetId,
+			DeegreeWorkspaceInitializer deegreeWorkspaceInitializer) throws UnknownDatasetId {
+		this.linkBuilder = linkBuilder;
 		this.datasetId = datasetId;
 		OafDatasets oafDatasets = deegreeWorkspaceInitializer.getOafDatasets();
 		this.datasetConfiguration = oafDatasets.getDataset(datasetId);
@@ -141,16 +141,22 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 	@Override
 	public Optional<OpenAPI> filterOpenAPI(OpenAPI openAPI, Map<String, List<String>> params,
 			Map<String, String> cookies, Map<String, List<String>> headers) {
+		filterLicense(openAPI.getInfo().getLicense());
 		filterServers(openAPI);
 		filterPaths(openAPI);
 		return super.filterOpenAPI(openAPI, params, cookies, headers);
+	}
+
+	private void filterLicense(License license) {
+		if (license != null)
+			license.setUrl(linkBuilder.createLicenseProviderLinkUrl(datasetId));
 	}
 
 	private void filterServers(OpenAPI openAPI) {
 		if (openAPI.getServers() == null || openAPI.getServers().isEmpty())
 			openAPI.addServersItem(new Server());
 		Server server = openAPI.getServers().get(0);
-		String absolutePathToOpenApi = uriInfo.getBaseUriBuilder().path("datasets").path(datasetId).toString();
+		String absolutePathToOpenApi = linkBuilder.createDatasetLinkUrl(datasetId);
 		server.setUrl(absolutePathToOpenApi);
 	}
 
@@ -289,12 +295,12 @@ public class OafOpenApiFilter extends AbstractSpecFilter {
 		Schema id = new Schema().name("id").type("string").example("ID_1");
 		schema.addProperties("type", type);
 		schema.addProperties("id", id);
-		addGeoemtrySchema(featureType, schema);
+		addGeometrySchema(featureType, schema);
 		addPropertiesSchema(featureType, schema);
 		return schema;
 	}
 
-	private void addGeoemtrySchema(FeatureType featureType, Schema<Object> schema) {
+	private void addGeometrySchema(FeatureType featureType, Schema<Object> schema) {
 		if (featureType.getDefaultGeometryPropertyDeclaration() != null) {
 			Schema geometryPropertySchema = createGeometryPropertySchema();
 			schema.addProperties(GEOMETRY_PROPERTY_NAME, geometryPropertySchema);

@@ -3,11 +3,11 @@ package org.deegree.services.oaf.schema;
 import org.deegree.feature.types.FeatureType;
 import org.deegree.gml.schema.GMLAppSchemaWriter;
 import org.deegree.gml.schema.GMLSchemaInfoSet;
-import org.deegree.services.oaf.OgcApiFeatures;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.slf4j.Logger;
 
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
@@ -43,6 +43,9 @@ public class SchemaResponseGmlWriter implements MessageBodyWriter<SchemaResponse
 
 	@Context
 	private UriInfo uriInfo;
+
+	@Context
+	private HttpServletRequest request;
 
 	@Override
 	public boolean isWriteable(Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType) {
@@ -109,7 +112,7 @@ public class SchemaResponseGmlWriter implements MessageBodyWriter<SchemaResponse
 		String featureTypeNamespaceURI = featureType.getName().getNamespaceURI();
 		GMLSchemaInfoSet gmlSchema = schemaResponse.getGmlSchema();
 		GMLAppSchemaWriter.export(writer, gmlSchema, featureTypeNamespaceURI, uri -> {
-			String appschemaUri = deegreeWorkspaceInitializer.createAppschemaUrl(uriInfo, uri);
+			String appschemaUri = deegreeWorkspaceInitializer.createAppschemaUrl(uriInfo, request, uri);
 			if (appschemaUri != null)
 				return appschemaUri;
 			return uri;

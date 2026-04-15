@@ -26,6 +26,7 @@ import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.OpenAPI;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.http.HttpStatus;
 import org.deegree.commons.utils.TunableParameter;
 import org.deegree.services.oaf.openapi.OpenApiCreator;
@@ -79,8 +80,8 @@ public class OpenApi {
 	@Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
 	@Tag(name = "Capabilities")
 	public Response getOpenApiOpenApiJson(@Context HttpHeaders headers, @Context UriInfo uriInfo,
-			@PathParam("datasetId") String datasetId) throws Exception {
-		return respondWithOpenApi(headers, uriInfo, datasetId, true);
+			@Context HttpServletRequest servletRequest, @PathParam("datasetId") String datasetId) throws Exception {
+		return respondWithOpenApi(headers, uriInfo, servletRequest, datasetId, true);
 	}
 
 	@GET
@@ -88,13 +89,13 @@ public class OpenApi {
 	@Operation(operationId = "openApi", summary = "api documentation", description = "api documentation")
 	@Tag(name = "Capabilities")
 	public Response getOpenApiOpenApiYaml(@Context HttpHeaders headers, @Context UriInfo uriInfo,
-			@PathParam("datasetId") String datasetId) throws Exception {
-		return respondWithOpenApi(headers, uriInfo, datasetId, false);
+			@Context HttpServletRequest servletRequest, @PathParam("datasetId") String datasetId) throws Exception {
+		return respondWithOpenApi(headers, uriInfo, servletRequest, datasetId, false);
 	}
 
-	private Response respondWithOpenApi(HttpHeaders headers, UriInfo uriInfo, String datasetId, boolean json)
-			throws Exception {
-		OpenAPI openApi = this.openApiCreator.createOpenApi(headers, uriInfo, datasetId);
+	private Response respondWithOpenApi(HttpHeaders headers, UriInfo uriInfo, HttpServletRequest servletRequest,
+			String datasetId, boolean json) throws Exception {
+		OpenAPI openApi = this.openApiCreator.createOpenApi(headers, uriInfo, servletRequest, datasetId);
 
 		if (openApi == null)
 			return Response.status(404).build();

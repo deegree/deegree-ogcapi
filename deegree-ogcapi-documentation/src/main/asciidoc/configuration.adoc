@@ -469,6 +469,29 @@ The REST-API is enabled by default. To protect this interface from unauthorized 
 A detailed documentation of the REST-API interface and how access is configured is described in section "deegree REST interface"
 of the https://download.deegree.org/documentation/current/html/#anchor-configuration-restapi[deegree webservices handbook].
 
+=== Overwritting Links in reponses
+
+The deegree ogcapi responses contains URLs that refer back or to other resources. By default, deegree derives these URLs from the incoming request. Sometimes it is required to override these URLs, for example when using deegree ogcapi behind a proxy or load balancer.
+
+The URLs are overwritten by the URL specified by the  `X-Forwarded-Proto`, `X-Forwarded-Host`, `X-Forwarded-Port` and `X-Forwarded-Prefix` header values. For example via a request to
+_http://realnameofdeegreemachine:8080/deegree-ogcapi/datasets_
+and the specified header values
+
+----
+* X-Forwarded-Host = www.mysecondgeoportal.com
+* X-Forwarded-Port = 8088
+* X-Forwarded-Proto = https
+* X-Forwarded-Prefix = my-ogcapi
+----
+
+deegree would report _https://www.mysecondgeoportal.com:8088/my-ogcapi/datasets_. The URL path is kept as in the request URL. Host, port, protocol and context path are replaced by the values from the header.
+If `X-Forwarded-Port`, `X-Forwarded-Proto`, or `X-Forwarded-Prefix` are missing, the values are taken from the request URL, and deegree would report
+_http://www.mysecondgeoportal.com/deegree-ogcapi/datasets_.
+If `X-Forwarded-Prefix` is empty, the context path is removed from the URL, and deegree would report
+_https://www.mysecondgeoportal.com:8088/datasets_.
+
+This behavior is useful when the deegree ogcapi can be requested via different URLs.
+
 === Allow access to OpenAPI document from all origins
 
 In case you want to avoid any issues when using the OpenAPI document from other locations due to CORS, you can enable allowing all origins specifically for accessing the OpenAPI document.

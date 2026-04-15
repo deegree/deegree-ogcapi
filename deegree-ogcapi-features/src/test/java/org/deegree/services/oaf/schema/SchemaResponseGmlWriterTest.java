@@ -1,5 +1,6 @@
 package org.deegree.services.oaf.schema;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
@@ -111,10 +112,12 @@ class SchemaResponseGmlWriterTest {
 	private DeegreeWorkspaceInitializer mockWorkspaceInitializer() {
 		DeegreeWorkspaceInitializer deegreeWorkspaceInitializer = mock(DeegreeWorkspaceInitializer.class);
 		lenient()
-			.when(deegreeWorkspaceInitializer.createAppschemaUrl(eq(uriInfo), endsWith("micado_kennzahlen_v1_2.xsd")))
+			.when(deegreeWorkspaceInitializer.createAppschemaUrl(eq(uriInfo), any(HttpServletRequest.class),
+					endsWith("micado_kennzahlen_v1_2.xsd")))
 			.thenReturn("http.//test.de/micado_kennzahlen_v1_2.xsd");
 		lenient()
-			.when(deegreeWorkspaceInitializer.createAppschemaUrl(any(UriInfo.class), endsWith("zeitreihen_v1.xsd")))
+			.when(deegreeWorkspaceInitializer.createAppschemaUrl(any(UriInfo.class), any(HttpServletRequest.class),
+					endsWith("zeitreihen_v1.xsd")))
 			.thenReturn("http.//test.de/zeitreihen_v1.xsd");
 		return deegreeWorkspaceInitializer;
 	}

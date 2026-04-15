@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 import org.deegree.commons.ows.metadata.MetadataUrl;
@@ -74,12 +75,12 @@ public class LinkBuilder {
 			"this document as GML", APPLICATION_GML_SF0, "this document as GML", APPLICATION_GML_SF2,
 			"this document as GML");
 
-	public LinkBuilder(UriInfo uriInfo) {
-		this(uriInfo, null);
+	public LinkBuilder(UriInfo uriInfo, HttpServletRequest request) {
+		this(uriInfo, request, null);
 	}
 
-	public LinkBuilder(UriInfo uriInfo, String requestedMediaType) {
-		this.uriInfo = uriInfo;
+	public LinkBuilder(UriInfo uriInfo, HttpServletRequest request, String requestedMediaType) {
+		this.uriInfo = new UriInfoWithHeaderFromRequest(uriInfo, request);
 		this.requestedMediaType = requestedMediaType;
 	}
 
@@ -91,6 +92,22 @@ public class LinkBuilder {
 		String selfUri = getSelfUri();
 		addLinks(links, selfUri, AVAILABLE_DATASET_LINKS);
 		return links;
+	}
+
+	/**
+	 * @param datasetId id of the dataset, never <code>null</code>
+	 * @return link to this dataset, never <code>null</code>
+	 */
+	public String createDatasetLinkUrl(String datasetId) {
+		return createBaseUriBuilder(datasetId).toString();
+	}
+
+	/**
+	 * @param datasetId id of the dataset, never <code>null</code>
+	 * @return link to this dataset, never <code>null</code>
+	 */
+	public String createLicenseProviderLinkUrl(String datasetId) {
+		return createBaseUriBuilder(datasetId).path("license").path("provider").toString();
 	}
 
 	/**
@@ -180,7 +197,7 @@ public class LinkBuilder {
 
 	public List<Link> createFeaturesLinks(String datasetId, String collectionId, NextLink nextLink) {
 		List<Link> links = new ArrayList<>();
-		String selfUri = createSelfUriWithQueryParametersWExceptFormat();
+		String selfUri = createSelfUriWithQueryParametersExceptFormat();
 		addLinks(links, selfUri, AVAILABLE_GEO_LINKS);
 		if (nextLink != null) {
 			String nextUri = nextLink.createUri(uriInfo);
@@ -270,10 +287,10 @@ public class LinkBuilder {
 	}
 
 	private String getSelfUri() {
-		return uriInfo.getBaseUriBuilder().path(uriInfo.getPath()).toString();
+		return uriInfo.getRequestUriBuilder().toString();
 	}
 
-	private String createSelfUriWithQueryParametersWExceptFormat() {
+	private String createSelfUriWithQueryParametersExceptFormat() {
 		return uriInfo.getRequestUriBuilder().replaceQueryParam("f", null).toString();
 	}
 
