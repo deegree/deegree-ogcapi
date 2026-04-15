@@ -96,6 +96,22 @@ public class LinkBuilder {
 
 	/**
 	 * @param datasetId id of the dataset, never <code>null</code>
+	 * @return link to this dataset, never <code>null</code>
+	 */
+	public String createDatasetLinkUrl(String datasetId) {
+		return createBaseUriBuilder(datasetId).toString();
+	}
+
+	/**
+	 * @param datasetId id of the dataset, never <code>null</code>
+	 * @return link to this dataset, never <code>null</code>
+	 */
+	public String createLicenseProviderLinkUrl(String datasetId) {
+		return createBaseUriBuilder(datasetId).path("license").path("provider").toString();
+	}
+
+	/**
+	 * @param datasetId id of the dataset, never <code>null</code>
 	 * @return list of links, never <code>null</code>
 	 */
 	public List<Link> createDatasetLinks(String datasetId) {

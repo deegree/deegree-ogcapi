@@ -30,8 +30,9 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.servers.Server;
+import jakarta.servlet.http.HttpServletRequest;
 import org.deegree.services.oaf.exceptions.UnknownDatasetId;
+import org.deegree.services.oaf.link.LinkBuilder;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
@@ -44,7 +45,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +74,8 @@ public class OpenApiCreator {
 	@Inject
 	private DeegreeWorkspaceInitializer deegreeWorkspaceInitializer;
 
-	public OpenAPI createOpenApi(HttpHeaders headers, UriInfo uriInfo, String datasetId) throws Exception {
+	public OpenAPI createOpenApi(HttpHeaders headers, UriInfo uriInfo, HttpServletRequest servletRequest,
+			String datasetId) throws Exception {
 		OpenAPI oas = createOpenApiDocument(datasetId);
 		SwaggerConfiguration oasConfig = createSwaggerConfiguration(oas);
 
@@ -94,7 +95,8 @@ public class OpenApiCreator {
 		if (oas2 != null && ctx.getOpenApiConfiguration() != null
 				&& ctx.getOpenApiConfiguration().getFilterClass() != null) {
 			try {
-				OafOpenApiFilter filter = new OafOpenApiFilter(uriInfo, datasetId, deegreeWorkspaceInitializer);
+				OafOpenApiFilter filter = new OafOpenApiFilter(new LinkBuilder(uriInfo, servletRequest), datasetId,
+						deegreeWorkspaceInitializer);
 				SpecFilter f = new SpecFilter();
 				oas2 = f.filter(oas2, filter, getQueryParams(this.uriInfo.getQueryParameters()), getCookies(headers),
 						getHeaders(headers));
