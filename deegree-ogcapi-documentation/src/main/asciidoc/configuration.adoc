@@ -471,8 +471,6 @@ of the https://download.deegree.org/documentation/current/html/#anchor-configura
 
 === Overwritting Links in reponses
 
-Links to other resources as well as the `self` and `alternate` links are derived from the requesting URL.
-
 The deegree ogcapi responses contains URLs that refer back or to other resources. By default, deegree derives these URLs from the incoming request. Sometimes it is required to override these URLs, for example when using deegree ogcapi behind a proxy or load balancer.
 
 The URLs are overwritten by the URL specified by the  `X-Forwarded-Proto`, `X-Forwarded-Host`, `X-Forwarded-Port` and `X-Forwarded-Prefix` header values. For example via a request to

@@ -1,17 +1,10 @@
 package org.deegree.services.oaf.schema;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
-import static org.deegree.gml.GMLVersion.GML_32;
-import static org.slf4j.LoggerFactory.getLogger;
-
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
+import org.deegree.feature.types.FeatureType;
+import org.deegree.gml.schema.GMLAppSchemaWriter;
+import org.deegree.gml.schema.GMLSchemaInfoSet;
+import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
+import org.slf4j.Logger;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,11 +16,18 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.Provider;
-import org.deegree.feature.types.FeatureType;
-import org.deegree.gml.schema.GMLAppSchemaWriter;
-import org.deegree.gml.schema.GMLSchemaInfoSet;
-import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.slf4j.Logger;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static org.deegree.gml.GMLVersion.GML_32;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
