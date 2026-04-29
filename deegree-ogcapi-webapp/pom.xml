@@ -120,35 +120,50 @@
           <artifactId>replacer</artifactId>
           <executions>
             <execution>
+              <id>replace-index-html</id>
               <phase>prepare-package</phase>
               <goals>
                 <goal>replace</goal>
               </goals>
+              <configuration>
+                <file>
+                  ${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui-version}/index.html
+                </file>
+                <replacements>
+                  <replacement>
+                    <token>href="./</token>
+                    <value>href="./api/</value>
+                  </replacement>
+                  <replacement>
+                    <token>src="./</token>
+                    <value>src="./api/</value>
+                  </replacement>
+                </replacements>
+              </configuration>
+            </execution>
+            <execution>
+              <id>replace-swagger-initializer</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>replace</goal>
+              </goals>
+              <configuration>
+                <file>
+                  ${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui-version}/swagger-initializer.js
+                </file>
+                <replacements>
+                  <replacement>
+                    <token>url:</token>
+                    <value>requestInterceptor: function (req) {if (req.href == window.location.href) { req.headers = {'Accept': 'application/vnd.oai.openapi+json;version=3.0'};}; return req;}, url:</value>
+                  </replacement>
+                  <replacement>
+                    <token>"https://petstore.swagger.io/v2/swagger.json"</token>
+                    <value>window.location.href</value>
+                  </replacement>
+                </replacements>
+              </configuration>
             </execution>
           </executions>
-          <configuration>
-            <file>
-              ${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui-version}/index.html
-            </file>
-            <replacements>
-              <replacement>
-                <token>url:</token>
-                <value>requestInterceptor: function (req) {if (req.href == window.location.href) { req.headers = {'Accept': 'application/vnd.oai.openapi+json;version=3.0'};}; return req;}, url:</value>
-              </replacement>
-              <replacement>
-                <token>"https://petstore.swagger.io/v2/swagger.json"</token>
-                <value>window.location.href</value>
-              </replacement>
-              <replacement>
-                <token>href="./</token>
-                <value>href="./api/</value>
-              </replacement>
-              <replacement>
-                <token>src="./</token>
-                <value>src="./api/</value>
-              </replacement>
-            </replacements>
-          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
