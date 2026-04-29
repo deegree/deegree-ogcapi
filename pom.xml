@@ -695,12 +695,12 @@
       <dependency>
         <groupId>jakarta.xml.bind</groupId>
         <artifactId>jakarta.xml.bind-api</artifactId>
-        <version>4.0.4</version>
+        <version>4.0.5</version>
       </dependency>
       <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
-        <version>4.0.6</version>
+        <version>4.0.7</version>
         <scope>runtime</scope>
       </dependency>
       <!-- swagger -->
@@ -820,20 +820,20 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.14.1</version>
+        <version>5.14.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
-        <version>5.20.0</version>
+        <version>5.23.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>5.20.0</version>
+        <version>5.23.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -875,7 +875,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.1.36</version>
+        <version>2.1.40</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -937,7 +937,7 @@
     <java.version>17</java.version>
     <site.dir>${user.home}/Sites</site.dir>
     <jersey-version>3.1.11</jersey-version>
-    <swagger-version>2.2.41</swagger-version>
+    <swagger-version>2.2.48</swagger-version>
     <swagger-ui-version>3.52.5</swagger-ui-version>
     <jackson-version>2.16.2</jackson-version>
     <deegree-version>3.6.7</deegree-version>
