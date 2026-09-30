@@ -700,7 +700,7 @@
       <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
-        <version>4.0.7</version>
+        <version>4.0.9</version>
         <scope>runtime</scope>
       </dependency>
       <!-- swagger -->
@@ -875,7 +875,7 @@
       <dependency>
         <groupId>io.swagger.parser.v3</groupId>
         <artifactId>swagger-parser-v3</artifactId>
-        <version>2.1.40</version>
+        <version>2.1.48</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -936,12 +936,12 @@
     <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
     <java.version>17</java.version>
     <site.dir>${user.home}/Sites</site.dir>
-    <jersey-version>3.1.11</jersey-version>
-    <swagger-version>2.2.48</swagger-version>
+    <jersey-version>3.1.12</jersey-version>
+    <swagger-version>2.2.55</swagger-version>
     <swagger-ui-version>5.32.5</swagger-ui-version>
     <jackson-version>2.16.2</jackson-version>
-    <deegree-version>3.6.11</deegree-version>
-    <slf4j.version>2.0.17</slf4j.version>
+    <deegree-version>3.6.12</deegree-version>
+    <slf4j.version>2.0.20</slf4j.version>
     <logback.version>1.5.19</logback.version>
     <antlr.version>4.13.2</antlr.version>
   </properties>
