@@ -497,6 +497,12 @@ This behavior is useful when the deegree ogcapi can be requested via different U
 In case you want to avoid any issues when using the OpenAPI document from other locations due to CORS, you can enable allowing all origins specifically for accessing the OpenAPI document.
 To enable this set the system property `deegree.oaf.openapi.cors.allow_all` to _true_.
 
+=== Disable links to download all features
+
+By default, collections include the links "Download all features as GeoJSON" and "Download all features as GML".
+To hide these links set the system property `deegree.oaf.links.enclosure.enabled` to _false_. The default is _true_.
+This setting only controls link visibility. Direct requests with `bulk=true` remain available.
+
 [[config_logging]]
 === Logging configuration
 

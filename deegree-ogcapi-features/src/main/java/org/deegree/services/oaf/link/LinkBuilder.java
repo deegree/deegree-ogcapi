@@ -52,6 +52,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 import org.deegree.commons.ows.metadata.MetadataUrl;
+import org.deegree.commons.utils.TunableParameter;
 import org.deegree.services.oaf.domain.License;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 
@@ -59,6 +60,13 @@ import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
  */
 public class LinkBuilder {
+
+	/**
+	 * Controls whether links to download all features are included (default: true).
+	 */
+	public static final String PARAMETER_ENCLOSURE_LINKS_ENABLED = "deegree.oaf.links.enclosure.enabled";
+
+	private final boolean enclosureLinksEnabled = TunableParameter.get(PARAMETER_ENCLOSURE_LINKS_ENABLED, true);
 
 	private final UriInfo uriInfo;
 
@@ -228,6 +236,9 @@ public class LinkBuilder {
 	}
 
 	private void addEnclosureLinks(List<Link> links, String uri) {
+		if (!enclosureLinksEnabled) {
+			return;
+		}
 		links.add(new Link(uri, ENCLOSURE.getRel(), APPLICATION_JSON, "Download all features as GeoJSON"));
 		links.add(new Link(uri, ENCLOSURE.getRel(), APPLICATION_XML, "Download all features as GML"));
 	}
