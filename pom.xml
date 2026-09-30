@@ -939,7 +939,7 @@
     <jersey-version>3.1.12</jersey-version>
     <swagger-version>2.2.55</swagger-version>
     <swagger-ui-version>5.32.5</swagger-ui-version>
-    <jackson-version>2.16.2</jackson-version>
+    <jackson-version>2.18.11</jackson-version>
     <deegree-version>3.6.12</deegree-version>
     <slf4j.version>2.0.20</slf4j.version>
     <logback.version>1.5.19</logback.version>
