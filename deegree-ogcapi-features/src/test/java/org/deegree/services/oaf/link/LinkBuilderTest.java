@@ -8,6 +8,7 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF0;
 import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML_SF2;
+import static org.deegree.services.oaf.link.LinkBuilder.PARAMETER_ENCLOSURE_LINKS_ENABLED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -25,13 +26,19 @@ import jakarta.ws.rs.core.PathSegment;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.deegree.commons.utils.TunableParameter;
 import org.deegree.services.oaf.TestData;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
 import org.deegree.services.oaf.workspace.configuration.DatasetMetadata;
 import org.glassfish.jersey.internal.util.collection.StringKeyIgnoreCaseMultivaluedMap;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -39,6 +46,26 @@ import org.junit.jupiter.api.Test;
 class LinkBuilderTest {
 
 	private String BASE_URI = "http://localhost:8081/deegree-services-oaf";
+
+	private String originalEnclosureLinksEnabled;
+
+	@BeforeEach
+	void resetEnclosureLinksParameter() {
+		originalEnclosureLinksEnabled = System.getProperty(PARAMETER_ENCLOSURE_LINKS_ENABLED);
+		System.clearProperty(PARAMETER_ENCLOSURE_LINKS_ENABLED);
+		TunableParameter.resetCache();
+	}
+
+	@AfterEach
+	void restoreEnclosureLinksParameter() {
+		if (originalEnclosureLinksEnabled == null) {
+			System.clearProperty(PARAMETER_ENCLOSURE_LINKS_ENABLED);
+		}
+		else {
+			System.setProperty(PARAMETER_ENCLOSURE_LINKS_ENABLED, originalEnclosureLinksEnabled);
+		}
+		TunableParameter.resetCache();
+	}
 
 	@Test
 	void create_collections_links() throws Exception {
@@ -78,8 +105,14 @@ class LinkBuilderTest {
 		assertThat(collectionsLinks, hasLinkWith("alternate", TEXT_HTML, uri));
 	}
 
-	@Test
-	void create_collection_in_collections_links() throws Exception {
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = { "true", "false" })
+	void create_collection_in_collections_links(String enclosureLinksEnabled) throws Exception {
+		if (enclosureLinksEnabled != null) {
+			System.setProperty(PARAMETER_ENCLOSURE_LINKS_ENABLED, enclosureLinksEnabled);
+		}
+		boolean includeEnclosureLinks = enclosureLinksEnabled == null || Boolean.parseBoolean(enclosureLinksEnabled);
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections";
 		String path = "datasets/oaf/collections";
 
@@ -88,7 +121,7 @@ class LinkBuilderTest {
 		List<Link> collectionLinks = linkBuilder.createCollectionLinks("oaf", "strassenbaumkataster",
 				Collections.emptyList());
 
-		assertThat(collectionLinks.size(), is(11));
+		assertThat(collectionLinks.size(), is(includeEnclosureLinks ? 11 : 9));
 		String collectionUri = uri + "/strassenbaumkataster";
 		assertThat(collectionLinks, hasLinkWith("collection", APPLICATION_JSON, collectionUri));
 		assertThat(collectionLinks, hasLinkWith("collection", APPLICATION_XML, collectionUri));
@@ -103,12 +136,23 @@ class LinkBuilderTest {
 		assertThat(collectionLinks, hasLinkWith("items", TEXT_HTML, itemsUri));
 
 		String enclosureUri = uri + "/strassenbaumkataster/items?bulk=true";
-		assertThat(collectionLinks, hasLinkWith("enclosure", APPLICATION_JSON, enclosureUri));
-		assertThat(collectionLinks, hasLinkWith("enclosure", APPLICATION_XML, enclosureUri));
+		if (includeEnclosureLinks) {
+			assertThat(collectionLinks, hasLinkWith("enclosure", APPLICATION_JSON, enclosureUri));
+			assertThat(collectionLinks, hasLinkWith("enclosure", APPLICATION_XML, enclosureUri));
+		}
+		else {
+			assertThat(collectionLinks.stream().anyMatch(link -> "enclosure".equals(link.getRel())), is(false));
+		}
 	}
 
-	@Test
-	void create_collection_links() throws Exception {
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = { "true", "false" })
+	void create_collection_links(String enclosureLinksEnabled) throws Exception {
+		if (enclosureLinksEnabled != null) {
+			System.setProperty(PARAMETER_ENCLOSURE_LINKS_ENABLED, enclosureLinksEnabled);
+		}
+		boolean includeEnclosureLinks = enclosureLinksEnabled == null || Boolean.parseBoolean(enclosureLinksEnabled);
 		String uri = "http://localhost:8081/deegree-services-oaf/datasets/oaf/collections/strassenbaumkataster";
 		String path = "datasets/oaf/collections/strassenbaumkataster";
 
@@ -117,7 +161,7 @@ class LinkBuilderTest {
 		List<Link> collectionLinks = linkBuilder.createCollectionLinks("oaf", "strassenbaumkataster",
 				Collections.emptyList());
 
-		assertThat(collectionLinks.size(), is(11));
+		assertThat(collectionLinks.size(), is(includeEnclosureLinks ? 11 : 9));
 		assertThat(collectionLinks, hasLinkWith("self", APPLICATION_JSON, uri));
 		assertThat(collectionLinks, hasLinkWith("alternate", APPLICATION_XML, uri));
 		assertThat(collectionLinks, hasLinkWith("alternate", TEXT_HTML, uri));
@@ -131,8 +175,13 @@ class LinkBuilderTest {
 		assertThat(collectionLinks, hasLinkWith("items", TEXT_HTML, itemsUri));
 
 		String enclosureUri = uri + "/items?bulk=true";
-		assertThat(collectionLinks, hasLinkWith("enclosure", APPLICATION_JSON, enclosureUri));
-		assertThat(collectionLinks, hasLinkWith("enclosure", APPLICATION_XML, enclosureUri));
+		if (includeEnclosureLinks) {
+			assertThat(collectionLinks, hasLinkWith("enclosure", APPLICATION_JSON, enclosureUri));
+			assertThat(collectionLinks, hasLinkWith("enclosure", APPLICATION_XML, enclosureUri));
+		}
+		else {
+			assertThat(collectionLinks.stream().anyMatch(link -> "enclosure".equals(link.getRel())), is(false));
+		}
 	}
 
 	@Test
