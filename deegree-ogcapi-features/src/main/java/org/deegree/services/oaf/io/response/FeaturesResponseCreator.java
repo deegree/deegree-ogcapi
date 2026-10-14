@@ -71,6 +71,7 @@ public class FeaturesResponseCreator {
 
 		String mediaType = detectMediaType(acceptHeader);
 		Response.ResponseBuilder response = Response.ok(featuresResponse, mediaType);
+		response.header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"items.gml\"");
 		response.header(HEADER_NUMBER_RETURNED, featuresResponse.getNumberOfFeatures());
 		response.header(HEADER_NUMBER_MATCHED, featuresResponse.getNumberOfFeaturesMatched());
 		addCommonHeader(featuresResponse, response);

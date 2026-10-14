@@ -36,9 +36,12 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
 import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
@@ -65,6 +68,7 @@ import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -93,7 +97,28 @@ class FeaturesTest extends JerseyTest {
 	void features_declaration_json_should_be_available() {
 		Response response = target("/datasets/oaf/collections/test/items").request(APPLICATION_GEOJSON).get();
 		assertThat(response.getStatus(), is(200));
+		assertNull(response.getHeaderString(HttpHeaders.CONTENT_DISPOSITION));
 		assertThat(response.getHeaders().get(HEADER_CONTENT_CRS).get(0), is("<" + DEFAULT_CRS + ">"));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { APPLICATION_GML, APPLICATION_GML_32, APPLICATION_GML_SF0, APPLICATION_GML_SF2 })
+	void features_gml_should_have_filename(String mediaType) {
+		try (Response response = target("/datasets/oaf/collections/test/items").request(mediaType).get()) {
+			assertThat(response.getStatus(), is(200));
+			assertThat(response.getHeaderString(HttpHeaders.CONTENT_DISPOSITION), is("inline; filename=\"items.gml\""));
+		}
+	}
+
+	@Test
+	void features_xml_parameter_should_have_filename() {
+		try (Response response = target("/datasets/oaf/collections/test/items").queryParam("f", "xml")
+			.request(APPLICATION_GEOJSON)
+			.get()) {
+			assertThat(response.getStatus(), is(200));
+			assertThat(response.getMediaType(), is(APPLICATION_GML_TYPE));
+			assertThat(response.getHeaderString(HttpHeaders.CONTENT_DISPOSITION), is("inline; filename=\"items.gml\""));
+		}
 	}
 
 	@Test
