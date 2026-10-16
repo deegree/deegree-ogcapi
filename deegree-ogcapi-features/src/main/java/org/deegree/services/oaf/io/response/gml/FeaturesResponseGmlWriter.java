@@ -21,6 +21,7 @@
  */
 package org.deegree.services.oaf.io.response.gml;
 
+import org.deegree.commons.xml.stax.IndentingXMLStreamWriter;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
@@ -80,7 +81,8 @@ public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeat
 			throws WebApplicationException {
 		GMLStreamWriter gmlStreamWriter = null;
 		try {
-			XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter(out);
+			XMLStreamWriter xmlStreamWriter = new IndentingXMLStreamWriter(
+					XMLOutputFactory.newFactory().createXMLStreamWriter(out));
 			gmlStreamWriter = GMLOutputFactory.createGMLStreamWriter(GMLVersion.GML_32, xmlStreamWriter);
 			Map<String, String> prefixToNs = new HashMap<>();
 			prefixToNs.putAll(features.getFeatureTypeNsPrefixes());
