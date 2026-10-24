@@ -6,7 +6,7 @@ ENV LANG=en_US.UTF-8
 
 # add build info labels that can be set on build
 # see also https://github.com/opencontainers/image-spec/blob/master/annotations.md
-ARG DEEGREE_VERSION=2.0.7
+ARG DEEGREE_VERSION=2.0.8
 ARG DIALECT=all
 ARG BUILD_DATE
 ARG VCS_REF
