@@ -241,7 +241,6 @@ var AppBreadcrump = new Vue({
 
     $.ajax({
       dataType: "json",
-      //url: "http://localhost:8002/collections/strassenbaumkataster",
       url: thisLink,
       success: function(data) {
         self.collectionId = data.title;
