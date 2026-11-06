@@ -21,6 +21,8 @@
  */
 package org.deegree.services.oaf.io.response.gml;
 
+import org.deegree.commons.utils.TunableParameter;
+import org.deegree.commons.xml.stax.IndentingXMLStreamWriter;
 import org.deegree.cs.coordinatesystems.ICRS;
 import org.deegree.cs.exceptions.TransformationException;
 import org.deegree.cs.exceptions.UnknownCRSException;
@@ -62,6 +64,14 @@ import static org.deegree.services.oaf.OgcApiFeaturesMediaType.APPLICATION_GML;
 @Produces({ APPLICATION_GML })
 public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeatureResponse> {
 
+	/**
+	 * Controls whether GML responses are formatted with line breaks and indentation
+	 * (default: false).
+	 */
+	public static final String PARAMETER_GML_RESPONSE_FORMAT_ENABLED = "deegree.oaf.gml.response.format.enabled";
+
+	private final boolean formatEnabled = TunableParameter.get(PARAMETER_GML_RESPONSE_FORMAT_ENABLED, false);
+
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		return FeaturesResponse.class == type || FeatureResponse.class == type;
@@ -81,6 +91,9 @@ public class FeaturesResponseGmlWriter implements MessageBodyWriter<AbstractFeat
 		GMLStreamWriter gmlStreamWriter = null;
 		try {
 			XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter(out);
+			if (formatEnabled) {
+				xmlStreamWriter = new IndentingXMLStreamWriter(xmlStreamWriter);
+			}
 			gmlStreamWriter = GMLOutputFactory.createGMLStreamWriter(GMLVersion.GML_32, xmlStreamWriter);
 			Map<String, String> prefixToNs = new HashMap<>();
 			prefixToNs.putAll(features.getFeatureTypeNsPrefixes());

@@ -22,6 +22,7 @@
 package org.deegree.services.oaf.io.response;
 
 import org.deegree.commons.utils.CloseableIterator;
+import org.deegree.commons.utils.TunableParameter;
 import org.deegree.feature.Feature;
 import org.deegree.feature.FeatureCollection;
 import org.deegree.feature.stream.EmptyFeatureInputStream;
@@ -31,7 +32,12 @@ import org.deegree.gml.GMLInputFactory;
 import org.deegree.gml.GMLStreamReader;
 import org.deegree.services.oaf.io.response.gml.FeaturesResponseGmlWriter;
 import org.deegree.services.oaf.link.Link;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
@@ -39,6 +45,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +56,7 @@ import java.util.Map;
 import static org.deegree.gml.GMLVersion.GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_SCHEMA_URL;
+import static org.deegree.services.oaf.io.response.gml.FeaturesResponseGmlWriter.PARAMETER_GML_RESPONSE_FORMAT_ENABLED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.xmlunit.matchers.EvaluateXPathMatcher.hasXPath;
@@ -62,6 +70,77 @@ class FeaturesResponseGmlWriterIT {
 	private static final String NAMESPACE_URI = "http://deegree.org/app";
 
 	private static final String SCHEMA_LOCATION = "http://schemalocation/datasets/dataset/collections/collection/appschema";
+
+	private String originalFormatEnabled;
+
+	@BeforeEach
+	void resetFormatParameter() {
+		originalFormatEnabled = System.getProperty(PARAMETER_GML_RESPONSE_FORMAT_ENABLED);
+		System.clearProperty(PARAMETER_GML_RESPONSE_FORMAT_ENABLED);
+		TunableParameter.resetCache();
+	}
+
+	@AfterEach
+	void restoreFormatParameter() {
+		if (originalFormatEnabled == null) {
+			System.clearProperty(PARAMETER_GML_RESPONSE_FORMAT_ENABLED);
+		}
+		else {
+			System.setProperty(PARAMETER_GML_RESPONSE_FORMAT_ENABLED, originalFormatEnabled);
+		}
+		TunableParameter.resetCache();
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = { "true", "false" })
+	void writeToWithFormatting(String formatEnabled) throws Exception {
+		assertFormatting(createFeatureResponse(), formatEnabled, 5);
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = { "true", "false" })
+	void writeSingleFeatureWithFormatting(String formatEnabled) throws Exception {
+		FeaturesResponse featuresResponse = createFeatureResponse();
+		FeatureInputStream featureStream = featuresResponse.getFeatures();
+		try {
+			Feature feature = featureStream.iterator().next();
+			FeatureResponse featureResponse = new FeaturesResponseBuilder(feature)
+				.withFeatureTypeNsPrefixes(featuresResponse.getFeatureTypeNsPrefixes())
+				.withSchemaLocation(NAMESPACE_URI, SCHEMA_LOCATION)
+				.buildFeatureResponse();
+			assertFormatting(featureResponse, formatEnabled, 1);
+		}
+		finally {
+			featureStream.close();
+		}
+	}
+
+	private void assertFormatting(AbstractFeatureResponse response, String formatEnabled, int expectedCount) {
+		if (formatEnabled != null) {
+			System.setProperty(PARAMETER_GML_RESPONSE_FORMAT_ENABLED, formatEnabled);
+		}
+		FeaturesResponseGmlWriter writer = new FeaturesResponseGmlWriter();
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		writer.writeTo(response, null, null, null, null, null, output);
+		String xml = output.toString(StandardCharsets.UTF_8);
+
+		boolean formatted = Boolean.parseBoolean(formatEnabled);
+		assertThat(xml.lines().count() > 1, is(formatted));
+		assertThat(xml.matches("(?s).*?>\\R\\h+<sf:featureMember>\\R\\h+<.*"), is(formatted));
+		assertThat(xml, hasXPath("count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)",
+				is(Integer.toString(expectedCount)))
+			.withNamespaceContext(nsContext()));
+		assertThat(xml, hasXPath("/sf:FeatureCollection/sf:featureMember[1]/app:strassenbaumkataster/app:gattung",
+				is("Quercus / Eiche"))
+			.withNamespaceContext(nsContext()));
+		assertThat(xml,
+				hasXPath(
+						"/sf:FeatureCollection/sf:featureMember[1]/app:strassenbaumkataster/app:geom/gml:Point/gml:pos",
+						is("53.553667 10.014337"))
+					.withNamespaceContext(nsContext()));
+	}
 
 	@Test
 	void writeTo() throws Exception {

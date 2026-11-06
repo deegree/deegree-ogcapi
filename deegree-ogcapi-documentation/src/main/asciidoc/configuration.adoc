@@ -503,6 +503,12 @@ By default, collections include the links "Download all features as GeoJSON" and
 To hide these links set the system property `deegree.oaf.links.enclosure.enabled` to _false_. The default is _true_.
 This setting only controls link visibility. Direct requests with `bulk=true` remain available.
 
+=== Format GML responses
+
+By default, GML responses are written without added line breaks or indentation.
+To enable formatting for both single-item and collection responses, set the system property
+`deegree.oaf.gml.response.format.enabled` to _true_. The default is _false_.
+
 [[config_logging]]
 === Logging configuration
 
