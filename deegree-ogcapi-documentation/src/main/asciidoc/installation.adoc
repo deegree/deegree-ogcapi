@@ -11,14 +11,14 @@ The installation of these components must be done prior of this installation.
 
 The server hosting the service should have at least 4 GB of free memory and more than 2 CPU cores available.
 
-NOTE: https://adoptopenjdk.net/releases.html[AdoptOpenJDK 17] with https://tomcat.apache.org/download-10.cgi[Apache Tomcat 10] is the recommended runtime environment.
+NOTE: https://adoptopenjdk.net/releases.html[AdoptOpenJDK 25] with https://tomcat.apache.org/download-11.cgi[Apache Tomcat 11] is the recommended runtime environment.
 
 === Download
 
-The deegree ogcapi webapp is provided as a web application archive (WAR) file and release versions are available on the https://github.com/deegree/deegree-ogcapi/releases[deegree ogcapi GitHub page].
+The deegree ogcapi webapp is provided as a web application archive (WAR) file and release versions are available on the https://www.deegree.org/download/[official deegree website]. The source code and additional information of each the release versions, such as changelogs, are available on the https://github.com/deegree/deegree-ogcapi/releases[deegree ogcapi GitHub page].
 
-Choose either the *_deegree-ogcapi-webapp-postgres.war_* for PostgreSQL/PostGIS, the *_deegree-ogcapi-webapp-mssql.war_* for Microsoft SQL Server or the *_deegree-ogcapi-webapp-oracle.war_* for Oracle databases.
-Each of the three webapps contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
+Choose either the *_deegree-ogcapi-webapp-all.war_*, including drivers for PostgreSQL, Microsoft SQL Server and Oracle Database, or the *_deegree-ogcapi-webapp-nodriver.war_*, with none of the mentioned drivers included.
+Each of the two webapps contain all required libraries and feature store implementations to access file-based feature stores (see <<config_feature_store>> for more information which feature stores are supported).
 Download the WAR file and store it in the local file system of the server.
 
 [[installation_deploy]]
@@ -49,16 +49,16 @@ To uninstall the webapp:
 
 === Docker
 
-Docker images with deegree ogcapi are available on https://hub.docker.com[Docker Hub] for each of the supported databases (PostgreSQL/PostGIS, Microsoft SQL Server and Oracle). This requires the installation of Docker on the server. Check the https://docs.docker.com/get-started/get-docker/[Docker documentation] for requirements and installation instructions.
+A Docker image with deegree ogcapi is available on https://hub.docker.com[Docker Hub]. It includes drivers for the supported databases PostgreSQL/PostGIS, Microsoft SQL Server and Oracle. Usage requires the installation of Docker on the server. Check the https://docs.docker.com/get-started/get-docker/[Docker documentation] for requirements and installation instructions.
 The docker image provides all software components and no additional software installations are necessary.
 
 Get the Docker image with:
 
-    docker pull deegree/deegree-ogcapi-postgres:latest
+    docker pull deegree/deegree-ogcapi:latest
 
 To start a Docker container with the name _ogcapi_ on port _8080_ run the following command:
 
-    docker run --name ogcapi -d -p 8080:8080 deegree/deegree-ogcapi-postgres:latest
+    docker run --name ogcapi -d -p 8080:8080 deegree/deegree-ogcapi:latest
 
 See the https://docs.docker.com/reference/cli/docker/[Docker CLI documentation] for more information how to connect a container to a network, mount a volume into the container, or set environment variables.
 
