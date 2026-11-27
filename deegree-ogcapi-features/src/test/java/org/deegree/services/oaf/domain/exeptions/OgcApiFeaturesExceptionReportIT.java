@@ -23,7 +23,6 @@ package org.deegree.services.oaf.domain.exeptions;
 
 import org.deegree.services.oaf.domain.exceptions.OgcApiFeaturesExceptionReport;
 import org.junit.jupiter.api.Test;
-import org.xmlunit.matchers.ValidationMatcher;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
@@ -33,7 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_URL;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.xmlunit.assertj3.XmlAssert.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -51,7 +50,7 @@ class OgcApiFeaturesExceptionReportIT {
 		OgcApiFeaturesExceptionReport exception = new OgcApiFeaturesExceptionReport("test", 404);
 		marshaller.marshal(exception, bos);
 
-		assertThat(bos.toString(), ValidationMatcher.valid(schemaFrom(XML_CORE_SCHEMA_URL)));
+		assertThat(bos.toString()).isValidAgainst(schemaFrom(XML_CORE_SCHEMA_URL));
 	}
 
 	private StreamSource schemaFrom(String url) throws IOException {

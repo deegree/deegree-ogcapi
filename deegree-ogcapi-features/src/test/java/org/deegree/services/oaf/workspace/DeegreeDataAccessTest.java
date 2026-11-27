@@ -21,8 +21,7 @@
  */
 package org.deegree.services.oaf.workspace;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,14 +37,14 @@ class DeegreeDataAccessTest {
 	void select_crs_code_etrs89() throws Exception {
 		String lookupCode = "http://www.opengis.net/def/crs/EPSG/0/4258";
 		String code = selectCode(lookupCode, Arrays.asList(lookupCode));
-		assertThat(code, is(lookupCode));
+		assertThat(code).isEqualTo(lookupCode);
 	}
 
 	@Test
 	void select_crs_code_wgs84() throws Exception {
 		String lookupCode = "http://www.opengis.net/def/crs/EPSG/0/4326";
 		String code = selectCode(lookupCode, Arrays.asList(lookupCode));
-		assertThat(code, is(lookupCode));
+		assertThat(code).isEqualTo(lookupCode);
 	}
 
 	@Test
@@ -53,7 +52,7 @@ class DeegreeDataAccessTest {
 		String lookupCode = "urn:ogc:def:crs:EPSG::4258";
 		String allowedCode = "http://www.opengis.net/def/crs/EPSG/0/4258";
 		String code = selectCode(lookupCode, Arrays.asList(allowedCode));
-		assertThat(code, is(allowedCode));
+		assertThat(code).isEqualTo(allowedCode);
 	}
 
 	@Test
@@ -61,7 +60,7 @@ class DeegreeDataAccessTest {
 		String lookupCode = "http://www.opengis.net/def/crs/EPSG/0/4326";
 		ICRS crs = CRSManager.lookup(lookupCode);
 		String code = selectCode(lookupCode, Arrays.asList("EPSG:12345"));
-		assertThat(code, is(crs.getCode().getOriginal()));
+		assertThat(code).isEqualTo(crs.getCode().getOriginal());
 	}
 
 	private String selectCode(String crsCode, List<String> supportedCodes) throws UnknownCRSException {

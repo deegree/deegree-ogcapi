@@ -34,8 +34,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DatasetsTest extends JerseyTest {
 
@@ -57,14 +56,14 @@ class DatasetsTest extends JerseyTest {
 	void datatsets_declaration_json_should_be_available() {
 		Response response = target("/datasets").request(MediaType.APPLICATION_JSON_TYPE).get();
 		String json = response.readEntity(String.class);
-		assertThat(response.getStatus(), is(200));
+		assertThat(response.getStatus()).isEqualTo(200);
 	}
 
 	@Test
 	void datatsets_declaration_html_should_be_available() {
 		Response response = target("/datasets").request(MediaType.APPLICATION_JSON_TYPE).get();
 		String json = response.readEntity(String.class);
-		assertThat(response.getStatus(), is(200));
+		assertThat(response.getStatus()).isEqualTo(200);
 	}
 
 }

@@ -24,8 +24,6 @@ package org.deegree.services.oaf.domain.collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.xmlunit.matchers.ValidationMatcher;
-import org.xmlunit.validation.Validator;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
@@ -40,9 +38,9 @@ import java.util.TimeZone;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_URL;
 import static org.deegree.services.oaf.TestData.createCollection;
 import static org.deegree.services.oaf.TestData.createCollections;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
+import static org.xmlunit.assertj3.XmlAssert.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -60,7 +58,7 @@ class CollectionsIT {
 		Collections collections = createCollections();
 		marshaller.marshal(collections, bos);
 
-		assertThat(bos.toString(), ValidationMatcher.valid(schemaFrom(XML_CORE_SCHEMA_URL)));
+		assertThat(bos.toString()).isValidAgainst(schemaFrom(XML_CORE_SCHEMA_URL));
 	}
 
 	@Test

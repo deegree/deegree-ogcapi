@@ -36,8 +36,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -62,14 +61,14 @@ class FeatureCollectionsTest extends JerseyTest {
 	void collections_declaration_json_should_be_available() {
 		Response response = target("/datasets/oaf/collections").request(APPLICATION_JSON_TYPE).get();
 
-		assertThat(response.getStatus(), is(200));
+		assertThat(response.getStatus()).isEqualTo(200);
 	}
 
 	@Test
 	void collections_declaration_xml_should_be_available() {
 		Response response = target("/datasets/oaf/collections").request(APPLICATION_XML).get();
 
-		assertThat(response.getStatus(), is(200));
+		assertThat(response.getStatus()).isEqualTo(200);
 	}
 
 }

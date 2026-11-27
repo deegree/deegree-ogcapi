@@ -28,6 +28,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.jupiter.api.Test;
+import org.xmlunit.assertj3.XmlAssert;
 
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
@@ -39,9 +40,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_NS_URL;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -65,15 +64,15 @@ class FeatureCollectionTest extends JerseyTest {
 	@Test
 	void collection_declaration_json_should_be_available() {
 		Response response = target("/datasets/oaf/collections/test").request(APPLICATION_JSON_TYPE).get();
-		assertThat(response.getStatus(), is(200));
+		assertThat(response.getStatus()).isEqualTo(200);
 	}
 
 	@Test
 	void collection_declaration_xml_should_be_available() {
 		Response response = target("/datasets/oaf/collections/test").request(APPLICATION_XML).get();
-		assertThat(response.getStatus(), is(200));
+		assertThat(response.getStatus()).isEqualTo(200);
 		String xml = response.readEntity(String.class);
-		assertThat(xml, hasXPath("/core:Collections/core:Collection").withNamespaceContext(nsContext()));
+		XmlAssert.assertThat(xml).withNamespaceContext(nsContext()).hasXPath("/core:Collections/core:Collection");
 	}
 
 	private Map<String, String> nsContext() {

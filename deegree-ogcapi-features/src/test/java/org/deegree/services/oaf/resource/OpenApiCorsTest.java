@@ -21,8 +21,7 @@
  */
 package org.deegree.services.oaf.resource;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.ws.rs.core.Response;
 
@@ -53,7 +52,7 @@ class OpenApiCorsTest extends OpenApiTest {
 	@Override
 	void open_api_cors_header() {
 		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get();
-		assertThat(response.getHeaderString("Access-Control-Allow-Origin"), is("*"));
+		assertThat(response.getHeaderString("Access-Control-Allow-Origin")).isEqualTo("*");
 	}
 
 }

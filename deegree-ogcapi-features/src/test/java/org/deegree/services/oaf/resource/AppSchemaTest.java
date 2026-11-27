@@ -29,6 +29,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.jupiter.api.Test;
+import org.xmlunit.assertj3.XmlAssert;
 
 import jakarta.ws.rs.core.Application;
 import javax.xml.namespace.QName;
@@ -36,10 +37,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 class AppSchemaTest extends JerseyTest {
 
@@ -63,9 +63,10 @@ class AppSchemaTest extends JerseyTest {
 		final String xml = target("/datasets/oaf/collections/KitaEinrichtungen/appschema").request(APPLICATION_XML)
 			.get(String.class);
 
-		assertThat(xml, hasXPath(
-				"//xs:schema/xs:import[@namespace = 'http://www.opengis.net/gml/3.2' and @schemaLocation='http://schemas.opengis.net/gml/3.2.1/gml.xsd']")
-			.withNamespaceContext(nsContext()));
+		XmlAssert.assertThat(xml)
+			.withNamespaceContext(nsContext())
+			.hasXPath(
+					"//xs:schema/xs:import[@namespace = 'http://www.opengis.net/gml/3.2' and @schemaLocation='http://schemas.opengis.net/gml/3.2.1/gml.xsd']");
 	}
 
 	private Map<String, String> nsContext() {

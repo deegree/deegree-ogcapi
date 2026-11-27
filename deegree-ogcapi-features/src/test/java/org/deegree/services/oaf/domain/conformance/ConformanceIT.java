@@ -23,7 +23,6 @@ package org.deegree.services.oaf.domain.conformance;
 
 import org.deegree.services.oaf.link.Link;
 import org.junit.jupiter.api.Test;
-import org.xmlunit.matchers.ValidationMatcher;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
@@ -35,7 +34,7 @@ import java.util.Collections;
 
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_CORE_SCHEMA_URL;
 import static org.deegree.services.oaf.domain.conformance.ConformanceClass.HTML;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.xmlunit.assertj3.XmlAssert.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -53,7 +52,7 @@ class ConformanceIT {
 		Conformance conformance = new Conformance(Collections.singletonList(new Link(HTML.getConformanceClass())));
 		marshaller.marshal(conformance, bos);
 
-		assertThat(bos.toString(), ValidationMatcher.valid(schemaFrom(XML_CORE_SCHEMA_URL)));
+		assertThat(bos.toString()).isValidAgainst(schemaFrom(XML_CORE_SCHEMA_URL));
 	}
 
 	private StreamSource schemaFrom(String url) throws IOException {

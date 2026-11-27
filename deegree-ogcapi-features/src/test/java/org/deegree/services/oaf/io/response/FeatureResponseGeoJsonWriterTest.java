@@ -21,6 +21,7 @@
  */
 package org.deegree.services.oaf.io.response;
 
+import com.jayway.jsonpath.JsonPath;
 import org.deegree.cs.exceptions.UnknownCRSException;
 import org.deegree.feature.Feature;
 import org.deegree.feature.FeatureCollection;
@@ -31,7 +32,6 @@ import org.deegree.gml.GMLStreamReader;
 import org.deegree.services.oaf.OgcApiFeaturesConstants;
 import org.deegree.services.oaf.io.response.geojson.FeatureResponseGeoJsonWriter;
 import org.deegree.services.oaf.link.Link;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.stream.XMLStreamException;
@@ -42,13 +42,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
-import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasNoJsonPath;
-import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.deegree.gml.GMLVersion.GML_32;
 import static org.deegree.services.oaf.TestData.readFeature;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -64,12 +60,17 @@ class FeatureResponseGeoJsonWriterTest {
 
 		String json = bos.toString();
 
-		assertThat(json, isJson());
-		assertThat(json, hasJsonPath("$.type", equalTo("Feature")));
-		assertThat(json, hasJsonPath("$.geometry"));
-		assertThat(json, hasJsonPath("$.properties"));
-		assertThat(json, hasJsonPath("$.links", Matchers.hasSize(1)));
-		assertThat(json, hasJsonPath("$.crs", equalTo(OgcApiFeaturesConstants.DEFAULT_CRS)));
+		assertThat(json).isNotBlank();
+		String type = JsonPath.read(json, "$.type");
+		assertThat(type).isEqualTo("Feature");
+		Object geometry = JsonPath.read(json, "$.geometry");
+		assertThat(geometry).isNotNull();
+		Object properties = JsonPath.read(json, "$.properties");
+		assertThat(properties).isNotNull();
+		List<?> links = JsonPath.read(json, "$.links");
+		assertThat(links).hasSize(1);
+		String crs = JsonPath.read(json, "$.crs");
+		assertThat(crs).isEqualTo(OgcApiFeaturesConstants.DEFAULT_CRS);
 	}
 
 	private FeatureResponse createFeatureResponse() throws Exception {

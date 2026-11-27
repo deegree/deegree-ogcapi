@@ -32,6 +32,7 @@ import org.deegree.gml.GMLStreamReader;
 import org.deegree.services.oaf.io.response.gml.FeaturesResponseGmlWriter;
 import org.deegree.services.oaf.link.Link;
 import org.junit.jupiter.api.Test;
+import org.xmlunit.assertj3.XmlAssert;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
@@ -49,10 +50,6 @@ import java.util.Map;
 import static org.deegree.gml.GMLVersion.GML_32;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_NS_URL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.XML_SF_SCHEMA_URL;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.xmlunit.matchers.EvaluateXPathMatcher.hasXPath;
-import static org.xmlunit.matchers.ValidationMatcher.valid;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -70,13 +67,15 @@ class FeaturesResponseGmlWriterIT {
 		OutputStream bos = new ByteArrayOutputStream();
 		featureResponeWriter.writeTo(featureResponse, null, null, null, null, null, bos);
 
-		assertThat(bos.toString(),
-				hasXPath("count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)", is("5"))
-					.withNamespaceContext(nsContext()));
-		assertThat(bos.toString(), hasXPath(
-				"/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName",
-				is("urn:ogc:def:crs:EPSG::4258"))
-			.withNamespaceContext(nsContext()));
+		XmlAssert.assertThat(bos.toString())
+			.withNamespaceContext(nsContext())
+			.valueByXPath("count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)")
+			.isEqualTo("5");
+		XmlAssert.assertThat(bos.toString())
+			.withNamespaceContext(nsContext())
+			.valueByXPath(
+					"/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName")
+			.isEqualTo("urn:ogc:def:crs:EPSG::4258");
 
 		// TODO: fails with [cvc-complex-type.2.4.a: Invalid content was found starting
 		// with element '{"http://www.deegree.org/app":strassenbaumkataster}'. One of
@@ -93,13 +92,15 @@ class FeaturesResponseGmlWriterIT {
 		OutputStream bos = new ByteArrayOutputStream();
 		featureResponeWriter.writeTo(featureResponse, null, null, null, null, null, bos);
 
-		assertThat(bos.toString(),
-				hasXPath("count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)", is("5"))
-					.withNamespaceContext(nsContext()));
-		assertThat(bos.toString(), hasXPath(
-				"/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName",
-				is(requestCrs))
-			.withNamespaceContext(nsContext()));
+		XmlAssert.assertThat(bos.toString())
+			.withNamespaceContext(nsContext())
+			.valueByXPath("count(/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster)")
+			.isEqualTo("5");
+		XmlAssert.assertThat(bos.toString())
+			.withNamespaceContext(nsContext())
+			.valueByXPath(
+					"/sf:FeatureCollection/sf:featureMember/app:strassenbaumkataster[1]/app:geom/gml:Point/@srsName")
+			.isEqualTo(requestCrs);
 
 		// TODO: fails with [cvc-complex-type.2.4.a: Invalid content was found starting
 		// with element '{"http://www.deegree.org/app":strassenbaumkataster}'. One of
@@ -115,7 +116,7 @@ class FeaturesResponseGmlWriterIT {
 		OutputStream bos = new ByteArrayOutputStream();
 		featureResponeWriter.writeTo(featureResponse, null, null, null, null, null, bos);
 
-		assertThat(bos.toString(), valid(schemaFrom(XML_SF_SCHEMA_URL)));
+		XmlAssert.assertThat(bos.toString()).isValidAgainst(schemaFrom(XML_SF_SCHEMA_URL));
 	}
 
 	private Map<String, String> nsContext() {

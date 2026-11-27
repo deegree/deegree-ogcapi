@@ -40,8 +40,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static jakarta.ws.rs.core.MediaType.TEXT_HTML;
 import static org.deegree.services.oaf.TestData.mockDataAccess;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test overriding filter for overriding format via query parameter or extension.
@@ -66,29 +65,29 @@ class OverrideAcceptFilterTest extends JerseyTest {
 	@Test
 	void header() {
 		Response response = target("/datasets/oaf/collections/test").request(APPLICATION_JSON_TYPE).get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(APPLICATION_JSON);
 	}
 
 	@Test
 	void extension() {
 		Response response = target("/datasets/oaf/collections/test.xml").request().get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(APPLICATION_XML);
 	}
 
 	@Test
 	void extension_fallback() {
 		Response response = target("/datasets/oaf/collections/test.xkcd").request(APPLICATION_JSON_TYPE).get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(APPLICATION_JSON);
 	}
 
 	@Test
 	void query_param_accept() {
 		Response response = target("/datasets/oaf/collections/test").queryParam("accept", "xml").request().get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(APPLICATION_XML);
 	}
 
 	@Test
@@ -96,22 +95,22 @@ class OverrideAcceptFilterTest extends JerseyTest {
 		Response response = target("/datasets/oaf/collections/test").queryParam("accept", APPLICATION_XML)
 			.request()
 			.get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(APPLICATION_XML);
 	}
 
 	@Test
 	void query_param_f_xml() {
 		Response response = target("/datasets/oaf/collections/test").queryParam("f", "xml").request().get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(APPLICATION_XML);
 	}
 
 	@Test
 	void query_param_f_json() {
 		Response response = target("/datasets/oaf/collections/test").queryParam("f", "json").request().get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_JSON));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(APPLICATION_JSON);
 	}
 
 	@Test
@@ -119,15 +118,15 @@ class OverrideAcceptFilterTest extends JerseyTest {
 		Response response = target("/datasets/oaf/collections/test.html").queryParam("accept", "xml")
 			.request(APPLICATION_JSON_TYPE)
 			.get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(APPLICATION_XML));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(APPLICATION_XML);
 	}
 
 	@Test
 	void priority_extension() {
 		Response response = target("/datasets/oaf/collections/test.html").request(APPLICATION_JSON_TYPE).get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(TEXT_HTML));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE)).isEqualTo(TEXT_HTML);
 	}
 
 }
