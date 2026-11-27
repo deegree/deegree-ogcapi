@@ -39,8 +39,7 @@ import java.nio.file.Path;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AppSchemaFileTest extends JerseyTest {
 
@@ -72,7 +71,7 @@ public class AppSchemaFileTest extends JerseyTest {
 	void app_schema_file_declaration_xml_should_be_available() {
 		int statusCode = target("/appschemas/kita.xsd").request(APPLICATION_XML).get().getStatus();
 
-		assertThat(statusCode, is(200));
+		assertThat(statusCode).isEqualTo(200);
 	}
 
 	private static File newFile(File parent, String child) throws IOException {

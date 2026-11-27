@@ -21,6 +21,7 @@
  */
 package org.deegree.services.oaf.resource;
 
+import com.jayway.jsonpath.JsonPath;
 import org.deegree.commons.utils.TunableParameter;
 import org.deegree.services.oaf.OgcApiFeaturesMediaType;
 import org.deegree.services.oaf.filter.OpenApiAliasFilter;
@@ -44,12 +45,8 @@ import jakarta.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 
-import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
-import static com.jayway.jsonpath.matchers.JsonPathMatchers.isJson;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.deegree.services.oaf.TestData.mockWorkspaceInitializer;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -97,7 +94,7 @@ public class OpenApiTest extends JerseyTest {
 	@Test
 	void open_api_declaration_should_be_available() {
 		int status = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI).get().getStatus();
-		assertThat(status, is(200));
+		assertThat(status).isEqualTo(200);
 	}
 
 	@Test
@@ -105,34 +102,35 @@ public class OpenApiTest extends JerseyTest {
 		int status = target("/datasets/oaf/openapi").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI)
 			.get()
 			.getStatus();
-		assertThat(status, is(200));
+		assertThat(status).isEqualTo(200);
 	}
 
 	@Test
 	void open_api_html_should_be_available() {
 		int status = target("/datasets/oaf/api").request(MediaType.TEXT_HTML).get().getStatus();
-		assertThat(status, is(200));
+		assertThat(status).isEqualTo(200);
 	}
 
 	@Test
 	void open_api_yaml_should_be_available() {
 		Response response = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_YAML_TYPE).get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE), is(OgcApiFeaturesMediaType.APPLICATION_YAML));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getHeaderString(HttpHeaders.CONTENT_TYPE))
+			.isEqualTo(OgcApiFeaturesMediaType.APPLICATION_YAML);
 	}
 
 	@Test
 	void open_api_css_should_return_correct_mime_type() {
 		Response response = target("/datasets/oaf/api/swagger-ui-bundle.css").request().get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getMediaType().toString(), is("text/css"));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getMediaType().toString()).isEqualTo("text/css");
 	}
 
 	@Test
 	void open_api_javascript_should_return_correct_mime_type() {
 		Response response = target("/datasets/oaf/api/swagger-ui-bundle.js").request().get();
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getMediaType().toString(), is("text/javascript"));
+		assertThat(response.getStatus()).isEqualTo(200);
+		assertThat(response.getMediaType().toString()).isEqualTo("text/javascript");
 	}
 
 	/**
@@ -149,15 +147,17 @@ public class OpenApiTest extends JerseyTest {
 		String json = target("/datasets/oaf/api").request(OgcApiFeaturesMediaType.APPLICATION_OPENAPI)
 			.get(String.class);
 
-		assertThat(json, isJson());
-		assertThat(json, hasJsonPath("$.openapi", equalTo("3.0.1")));
-		assertThat(json, hasJsonPath("$.paths./"));
-		assertThat(json, hasJsonPath("$.paths./conformance"));
-		assertThat(json, hasJsonPath("$.paths./collections"));
-		assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster"));
-		assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster/items"));
-		assertThat(json, hasJsonPath("$.paths./collections/strassenbaumkataster/items/{featureId}"));
-		assertThat(json, hasJsonPath("$.paths./api"));
+		assertThat(json).isNotBlank();
+		String openapi = JsonPath.read(json, "$.openapi");
+		assertThat(openapi).isEqualTo("3.0.1");
+		assertThat(JsonPath.<Object>read(json, "$.paths['/']")).isNotNull();
+		assertThat(JsonPath.<Object>read(json, "$.paths['/conformance']")).isNotNull();
+		assertThat(JsonPath.<Object>read(json, "$.paths['/collections']")).isNotNull();
+		assertThat(JsonPath.<Object>read(json, "$.paths['/collections/strassenbaumkataster']")).isNotNull();
+		assertThat(JsonPath.<Object>read(json, "$.paths['/collections/strassenbaumkataster/items']")).isNotNull();
+		assertThat(JsonPath.<Object>read(json, "$.paths['/collections/strassenbaumkataster/items/{featureId}']"))
+			.isNotNull();
+		assertThat(JsonPath.<Object>read(json, "$.paths['/api']")).isNotNull();
 	}
 
 	private static File newFile(File parent, String child) throws IOException {

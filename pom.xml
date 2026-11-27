@@ -827,31 +827,36 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
-        <version>5.23.0</version>
+        <version>5.24.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>5.23.0</version>
+        <version>5.24.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.10.4</version>
+        <version>2.14.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-matchers</artifactId>
-        <version>2.10.4</version>
+        <artifactId>xmlunit-assertj3</artifactId>
+        <version>2.14.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.27.7</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>com.jayway.jsonpath</groupId>
-        <artifactId>json-path-assert</artifactId>
-        <version>2.9.0</version>
+        <groupId>com.revinate</groupId>
+        <artifactId>assertj-json</artifactId>
+        <version>1.2.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -892,24 +897,6 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
         <version>4.4.16</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-core</artifactId>
-        <version>2.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-library</artifactId>
-        <version>2.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-junit</artifactId>
-        <version>2.0.0.0</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>joda-time</groupId>

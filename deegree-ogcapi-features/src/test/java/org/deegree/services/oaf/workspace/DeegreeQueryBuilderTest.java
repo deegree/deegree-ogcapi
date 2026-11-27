@@ -42,7 +42,6 @@ import org.deegree.services.oaf.workspace.configuration.FeatureTypeMetadata;
 import org.deegree.cql2.FilterProperty;
 import org.deegree.cql2.FilterPropertyType;
 import org.deegree.services.oaf.workspace.configuration.OafDatasetConfiguration;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -59,8 +58,7 @@ import static org.deegree.filter.Operator.Type.TEMPORAL;
 import static org.deegree.services.oaf.OgcApiFeaturesConstants.DEFAULT_CRS;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.FIRST;
 import static org.deegree.services.oaf.workspace.DeegreeQueryBuilder.UNLIMITED;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
@@ -90,8 +88,8 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		Filter filter = query.getFilter();
 
-		assertThat(query.getMaxFeatures(), is(42));
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
+		assertThat(query.getMaxFeatures()).isEqualTo(42);
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
 		assertNull(filter);
 	}
 
@@ -104,8 +102,8 @@ class DeegreeQueryBuilderTest {
 			.build();
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 
-		assertThat(query.getMaxFeatures(), is(UNLIMITED));
-		assertThat(query.getStartIndex(), is(FIRST));
+		assertThat(query.getMaxFeatures()).isEqualTo(UNLIMITED);
+		assertThat(query.getStartIndex()).isEqualTo(FIRST);
 	}
 
 	@Test
@@ -118,8 +116,8 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator().getType(), is(Operator.Type.SPATIAL));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator().getType()).isEqualTo(Operator.Type.SPATIAL);
 	}
 
 	@Test
@@ -134,8 +132,8 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator().getType(), is(LOGICAL));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator().getType()).isEqualTo(LOGICAL);
 	}
 
 	@Test
@@ -148,14 +146,14 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator().getType(), is(LOGICAL));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator().getType()).isEqualTo(LOGICAL);
 
 		Operator firstLevelFirst = ((Or) filter.getOperator()).getParameter(0);
-		assertThat(firstLevelFirst.getType(), is(TEMPORAL));
+		assertThat(firstLevelFirst.getType()).isEqualTo(TEMPORAL);
 
 		Operator firstLevelSecond = ((Or) filter.getOperator()).getParameter(1);
-		assertThat(firstLevelSecond.getType(), is(COMPARISON));
+		assertThat(firstLevelSecond.getType()).isEqualTo(COMPARISON);
 	}
 
 	@Test
@@ -168,8 +166,8 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator().getType(), is(LOGICAL));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator().getType()).isEqualTo(LOGICAL);
 	}
 
 	@Test
@@ -182,19 +180,19 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator().getType(), is(LOGICAL));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator().getType()).isEqualTo(LOGICAL);
 
 		Operator firstLevelFirst = ((Or) filter.getOperator()).getParameter(0);
-		assertThat(firstLevelFirst.getType(), is(LOGICAL));
+		assertThat(firstLevelFirst.getType()).isEqualTo(LOGICAL);
 
 		Operator secondLevelFirst = ((Or) firstLevelFirst).getParameter(0);
-		assertThat(secondLevelFirst.getType(), is(TEMPORAL));
+		assertThat(secondLevelFirst.getType()).isEqualTo(TEMPORAL);
 		Operator secondLevelSecond = ((Or) firstLevelFirst).getParameter(1);
-		assertThat(secondLevelSecond.getType(), is(TEMPORAL));
+		assertThat(secondLevelSecond.getType()).isEqualTo(TEMPORAL);
 
 		Operator firstLevelSecond = ((Or) filter.getOperator()).getParameter(1);
-		assertThat(firstLevelSecond.getType(), is(COMPARISON));
+		assertThat(firstLevelSecond.getType()).isEqualTo(COMPARISON);
 	}
 
 	@Test
@@ -207,19 +205,19 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator().getType(), is(LOGICAL));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator().getType()).isEqualTo(LOGICAL);
 
 		Operator firstLevelFirst = ((Or) filter.getOperator()).getParameter(0);
-		assertThat(firstLevelFirst.getType(), is(LOGICAL));
+		assertThat(firstLevelFirst.getType()).isEqualTo(LOGICAL);
 
 		Operator secondLevelFirst = ((Or) firstLevelFirst).getParameter(0);
-		assertThat(secondLevelFirst.getType(), is(TEMPORAL));
+		assertThat(secondLevelFirst.getType()).isEqualTo(TEMPORAL);
 		Operator secondLevelSecond = ((Or) firstLevelFirst).getParameter(1);
-		assertThat(secondLevelSecond.getType(), is(TEMPORAL));
+		assertThat(secondLevelSecond.getType()).isEqualTo(TEMPORAL);
 
 		Operator firstLevelSecond = ((Or) filter.getOperator()).getParameter(1);
-		assertThat(firstLevelSecond.getType(), is(COMPARISON));
+		assertThat(firstLevelSecond.getType()).isEqualTo(COMPARISON);
 	}
 
 	@Test
@@ -244,8 +242,8 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsEqualTo.class));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator()).isInstanceOf(PropertyIsEqualTo.class);
 	}
 
 	@Test
@@ -259,8 +257,8 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLike.class));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator()).isInstanceOf(PropertyIsLike.class);
 	}
 
 	@Test
@@ -273,10 +271,10 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsEqualTo.class));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator()).isInstanceOf(PropertyIsEqualTo.class);
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsEqualTo) filter.getOperator()).getParameter2()).getValue();
-		assertThat(valueParam2, is(10.0));
+		assertThat(valueParam2).isEqualTo(10.0);
 	}
 
 	@Test
@@ -290,11 +288,11 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsGreaterThan.class));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator()).isInstanceOf(PropertyIsGreaterThan.class);
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsGreaterThan) filter.getOperator()).getParameter2())
 			.getValue();
-		assertThat(valueParam2, is(9.56));
+		assertThat(valueParam2).isEqualTo(9.56);
 	}
 
 	@Test
@@ -308,11 +306,11 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLessThan.class));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator()).isInstanceOf(PropertyIsLessThan.class);
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsLessThan) filter.getOperator()).getParameter2())
 			.getValue();
-		assertThat(valueParam2, is(5.89));
+		assertThat(valueParam2).isEqualTo(5.89);
 	}
 
 	@Test
@@ -326,11 +324,11 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsGreaterThanOrEqualTo.class));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator()).isInstanceOf(PropertyIsGreaterThanOrEqualTo.class);
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsGreaterThanOrEqualTo) filter.getOperator())
 			.getParameter2()).getValue();
-		assertThat(valueParam2, is(10.0));
+		assertThat(valueParam2).isEqualTo(10.0);
 	}
 
 	@Test
@@ -344,11 +342,11 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator(), CoreMatchers.instanceOf(PropertyIsLessThanOrEqualTo.class));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator()).isInstanceOf(PropertyIsLessThanOrEqualTo.class);
 		TypedObjectNode valueParam2 = ((Literal) ((PropertyIsLessThanOrEqualTo) filter.getOperator()).getParameter2())
 			.getValue();
-		assertThat(valueParam2, is(10.0));
+		assertThat(valueParam2).isEqualTo(10.0);
 	}
 
 	@Test
@@ -363,14 +361,14 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator().getType(), is(LOGICAL));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator().getType()).isEqualTo(LOGICAL);
 
 		Operator first = ((And) filter.getOperator()).getParameter(0);
-		assertThat(first, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
+		assertThat(first).isInstanceOf(PropertyIsEqualTo.class);
 
 		Operator second = ((And) filter.getOperator()).getParameter(1);
-		assertThat(second, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
+		assertThat(second).isInstanceOf(PropertyIsEqualTo.class);
 	}
 
 	@Test
@@ -386,14 +384,14 @@ class DeegreeQueryBuilderTest {
 		Query query = deegreeQueryBuilder.createQuery(FT_METADATA, featureRequest);
 		OperatorFilter filter = (OperatorFilter) query.getFilter();
 
-		assertThat(query.getTypeNames()[0].getFeatureTypeName(), is(FT_NAME));
-		assertThat(filter.getOperator().getType(), is(LOGICAL));
+		assertThat(query.getTypeNames()[0].getFeatureTypeName()).isEqualTo(FT_NAME);
+		assertThat(filter.getOperator().getType()).isEqualTo(LOGICAL);
 
 		Operator first = ((And) filter.getOperator()).getParameter(0);
-		assertThat(first, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
+		assertThat(first).isInstanceOf(PropertyIsEqualTo.class);
 
 		Operator second = ((And) filter.getOperator()).getParameter(1);
-		assertThat(second, CoreMatchers.instanceOf(PropertyIsEqualTo.class));
+		assertThat(second).isInstanceOf(PropertyIsEqualTo.class);
 	}
 
 	private Map<FilterProperty, List<String>> createSingleFilterParams(FilterPropertyType type, String value) {

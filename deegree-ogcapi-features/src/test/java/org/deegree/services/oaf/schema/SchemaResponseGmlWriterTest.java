@@ -7,7 +7,6 @@ import org.deegree.feature.types.FeatureType;
 import org.deegree.gml.schema.GMLAppSchemaReader;
 import org.deegree.gml.schema.GMLSchemaInfoSet;
 import org.deegree.services.oaf.workspace.DeegreeWorkspaceInitializer;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,10 +14,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.xmlunit.matchers.EvaluateXPathMatcher;
+import org.xmlunit.assertj3.XmlAssert;
 
 import jakarta.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,14 +28,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.deegree.gml.GMLVersion.GML_32;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.endsWith;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 /**
  * @author <a href="mailto:goltz@lat-lon.de">Lyn Goltz </a>
@@ -66,7 +67,7 @@ class SchemaResponseGmlWriterTest {
 		schemaResponseGmlWriter.writeTo(schemaResponse, null, null, null, null, null, bos);
 
 		String exportedXsd = bos.toString();
-		assertThat(exportedXsd, isSimilarTo(originalXsd(KITA_XSD)).ignoreComments());
+		XmlAssert.assertThat(exportedXsd).and(originalXsd(KITA_XSD)).ignoreComments().areSimilar();
 	}
 
 	@Test
@@ -76,17 +77,10 @@ class SchemaResponseGmlWriterTest {
 		schemaResponseGmlWriter.writeTo(schemaResponse, null, null, null, null, null, bos);
 
 		String exportedXsd = bos.toString();
-		// The schemeLocation is currently not translated (s. mockWorkspaceInitializer())
-		// TODO: fix mocking
-		assertThat(exportedXsd,
-				EvaluateXPathMatcher
-					.hasXPath("//xs:schema/xs:include[1]/@schemaLocation",
-							CoreMatchers.endsWith("micado_kennzahlen_v1_2.xsd"))
-					.withNamespaceContext(nsContext()));
-		assertThat(exportedXsd,
-				EvaluateXPathMatcher
-					.hasXPath("//xs:schema/xs:include[2]/@schemaLocation", CoreMatchers.endsWith("zeitreihen_v1.xsd"))
-					.withNamespaceContext(nsContext()));
+		String schemaLocation1 = evaluateXPath(exportedXsd, "//xs:schema/xs:include[1]/@schemaLocation");
+		assertThat(schemaLocation1).endsWith("micado_kennzahlen_v1_2.xsd");
+		String schemaLocation2 = evaluateXPath(exportedXsd, "//xs:schema/xs:include[2]/@schemaLocation");
+		assertThat(schemaLocation2).endsWith("zeitreihen_v1.xsd");
 	}
 
 	private SchemaResponse createExistingSchemaResponse(QName ftName, String xsdResource)
@@ -126,6 +120,28 @@ class SchemaResponseGmlWriterTest {
 		Map<String, String> nsContext = new HashMap<>();
 		nsContext.put("xs", "http://www.w3.org/2001/XMLSchema");
 		return nsContext;
+	}
+
+	private String evaluateXPath(String xml, String xpathExpression) throws Exception {
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		xpath.setNamespaceContext(new javax.xml.namespace.NamespaceContext() {
+			@Override
+			public String getNamespaceURI(String prefix) {
+				return "xs".equals(prefix) ? "http://www.w3.org/2001/XMLSchema" : "";
+			}
+
+			@Override
+			public String getPrefix(String namespaceURI) {
+				return null;
+			}
+
+			@Override
+			public java.util.Iterator<String> getPrefixes(String namespaceURI) {
+				return null;
+			}
+		});
+		return (String) xpath.evaluate(xpathExpression, new org.xml.sax.InputSource(new java.io.StringReader(xml)),
+				XPathConstants.STRING);
 	}
 
 }

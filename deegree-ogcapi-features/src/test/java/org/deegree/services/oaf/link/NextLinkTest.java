@@ -26,8 +26,7 @@ import org.junit.jupiter.api.Test;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,7 +43,7 @@ class NextLinkTest {
 		UriInfo uriInfo = createUriInfo("http://localhost:8080/oafcollections/buildings/items?limit=2");
 		String uri = nextLink.createUri(uriInfo);
 
-		assertThat(uri, is("http://localhost:8080/oafcollections/buildings/items?offset=2&limit=2"));
+		assertThat(uri).isEqualTo("http://localhost:8080/oafcollections/buildings/items?offset=2&limit=2");
 	}
 
 	@Test
@@ -54,7 +53,7 @@ class NextLinkTest {
 		UriInfo uriInfo = createUriInfo("http://localhost:8080/oafcollections/buildings/items?limit=2&offset=2");
 		String uri = nextLink.createUri(uriInfo);
 
-		assertThat(uri, is("http://localhost:8080/oafcollections/buildings/items?offset=4&limit=2"));
+		assertThat(uri).isEqualTo("http://localhost:8080/oafcollections/buildings/items?offset=4&limit=2");
 	}
 
 	@Test
